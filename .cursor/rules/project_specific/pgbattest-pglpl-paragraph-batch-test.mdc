@@ -1,0 +1,150 @@
+---
+description: >-
+  Keyword **pgbattest** — paragraph batch testing for PGLPL knowledge scopes:
+  Door A first-5×2, Door B all-words×1, optional Door C dual judges; on fail call
+  **pgjudge**, fix, re-invoke within budgets. Cold start OK.
+alwaysApply: false
+---
+
+<h1 id="pgbattest-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>pgbattest</code> — paragraph batch stage gate (PGLPL)</h1>
+
+## Document outline
+
+1. [What this is](#what)
+2. [How to use (Cursor prompts)](#howto)
+3. [Doors and budgets](#doors)
+4. [With `pgjudge` (DRY)](#with-judge)
+5. [CLI](#cli)
+
+---
+
+<h2 id="what" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. What this is</h2>
+
+**Traffic cop** for live paragraph-gen testing on Place / Number / Other Word
+**and Noun gender** admin scopes.
+
+```text
+Door A: first 5 pool words ×2  →  both must PASS
+Door B: all pool words ×1      →  PASS → shipped (pipeline)
+Door C: batched Pair A + Pair B judges (YAML judge_a / judge_b) on Door B texts
+        → shipped_and_verified (default on; --no-door-c skips)
+```
+
+- **`shipped`** = Door A+B only. **`shipped_and_verified`** = A+B+C.
+- Door C snapshots paragraphs **before** harness bulk-delete; one Pair-A call + one Pair-B call over the batch (not per paragraph). Default live pair: Claude + OpenAI. Restore Gemini: set `door_c.judge_a.provider: gemini` (and model) in `main_config.yaml`, or env `DOOR_C_JUDGE_A_PROVIDER=gemini`.
+- Modes (YAML `non_conj_paragraph.door_c.mode`): **`ALL_SHIPPED_SCOPES`** (default) or **`PER_SHIPPED_SCOPE`**. Still judges the pipeline-passed subset if another scope failed A/B.
+- Dual approve: **both** judges must mark each paragraph `OK` to pass Door C; **any** `ISSUE` fails (`quality_failed`).
+- **Cold start OK** — you do **not** need a prior `pgjudge` report.
+- On FAIL / `AGENT_JUDGE` → apply **`pgjudge`**, fix code/prompts, **re-run the same door**.
+- Improve-iter budgets are **agent-owned across CLI reinvokes** (see [Doors](#doors)).
+- **LWM note:** gender leading chips (`inanimate:learn-by-heart`,
+  `inanimate:suffix-rule-binding`, `animated:fixed-article`) and Places article
+  scopes punch via **Leading Word Match**; `inanimate:meaning-changers` uses
+  sense-anchor then LWM (see `apps/api/app/pglpl/README.md` LWM scope map).
+
+---
+
+<h2 id="howto" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. How to use (Cursor prompts)</h2>
+
+Copy-paste style. Prefer **`@pgbattest`** or the keyword in the message.
+
+**Single scope (most common):**
+
+```text
+pgbattest places:cities
+pgbattest inanimate:learn-by-heart
+```
+
+Agent: run `python ops/local/run_all.py pgbattest --scope places:cities` (or the noun-gender scope). On fail → `pgjudge` → fix → re-invoke until shipped or budget exhaust (then **deferred-live**, continue if more scopes).
+
+**Several scopes:**
+
+```text
+pgbattest places:cities, numbers:ordinals, adjectives:endings
+pgbattest inanimate:learn-by-heart, animated:animals, plural:plural
+```
+
+Agent: `--scopes places:cities,numbers:ordinals,adjectives:endings`; continue after deferred-live; print overall table.
+
+**After a fail (same door again):**
+
+```text
+pgjudge
+# …fix the issue…
+pgbattest places:cities
+```
+
+**With continuous implement loop:**
+
+```text
+aciub — after each product fix, pgbattest the affected scope until shipped or deferred-live
+```
+
+**Stage-end compare (refactor plans):** When a phase finishes paragraph-gen work for
+named scopes, run `pgbattest` on **those scopes only**, then print a table:
+
+| Scope | Baseline (locked campaign) | This stage | Delta |
+
+**Locked baseline for LWM / recent Places+Noun campaigns** (≈2026-07-30 evening → 2026-07-31 ~03:00):
+
+| Scope | Baseline outcome | Source artifact |
+|-------|------------------|-----------------|
+| `places:continents` | 2/2 pass (full-pool×2) | `ops/run-logs/pglpl-wide-fullpool-260730-1128.summary.json` |
+| `places:countries` | 2/2 pass | same |
+| `places:states` | shipped (Door A+B) | `ops/run-logs/pglpl-phase1-states-retest-260730.json` |
+| `places:cities` | shipped | `ops/run-logs/pgbattest-places_cities.json` |
+| `places:everyday` | 2/2 pass | wide fullpool summary |
+| `inanimate:learn-by-heart` | failed_first5 | `ops/run-logs/pgbattest-inanimate_learn-by-heart.json` |
+| `inanimate:suffix-rule-binding` | failed_all | `ops/run-logs/pgbattest-inanimate_suffix-rule-binding.json` |
+| `animated:fixed-article` | shipped | `ops/run-logs/pgbattest-animated_fixed-article.json` |
+| `inanimate:meaning-changers` | failed_first5 | `ops/run-logs/pgbattest-inanimate_meaning-changers.json` |
+
+Delta labels: `improved` / `same` / `regressed` / `n/a`. Regression from baseline
+`shipped` → apply **`pgjudge`** within budgets before closing the stage.
+
+**Ineffective (avoid):**
+- Asking for `pgjudge` *before* any live run when starting cold.
+- Skipping Door A and jumping to all-pool.
+- Abandoning after one fail without a fix attempt while budget remains.
+
+---
+
+<h2 id="doors" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Doors and budgets</h2>
+
+| Constant | Default | Meaning |
+|----------|--------:|---------|
+| `MAX_FIRST_5_WORDS_ITER` | **3** | Max fix→reinvoke cycles for Door A |
+| `MAX_ALL_WORDS_ITER` | **3** | Max fix→reinvoke cycles for Door B |
+
+One CLI run = **one attempt** (Door A ×2, then Door B ×1 if A passed, then Door C unless `--no-door-c`).  
+Outcome JSON: `shipped` | `shipped_and_verified` | `quality_failed` | `failed_first5` | `failed_all`.  
+Exit 0 only when every requested scope is `shipped_and_verified` (or `shipped` with `--no-door-c`).  
+After budget exhaust: record **deferred-live** (§4.1-style lay note) and move on.
+
+When appending to [`docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md`](../../../docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md) (via **`pgtestcom`** or manual tip), include **run stamp** `YYMMDD-hhmm` (local campaign start) and **wall duration** (`Ns` + `~N min`) on §2 timeline rows — same convention as expgtest summary stamps.
+
+---
+
+<h2 id="with-judge" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. With <code>pgjudge</code> (DRY)</h2>
+
+| Rule | Owns |
+|------|------|
+| **`pgbattest`** | Order, budgets, tables, when to retry |
+| **`pgjudge`** | Autopsy of one FAIL / `AGENT_JUDGE` |
+| **`pgpbp`** | Paragraph play-by-play for Door **A/B/C** fails on a **recorded** run (`pgpbp-pgbattest-door-c-paragraph-playbyplay.mdc`) |
+| **`pgtestcom`** | One `pgbattest` pass + scoreboard tip + vs prior `§6.xx` compare (`pgtestcom-pgbattest-compare-and-scoreboard.mdc`) |
+
+`pgbattest` **calls** `pgjudge` on pipeline fail. `pgjudge` does **not** start campaigns. Door C artifacts land under `ops/run-logs/tmp/pgbattest-door-c-*.json`. After a run is on the scoreboard, **`pgpbp §6.xx`** deep-dives every paragraph that failed Door A, B, or C (produce → verify → gate → punch → judges).
+
+---
+
+<h2 id="cli" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. CLI</h2>
+
+```bash
+python ops/local/run_all.py pgbattest --scope places:cities
+python ops/local/run_all.py pgbattest --scopes places:cities,numbers:ordinals
+python ops/local/run_all.py pgbattest --scopes animated:animals,animated:two-forms --door-c-mode PER_SHIPPED_SCOPE
+python ops/local/run_all.py pgbattest --scope places:cities --no-door-c
+```
+
+Default: isolated `:8003`. Door C Pair A/B: `config/main_config.yaml` → `non_conj_paragraph.door_c.judge_a` / `judge_b`. See also `pglpl-live --max-items 5` / `--all-pool` for manual single doors. Module: `-m pglpl_live.word_loop.stage_gate`.

@@ -1,0 +1,113 @@
+---
+description: >-
+  Filename **onlyref-refactor-plan-author-only.mdc**. Keyword **onlyref**: author or refresh one refactor-plan **.md**
+  (typically under **cursor_gen/refactor_plans/**) ready for execution via **implref**/ **resumimpl** — Markdown shape,
+  phases, **[ ]**/ **[X]** checklists, MRKD hierarchy, Quality bar — without implementing code or marking plan items done.
+  Use for PLGW bracket verify LM-payload issues (diagnosis-first prose vs mirrored schema duplication) or closely related strands.
+alwaysApply: false
+---
+
+<h1 id="onlyref-title" style="color:#0d47a1;font-size:1.45em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>onlyref</code> — refactor <strong>plan only</strong> (no execution)</h1>
+
+## Document outline
+
+1. [When this applies](#onlyref-when) — **`onlyref`** trigger and forbidden actions.
+
+2. [Plan folder lifecycle](#onlyref-folders) — **`new/`** → **`wip/`** → **`completed/`** (**implref** moves; see that rule step 3.5).
+
+3. [Plan shape checklist](#onlyref-shape) — mirror **implref** plan requirements.
+
+4. [Authoring procedure](#onlyref-steps) — how to produce / update the **`*.md`**.
+
+5. [What not to ship](#onlyref-forbid) — hard stops versus **`implref`**.
+
+6. [Self-check](#onlyref-self) — agent merge gate.
+
+---
+
+<h2 id="onlyref-when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+| Trigger | Meaning |
+|---------|---------|
+| User types **`onlyref`** (and usually names an issue domain, e.g. batch verify LM prompt redundancy) | Produce or revise a **numbered-phase refactor plan** **`.md`** only. |
+
+**Companion execution rule:** **`implref`** / **`resumimpl`** on the same plan files — **see** `.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`.
+
+**Canonical exemplar strand (this codebase):** refocus **`vt_p_v3_batch_verify`** / single-unit parity so repair prompts **lead with plain, precise deterministic-failure narration** (see **`checker_feedback_plain_for_verify_context`** and **`build_batch_verify_prompt`**) instead of drowning the LM in mirrored **`scaffold_contract`**, **`repair_hints`**, and duplicate checker blocks — without changing greedy injector semantics in the planning pass.
+
+Evidence helpers when the user cites them (update the plan front-matter references if needed):
+
+| Path |
+|------|
+| `cursor_gen/COMPARE_unit1_augment_vs_verify_round1.md` |
+| `cursor_gen/extracted_batch_augment_unit1_prompt.json` |
+| `cursor_gen/extracted_batch_verify_round1_prompt.json` |
+| `cursor_gen/llm_prompts_json/unit1_augment_vs_verify_round1_diff.json` |
+
+---
+
+<h2 id="onlyref-folders" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Plan folder lifecycle</h2>
+
+| Subfolder | When the plan belongs there |
+|-----------|------------------------------|
+| **`cursor_gen/refactor_plans/new/`** | **`onlyref`** authored or refreshed; **every** implementable phased item is **`[ ]`**. |
+| **`cursor_gen/refactor_plans/wip/`** | **`implref`** / **`resumimpl`** marked **≥1** implementable **`[X]`**, but not all implementable work is done. |
+| **`cursor_gen/refactor_plans/completed/`** | All implementable phased items are **`[X]`** (or waived per **implref** step 3.5). |
+
+**`onlyref` MUST:** create or update plans only at **`cursor_gen/refactor_plans/new/REFACTOR_<SHORT_TOPIC>.md`**. **Do not** **`git mv`** out of **`new/`** — relocation is **`implref`** only (follow **implref** step 3.5; do not duplicate the table there).
+
+---
+
+<h2 id="onlyref-shape" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Plan shape checklist (<code>[ ]</code> / <code>[X]</code>)</h2>
+
+The output **Markdown MUST** satisfy the same structural bar **implref** expects (see **`implref-resumimpl-refactor-plan-followthrough.mdc`** — document outline **section 2**):
+
+| Requirement | Detail |
+|-------------|--------|
+| **Phases numbered** | `1. Phase …`, `2. Phase …`; optional `[X]` on phase headings when fully done (**only apply `[X]` if the user later completed work outside `onlyref`—default new plans stay all `[ ]`**). |
+| **Checklists** | Every actionable deliverable prefixed **`[ ]`** (new plans) unless recording already-finished legacy work the user enumerated explicitly. |
+| **Quality bar subsection** | Tests + informative comments/documentation expectations spelled out (**implref step 2**). |
+| **MRKD authoring** | **`.cursor/rules/mrkd-markdown-authoring.mdc`** — numbered document outline near top (after optional HTML **`<h1>`** title); at most **`#`** / **`##`** / **`###`** Markdown depth alongside HTML tinted headings **if** previews matter. Avoid section-symbol glyphs in user-facing headings or body (**use "section", "phase", or "step 3.5-style" wording** instead). |
+| **Cross-links** | Link to **`implref`** for execution boundary; cite source modules (`paragraph_bracket_markup.py`, `conjugation_paragraph_batch_generator.py`, `conj_paragraph_prompt_config.py`, YAML paths). |
+
+**Location:** **[Plan folder lifecycle](#onlyref-folders)** — **`cursor_gen/refactor_plans/new/REFACTOR_*.md`** only.
+
+---
+
+<h2 id="onlyref-steps" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Authoring procedure</h2>
+
+1. **Infer or ask one narrow question:** If repo path ambiguous, confirm target filename or create **`cursor_gen/refactor_plans/new/REFACTOR_<SHORT_TOPIC>.md`** (MRKD outline + **onlyref** shape).
+
+2. **Read code touchpoints:** At minimum skim **`paragraph_bracket_markup.py`** (`checker_feedback_plain_for_verify_context`, injector codes) and **`conjugation_paragraph_batch_generator.py`** (`build_batch_verify_prompt`). If single-unit parity at risk, note **`conjugation_paragraph_generator.py`**.
+
+3. **Freeze evidence:** Embed a short table referencing **`cursor_gen/*COMPARE*`** / **`extracted_*`** dumps or **`logs/llm_traffic`** bundles when serlog-informed (grep gitignored **`logs/`** per **`.cursor/rules/serlog-search-gitignored-logs.mdc`** when needed).
+
+4. **Write phases** covering: deterministic prose thoroughness (**all error codes ↔ English** strategy), duplication audit (**context keys ranked by redundancy**), feature-flag rollout, parity tests (**batch + single-unit**), reconciliation with prior plans (e.g. **`REFACTOR_PLGW_BATCH_PROMPT_TRIM_*.md`** B.1).
+
+5. **Quality bar:** Explicit bullets for tests (unit + integration snapshots) and code comments—not vague "add tests someday."
+
+6. **Finish with:** **Deferred / follow-ups** table for risky or product-owned items (**OpenAI prompt caching**, pure UI diagnostics, etc.).
+
+---
+
+<h2 id="onlyref-forbid" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Hard stops — <code>onlyref</code> must not</h2>
+
+Unless the user explicitly issues a **separate** instruction (**`implref`**, permissive refactor message, bugfix request):
+
+| Forbidden | Reason |
+|-----------|--------|
+| Implement phases, refactor Python/TS/YAML **`main` behavior**, flip **`[ ]` → `[X]`** pretending work ran | Boundary of **`onlyref`** is **documentation / plan-only**. |
+| Run broad refactors touching production paths "because the plan says so later" | That is **`implref`** scope after plan approval. |
+| Append **war stories** claiming resolution | Allowed only alongside **completed** **`implref`** phases per **`.cursor/rules/exwar-war-stories-extraction.mdc`**. **`onlyref`** may **mention** candidate story themes **inside** the plan prose only. |
+
+**Allowed edits under `onlyref`:** refactor plan **`*.md`**, optional scratch notes under **`cursor_gen/refactor_notes/`** if user permits scratch artifacts—not application code.
+
+---
+
+<h2 id="onlyref-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Self-check (agent)</h2>
+
+- [ ] User invocation included **`onlyref`** (or synonymous explicit "plan-only, don't implement").
+- [ ] Produced plan matches **numbered phases + `[ ]` checklists + Quality bar** and MRKD outline.
+- [ ] Plan path is **`cursor_gen/refactor_plans/new/REFACTOR_*.md`** (not **`wip/`** / **`completed/`**).
+- [ ] Closing reply names **exact plan path** and says **implement with `implref`**, not silently coding.
+- [ ] No **`git commit`** pretending phases shipped; no **`git mv`** out of **`new/`** under **`onlyref`**.

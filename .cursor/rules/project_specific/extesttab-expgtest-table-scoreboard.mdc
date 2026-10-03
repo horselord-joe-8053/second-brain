@@ -1,0 +1,190 @@
+---
+description: >-
+  Keyword **extesttab** — run expgtest for named (or catalog-23) scopes N times,
+  assign sequential Ex-run ids, write iteration tables (with scope+word detail
+  when 1–4 scopes remain) into EXPGTEST_CATALOG_SCOREBOARD.md, pairwise compare,
+  optional baseline compare to a prior Ex-run.
+alwaysApply: false
+---
+
+<h1 id="extesttab-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>extesttab</code> — expgtest run + scoreboard tables</h1>
+
+**Type:** keyword campaign · **Not always-on** — mention **`extesttab`** or `@` this rule.  
+**Owns:** (1) one or more live `expgtest` campaigns, (2) append to [`docs/pglpl/EXPGTEST_CATALOG_SCOREBOARD.md`](../../../docs/pglpl/EXPGTEST_CATALOG_SCOREBOARD.md) with **Ex-run** sequence numbers, (3) per-run **iteration breakdown** tables (mrkd HTML) including **Remaining scopes + words** when 1–4 scopes remain at iter start, (4) **pairwise** compare of the N runs in one session, (5) optional **triple compare** vs a named prior Ex-run, (6) freshman-plain summary in chat.  
+**Does not own:** `pgbattest` / `pgtestcom`; git commit (`gitacp`).
+
+## Document outline
+
+1. [When this applies](#when) — trigger + parse.
+2. [Locks / defaults](#locks) — frozen ambiguities.
+3. [Procedure](#procedure) — run → parse → record → compare → reply.
+4. [Scoreboard write shape](#scoreboard) — Ex-run sections + markers.
+5. [Table columns](#tables) — iteration breakdown contract.
+6. [Chat reply shape](#reply) — mandatory summary.
+7. [Examples](#examples).
+8. [Related rules](#related).
+
+---
+
+<h2 id="when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+User message includes **`extesttab`** (whole token).
+
+**Parse (do this first):**
+
+| Piece | How it appears | Default if omitted |
+|-------|----------------|--------------------|
+| **`{scope_list}`** | Bare scope names after `extesttab`, `scopes: a,b`, comma-separated catalog ids | **All 23 non-conj scopes** (`--catalog-23`) |
+| **Run count** | `2 times`, `×3`, `3 runs` | **2** |
+| **`compare to {Ex-run #}`** | `compare to Ex-run 1`, `compare to 1`, `vs Ex-run 3` | **None** — skip baseline triple table |
+
+Warn on unknown scope names; intersect with catalog. Do **not** invent conjugation / PLGW scopes.
+
+---
+
+<h2 id="locks" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Locks / defaults</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Topic</th><th>Lock</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Ex-run numbering</td><td style="background:#e8f5e9">Sequential in <strong>EXPGTEST</strong> scoreboard only. Next id = max existing Ex-run + 1 (use <code>next_ex_run_number()</code> in <code>expgtest_tab_report.py</code>).</td></tr>
+<tr><td style="background:#e3f2fd">Campaign shape</td><td style="background:#e8f5e9"><strong>N separate</strong> <code>expgtest</code> CLI invocations (default N=2). Name logs <code>expgtest-&lt;label&gt;-r&lt;k&gt;-&lt;yymmdd&gt;.log</code> under <code>ops/run-logs/</code>.</td></tr>
+<tr><td style="background:#e3f2fd">Harness</td><td style="background:#e8f5e9"><code>uv run python ops/local/run_all.py expgtest</code> — full catalog <code>--catalog-23</code> or <code>--scopes …</code>. Respect user <code>--no-door-c</code> / isolate flags if asked.</td></tr>
+<tr><td style="background:#e3f2fd">Tables</td><td style="background:#e8f5e9">Build via <code>parse_expgtest_log</code>, <code>format_ex_run_section</code>, <code>format_pairwise_compare</code>, <code>format_triple_compare</code> in <code>-m pglpl_live.scoreboard.expgtest_tab_report</code> — do not hand-copy iteration numbers from chat.</td></tr>
+<tr><td style="background:#e3f2fd">Scope+word detail column</td><td style="background:#fff8e1">Populate <strong>only</strong> when <strong>scopes remained at start</strong> is <strong>1–4</strong> (inclusive). Otherwise em dash.</td></tr>
+<tr><td style="background:#e3f2fd">Git</td><td style="background:#ffebee">Update scoreboard in workspace; <strong>no</strong> commit unless <code>gitacp</code>.</td></tr>
+<tr><td style="background:#e3f2fd">Blocked runs</td><td style="background:#fff3e0">Still record Ex-run + iteration table (429 counts matter). Mark status <strong>blocked</strong>; exclude from catalog pass-rate headlines unless user asks.</td></tr>
+</tbody>
+</table>
+
+---
+
+<h2 id="procedure" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Procedure</h2>
+
+1. **Resolve** scope list, run count N, optional baseline Ex-run # (must exist in scoreboard registry).
+2. **Allocate** Ex-run ids: if next is 3 and N=2, use Ex-run 3 and Ex-run 4.
+3. **Run** N campaigns from repo root (time each):
+
+```bash
+# full catalog (default)
+time uv run python ops/local/run_all.py expgtest --catalog-23 2>&1 | tee ops/run-logs/expgtest-<label>-r1-$(date +%y%m%d).log
+
+# subset
+time uv run python ops/local/run_all.py expgtest --scopes places:cities,numbers:cardinals 2>&1 | tee ops/run-logs/expgtest-<label>-r1-$(date +%y%m%d).log
+```
+
+Repeat for r2 … rN with distinct log paths. Capture summary JSON path <code>ops/run-logs/expgtest-&lt;stamp&gt;-summary.json</code> when present.
+
+4. **Parse each log:**
+
+```bash
+PYTHONPATH=apps/api:ops/local uv run python -c "
+from pathlib import Path
+from pglpl_live.scoreboard.expgtest_tab_report import parse_expgtest_log, format_ex_run_section
+run = parse_expgtest_log(Path('ops/run-logs/<log>.log'))
+print(format_ex_run_section(run, <ex_run>, scopes_label='<label>'))
+"
+```
+
+5. **Write scoreboard** — insert **before** marker `<!-- extesttab:append -->`:
+   - One `<h3 id="ex-run-N">` section per run (summary + iteration table).
+   - One **Pairwise — Ex-run A vs Ex-run B** section for the N runs just executed (if N≥2, compare all pairs or at minimum first vs last when N=2).
+   - If baseline requested: **Compare vs Ex-run {baseline}** using `format_triple_compare(baseline_run, new_a, new_b, …)` — load baseline by re-parsing its log from registry row or scoreboard header.
+   - Append timeline rows **before** `<!-- extesttab:timeline -->`.
+   - Update **Ex-run registry** table (§2) with new rows.
+
+6. **Reply** ([Chat reply shape](#reply)) with link to new sections.
+
+---
+
+<h2 id="scoreboard" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Scoreboard write shape</h2>
+
+**File:** `docs/pglpl/EXPGTEST_CATALOG_SCOREBOARD.md`
+
+Each new Ex-run section includes:
+
+- Anchor `id="ex-run-N"`
+- Run stamp, summary stamp, log path, wall duration
+- **Run summary** table (Ex-run, stamp, wall, status, scopes cleared, iters used, log filename)
+- **Iteration breakdown** table (see [Table columns](#tables))
+- Optional note (branch, harness flags, blocked reason)
+
+Compare sections:
+
+- `id="compare-N-M"` — pairwise between two Ex-runs from this session
+- `id="compare-baseline-N-M-B"` — triple table: baseline Ex-run B vs new Ex-runs N and M
+
+Use mrkd palette (#1565c0 headers, #e3f2fd aspect column, green/amber/red body rows).
+
+---
+
+<h2 id="tables" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Table columns</h2>
+
+**Iteration breakdown (per Ex-run):**
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Column</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Phase</td><td style="background:#e8f5e9">Top <code>Phase: Init</code> row (baseline counts before Iter 1), then Iter 1 … Iter K + Total</td></tr>
+<tr><td style="background:#e3f2fd">Wall</td><td style="background:#e8f5e9">Door B Wall + Door C Wall; Total uses harness <code>elapsed_s</code> (Init row uses em dash)</td></tr>
+<tr><td style="background:#e3f2fd">Door B Wall / Door C Wall / Door B Max Sub Iter</td><td style="background:#e8f5e9"><code>[expgtest] phase=door_b|door_c</code> log lines + iter JSON + chunk attempts max</td></tr>
+<tr><td style="background:#e3f2fd">Scopes remained at end</td><td style="background:#e8f5e9">Count of scopes with <code>remain&gt;0</code> at end of iter (Init row = starting scopes count)</td></tr>
+<tr><td style="background:#e3f2fd">Words remained at end</td><td style="background:#e8f5e9">Sum of per-scope remain counts at end of iter (Init row = total pool words count)</td></tr>
+<tr><td style="background:#e3f2fd">Paragraphs remained at end</td><td style="background:#fff8e1">Planned paragraph count at end of iter (Init row = initial planned paragraphs)</td></tr>
+<tr><td style="background:#e3f2fd">Remaining scopes + words (1–4 scopes only)</td><td style="background:#fff8e1"><code>min-width:38%</code>; <code>scope</code> (n): labels [id=…]; <strong>—</strong> when scopes ≥5 or 0</td></tr>
+<tr><td style="background:#e3f2fd">Door Jud A / B (model)</td><td style="background:#fff8e1">ISSUE text from Door C artifact on last iter, or <code>[Failed-Before-Reach]</code> if Door C was skipped/not reached (e.g. Door B produced 0 valid rows)</td></tr>
+<tr><td style="background:#e3f2fd">LLM calls</td><td style="background:#e8f5e9"><code>[LLM-REQUEST]</code> or attempts×2 fallback</td></tr>
+<tr><td style="background:#e3f2fd">Alt verify (model / calls)</td><td style="background:#fff8e1"><code>[VERIFY-ALT-MODEL]</code> per **outer TL-Itr** chunk when <code>tl_itr &gt; threshold</code> (not inner sub-attempt); e.g. <code>gpt-4.1 / 12</code> or <code>— / 0</code></td></tr>
+<tr><td style="background:#e3f2fd">Other Errors</td><td style="background:#fff3e0">Grouped count &amp; breakdown of abnormal errors (HTTP 429, Network 5xx/timeouts, Python Code exceptions); <code>0</code> when clean</td></tr>
+</tbody>
+</table>
+
+**Pairwise / triple compare (important attributes only):** run stamp, wall, status, scopes cleared, outer iters, cardinals remain (end).
+
+---
+
+<h2 id="reply" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Chat reply shape</h2>
+
+Mandatory **freshman-plain** summary:
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>What happened</th><th>One-line result</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Ex-run ids assigned</td><td style="background:#e8f5e9">e.g. Ex-run 3 + Ex-run 4</td></tr>
+<tr><td style="background:#e3f2fd">Scopes</td><td style="background:#e8f5e9">full-23 or named subset</td></tr>
+<tr><td style="background:#e3f2fd">Pass / blocked</td><td style="background:#e8f5e9">e.g. 23/23 cleared vs blocked on 429</td></tr>
+<tr><td style="background:#e3f2fd">Wall</td><td style="background:#fff8e1">seconds + ~minutes per run</td></tr>
+<tr><td style="background:#e3f2fd">Scoreboard</td><td style="background:#fff8e1">Link to <code>docs/pglpl/EXPGTEST_CATALOG_SCOREBOARD.md#ex-run-N</code></td></tr>
+</tbody>
+</table>
+
+One sentence on pairwise (and baseline, if any). Do **not** dump full HTML tables in chat — point to scoreboard.
+
+---
+
+<h2 id="examples" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Examples</h2>
+
+```text
+extesttab, 2 times
+→ catalog-23 ×2; Ex-run 3 + 4; pairwise table; scoreboard updated.
+
+extesttab numbers:cardinals, contractions:blending, 2 times
+→ two scoped runs; iteration tables show scope+word detail when ≤4 scopes remain.
+
+extesttab, 2 times, compare to Ex-run 1
+→ catalog-23 ×2 as Ex-run 3 + 4; pairwise 3 vs 4; triple compare vs Ex-run 1 baseline.
+```
+
+---
+
+<h2 id="related" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Related rules</h2>
+
+- [`pgtestcom-pgbattest-compare-and-scoreboard.mdc`](pgtestcom-pgbattest-compare-and-scoreboard.mdc) — `pgbattest` + PGBATTEST scoreboard
+- [`pgbattest-pglpl-paragraph-batch-test.mdc`](pgbattest-pglpl-paragraph-batch-test.mdc) — Door A/B/C harness
+- [`opslog-ops-run-logs-directory.mdc`](../../opslog-ops-run-logs-directory.mdc) — log paths

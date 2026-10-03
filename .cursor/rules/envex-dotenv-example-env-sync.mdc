@@ -1,0 +1,44 @@
+---
+description: >-
+  Filename **envex-dotenv-example-env-sync.mdc**. When adding or editing root **`.env.example`**
+  and **`.env`**: per-variable comments directly above each assignment; group related vars under
+  **`# *****************************************************`** section blocks; keep both files aligned (keys, order, comments).
+  Keyword: **envex** — @ this rule or say **envex** when touching env templates.
+globs:
+  - ".env"
+  - ".env.example"
+alwaysApply: false
+---
+
+# Root `.env.example` + `.env` — layout and synchronization
+
+**Purpose:** Keep the **documented template** (`.env.example`) and the **local overlay** (`.env`, gitignored) structurally identical so operators and the agent never drift.
+
+## When editing
+
+1. **Dual update** — Any **add**, **remove**, **rename**, or **comment change** for a variable that belongs in both files MUST be applied to **`.env.example` and `.env` in the same change** (same session / same diff). Only **values** may differ (e.g. secrets, local ports); **keys, order, section placement, and comments** stay in lockstep.
+2. **Per-variable comments** — Immediately **above** each `NAME=value` line, put one or more **`# ...`** lines explaining that variable. Do not put the primary explanation for `NAME` **below** its line or stranded far above a different key.
+3. **Section groups** — Vars that share one purpose sit under a **three-line banner** (matches this repo’s style):
+
+```dotenv
+# *****************************************************
+# Short section title (same idea in both files)
+# *****************************************************
+# What this specific variable does; unset/defaults if relevant.
+SOME_FLAG=
+
+# Second variable in the same functional group.
+OTHER_FLAG=1
+```
+
+4. **File header** — Preserve the existing top-of-file **`# =============================================================================`** block in **`.env.example`**; mirror the same header in **`.env`** when it already exists—only extend it if you add repo-wide loader notes that apply to both.
+5. **Out of scope** — **`.env.bk`**, **`.env.example.bk`**, and other backups are not part of this sync contract unless the user asks to update them.
+
+## Agent checklist
+
+- [ ] New var: comment block → line → repeat in **both** files in the same section.
+- [ ] Removed var: removed from **both** files.
+- [ ] Renamed var: old name removed, new name + comment in **both** files.
+- [ ] Section moves: same relative order in **both** files.
+
+**Portable:** Copy this rule into another repo that uses the same dotenv pair pattern; adjust the banner example if that repo uses a different group delimiter.

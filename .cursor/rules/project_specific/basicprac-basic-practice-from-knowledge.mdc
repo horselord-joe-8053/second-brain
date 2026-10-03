@@ -1,0 +1,92 @@
+---
+description: >-
+alwaysApply: false
+---
+<h1 id="basicprac-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">basicprac — Basic practice from Basic knowledge</h1>
+
+## Document outline
+
+1. [Trigger phrase](#trigger) — how the user asks for a new grid.
+2. [Shared chrome (required)](#chrome) — modules every Basic practice must use.
+3. [Column contract](#columns) — `user_input_cols` vs `other_shown_cols`.
+4. [Behavior contract](#behavior) — Submit / Clear All / not yet done / dirty.
+5. [Do not](#do-not) — anti-patterns from the thin Places/Numbers v1 grids.
+6. [Checklist](#checklist) — before marking done.
+
+---
+
+<h2 id="trigger" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Trigger phrase</h2>
+
+When the user says something like:
+
+> Following the **basicprac** rule, user will fill/select the `<user_input_cols>`, and copy over the `<other_shown_cols>` from the corresponding grid under the Basic knowledge chip.
+
+…implement a **Basic practice** page/grid for that knowledge area using this recipe. Do **not** invent a one-off MUI table with a Result column and a Check button.
+
+---
+
+<h2 id="chrome" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Shared chrome (required)</h2>
+
+Reuse these modules under `apps/web/src/components/practice/` and helpers:
+
+| Piece | Module | Role |
+|-------|--------|------|
+| Table chrome | `PracticeGroupedTable` | Centrally applies `learn-grouped-table` + blue `learn-table-head-*`; do not rebuild a raw MUI `<Table>` header per page |
+| Article picker | `PracticeArticleToggle` | o \| a \| optional — |
+| Inline feedback | `PracticeInlineGrade` | ✓ / ✗ expected / not yet done |
+| Round banner | `PracticeRoundSummary` + `summarizePracticeRound` | N / M · K not yet done |
+| Footer | `PracticeGridActions` | Submit + Clear All + Back to basic knowledge |
+| Dirty state | `useBasicPracticeWorkbench` (+ `basicPracticeSession`) | Workbench checkpoint for drafts/grades; same dirty-submit API as `usePracticeDirtyAnswers` (memory-only helper for tests) |
+| Dense CSS | class `basic-practice-grid` on the page/grid root | Toggle/input density |
+| **Row colors** | Same `groupKey` / `groupOrder` as Basic knowledge via `annotateGroupedRows`; render with `practiceGroupedRowClass(row, idx)` | The annotator emits **`groupClass`** (not `rowClassName`); never zebra by row index |
+
+Reference exemplars: `ArticleWordPracticeGrid`, `NounSpellPracticeGrid`, `PlacesPracticePage`, `NumbersPracticePage`.
+Places grouping: `apps/web/src/lib/placesGrouping.ts` (shared by knowledge + practice).
+
+---
+
+<h2 id="columns" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Column contract</h2>
+
+1. Open the matching **Basic knowledge** grid for the same chip/tab.
+2. **`user_input_cols`** — columns the learner fills or selects (Article toggle, Form text, Masculine/Feminine, …). Put these **left**; attach `PracticeInlineGrade` beside each control.
+3. **`other_shown_cols`** — cue columns copied from knowledge (Word, Place, Rank, Number, Practice note, …). Show as read-only; accent the primary cue with `learn-table-cell--accent`.
+4. Drop knowledge-only columns (Note, Grouping Note, Example, Translation, …) unless the user explicitly names them in `other_shown_cols`.
+5. Keep the **same row set and order** as Basic knowledge (reuse knowledge builders / sort helpers when they exist).
+6. **Row tinting:** reuse the knowledge grid’s Grouping Note `groupKey` + `groupOrder` so practice bands match knowledge colors (see Places `placesGrouping`).
+7. **Header tinting:** render through `PracticeGroupedTable`. Tests must assert `learn-grouped-table` on the table and `learn-table-head-cell` on every column header; visual similarity by default MUI theme is not sufficient.
+
+---
+
+<h2 id="behavior" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Behavior contract</h2>
+
+- Blank cells stay **not yet done** after Submit (do not mark incorrect).
+- **Submit** (not “Check”); disable when nothing dirty/new to grade.
+- **Clear All** resets answers + grades (and saves empty Workbench checkpoint); do **not** call `resetAll()` inside row `load()` — that wiped restored grades.
+- Drafts + ✓/✗ persist via Workbench keys `basic_<area>_<scope>` (separate from paragraph / `conj_matrix`). Profile stats still bump only on Submit → `record_attempt`.
+- **Back to basic knowledge** links to the matching knowledge path.
+- Multi-field rows: one dirty id per fillable cell (`id::masc`, `id::fem`, …); pass `field` on API submit.
+- **Always** register a `ContentSpec` in `apps/api/app/services/practice_content_registry.py` and submit via `submitGenderPractice` (or the area’s submit helper) so the API hits centralized **`record_attempt`** (non-conj lemma stats: durable `content_key` + `display_label`, `practice_kind=basic`). Local-only UI grading is not enough for new areas.
+- Send the backend's **canonical mode** from the client (a key already present in `MODE_CONTENT_TYPE`, e.g. `adjective_pairs`). A route/chip alias may also be registered in `CHIP_MODE_MAP`, but must not be the client's only working mode: a still-running pre-alias API process otherwise returns `400 Unknown practice mode`.
+
+---
+
+<h2 id="do-not" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Do not</h2>
+
+- Do **not** add a dedicated **Result** column.
+- Do **not** use conjugation `GradedPracticeFeedback` / `conj-practice-*` for these full-grid Basics.
+- Do **not** ship a second copy of the ✓/✗ / summary / action-row JSX — extend the shared modules instead (`frdry`).
+- Do **not** color practice rows with alternating zebra (`fallbackGroupClass(undefined, idx)`); tint by Grouping Note band.
+- Do **not** hand-code `learn-grouped-table` / header class combinations or read an invented `rowClassName`; use `PracticeGroupedTable` + `practiceGroupedRowClass`.
+- Do **not** grade only in the browser — Submit must reach the area’s practice API so **`record_attempt`** updates Profile stats (same identity contract **paraprac** uses for paragraph, with `practice_kind=basic` here).
+
+---
+
+<h2 id="checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Checklist</h2>
+
+- [ ] Suite config: Basic practice unheld + `pathPrefixes` if needed.
+- [ ] Routes under `/practice/...` mirroring `/knowledge/...`.
+- [ ] Shared chrome modules used; page root has `basic-practice-grid`.
+- [ ] `PracticeGroupedTable` used; header-class and at least two Grouping Note band-class assertions pass.
+- [ ] Content registry + API submit wired through **`record_attempt`**; client sends canonical `MODE_CONTENT_TYPE` mode and any route/chip alias is separately tested.
+- [ ] Vitest (or Playwright mocked) for path parse, columns, shared header/band classes, Submit label, and exact submit mode/payload.
+- [ ] File header + short comments on non-obvious grading.

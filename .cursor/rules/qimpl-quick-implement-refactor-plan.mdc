@@ -1,0 +1,141 @@
+---
+description: >-
+  Keyword **qimpl** [optional task or plan path]: end-to-end refactor orchestration — ambiguity gate (multiple-choice
+  if needed) → **onlyref** plan(s) → **aciub** all phases without pausing → layman closing table. Classic chain 1.
+  TDD variant: **qimpltdd** (`.cursor/rules/tdd/qimpltdd-quick-implement-refactor-plan.mdc`).
+alwaysApply: false
+---
+
+<h1 id="qimpl-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>qimpl</code> — quick implement (plan → execute → summarize)</h1>
+
+Use when the user includes **`qimpl`**. Runs **one continuous engagement**: clarify blockers → author/update plan(s) → **`aciub`** every phase → closing layman table.
+
+**Do not mix chains:** use **`qimpltdd`** for TDD chain 2 (see [execution chain](#qimpl-chain)).
+
+---
+
+<h2 id="qimpl-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Trigger](#qimpl-trigger) — keyword and scope.
+2. [Step 1 — Ambiguity gate](#qimpl-step1) — multiple-choice or proceed.
+3. [Step 2 — Plan authoring](#qimpl-step2) — **onlyref** delegate.
+4. [Step 3 — Implement all phases](#qimpl-step3) — **aciub** delegate.
+5. [Step 4 — Closing summary](#qimpl-step4) — layman table.
+6. [Execution chain (classic)](#qimpl-chain) — explicit rule paths.
+7. [Stop conditions](#qimpl-stop) — when pausing is allowed.
+8. [Self-check](#qimpl-self) — agent merge gate.
+
+---
+
+<h2 id="qimpl-trigger" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Trigger</h2>
+
+| User says | Agent does |
+|-----------|------------|
+| **`qimpl`** + task description (no plan yet) | Steps 1 → 2 (new plan) → 3 → 4. |
+| **`qimpl`** + existing plan **`.md` path** | Step 1 → 2 (refresh plan if gaps) → 3 on that path → 4. |
+| **`qimpl`** + plan in **`wip/`** with partial `[X]` | Step 1 (if new ambiguity) → 3 resume → 4. |
+
+If scope spans multiple independent refactors, split into **one plan per coherent strand** under **`cursor_gen/refactor_plans/new/`** (or update existing plans) — still **`aciub`** each plan to completion before stopping.
+
+---
+
+<h2 id="qimpl-step1" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Step 1 — Ambiguity gate</h2>
+
+Before plan or code work:
+
+1. Scan the user request + relevant repo context for **product / schema / scope** decisions only **the user** can make.
+2. **If true blockers remain:** stop and ask via **concise multiple-choice questions** (use **AskQuestion** when available — small groups, precise options, include a sensible default/recommended option). **Do not** start steps 2–3 until answered.
+3. **If none remain:** state **“No blocking ambiguities”** in one line and **proceed immediately** to step 2 — no permission ask.
+
+**Not ambiguities (decide and continue):** preferred defaults already in thread, plan, or docs; DRY/test placement; file paths inferable from codebase; heuristic TDD vs smoke-after-delete when using **`qimpltdd`**.
+
+---
+
+<h2 id="qimpl-step2" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Step 2 — Plan authoring</h2>
+
+**Read and execute** full **onlyref** procedure from:
+
+**`.cursor/rules/onlyref-refactor-plan-author-only.mdc`**
+
+**Additional requirements for `qimpl` plans:**
+
+| Area | Requirement |
+|------|-------------|
+| **Context** | Read applicable existing refactor plans, READMEs, and domain docs; cross-link sources; avoid duplicating completed work. |
+| **Phases** | Sensible numbered stages; each phase ends with **verifiable** deliverables. |
+| **Quality bar** | Per phase: code changes, **tests**, **comments** (file headers where touched), **doc updates**; keep **DRY** (extract shared helpers/components before a third copy). |
+| **Tests per stage** | Name **concrete** test files/commands at phase end: unit, integration, Vitest, Playwright **mocked `test:e2e`**, and **real/mock LLM e2e** when behavior crosses LM or live tiers (see **`.cursor/rules/project_specific/eellm-e2e-real-llm-runner.mdc`** when applicable). |
+| **Location** | New plans: **`cursor_gen/refactor_plans/new/REFACTOR_*.md`** only (**onlyref** folder rule). |
+
+When step 2 finishes, **do not** ask to proceed — start step 3 in the **same session**.
+
+---
+
+<h2 id="qimpl-step3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Step 3 — Implement all phases</h2>
+
+**Read and execute** full **aciub** procedure from:
+
+**`.cursor/rules/aciub-allow-continue-iterations-until-blocked.mdc`**
+
+against **every** plan produced or updated in step 2 (named path(s)).
+
+| Rule | Behavior |
+|------|----------|
+| **Continuous** | Run **`aciub <plan.md>`** through **all** phases and open sidetracks — **no** mid-plan permission prompts. |
+| **Delegate** | **aciub** pulls in **implref** / **resumimpl** per classic chain ([§6](#qimpl-chain)). |
+| **Tests** | Honor each phase’s Quality bar; fix failures before marking `[X]`. |
+| **Exwar** | Mandatory per **aciub** after each phase — not optional under **`qimpl`**. |
+
+Only stop step 3 for **true blockers** ([§7](#qimpl-stop)) — not because work is large or multi-phase.
+
+---
+
+<h2 id="qimpl-step4" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Step 4 — Closing summary</h2>
+
+When step 3 completes or hits a stop condition, reply with a **SUPER concise layman HTML table** (MRKD 6.1: dark blue header, short cells):
+
+| Row (suggested) | Content |
+|-----------------|---------|
+| **What we did** | One-line plain-language outcome |
+| **Plans** | Final path(s) (`new/` / `wip/` / `completed/`) |
+| **Tests** | What ran green (brief) |
+| **War stories** | New **#N** or explicit skip per **aciub** |
+| **Blockers** | None, or minimal user action needed |
+
+No jargon walls; tables over long prose.
+
+---
+
+<h2 id="qimpl-chain" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Execution chain (classic — chain 1)</h2>
+
+When **`qimpl`** is active, resolve delegated rules to these **exact paths**:
+
+| Step | Keyword | Rule file |
+|------|---------|-----------|
+| Plan | **`onlyref`** | `.cursor/rules/onlyref-refactor-plan-author-only.mdc` |
+| Implement loop | **`aciub`** | `.cursor/rules/aciub-allow-continue-iterations-until-blocked.mdc` |
+| Impl spine | **`implref`** / **`resumimpl`** | `.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc` |
+
+**TDD chain 2:** user must invoke **`qimpltdd`** instead — see `.cursor/rules/tdd/qimpltdd-quick-implement-refactor-plan.mdc`.
+
+---
+
+<h2 id="qimpl-stop" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Stop conditions</h2>
+
+Pause and engage the user only when:
+
+- **Step 1** true ambiguity needs answers (multiple-choice sent).
+- **aciub** / **implref** true blocker (build/tests unfixable, missing secrets, explicit scope cut, session cut per **implref** §3.1e).
+- All plan scope **and** sidetracks are **`[X]`** — then step 4 and stop.
+
+Resume: **`qimpl <same-plan-path>`** or **`aciub`** / **`resumimpl`** on the plan — classic chain only.
+
+---
+
+<h2 id="qimpl-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Self-check (agent)</h2>
+
+- [ ] User invoked **`qimpl`** (not **`qimpltdd`**).
+- [ ] Step 1: MC questions **or** “No blocking ambiguities” + proceeded.
+- [ ] Step 2: **onlyref** plan(s) with phased tests, DRY, docs bar.
+- [ ] Step 3: **aciub** ran all phases without handoff spam.
+- [ ] Step 4: layman closing table delivered.

@@ -1,0 +1,345 @@
+---
+description: >-
+alwaysApply: false
+---
+<h1 id="paraprac-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">paraprac — Paragraph practice from Basic practice</h1>
+
+## Document outline
+
+1. [Trigger phrase](#trigger) — how the user asks for a new area.
+2. [Product contract](#product) — blanks mirror Basic; shared chrome; stats identity.
+  2.6 [Sense-anchor (opt-in 3rd LLM call)](#sense-anchor) — why / when / agent disclosure / runtime logs.
+  2.6b [Host-leading inject (opt-in local search)](#host-leading) — Places article before host.
+  2.7 [Meaning brackets (cue map)](#meaning-brackets) — bracket text from Basic practice `other_shown_cols`.
+3. [Prerequisites](#prereq) — Basic practice must already exist.
+4. [Shared chrome (required)](#chrome) — learner + admin modules.
+5. [Area registry contract](#registry) — scope, blank fields, content identity.
+6. [Backend checklist](#backend) — pool, PGLPL adapter, persist, grade, admin API.
+7. [Frontend checklist](#frontend) — learner page, admin page, suite/nav/routes.
+8. [Do not](#do-not) — anti-patterns.
+9. [Dogfood / verify](#verify) — tests before marking done.
+10. [Worked examples](#examples) — adjectives · This/that · Blending · Comparing things.
+
+---
+
+<h2 id="trigger" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Trigger phrase</h2>
+
+When the user says something like:
+
+> **create paragraph practice for** `Describing words` / `adjectives` / `This/that` / `determiners`
+
+…or mentions **`paraprac`** with a knowledge-area name that already has Basic knowledge + Basic practice — implement **all** of:
+
+1. Learner Paragraph practice UI under `/practice/<area>/paragraph` (noun-phrase uses `/practice/noun-agreement/paragraph`).
+2. Paragraph admin support in the **single admin owned by the top-level glossary** (Verb / Noun / Other Word): add a **Generate scope**, never one midlevel admin chip per knowledge area.
+3. Backend pool + generate + list/delete + grade wired to the same `content_type` / `content_id` (+ optional `field`) as that area’s Basic practice, with `practice_kind=paragraph`.
+
+Do **not** invent a one-off cloze UI or a local-only grader that never hits `record_attempt`.
+
+**Resolve the area** from the label or suite id (`adjectives`, `determiners`, `contractions`, …) via `knowledgeRoute` / suite configs. If Basic practice is missing, stop and say so (point at **basicprac**).
+
+---
+
+<h2 id="product" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Product contract</h2>
+
+| Rule | Meaning |
+|------|---------|
+| **2.1 Mirror Basic inputs** | Whatever Basic practice asks the learner to **fill** (textbox) or **select** (toggle/dropdown) is what each paragraph blank asks for — same control family (`PracticeBlankInput` text vs `selectOptions`). For Places article toggles: keep tokens lowercase (`o | a | —`) and only offer plural (`os/as`) on rows where Basic allows plural. |
+| **2.2 Shared chrome** | Learner blanks render through `ParagraphBlankExerciseItem` (+ filter bar patterns from noun/conj). Admin uses the same control strip + DataGrid conventions as `GenderNounParagraphAdminPage` / conj paragraph admin (Generate scope, N, Varieties, Dry run, Generate, Delete, LPL telemetry columns). |
+| **2.3 Stats identity** | Grade via `record_attempt` with the area’s **canonical** `MODE_CONTENT_TYPE` mode, the same `content_type` + `content_id` as Basic, optional `field` for multi-slot Basics (`fem` / `masc` / `fem_pl` / `masc_pl` / `form`), and **`practice_kind=paragraph`**. Profile can merge or split by kind. |
+| **2.4 Generation** | Non-conjugation: **Alt A** via shared `run_natural_paragraph_units` — natural [target_lang] → LLM language verify → local whole-token presence → deterministic inject ([`REFACTOR_GLOSSARY_PARAGRAPH_NATURAL_THEN_INJECT.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_GLOSSARY_PARAGRAPH_NATURAL_THEN_INJECT.md)). Default is **2 LLM calls**. Multi-sense homographs may **opt in** to a 3rd sense-anchor call — see [§2.6](#sense-anchor). Shared spine for Noun gender + Other Word admins. Do not ship marker-first glossary produce. |
+| **2.5 Admin ownership** | Exactly one paragraph-admin chip/page per top-level glossary. Under Other Word Glossary, adjectives / determiners / contractions become Generate scopes on `/admin/other-words/paragraph`. |
+
+Conjugation remains the intensity/PLGW specialty; glossary areas follow the **noun gender** paragraph shape (scope + lemma/item checklist + Varieties), not the verb×tense batch picker — unless the area is conjugations.
+
+<h3 id="sense-anchor" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.6 Sense-anchor (opt-in 3rd LLM call)</h3>
+
+#### Why it exists
+
+Default Alt A punches blanks **left-to-right by surface string**. That works when each blank’s spelling is unique in the paragraph. It **fails** when several blanks share the **same spelling** but different **meanings** (homographs): LTR inject can attach the wrong occurrence to the wrong sense. Sense-anchor adds a separate LLM step that tags each listed meaning (`token⦃slot⦄`) before local inject — so blanks bind by **sense**, not by first match.
+
+#### When to use it (agent guideline)
+
+| Prefer | Guideline |
+|--------|-----------|
+| **Default OFF** (2-call Alt A) | Ordinary form / agreement drills — unique surfaces or “same lemma, one sense per exercise” (adjectives, demonstratives, blending contractions, noun leading/spell/plural, …). |
+| **ON** | Same **surface** appears as **more than one pedagogical meaning** in one paragraph (or across blanks that must not be confused), so word-order inject would mis-bind. Canonical example: Para v.s. Por (`para` / `por` senses). |
+
+Keep the guideline **coarse**: if you are unsure, **stay OFF** and say so. Do **not** turn sense-anchor on “just in case” or for cost/quality experiments without a multi-sense bind problem.
+
+#### User prompt vs agent default
+
+1. If the user **explicitly** asks for sense-anchor on or off → **follow that** (do not second-guess).
+2. If the user is **silent** → apply the guideline above (**prefer OFF** unless the area clearly looks multi-sense / same-surface-different-meaning).
+
+#### Agent must disclose (new area create / wire only)
+
+When **creating or wiring** a new paragraph area (not when merely regenerating pool rows for an already-wired area), the agent must state the choice **twice** in chat:
+
+1. **At the start** (before implementing / generating): planned mode.
+2. **At done** (closeout): what actually shipped.
+
+Use a short, greppable line each time, for example:
+
+```text
+Sense-anchor: OFF (default 2-call Alt A) — <one-line why>
+```
+
+or
+
+```text
+Sense-anchor: ON (3rd LLM meaning-tag step) — <one-line why>
+```
+
+#### Runtime logging (every generated paragraph)
+
+Generation code must emit a **lay-term**, **distinctly colored** log line for **each** Alt A paragraph unit stating whether it was built **with** or **without** sense-anchor (see `tag_paragraph_sense_anchor_mode` in `app/llm_traffic/logging_llm.py`, called from `natural_paragraph_loop`). Do not rely on silent adapter flags alone.
+
+#### How to enable (implementation)
+
+1. Thin prompt adapter (pattern: `PorParaNaturalPromptAdapter`) with **`needs_sense_anchors = True`**, plus `build_sense_anchor_prompt` / `parse_sense_anchor_output`.
+2. Select that adapter on the area’s generate path (glossary: `generate_glossary_form_paragraph` by scope).
+3. Pass `sense_anchor_max_retries` into `run_natural_paragraph_units` (safe always — **ignored** unless opted in). Budget: YAML `glossary_paragraph.sense_anchor_max_retries` or env `GLOSSARY_PARAGRAPH_SENSE_ANCHOR_MAX_RETRIES`.
+
+**Behavior when ON:** produce → language-verify → sense-anchor → local inject; tag failures retry **only** the sense-anchor call ([`REFACTOR_SENSE_ANCHOR_RETRY_ISOLATED.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_SENSE_ANCHOR_RETRY_ISOLATED.md)). Plans: [`REFACTOR_ALT_A_OPTIONAL_SENSE_ANCHOR.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_ALT_A_OPTIONAL_SENSE_ANCHOR.md).
+
+**Reference:** Para v.s. Por — [§10.5](#examples).
+
+<h3 id="host-leading" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.6b Host-leading inject (opt-in local search)</h3>
+
+#### Why it exists
+
+Default Alt A LTR-punches the **graded surface**. That fails when the graded token is a **common article** (`o` / `a`) but the pedagogical host is a **place name**: punching random `a` tokens leaves place names out of the prose (or brackets that do not match the sentence).
+
+#### When to use it
+
+| Prefer | Guideline |
+|--------|-----------|
+| **ON** | Places article scopes (Continents / Countries / States / Cities / Home & shops): blank = article, host = place. |
+| **OFF** | Unique form surfaces (This/that, adjectives, gentílicos, numbers) — surface inject is enough. |
+| **Not this** | Multi-sense homographs → use [sense-anchor](#sense-anchor) instead (extra LLM call). |
+
+Host-leading stays **2 LLM calls** plus local gates (unfused prep+article ban → produce
+repair; inject blanks bare article **or** fused contraction before host). Flag:
+`adapter.needs_host_leading_inject`. Mutually exclusive with sense-anchor.
+Plans: [`REFACTOR_PLACE_ARTICLE_HOST_LEADING_INJECT.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_PLACE_ARTICLE_HOST_LEADING_INJECT.md) ·
+[`REFACTOR_PLACE_HOST_LEADING_CONTRACTIONS.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_PLACE_HOST_LEADING_CONTRACTIONS.md).
+
+#### Agent disclosure (new area)
+
+```text
+Host-leading: ON — Places article blanks punch article before place host
+```
+
+or
+
+```text
+Host-leading: OFF — graded surface is unique enough for LTR inject
+```
+
+#### Runtime logging
+
+Cyan `[PARAGRAPH-HOST-LEADING] WITH|WITHOUT …` via `tag_paragraph_host_leading_mode`.
+
+<h3 id="meaning-brackets" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.7 Meaning brackets (per-area cue map)</h3>
+
+Learner paragraph blanks show a trailing **`[…]`** cue (`ParagraphBlankExerciseItem` `meaningBracket`). That string is **not** free-form knowledge prose — it must come from the area’s **Basic practice** column contract ([**basicprac**](basicprac-basic-practice-from-knowledge.mdc) §3):
+
+| Term | Role for brackets |
+|------|-------------------|
+| **`user_input_cols`** | What the learner **fills** in Basic (and in each paragraph blank). **Never** use these as the bracket cue. |
+| **`other_shown_cols`** | Read-only cue columns on Basic practice (Number, Word, Rank, Meaning of Fused, …). Bracket text is chosen **only** from this set. |
+
+**Regulation (all non-conjugation paragraph areas):**
+
+1. **Pool / blank JSON** must set the UI bracket field (`meaning_en` and/or `cue` — whatever the learner mapper reads into `meaningBracket`) from a **per-area cue map** keyed by scope (or `blank_kind` when one scope has multiple blank kinds).
+2. **Eligible sources** = values of columns that appear on that area’s **Basic practice** screen as `other_shown_cols` — **not** Basic-knowledge-only columns (Note, Grouping Note, Example, …) unless Basic practice explicitly shows them.
+3. **Cardinality:**
+   - **Exactly one** eligible `other_shown_col` → that column’s value **is** the bracket (auto).
+   - **More than one** → human or agent picks the **most suitable** primary cue for that drill and records it in the cue map (and in the area’s worked example in [§10](#examples)). Prefer: identity cue (Number / Word / Rank / Place) when the blank is a form/article fill; prefer **Meaning / sense** when Basic shows it and the blank is multi-sense (e.g. Para v.s. Por) or sense-anchor is ON.
+4. **Implement** the choice in code (registry / pool builder / blank assembler) — do not leave “whatever gloss the pool had” as the default.
+
+**Examples:** Cardinals Basic = Form (input) + Number (shown) → brackets = **Number** (e.g. `1.000`), not knowledge Note. Para v.s. Por Basic = Word (input) + Meaning (shown) → brackets = **Meaning**. Place article Basic = Article (input) + Place (shown) → brackets = **Place**.
+
+---
+
+<h2 id="prereq" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Prerequisites</h2>
+
+- Basic knowledge + **Basic practice** for the area already shipped (**basicprac**).
+- `ContentSpec` already registered for the Basic content type.
+- Canonical practice **mode** already in `MODE_CONTENT_TYPE` (and optional chip alias in `CHIP_MODE_MAP`).
+
+Derive blank fields from the Basic practice page (not from knowledge-only columns): e.g. adjectives → four form fields; This/that → singular `form` only.
+
+---
+
+<h2 id="chrome" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Shared chrome (required)</h2>
+
+| Piece | Module | Role |
+|-------|--------|------|
+| Blank exercise row | `ParagraphBlankExerciseItem` | ⟦n⟧ slots, Submit / Clear All, graded feedback |
+| Slot control | `PracticeBlankInput` | textbox or select — match Basic |
+| Scope / item filters | `PracticeScopeFilterBar`, checklist controls | Learner filter parity with admin pool |
+| Path mirror | `suitePracticePathMirror` | `/practice/<area>/paragraph` insert/strip |
+| Admin shell | `ParagraphAdminShell` (`components/admin/`) | Generate scope · N · Varieties · Dry run · Generate · Delete · shared DataGrid columns (incl. traces) + expand. **List adapters must pass Generate scope** (`?scope=`) — Noun + Other Word share `gender_paragraph_exercise`; unscoped list mixes areas. |
+| Admin grid theme | `adminDataGridTheme` + `AdminSectionCard` | Density + card chrome |
+| Pipeline | `app/pglpl/natural_paragraph_loop.py` + thin adapters | Non-conj: natural PT → language verify → whole-token inject. Conj: `run_paragraph_job` + PLGW |
+
+Reference exemplars: `NounAgreementParagraphPage`, `GenderNounParagraphAdminPage`, `gender_paragraph_generator.py`, `natural_paragraph_loop.py` / `GenderNaturalPromptAdapter`.
+
+---
+
+<h2 id="registry" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Area registry contract</h2>
+
+Register each glossary paragraph area in one place (Python + thin web mirror as needed):
+
+| Field | Example (adjectives) | Example (This/that) |
+|-------|----------------------|---------------------|
+| `area_id` | `adjectives` | `determiners` |
+| `scope` | `adjectives:endings` | `determiners:demonstratives` |
+| `mode` | `adjective_pairs` | `demonstratives` |
+| `content_type` | `gender_adjective_pattern` | `article_paradigm` |
+| `blank_fields` | `fem`, `masc`, `fem_pl`, `masc_pl` | `form` (singular only) |
+| `control` | textbox | textbox |
+| `practice_path` | `/practice/adjectives/paragraph` | `/practice/determiners/paragraph` |
+| `admin_path` | `/admin/other-words/paragraph` | `/admin/other-words/paragraph` |
+| `pool` | adjective pattern rows | demonstrative singular paradigm rows |
+
+**Blank JSON** must carry at least: `slot`, `blank_kind` (`form` for fill-the-surface; keep `leading`/`noun` for noun-agreement), `content_id`, `expected`, optional `field`, optional `select_options`, and cue/`meaning_en` for UI brackets per [§2.7](#meaning-brackets) (from Basic `other_shown_cols`, not knowledge-only Note).
+
+Persist in `gender_paragraph_exercise` (namespaced `scope`) **or** a later shared glossary table — prefer **namespaced scope on the existing table** until a dedicated migration is justified. Keep `nouns_list` as the human item list string (lemmas / forms).
+
+---
+
+<h2 id="backend" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Backend checklist</h2>
+
+1. Add scope(s) to the paragraph allow-list + `CONTENT_TYPE_BY_PARAGRAPH_SCOPE` / `PRACTICE_MODE_BY_PARAGRAPH_SCOPE` (or the shared registry that those maps read).
+2. Pool endpoint for admin checklist (items selectable like LBH lemmas), dispatched by `scope` on the top-level glossary admin API.
+3. Generate endpoint: chunk × Varieties via PGLPL; template fallback; persist with LPL telemetry fields.
+4. List / bulk-delete admin endpoints **require and filter by scope**; one top-level-glossary API owns all its scopes.
+5. Learner list + grade endpoints (or extend gender-noun paragraph routes with scope prefix — prefer **area-prefixed routes** for clarity: `/adjectives/practice/paragraph/…`).
+6. `grade_stored_exercise` (or area twin) passes **`field`** into `record_attempt` when blanks are multi-form.
+7. Unit tests: scope allow, template generate shape, grade bumps `practice_kind=paragraph` with correct `content_key` (+ field suffix).
+
+---
+
+<h2 id="frontend" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Frontend checklist</h2>
+
+1. Unhold Paragraph practice in `conjugationSuiteConfig` for the area; include `/practice/<area>/paragraph` in `pathPrefixes` if needed.
+2. Routes in `App.tsx` for learner; add/reuse the **one top-level-glossary paragraph-admin route + chip**.
+3. Learner page: list exercises, `ParagraphBlankExerciseItem`, map `blank_kind`/`field` → text vs select (mirror Basic).
+4. Admin page: Generate scope (all paragraph-enabled areas in that top-level glossary), dynamic checklist, N, Varieties, Dry run, Generate, Delete, DataGrid + expand + telemetry.
+5. Path mirror Knowledge ↔ Basic ↔ Paragraph.
+6. **Nouns checklist labels:** `GET …/paragraph/lemmas` returns L1 **gloss** (Hint / Meaning — same text as paragraph `[…]` brackets per [§2.7](#meaning-brackets)) for every row; UI shows **`lemma (gloss)`** only when the same **lemma spelling** appears more than once in that scope’s catalog (`duplicateLemmaSpellings` + `formatLemmaChecklistTitle` / `NounChecklistControl`). Unique spellings stay bare `lemma`. Never show duplicate spellings without a distinguishing gloss in the dropdown.
+7. Vitest and/or Playwright mocked: route live, Submit grades, admin generate dry-run/mock.
+
+---
+
+<h2 id="do-not" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Do not</h2>
+
+- Do **not** invent paragraph blanks for knowledge columns Basic does not grade.
+- Do **not** put Basic-knowledge-only fields (e.g. long pedagogy Notes) into paragraph `[…]` brackets — brackets follow [§2.7](#meaning-brackets) / Basic `other_shown_cols` only.
+- Do **not** use Basic-grid chrome (`PracticeGroupedTable`) for paragraph blanks — use `ParagraphBlankExerciseItem`.
+- Do **not** local-only grade without `record_attempt` / registry identity.
+- Do **not** copy-paste a third LLM loop outside LPL/PGLPL.
+- Do **not** force every area into the conjugation verb×tense admin; glossary areas use **Generate scope + item checklist**.
+- Do **not** create one paragraph-admin chip/page per knowledge area. The top-level glossary is the admin boundary; areas are Generate scopes.
+- Do **not** over-abstract before the second glossary area ships — extract a shared admin/learner shell when **adjectives and determiners** (or noun + one new area) would otherwise duplicate &gt;~one screen of JSX.
+- **Shipped extract:** `ParagraphAdminShell` for Noun + Other Word paragraph admins; `GlossaryParagraphPracticePage` / thin page adapters under `apps/web/src/pages/glossary/` — do not fork a third admin page copy for the next glossary area.
+- **LPL expand:** when generate retries fail, admin expand lists `gen_lpl_attempt_errors` (attempt · phase · reason) above the `rg` log tip; produce prompts include repair hints on retry.
+
+---
+
+<h2 id="verify" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Dogfood / verify</h2>
+
+- [ ] Suite: Paragraph practice unheld; admin chip visible for admins.
+- [ ] Blank controls match Basic (text vs select; singular-only vs four forms).
+- [ ] Submit → API → `practice_kind=paragraph` + correct mode/content_type/content_id/field.
+- [ ] Admin dry-run + generate (mocked LLM or template) persists rows with scope + telemetry.
+- [ ] Vitest and/or Playwright mocked green for learner + admin smoke.
+- [ ] File headers + short comments on adapter blank contract and field grading.
+- [ ] If wiring a **new** area: chat disclosed Sense-anchor ON/OFF at **start** and **done** ([§2.6](#sense-anchor)).
+- [ ] Meaning brackets match [§2.7](#meaning-brackets) (Basic `other_shown_cols` cue map; not knowledge-only Note).
+- [ ] If this run revealed a gap in **this rule**, update the rule in the same engagement.
+
+---
+
+<h2 id="examples" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Worked examples</h2>
+
+### 10.1 Describing words (adjectives)
+
+- Basic: fill Fem / Masc / Fem plural / Masc plural (textbox).
+- Paragraph: blanks are agreeing **forms** (`field` one of the four); textbox controls.
+- Scope: `adjectives:endings` · mode `adjective_pairs` · type `gender_adjective_pattern`.
+
+### 10.2 This/that (determiners)
+
+- Basic: fill **singular** Form only.
+- Paragraph: blanks are singular demonstrative **forms** (`field=form` or omit); textbox; do not require plurals.
+- Scope: `determiners:demonstratives` · mode `demonstratives` · type `article_paradigm`.
+
+### 10.3 Blending words (contractions)
+
+- Basic: fill **singular** fused Form only (knowledge may show `no(s)`).
+- Paragraph: blanks are singular fused **forms** (`field=form`); textbox.
+- Scope: `contractions:blending` · mode `contractions` · type `place_contraction_map`.
+- Admin: additive Generate scope on `/admin/other-words/paragraph` (not a new midlevel chip).
+- Register matrix (`REFACTOR_BLENDING_WORDS_REGISTER_MATRIX.md`): knowledge/Basic
+  read `presentation_tier` (`table` vs `bottom_list`) and the four `ok_*`
+  register flags from `place_contraction_map` — Basic and knowledge tables
+  exclude `bottom_list` rows; paragraph admin/generate pool uses the same
+  `presentation_tier` gate (singular + not bottom_list). Places still mirrors
+  fusions in a hardcoded dict until the linked
+  `REFACTOR_FUSION_CONSUMERS_FROM_BLENDING_DATA.md` plan rewires it.
+- Personal table includes **comigo/contigo/consigo/conosco** (`com` band); place-adverb table includes **dentre** and **doravante**. Literary rarities (`convosco`, `daquém`, …) stay bottom-list. Plan: [`REFACTOR_BLENDING_COMIGO_DENTRE_DORAVANTE.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_BLENDING_COMIGO_DENTRE_DORAVANTE.md).
+
+### 10.4 Making plurals (Noun & agreement)
+
+- Basic: fill **Plural** textbox; **Singular** shown (+ Meaning cue); bands by `rule_group`.
+- Paragraph: blanks are plural **forms** (`blank_kind=form`, `field=plural`); textbox.
+- Scope: `plural:plural` · mode `plural` · type `noun_plural_rule`.
+- Admin: Generate scope on `/admin/gender-nouns/paragraph` (Noun glossary owner — not Other Word). Grid is **scope-filtered** via that Generate scope (shared table with Other Word).
+- Plan: [`REFACTOR_PLURAL_BASIC_AND_PARAGRAPH_PRACTICE.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_PLURAL_BASIC_AND_PARAGRAPH_PRACTICE.md).
+
+### 10.5 Para v.s. Por (Other Word)
+
+- Basic: fill **Word** textbox (`por` / `para`); Meaning shown; bands `para_forward` / `por_backward`.
+- Paragraph: blanks are **word** (`field=word`); accept lemma + fused aliases from `surface_note` / example.
+- Scope: `por-para:main` · mode `por_para` · type `article_prep_semantic_rule`.
+- Admin: Generate scope on `/admin/other-words/paragraph`.
+- Generation: Alt A + sense-anchor (**[`§2.6`](#sense-anchor)**) via `PorParaNaturalPromptAdapter` (`needs_sense_anchors=True`). Unmarked extra lemmas stay prose.
+- Plan: [`REFACTOR_PARA_VS_POR_OTHER_WORD_GLOSSARY.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_PARA_VS_POR_OTHER_WORD_GLOSSARY.md).
+
+### 10.6 Place Glossary (all atlas + gentílico chips)
+
+- Basic: article chips fill **Article** select (`o`/`a`/`os`/`as`/`—`); gentílico chips fill **masc**/**fem** text.
+- Paragraph: one Generate scope per chip (`places:continents` … `places:gentilicos-city`).
+- Article blanks: `field=article`, **select** (`select_options`); unselected sentinel `""` → ▼ (not `—`); literal `—` stays a graded option when present.
+- **Host-leading: ON** ([§2.6b](#host-leading)): natural contractions preferred; local ban on unfused `em o`/`de o`; inject blanks preceding article **or** fusion; grade/dropdown = blanked surface family.
+- **Null-article lock:** place rows with no definite article (DB NULL / UI `—`) are **excluded** from article-chip paragraph pools (nothing to punch for Alt A).
+- Gentílico blanks: `field` masc/fem text only (no invented article blanks); **surface inject** (host-leading OFF).
+- **Sense-anchor: OFF**.
+- Admin: `/admin/places/paragraph` (Place Glossary top-level — not Other Word).
+- Learner paths: `/practice/places/paragraph/atlas/{chip}`.
+- Plan: [`REFACTOR_PLACE_NUMBER_GLOSSARY_PARAGRAPH.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_PLACE_NUMBER_GLOSSARY_PARAGRAPH.md) · [`REFACTOR_PLACE_ARTICLE_HOST_LEADING_INJECT.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_PLACE_ARTICLE_HOST_LEADING_INJECT.md) · [`REFACTOR_PLACE_HOST_LEADING_CONTRACTIONS.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_PLACE_HOST_LEADING_CONTRACTIONS.md).
+
+### 10.7 Number Glossary (cardinals + ordinals)
+
+- Basic: cardinals fill **Form** (Number shown); ordinals fill **masc**/**fem** (Rank shown).
+- Paragraph: scopes `numbers:cardinals` (`field=form`) and `numbers:ordinals` (`field` masc/fem); textbox; `content_type=number_form`.
+- Brackets ([§2.7](#meaning-brackets)): **Number** / **Rank** — not knowledge Note (e.g. not `Compound / year example · BR: …`).
+- **Sense-anchor: OFF** (default 2-call Alt A).
+- Admin: `/admin/numbers/paragraph`.
+- Learner paths: `/practice/numbers/paragraph/{cardinals|ordinals}`.
+- Plan: same as §10.6.
+
+### 10.8 Comparing things (comparatives)
+
+- Basic: fill **Form** (`expected_pt`: `mais`, `tão`, `melhor`, …); cue is cloze Example (`_____`). Hide Pattern (it leaks the answer). Superlative agreement rows: shown = singular `pattern_pt`; fill = plural NP.
+- Paragraph: blanks are the same Form (`field=form`); bracket = cloze (Basic other_shown), not Pattern/Note.
+- Scopes: `comparison:unequal` · `comparison:equal` · `comparison:superlative` · `comparison:irregulars` · mode `comparison` · type `comparison_rule`.
+- **Sense-anchor: OFF** — uniqueness gate so two identical `expected_pt` (two `mais`) never share a paragraph.
+- **Host-leading: OFF** — graded surface is the comparison token, not an article before a place host.
+- Admin: four Generate scopes on `/admin/other-words/paragraph` (not a new midlevel chip).
+- Learner paths: `/practice/comparison/paragraph/{unequal|equal|superlative|irregulars}`.
+- Plan: [`REFACTOR_COMPARISON_BASIC_PRACTICE.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_COMPARISON_BASIC_PRACTICE.md) · [`REFACTOR_COMPARISON_PARAGRAPH_CATALOG_27.md`](../../cursor_gen/refactor_plans/completed/REFACTOR_COMPARISON_PARAGRAPH_CATALOG_27.md).

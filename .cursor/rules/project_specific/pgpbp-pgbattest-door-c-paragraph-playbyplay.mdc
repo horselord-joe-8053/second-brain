@@ -1,0 +1,252 @@
+---
+description: >-
+  Keyword **pgpbp** — paragraph play-by-play for a recorded pgbattest run:
+  find the paragraphs that caused Door A, B, or C failure, dig produce →
+  verify → Injection Gate → punch → (Door C judges), and explain the cause
+  in freshman-plain tables with the relevant LLM prompt snippets.
+alwaysApply: false
+---
+
+<h1 id="pgpbp-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>pgpbp</code> — pgbattest paragraph play-by-play (Door A / B / C)</h1>
+
+**Type:** keyword autopsy · **Not always-on** — mention **`pgpbp`** or `@` this rule.  
+**Owns:** for a **recorded** scoreboard run, find every paragraph that **caused** a Door A, B, or C fail, reconstruct how it was generated/processed, and show a **cause-centered** play-by-play table (freshman-plain) with the **relevant** produce/verify prompt excerpts and Injection Gate results.  
+**Does not own:** starting a new `pgbattest` campaign; shipping product fixes (`aciub` / implement is separate).
+
+May **call other rules as tools** when they help the same end table: **`serlog`** (gitignored `logs/llm_traffic`), **`pgjudge`** (flake vs real A/B signal), **`evalay`** (optional lay gloss). The **deliverable is still the pgpbp tables** — do not stop at a short `pgjudge` 1–2–3 reply.
+
+## Document outline
+
+1. [When this applies](#when) — trigger + parse.
+2. [Resolve the run](#run) — scoreboard §6.xx → log + Door C JSON.
+3. [Resolve scopes](#scopes) — explicit list vs failing scopes.
+4. [What each door failure means](#doors) — A / B / C and which paragraphs to autopsy.
+5. [Where to dig](#artifacts) — scoreboard, harness, Door C JSON, LLM traces.
+6. [Per-paragraph procedure](#procedure) — produce → verify → gate → punch → judges.
+7. [Response shape](#shape) — attempt-matrix tables (mandatory).
+8. [Examples](#examples) — copy-paste prompts.
+9. [Related rules](#related).
+
+---
+
+<h2 id="when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+User message includes **`pgpbp`** (whole token) **and** a pgbattest **run** (explicit or implicit).
+
+**Parse (do this first; ask only if run cannot be mapped):**
+
+| Piece | How it appears | Default if omitted |
+|-------|----------------|--------------------|
+| **Run** | `run_6.35`, `run 6.35`, `§6.35`, `6.35`, “the last pgbattest run”, “latest full-23” | Latest recorded full-catalog `pgbattest` on the scoreboard |
+| **Scopes** | `scopes:[a, b]`, `scopes: a, b`, `for places:states …` | Every catalog scope that **failed Door A, B, or C** on that run |
+| **Doors** | `doors:A,C`, “Door B only” | **A + B + C** (all fail kinds) |
+
+If the run cannot be mapped to a scoreboard section + log path, ask **one** question: which `§6.xx`?
+
+**Do not** implement product fixes under `pgpbp` alone.
+
+---
+
+<h2 id="run" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Resolve the run</h2>
+
+Source of truth: [`docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md`](../../../docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md).
+
+1. Find the **§6.xx** section (or timeline row).
+2. Header fields: run id, wall duration, headline counts, harness log `ops/run-logs/pgbattest-*.log`, Door C artifact `ops/run-logs/tmp/pgbattest-door-c-*.json` (if Door C ran).
+3. **Implicit “last run”:** newest real full-catalog `pgbattest` tip — not an old single-scope r1/r2/r3 unless named.
+
+| User says | Typical log (re-read scoreboard; names drift) |
+|-----------|-----------------------------------------------|
+| `run_6.33` | `ops/run-logs/pgbattest-full23-41mini-*.log` |
+| `run_6.34` | `ops/run-logs/pgbattest-full23-prep-41mini-*.log` |
+| `run_6.35` | `ops/run-logs/pgbattest-full23-35C-41mini-*.log` |
+
+---
+
+<h2 id="scopes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Resolve scopes</h2>
+
+**Catalog (23 non-conj)** — scoreboard §1:
+
+```text
+places:continents, places:countries, places:states, places:cities, places:everyday,
+places:gentilicos-continent, places:gentilicos-country, places:gentilicos-state, places:gentilicos-city,
+numbers:cardinals, numbers:ordinals,
+adjectives:endings, determiners:demonstratives, contractions:blending, por-para:main,
+inanimate:learn-by-heart, inanimate:suffix-rule-binding, inanimate:meaning-changers,
+animated:fixed-article, animated:same-form, animated:two-forms, animated:animals,
+plural:plural
+```
+
+- Explicit `scopes:[…]` → intersect with catalog (warn unknown names). Autopsy fails **only** inside that intersection (including “no fails in request”).
+- No list → every catalog scope whose outcome is **`failed_first5`**, **`failed_all`**, or **`quality_failed`** (or Door C hard error).
+- Skip **`shipped_and_verified`** unless the user asks about a single-judge warning.
+- Conjugation / PLGW → out of scope (`traunit` / `trabat`).
+
+---
+
+<h2 id="doors" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. What each door failure means</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Door</th><th>Question (freshman)</th><th>Fail label</th><th>Which paragraph(s) to autopsy</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">A</td><td style="background:#fff3e0">Can we generate the first 5 pool units twice?</td><td style="background:#ffebee"><code>failed_first5</code></td><td style="background:#e8f5e9">Every <code>AGENT_JUDGE tier=over_budget</code> (or hard FAIL) row in the Door A / first-5 sections that prevented the door from passing. Prefer the <b>last</b> failing <code>id</code> per attempt wave if many; if several distinct units exhausted budget, autopsy <b>each</b>.</td></tr>
+<tr><td style="background:#e3f2fd">B</td><td style="background:#fff3e0">Can we generate the whole pool once?</td><td style="background:#ffebee"><code>failed_all</code></td><td style="background:#e8f5e9">Every <code>over_budget</code> / FAIL row in the ALL-WORDS section that blocked shipping. Autopsy <b>each</b> distinct <code>id</code> that exhausted attempts (not only the first).</td></tr>
+<tr><td style="background:#e3f2fd">C</td><td style="background:#e8f5e9">After A+B shipped, did <b>both</b> quality judges mark every paragraph <code>OK</code>?</td><td style="background:#fff3e0"><code>quality_failed</code></td><td style="background:#e8f5e9">Every <code>result.failed_ids</code> entry (<code>scope#pN</code>). Any single-judge <code>ISSUE</code> fails the paragraph. Use <code>warnings</code> / <code>split_verdict</code> when judges disagree.</td></tr>
+</tbody>
+</table>
+
+**Ids:**
+
+- Door A/B harness: `scope` + row `id=` (DB / pool row id in `[pglpl-live] AGENT_JUDGE … id=N`).
+- Door C: `scope#pN` = **Nth Door B snapshot paragraph** (1-based), not necessarily DB `row_id`. Match snapshot `text` / `row_id` back into the ALL-WORDS log.
+
+**If zero fails** in the request: say so in the header and stop (no empty play-by-play inventing).
+
+---
+
+<h2 id="artifacts" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Where to dig</h2>
+
+Work **top-down**. Use **`serlog`** for `logs/` (`rg --no-ignore-vcs` or absolute `Read`).
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Layer</th><th>Path / signal</th><th>Use for</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Scoreboard</td><td style="background:#e8f5e9"><code>docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md</code> §6.xx</td><td style="background:#fff3e0">Run identity, duration, fail mix, log filenames</td></tr>
+<tr><td style="background:#e3f2fd">Overall table</td><td style="background:#e8f5e9">harness: <code>===== pgbattest overall =====</code></td><td style="background:#fff3e0">Per-scope A / B / C / outcome</td></tr>
+<tr><td style="background:#e3f2fd">Harness generate</td><td style="background:#e8f5e9"><code>===== &lt;scope&gt; …</code> / ALL-WORDS / first-5; <code>[pglpl-live] AGENT_JUDGE</code>; <code>[LLM-REQUEST]</code> / <code>[LLM-RESPONSE]</code></td><td style="background:#fff3e0">Produce / verify / <code>injection_gate</code> / inject / LWM / sense-anchor for the failing <code>id</code></td></tr>
+<tr><td style="background:#e3f2fd">Door C artifact</td><td style="background:#e8f5e9"><code>ops/run-logs/tmp/pgbattest-door-c-*.json</code></td><td style="background:#fff3e0"><code>failed_ids</code>, snapshot <code>text</code>, <code>fixed_surfaces</code>, Pair A/B issues</td></tr>
+<tr><td style="background:#e3f2fd">Per-scope JSON</td><td style="background:#e8f5e9"><code>ops/run-logs/pgbattest-*.json</code> when present</td><td style="background:#fff3e0">Attempts, last error, paragraph text</td></tr>
+<tr><td style="background:#e3f2fd">LLM traffic</td><td style="background:#fff8e1"><code>logs/llm_traffic/llm_req_*.json</code> via <code>[LLM-TRACE] file=</code></td><td style="background:#fff3e0">Full prompt bodies when harness lines are truncated</td></tr>
+</tbody>
+</table>
+
+**Always pull for A/B fails:** `last_error`, `errors=[{attempt, phase, error}]`, nearby produce/verify excerpts for that `id`, and any `injection_gate` / `SURFACE_INJECT` / `HOST_LEADING_INJECT` / sense-anchor lines on the failing attempts.
+
+---
+
+<h2 id="procedure" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Per-paragraph procedure</h2>
+
+For **each** autopsy target:
+
+1. **Name the unit** — Door A/B: `scope` + `id=N` (+ door label). Door C: `scope#pN`.
+2. **Quote the text** the pipeline last held (final produce draft, inject draft, or Door C snapshot `text`). If only errors exist (template fallback / never shipped), quote the **last attempt draft** from the log/trace if present; else say “no shipped paragraph — show last failing draft/error.”
+3. **Required blanks / pedagogy** — listed surfaces, hosts, expected articles/`—`/fusions.
+4. **Play-by-play** (only steps that ran):
+   - Produce LLM — smallest prompt snippet that proves the contract + model output
+   - Language-verify LLM — `ok`/`reason` (diagnose-only vs Fixed presence)
+   - **Injection Gate** — Keep / Still missing / Wrong gender (define once: local check that listed drill words are punchable before blanking)
+   - Punch / rematch / LWM / sense-anchor
+   - Materialize / visible fill when relevant
+   - Door C Pair A/B — only for Door C targets
+5. **Cause** — one clear mechanism centered on **why this door failed** (verify fight, gate miss, inject miss, over-budget template fallback, dual-judge ISSUE, etc.).
+6. **Pipeline vs door bar** — one contrast sentence (what the pipeline “thought” vs what the door rejected).
+
+**Prompt discipline:** include the **smallest** produce/verify excerpts that prove the cause (instruction that allowed/forbade the bad pattern + the bad output). Truncate with `…`; never paste multi-k prompt walls. Prefer harness lines; open `logs/llm_traffic` via **serlog** when truncated.
+
+**Retries (mandatory for Door A/B):** when the unit burned multiple attempts, the main table is an **attempt matrix** (one row per attempt), not a single “final draft” row. Truncate long paragraphs to the **problematic span** plus a few words of context; bold or quote the clash token.
+
+**Concise but complete:** short sentences; no jargon dump; do **not** omit the gate line or the key verify reason when they are on the causal path.
+
+---
+
+<h2 id="shape" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Response shape (mandatory)</h2>
+
+Write for a **college freshman**.
+
+### 7.1 Run header
+
+| Field | Value |
+|-------|--------|
+| Run | `§6.xx` |
+| Log / Door C JSON | paths |
+| Wall | seconds if known |
+| Requested scopes | list or “all failing” |
+| Failures in request | Door A: …; Door B: …; Door C: … **or** none |
+
+### 7.2 Index (≥2 targets)
+
+| Door | Scope | Unit (`id` / `#p`) | One-line cause |
+
+### 7.3 One section per failing paragraph
+
+Heading: **`[Door X] scope id=N` — one-line cause** (or `scope#pN` for Door C).
+
+**Header strip (2–4 lines, before the attempt table):**
+
+| Field | Value |
+|-------|--------|
+| Required blanks | listed surfaces / hosts |
+| Standing produce cue | smallest prompt line that shaped the contract (optional if irrelevant) |
+| Final outcome | `over_budget` / `template_fallback` / Door C `both_issue` / … |
+
+**Attempt matrix (mandatory for multi-attempt Door A/B fails):** one HTML table (`mrkd` colors). **Rows = attempts** (`r1`…`rN`, chronological). Columns stay short but must surface the **problematic** bit:
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Attempt</th><th>Produced (clip to clash)</th><th>Verify</th><th>Injection Gate</th><th>Other (LWM / punch / local rewrite)</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">r1</td><td style="background:#e8f5e9">… <code>o amapaense</code> …</td><td style="background:#fff3e0"><code>ok:false</code> — invented tilde / spelling fight</td><td style="background:#ede7f6">n/a or Keep/missing/wrong_gender one-liner</td><td style="background:#fff8e1">—</td></tr>
+<tr><td style="background:#e3f2fd">r5</td><td style="background:#ffebee">… <code>acraense</code> …</td><td style="background:#fff3e0"><code>ok:false</code> — wants <code>acreano</code></td><td style="background:#ede7f6">—</td><td style="background:#fff8e1">budget exhausted</td></tr>
+</tbody>
+</table>
+
+**Column rules:**
+
+- **Produced** — quote only the span that matters (wrong spelling, bad stack, gender clash); full paragraph only if short.
+- **Verify** — `ok:true/false` + one-line reason (truncate mid-essay reasons).
+- **Injection Gate** — Keep / Still missing / Wrong gender one-liner, or `n/a` when that scope/phase did not run.
+- **Other** — local gate rewrite (`uma artista`→`o artista`), punch miss, sense-anchor, etc.; use `—` when idle.
+- Drop a column only if **every** attempt has nothing for it; never drop Attempt / Produced / Verify for A/B loops.
+
+**Door C** (single shipped snapshot): one row is enough — Produced = snapshot `text` clip; Verify columns can hold Pair A / Pair B ISSUE lines instead of in-loop verify; Injection Gate usually `n/a`.
+
+**Cause row / footer:** after the attempt matrix, 1–3 sentences: why this door failed (freshman-plain). Optionally one **pgjudge**-style flake vs real line inside Cause.
+
+**Ineffective:** a Step/What/Evidence table that collapses five retries into one “Produce / Verify” row and hides how the draft got worse.
+
+### 7.4 Optional wrap-up (multi-para)
+
+Same root cause vs different roots — 2–4 sentences. No patch unless asked.
+
+---
+
+<h2 id="examples" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Examples</h2>
+
+```text
+pgpbp run_6.35
+pgpbp run_6.35 scopes:[places:countries, numbers:cardinals]
+pgpbp §6.34 scopes: por-para:main
+pgpbp 6.33 doors:C
+pgpbp the last pgbattest run
+```
+
+Agent behavior:
+
+- `pgpbp run_6.35` → all A/B/C fails on §6.35 (historically 3×A + 4×B + 0×C) → deep-dive each over_budget unit.
+- `pgpbp run_6.35 scopes:[places:states]` → if verified, report **no failures in request**.
+- `pgpbp §6.34 doors:C` → Door C only (e.g. por-para `#p1`/`#p2`).
+
+---
+
+<h2 id="related" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Related rules</h2>
+
+| Rule | Owns |
+|------|------|
+| **`pgbattest`** | Run Door A/B/C campaigns |
+| **`pgjudge`** | Short live A/B flake-vs-fix after `AGENT_JUDGE` (pgpbp may reuse its judgment **inside** the table) |
+| **`pgtestcom`** | Run `pgbattest` + write scoreboard tip + compare vs prior `§6.xx` (`pgtestcom-pgbattest-compare-and-scoreboard.mdc`) — use when you need a **new** run, not autopsy of an old one |
+| **`serlog`** | Read gitignored `logs/` / `llm_traffic` |
+| **`evalay`** | Opinion-only gloss |
+| **`traunit` / `trabat`** | Conj PLGW — different pipeline |
+
+**Ineffective (avoid):**
+
+- Stopping at “no Door C fails” when Door A/B failed (unless `doors:C` only).
+- Replacing the play-by-play table with a bare `pgjudge` 1–2–3.
+- Dumping full prompts or guessing text without log / snapshot evidence.
+- Starting a new `pgbattest` from `pgpbp` alone.

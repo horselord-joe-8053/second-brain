@@ -1,0 +1,33 @@
+---
+description: >-
+  User types gitacp (git add, commit, push): stage changes, commit with a clear summary, push.
+  Keywords: gitacp, git acp. Not always-on — @.cursor/rules/gitacp.mdc if the prompt does not attach this rule.
+alwaysApply: false
+---
+
+# `gitacp` — add, commit, push
+
+**Purpose:** When the user asks to **`gitacp`** (or clearly means add + commit + push), perform a clean git workflow with **professional commit messages**.
+
+## When this applies
+
+- **Trigger:** The user’s message includes **`gitacp`** (or uses it as shorthand for “add, commit, push”).
+- **Scope:** Commit the intentional work (usually edits from the current task). If the message also specifies files or repos, follow that.
+
+## Steps (run commands; do not only suggest them)
+
+1. **`git status`** in each affected git root. Stage only what belongs in version control (**`git add <paths>`** or **`git add -u`** where appropriate). **Do not** stage secrets (e.g. `.env`, API keys, private ladders); honor `.gitignore`.
+2. **`git diff --staged`** (or `git diff --cached`) for a quick review.
+3. **`git commit -m "..."`**: one subject line (optional body if needed) that **meaningfully describes the change** for other developers—what changed and why, by area or behavior.
+4. **`git push`** to the tracked upstream for the current branch (use the repo the user is working in).
+
+## Commit message rules
+
+- **Do write:** concrete, reviewable summaries (e.g. “Add alembic step to run_all before API start”, “Rename paragraph admin table columns for readability”).
+- **Do not write** in the commit message or body: **Cursor**, **AI**, **Copilot**, **ChatGPT**, **assistant**, **LLM**, **generated**, **auto-generated**, or similar meta phrases. The log should read like human maintainer history.
+
+## Edge cases
+
+- **Nothing to commit:** Say so; do not create empty commits.
+- **Multiple repos in the workspace:** Run status → add → commit → push **per repo** that has changes.
+- **Unrelated changes mixed:** Prefer **one coherent commit** if the session is one task; if truly unrelated, **split commits** by logical change.

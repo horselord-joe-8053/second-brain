@@ -1,0 +1,16 @@
+---
+description: >-
+  Ops / agent capture logs (resall streams, agent exit markers, etc.) live under
+  **logs/ops/** at repo root—never under **ops/** or repo root. Same **logs/** gitignore as api.log / llm_traffic.
+  Keywords: ops logs, resall-phases, run_tests_only, serlog.
+alwaysApply: false
+---
+
+# Ops run logs → **`logs/ops/`**
+
+- **Redirect** long **`run_all.py resall` / `resall-fast` / `resall-slow`** captures to **`logs/ops/`** (e.g. **`ops/run-logs/`** tee + **`logs/ops/run_tests_only.log`**). Create dirs first: **`mkdir -p logs/ops ops/run-logs`**.
+- **`run_all.py resall` / `resall-fast` / `resall-slow`** write per-phase **`logs/ops/resall-phases/{NN-phase-slug}.log`** and **`.summary.txt`**. Exit markers: **`logs/ops/resall.exit`**, **`resall-fast.exit`**, **`resall-slow.exit`**. **`logs/ops/run_tests_only.log`** logs paths after each phase; **`[resall] summary`** groups by tier when both run.
+- **Agent / shell artifacts** (exit markers, long tees) also belong under **`logs/ops/`** / **`ops/run-logs/`**, not the repository root.
+- **`logs/`** is **gitignored**; use **`Read`** / **`rg --no-ignore-vcs`** when searching (see **`@.cursor/rules/serlog-search-gitignored-logs.mdc`**).
+
+**Help text:** **`ops/local/run_all.py resall -h`** and **`ops/local/README.md`** document the ritual + log layout.

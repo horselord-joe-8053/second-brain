@@ -1,0 +1,136 @@
+---
+description: >-
+  Filename **mdpdf-markdown-mermaid-to-pdf.mdc**. Keyword **mdpdf**: convert a `.md`
+  that contains Mermaid fences to a `.pdf` with diagrams rendered. Portable —
+  copy into any repo’s `.cursor/rules/`. Trigger **mdpdf** or @ this rule.
+alwaysApply: false
+---
+
+<h1 id="mdpdf-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>mdpdf</code> — Markdown + Mermaid → PDF</h1>
+
+**Purpose:** When the user asks to turn a **`.md`** (with **` ```mermaid `** fences) into a **`.pdf`**, run a reliable conversion so diagrams appear as graphics, not raw code.
+
+**Trigger:** User says **`mdpdf`**, “convert this md to pdf”, “export … to PDF”, or **`@mdpdf-markdown-mermaid-to-pdf`**.
+
+**Portable:** Project-agnostic. Copy this file into any repo’s `.cursor/rules/`.
+
+---
+
+<h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When this applies](#when) — inputs and defaults.
+2. [Prerequisites](#prereqs) — install if missing.
+3. [Preferred pipeline](#preferred) — `mmdc` then print PDF.
+4. [Fallback pipeline](#fallback) — HTML + Mermaid CDN + Chrome.
+5. [Output and cleanup](#output) — paths, temp files.
+6. [Self-check](#checklist)
+
+---
+
+<h2 id="when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+| Item | Behavior |
+|------|----------|
+| **Input** | Path to a `.md` (user-named, attached, or clearly implied). If ambiguous, ask once. |
+| **Output** | Same basename as the `.md`, sibling `.pdf` unless the user names another path. |
+| **Mermaid** | Diagrams **must** render in the PDF. Never ship a PDF that shows fenced Mermaid as monospace source. |
+| **Do not** | Commit the PDF unless the user asks. Do not leave large temp dirs behind. |
+
+---
+
+<h2 id="prereqs" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Prerequisites</h2>
+
+Check once per session; install only what is missing:
+
+| Tool | Check | Install (if needed) |
+|------|--------|---------------------|
+| **Mermaid CLI** | `mmdc --version` | `npm install -g @mermaid-js/mermaid-cli` |
+| **pandoc** | `pandoc --version` | OS package / https://pandoc.org |
+| **Chrome** (or Chromium) | macOS: `/Applications/Google Chrome.app/.../Google Chrome` | Install Chrome if headless print is used |
+
+**Required for diagrams:** `mmdc`. Prefer the [Preferred pipeline](#preferred). Use [Fallback](#fallback) only if `mmdc` cannot run.
+
+---
+
+<h2 id="preferred" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Preferred pipeline (`mmdc` → images → PDF)</h2>
+
+Work in a **temp directory** next to the source (e.g. `.mdpdf_tmp/` under the same folder as the `.md`). Do **not** permanently rewrite the user’s source `.md` unless they ask.
+
+### 3.1 Extract and render Mermaid
+
+1. Find every fenced block: opening fence language **`mermaid`**.
+2. For each block `i = 1..N`, write body to `diagram_i.mmd`.
+3. Render PNG (or SVG):
+
+```bash
+mmdc -i diagram_i.mmd -o diagram_i.png -b transparent
+```
+
+4. Build a **temp** Markdown copy: replace each ` ```mermaid ... ``` ` with:
+
+```markdown
+![Diagram i](diagram_i.png)
+```
+
+Use paths relative to the temp Markdown file so pandoc/Chrome resolve images.
+
+### 3.2 Emit PDF
+
+**Option A — Chrome print (best for HTML headings / styled tables):**
+
+1. `pandoc temp.md -f markdown+raw_html -t html5 -o temp.html --standalone --resource-path=.:<tmp_dir>`
+2. Wrap or ensure basic print CSS (A4 margins, readable font, `page-break-inside: avoid` on images).
+3. Headless print (adjust Chrome path for the OS):
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless=new --disable-gpu --no-pdf-header-footer \
+  --virtual-time-budget=5000 \
+  --print-to-pdf="/absolute/path/out.pdf" \
+  "file:///absolute/path/temp.html"
+```
+
+**Option B — pandoc engine (simpler text; weaker HTML styling):**
+
+```bash
+pandoc temp.md -o out.pdf --pdf-engine=xelatex -V geometry:margin=2cm
+```
+
+If `xelatex` fails, try `pdflatex` or fall back to Option A.
+
+### 3.3 Verify
+
+- Confirm PDF exists and size is non-trivial (diagrams usually push size well above a text-only PDF).
+- Prefer `pdfinfo` / page count when available; open-path report to the user.
+
+---
+
+<h2 id="fallback" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Fallback pipeline (no `mmdc`)</h2>
+
+Use only if Mermaid CLI is unavailable:
+
+1. Convert Markdown → HTML with pandoc (`markdown+raw_html`).
+2. Replace each Mermaid fence with `<div class="mermaid">…</div>`.
+3. Inject Mermaid from CDN (`mermaid@10`+) and `await mermaid.run()`.
+4. Chrome headless `--print-to-pdf` with enough `--virtual-time-budget` (e.g. 10000–15000) so diagrams finish before print.
+5. Needs network for the CDN unless Mermaid is vendored locally.
+
+Prefer installing `mmdc` over relying on this path long-term.
+
+---
+
+<h2 id="output" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Output and cleanup</h2>
+
+1. Write the final PDF next to the source `.md` (same stem) unless the user specifies another path.
+2. Delete the temp dir (`.mmd` / `.png` / intermediate `.html`) after a successful PDF.
+3. Reply with the **absolute path**, page count if known, and note that Mermaid was rendered via **`mmdc`** (or fallback).
+
+---
+
+<h2 id="checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Self-check</h2>
+
+- [ ] Correct input `.md` identified.
+- [ ] `mmdc` available (or fallback documented).
+- [ ] Every Mermaid fence rendered as an image (or CDN SVG) in the PDF.
+- [ ] Source `.md` left unchanged unless the user asked to rewrite it.
+- [ ] Temp artifacts removed; PDF path reported to the user.

@@ -1,0 +1,90 @@
+---
+description: >-
+  User types prcd (proceed, whole word): clarify → plan under cursor_gen/ → implement.
+  Keywords: prcd, proceed. Not always-on—use @.cursor/rules/prcd.mdc if the prompt
+  does not attach this rule.
+alwaysApply: false
+---
+
+<h1 id="prcd-proceed-protocol" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>prcd</code> — proceed protocol</h1>
+
+**Purpose:** Turn **implementation-ready** parts of a request into **clarify → written plan (`cursor_gen/`) → implement**. Skip the sequence for parts that only need answers (analysis, summaries, explanations)—deliver those directly without treating them as `prcd` work.
+
+Copy **`prcd.mdc`** into any repo’s **`.cursor/rules/`** to reuse.
+
+**Cursor:** Do **not** set **`alwaysApply: true`** on this file if you only want the protocol when you say **`prcd`**—that would inject it into **every** chat. Keep **`alwaysApply: false`** and rely on the **`prcd`** keyword in your prompt (and a clear **`description`** above) so the rule can be selected; **@**‑mention **`.cursor/rules/prcd.mdc`** when the agent should follow it but the rule did not attach.
+
+<h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When this applies](#when-this-applies) — triggers for `prcd`.
+2. [Scope before ABC](#scope-before-abc) — split applicable vs non-code work.
+3. [Where plans live](#where-plans-live) — `cursor_gen/` convention.
+4. [Clarify, plan, implement](#clarify-plan-implement) — A → B → C for applicable items only.
+5. [Concise completion recap](#concise-completion-recap) — required closeout after `prcd`.
+6. [Notes](#notes) — does not replace README or other rules.
+
+---
+
+<h2 id="when-this-applies" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+**Trigger A — `prcd` at the end of a message**
+
+Take **everything before the word `prcd`** as the scope. Ignore **`prcd`** itself.
+
+**Trigger B — the entire message is only `prcd`**
+
+Re-evaluate your **immediate previous user message** and **your reply** to it: treat that pair like **Trigger A**’s “body” (what the user asked and what you already did).
+
+---
+
+<h2 id="scope-before-abc" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Scope before ABC</h2>
+
+1. Split the scoped text into **bullets / numbered items / paragraphs** if helpful.
+2. For each piece, decide:
+   - **`prcd`-applicable:** asks for **repo or config changes**, **new behavior**, **refactors**, **scripts**, etc. → goes through **A → B → C** below (only for these parts).
+   - **Not `prcd`-applicable:** asks for **metrics, interpretation, comparison, “what does X mean,”** reading logs/screenshots **without** asking you to change code → **answer in chat**; **do not** force a `cursor_gen/` plan for that piece unless the user also requested implementation.
+
+If **nothing** is `prcd`-applicable, **answer** the non-code parts if any, then **say briefly** that there was nothing to implement—**do not** fabricate a plan.
+
+---
+
+<h2 id="where-plans-live" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Where plans live</h2>
+
+- **`cursor_gen/`** at repo root (create if missing). Filename your choice, e.g. **`cursor_gen/<AREA>_PLAN.md`**.
+
+---
+
+<h2 id="clarify-plan-implement" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Clarify, plan, implement</h2>
+
+Only for **`prcd`-applicable items.**
+
+<h3 id="prcd-clarify" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.1 A — Clarify</h3>
+
+Ask **only** what you still need to implement safely. If **nothing**, say so and continue.
+
+<h3 id="prcd-plan" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.2 B — Plan</h3>
+
+Write a **numbered** plan + **short summary** (top or bottom); **save** under **`cursor_gen/`**.
+
+<h3 id="prcd-implement" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.3 C — Self-review and implement</h3>
+
+Check the plan; then **implement** (minimal diff). Revise the plan first if it’s wrong.
+
+---
+
+<h2 id="concise-completion-recap" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Concise completion recap</h2>
+
+After finishing `prcd` work, always end the reply with a **very concise recap** (3 bullets max):
+
+1. **What changed** (files / modules / behavior).
+2. **Key defaults or decisions** chosen during implementation.
+3. **What remains** (open question, deferred item, or “none”).
+
+Recap should be short, concrete, and easy to scan.
+
+---
+
+<h2 id="notes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Notes</h2>
+
+- **`prcd`** does not cancel reading **`README`**, other rules, or prior context.
+- Stack-specific details belong in **domain rules** or in the **`cursor_gen/`** plan, not here.

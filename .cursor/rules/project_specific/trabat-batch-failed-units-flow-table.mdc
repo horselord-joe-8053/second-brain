@@ -1,0 +1,43 @@
+---
+description: >-
+  Keyword **trabat** — list failed units for a batch_trace_id, run trabat_flow_extract.py, render the same
+  Multi-step flow tables as traunit for every unit with [LLM-VERIFY-FINAL]. Mention **trabat** or @ this rule.
+alwaysApply: false
+---
+
+# `trabat` — failed-unit PLGW multi-step flow tables
+
+**Trigger:** User message includes **`trabat`** plus a **`batch_<uuid>`** trace id (e.g. `trabat batch_1eace4b2-c0d4-4fd2-affc-170c7f7a8cbe`). No unit list required.
+
+## Run the combined extractor
+
+From repo root:
+
+```bash
+python3 -m tests.utils.log_based trabat-flow 'batch_<full-uuid>'
+# or: python3 .cursor/rules/project_specific/code/trabat_flow_extract.py 'batch_<full-uuid>'
+```
+
+This script:
+
+1. Finds **`failed_unit_ids`** via `[LLM-VERIFY-FINAL]` lines with matching `batch_trace_id` in `logs/api.log` (units that did not reach **Finally OK** — `verify_exhausted`, `inject_fail`, etc.).
+2. Calls the same bundle logic as **`traunit_flow_extract.py`** for those units.
+
+Stdout JSON includes `failed_unit_ids` and `units[]` with the same shape as **traunit** (schema v2: per-step `errors_after_*`, unit-level `errors_after_final_*`).
+
+Optional — failed ids only:
+
+```bash
+python3 -m tests.utils.log_based trabat-failed 'batch_<full-uuid>'
+```
+
+## Render tables
+
+Follow **`@.cursor/rules/project_specific/traunit-batch-unit-flow-table.mdc`** for each entry in `units[]` (one **Multi-step flow** section per failed unit).
+
+If `failed_unit_ids` is empty and `units` is empty, say clearly that no `[LLM-VERIFY-FINAL]` lines were found for that batch in `logs/api.log` (batch may have succeeded entirely, or logs may be rotated).
+
+## Related
+
+- **Explicit unit list:** **`traunit`** → `traunit-batch-unit-flow-table.mdc`.
+- **serlog:** `@.cursor/rules/serlog-search-gitignored-logs.mdc`.

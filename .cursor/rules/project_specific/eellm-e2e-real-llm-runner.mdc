@@ -1,0 +1,113 @@
+---
+description: >-
+  Keyword **eellm** — run Playwright real-LLM paragraph batch e2e (by **np** unit count) **R** times;
+  report **every** run with HTML Units tables + JSON paths (not only latest). Use after
+  **REFACTOR_E2E_REAL_LLM_NP_UNIFIED_BATCH** is implemented. Mention **eellm** or @ this rule.
+alwaysApply: false
+---
+
+# `eellm` — real-LLM E2E batch runner and multi-run reporting
+
+**Ritual note:** Default **`resall-slow` / `resall`** volume batch is **`--np 4`** only. Use **`eellm`** for ad hoc **`np 1` / `np 8` / larger**; do not expect those sizes in the ritual catalog.
+
+---
+
+## Command grammar
+
+Pattern (whitespace-separated, case-insensitive):
+
+```text
+eellm <size> <repeats>
+```
+
+| Token | Meaning | Examples |
+|-------|---------|----------|
+| **`<size>`** | Target generated unit count **`np`** | `4p`, `8p`, `16p`, `64p`, `13p` |
+| **`<repeats>`** | Run count | `2r`, `5r`, `1r` (optional; default **`1r`**) |
+
+**Parse `<size>`:** strip trailing **`p`** / **`P`** → integer **`np`** (e.g. `4p` → `4`).
+
+**Parse `<repeats>`:** strip trailing **`r`** / **`R`** → integer **`R`** ≥ 1 (e.g. `2r` → `2`).
+
+**Examples**
+
+| User says | Meaning |
+|-----------|---------|
+| `eellm 4p 2r` | `real-llm --np 4`, **2** consecutive runs |
+| `eellm 8p` | `real-llm --np 8`, **1** run |
+| `eellm 16p 3r` | `real-llm --np 16`, **3** runs |
+| `eellm 64p 5r` | `real-llm --np 64`, **5** runs |
+| `eellm 13p 5r` | CLI error (odd **np** with two tenses) |
+
+---
+
+## Execution (agent must run, not hand-wave)
+
+1. **Repo root** — `cd` to monorepo root; ensure **`.env`** has live LLM keys and **`E2E_PARAGRAPH_LLM_PROMPT_SIZE_LOGGED=1`** when KB columns matter.
+
+2. **Log file** — one sweep log:
+
+   ```bash
+   mkdir -p ops/run-logs
+   LOG="ops/run-logs/e2e-real-llm-${np}p-x${R}-$(date +%y%m%d-%H%M).log"
+   ```
+
+3. **Loop** — for `i` in `1..R`:
+
+   ```bash
+   echo "=== run $i $(date -Iseconds) ===" | tee -a "$LOG"
+   # Optional short cap: E2E_PLGW_TIMEOUT_MS=240000 uv run python ...
+   uv run python ops/local/run_all.py e2e-test real-llm --np <np> 2>&1 | tee -a "$LOG"
+   # Makeup (subset catalog): add --verbs 'corrigir,comer' --tenses 'present' (lowercase slugs; validated pre-Playwright)
+   echo "=== run $i exit: $? ===" | tee -a "$LOG"
+   ```
+
+   For **`np=1`**: `e2e-test real-llm --np 1` (minimal-batch Playwright project; catalog allows 1×1×1).
+
+4. **Do not stop early** on first failure unless the user asked for a single debug run — complete all **R** attempts and mark which failed.
+
+---
+
+## Reporting (mandatory for multi-run sweeps)
+
+**Never show only the last run.** `latest-plgw-verify-rounds.json` is overwritten each time; earlier runs live in per-run files and the sweep log.
+
+### For each run `i = 1..R`, include:
+
+1. **One-line summary** — exit code, wall time, `run_id`, `repair_lm_calls` list, total, max, `augment_kb`, `avg_verify_kb`, pass/fail vs **`PW_PLGW_FALLBACK_THRESHOLD_PCT`** if applicable.
+
+2. **One HTML Units table** (with **`rowspan`** on run/batch/catalog columns) from that run’s JSON — columns:
+   - `run_id`, `batch_idx`, `batch`, `augment_kb`, `avg_verify_kb`, `unit`, `verb`, `tense`, `exercise_id`, `repair_lm_calls`, `generator_model`, `gen_finally_ok`
+
+3. **JSON path** — `ops/run-logs/plgw-verify-rounds-run-<run_id>.json`; fallback grep `PLGW_VERIFY_ROUNDS_JSON=` from the sweep log for that run block.
+
+4. **`failures[]` summary** — list failed `(verb_infinitive, tense_code)` from schema v2 when present.
+
+### Sweep footer
+
+| Item | Content |
+|------|---------|
+| **Score** | `R_pass/R` (e.g. `2/2 PASS`) |
+| **Log** | Full path to `ops/run-logs/e2e-real-llm-…log` |
+| **Failures** | Which run index failed; link `run_id` / `failures[]` |
+
+---
+
+## Catalog expectations
+
+- Default tenses: **Presente do Indicativo** + **Pretérito Perfeito do Indicativo**.
+- Verb pool (8): `falar`, `gostar`, `comer`, `escolher`, `escrever`, `viver`, `corrigir`, `abrir`.
+- **`np`** must satisfy **`2 × V × n_variety = np`** with **`V ≤ 8`**, **`n_variety ≤ 4`** → **`np` even**.
+- **`--verbs` on Irregular/Semi-regular:** Playwright switches workbook tabs before checking verb boxes — **`REFACTOR_E2E_PLGW_BATCH_GROUP_TAB_SELECTION.md`**, **`admin-ui.ts`**.
+
+**4p default verbs:** pool prefix **`falar`, `gostar`**.
+
+---
+
+## Related
+
+- Plan: **`cursor_gen/refactor_plans/completed/REFACTOR_E2E_REAL_LLM_NP_UNIFIED_BATCH.md`**
+- Group tabs: **`cursor_gen/refactor_plans/completed/REFACTOR_E2E_PLGW_BATCH_GROUP_TAB_SELECTION.md`**
+- Verify-rounds JSON/HTML: **`tests/e2e/support/plgwVerifyRoundsSummary.ts`**, **`tests/e2e/domain/plgw/batch-finish.ts`**
+- Resolver: **`tests/e2e/support/plgwBatchCatalog.ts`**
+- Ops logs: **`@.cursor/rules/opslog-ops-run-logs-directory.mdc`**, **`@.cursor/rules/serlog-search-gitignored-logs.mdc`**

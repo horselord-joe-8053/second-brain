@@ -1,0 +1,205 @@
+---
+description: >-
+  User types implref / resumimpl: follow through a numbered refactor plan .md — reorganize if needed per
+  mrkd-markdown-authoring, resolve ambiguity, strengthen tests/comments/docs bullets, implement phases without
+  mid-phase permission prompts; only §3.1d true blockers or §3.1e session cut may defer work (never subjective
+  "too large"); after each phase extract *qualified* war stories per exwar (skip only for duplicate *lesson*
+  in war_stories/ or truly thin—not because similar code already exists); route portable vs project-specific;
+  move plan to cursor_gen/refactor_plans/completed or wip;
+  resumimpl resumes from first [ ].
+  Keywords: implref, resumimpl refactor plan implementation.
+alwaysApply: false
+---
+
+<h1 id="ir-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>implref</code> / <code>resumimpl</code> — implement a referenced refactor plan</h1>
+
+<h2 id="ir-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When this applies](#ir-when)
+2. [Refactor plan document shape (<code>[ ]</code> / <code>[X]</code>)](#ir-shape)
+3. [Related rules](#ir-rules)
+4. [Procedure: step 0 — normalize the plan Markdown](#ir-s0)
+5. [Procedure: step 1 — ambiguity gate](#ir-s1)
+6. [Procedure: step 2 — tests, comments, documentation](#ir-s2)
+7. [Procedure: step 3 — implement the full plan](#ir-s3)
+8. [Procedure: step 3.4 — war story extraction after each phase](#ir-s3-war)
+9. [Procedure: step 3.5 — relocate plan under <code>cursor_gen/refactor_plans/completed/</code> vs <code>cursor_gen/refactor_plans/wip/</code>](#ir-s3-move)
+10. [Procedure: step 4 — closing summary](#ir-s4)
+11. [<code>resumimpl</code>](#ir-resume)
+12. [Self-check (agent)](#ir-selfcheck)
+
+**Related authoring rule:** `.cursor/rules/mrkd-markdown-authoring.mdc` — use it when **creating or reorganizing** the refactor plan `.md` (numbered outline, hierarchy, HTML headings or portable palette where appropriate).
+
+---
+
+<h2 id="ir-when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+| Trigger | Meaning |
+|---------|---------|
+| **<code>implref</code>** | User attaches or names a refactor plan **Markdown** path (typically under <code>cursor_gen/</code> or docs). Execute the procedure below against **that file** unless they specify otherwise. |
+| **<code>resumimpl</code>** | User wants to **continue** the same refactor plan after a block or interruption: re-read the plan, respect already marked <code>[X]</code> items, continue from the first incomplete phase. |
+
+If the message does not name a plan file, **infer** the most recently discussed plan in the thread; if still ambiguous, ask **one** precise question: which path is the plan?
+
+---
+
+<h2 id="ir-shape" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Refactor plan document shape (<code>[ ]</code> / <code>[X]</code>)</h2>
+
+The plan **Markdown** MUST be workable as a checklist:
+
+- **Major sections:** Numbered phases (example: **1. Phase A**, **2. Phase B**, …) with matching **outline** at the top of the doc (mirrors MRKD document-outline pattern).
+- **Items:** Each implementable bullet or phase-level deliverable prefixed with **`[ ]`** (not done) or **`[X]`** (done).
+- **Phase headings:** Optionally prefix the **phase heading line** itself with **`[X]`** when **all** bullets in that phase are complete — e.g. <code>**[X] 3.** Phase C — …</code> — so scanners see progress “at the section title”; keep bullet-level <code>[X]</code> in sync.
+
+If the referenced file mixes prose without phases, **reorganize** it (step 0) **before** implementation.
+
+---
+
+<h2 id="ir-rules" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Related rules</h2>
+
+| Rule | Use when |
+|------|----------|
+| **`.cursor/rules/mrkd-markdown-authoring.mdc`** | Normalizing or authoring the refactor plan **`.md`** itself. |
+| **`.cursor/rules/exwar-war-stories-extraction.mdc`** (**exwar**) | After **each implemented phase**, deciding whether lessons qualify and **how** to append stories to **`war_stories/WAR_STORIES.md`** (metadata, **§N.1–N.5**, keywords, **`mrkd`** tables/Mermaid, collection outline/index updates). |
+
+---
+
+<h2 id="ir-s0" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Procedure: step 0 — normalize the plan Markdown</h2>
+
+1. Open the refactor plan **`.md`**.
+2. If structure is not yet **numbered phases + `[ ]` / `[X]` items**, **edit the file** to match [section 2](#ir-shape) and **MRKD** hierarchy (outline, at most three heading levels, consistent numbering).
+3. Ensure every phase has **actionable** checkboxes; split vague prose into checkable items.
+
+---
+
+<h2 id="ir-s1" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Procedure: step 1 — ambiguity gate</h2>
+
+1. Scan the plan for **product / schema / scope** decisions that **only the user** can answer (missing defaults, conflicting goals, breaking API contracts).
+2. **If any remain:** reply with a **short numbered list** of questions only — do **not** start implementation. Stop.
+3. **If none remain:** state “**No blocking ambiguities**” in one line and proceed to step 2.
+
+---
+
+<h2 id="ir-s2" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Procedure: step 2 — strengthen the plan (tests, comments, docs)</h2>
+
+**Edit the same refactor plan `.md`** to add or reinforce two cross-cutting subsections (under the outline or as a dedicated **“Quality bar”** section):
+
+| Area | Requirement |
+|------|-------------|
+| **Tests** | Each phase (or the plan global bar) must call for **appropriate** tests: **unit**, **integration**, **Playwright mocked <code>test:e2e</code>**, and/or **full-stack <code>e2e-test real</code>** where behavior crosses services or UI. Pick what fits; do not skip tests for risky paths. |
+| **Comments and documentation** | **Sufficient informative comments** at important places (including a **brief file-level purpose** at top of touched modules where missing or stale). **Update** existing docs (README, <code>tests/README.md</code>, etc.) when behavior or commands change; add new doc only when the user or plan asks. |
+
+After editing, proceed to step 3.
+
+---
+
+<h2 id="ir-s3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Procedure: step 3 — implement the full plan</h2>
+
+| Rule | Behavior |
+|------|----------|
+| **3.1 Stops** | Do **not** pause between phases to ask permission. Continue through **all** phases the user asked you to execute unless **blocked** — see **§3.1d** for the **closed list** of true blockers. If blocked, ask **precise, minimal** questions; after answers, continue. |
+| **3.1b <code>resumimpl</code>** | Same as resume: pick up from first <code>[ ]</code> after user unblocks. |
+| **3.1c Not a blocker (forbidden excuses)** | **Never** stop or defer **`implref`** solely because: a phase looks large or risky; the diff might be huge; migrations/UI feel “better as a separate PR”; you prefer confirmation before altering schema; subjective time estimates; internal model/context pressure **while the turn still runs** (**§3.1e** handles when the host **cuts** the turn); **skipping or deferring the [§3.4 exwar gate](#ir-s3-war)** to rush the next phase or because the user did not say `exwar`. **Instead:** execute the **next unchecked** actionable bullet (smallest increment that stays green under tests), and complete **§3.4** before marking a phase `[X]`. |
+| **3.1d True blockers** | **Allowed** reasons to pause and engage the user **with the §3.1d label** in the closing table: build/test failures you cannot resolve in-repo; missing secrets/env; unresolved **ambiguous** requirements after **[step&nbsp;1](#ir-s1)**; irreconcilable spec vs code; destructive data change **without** rollback path required by the plan; **explicit** user revocation or smaller scope (**“only phases A–B today”**) where you **narrow** checklist targets **before** starting. |
+| **3.1e Host / session cut** | If the tooling **truncates or ends** your turn (**output budget**, disconnect) before all **`[ ]`** → **`[X]`**, classify as **§3.1e Session cut** — **not** “implref succeeded.” Finish current edit batch safely; keep plan honest **`[ ]`**; **§3.5 → `wip`**; closing table **must** name **§3.1e** and the **exact next bullet + path** plus an explicit **`resumimpl`** follow-up naming that plan file. |
+| **3.2 Plan updates** | After completing each **phase** (or major deliverable), set its bullets to <code>[X]</code> and mark the **phase heading** with <code>[X]</code> when fully done. Save the plan file in the same commit batch when practical. |
+| **3.3 Cannot implement** | If something is **not** implementable for reasons **other** than 3.1 (e.g. out-of-repo service, scope cut), add a **new final phase** to the plan, e.g. **“Deferred / follow-ups”**, containing an **HTML table** (MRKD section 6.1 style: dark blue header row) with columns: **Item** · **Reason** · **Urgency** (brief) · **Recommended handling**. |
+
+Immediately after each phase is implemented and **3.2** is updated for that phase, run [**step 3.4 — war stories**](#ir-s3-war) before starting the next phase.
+
+---
+
+<h2 id="ir-s3-war" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Procedure: step 3.4 — war story extraction after each phase (mandatory gate)</h2>
+
+**Goal:** Capture **durable, learnable** lessons from **that phase**—not a per-`aciub`/`implref` receipt. This step is **blocking**: a phase is not done until exwar completes. Follow **`.cursor/rules/exwar-war-stories-extraction.mdc`** (**exwar**) end-to-end and **`.cursor/rules/aciub-allow-continue-iterations-until-blocked.mdc`** [§5 Exwar gate](#aciub-exwar-gate) when **`aciub`** is active.
+
+**Default:** append a meaningful story unless the lesson is **already completely covered** in **`war_stories/WAR_STORIES.md`** or **`war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`** (cite **#N**), or is **truly trivial** per exwar *What qualifies*.
+
+1. **Read both collections** (indices + relevant bodies) before deciding skip vs append.
+2. **Reflect** against **exwar** *What qualifies* and *Story kinds*. Prefer **mechanism** (trap, contract, design tradeoff) over “we shipped the checklist.”
+3. **Skip only when exwar says so.** Thin polish, “did the ticket” with no insight, or **duplicate of an existing war-story index row** (cite story **N** — lesson **completely** already written) → **do not append**. In the [step 4](#ir-s4) summary, **one sentence** naming the skip reason (e.g. “skip: duplicate of story 83”; “skip: chrome-only, no reusable insight”).
+4. **Do not skip because the pattern already exists in code.** “Mechanism already known from demos / another scope” or “similar helper already shipped” is **not** a valid skip — that is **code coverage**, not **lesson capture**. If this phase produced a clear insight and that insight is **not** already written in either `war_stories/` file, **append** it in the **same turn**.
+5. **If it qualifies — choose the file** (see **exwar** routing):
+   - **Portable / interview-transferable** → append to **`war_stories/WAR_STORIES.md`**
+   - **Floor35 / this-repo product, routes, modes, pedagogy IA, repo-only ops harnesses** → append to **`war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`**
+6. When writing: metadata, **§N.1–N.5**, keywords, **`mrkd`** as needed; **update that file’s story index** in the same edit. **Absorb-in-place** (no canonical lesson only in `cursor_gen/` or chat).
+7. **Do not inflate** thin lessons; **do not cut** a deep qualified lesson short only to stay brief.
+8. **Tier A bias (not a force):** Plans with a Decision log / LM+schema arc often yield **one** design story—**unless** an existing index row already teaches the **same lesson text**. Never mint a story solely because a phase completed; never skip a design strategy lesson solely because a sibling scope already implemented a related pattern.
+
+---
+
+<h2 id="ir-s3-move" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Procedure: step 3.5 — relocate plan under <code>cursor_gen/refactor_plans/completed/</code> vs <code>cursor_gen/refactor_plans/wip/</code></h2>
+
+Run this when an **`implref` / `resumimpl` engagement** ends: all requested work for this pass is done, you hit a true blocker, or the user stops the run—**after** saving the plan’s final **`[ ]` / `[X]`** state.
+
+1. Ensure directories exist: **`cursor_gen/refactor_plans/completed/`** and **`cursor_gen/refactor_plans/wip/`** (create them if missing).
+
+2. **Checkbox taxonomy (before classifying the folder)** — Plans must not confuse **[§7 procedural step&nbsp;3](#ir-s3)** implementations or readers by pairing **`[ ]`** with prose that **is not** part of **`implref`'s in-repo commitments**.
+
+   | Kind | SHOULD use **`[ ]` / `[X]`?** |
+   |------|------------------------------|
+   | Concrete deliverables inside **numbered phases** the **`implref`** pass is executing | **Yes** |
+   | **Non-goals** (“we do **not** do X”) | **No** — use prose or empty tables; **`[ ]` looks like undone work** |
+   | **Explicitly optional adjuncts** (debug logging spikes, multiset, operator-only staging narratives) named *optional / product-gated* | Prefer **Deferred** section **without** phased **`[ ]`**; otherwise **`wip/`** if left as orphaned **`[ ]`** in phased lists |
+   | **Out-of-repo checklists** (manual staging QA) | **No** phased boxes tied to **`implref`** |
+
+   Before **`git mv`** to **`completed/`**: satisfy **implementable** **`[ ]`**, **`[X]`** waive skipped items **with rationale**, migrate leftovers **into Deferred** without duplicate boxes — or classify plan **`wip/`** if phased **`[ ]`** remain honest TODOs.
+
+3. **Classify completion**
+
+   - **3.1 `completed/` (core shipped).** Using **item&nbsp;2 taxonomy**, every **implementable** phased row under **`implref`'s scope is **`[X]`** — *or* cleanly waived per item&nbsp;2 — and **numbered phases** contain **no leftover misleading `[ ]`** rows. Rename phase headings **`[X]`** when justified. Closing **step&nbsp;4** names any **waived optional** scope.
+
+     **Mismatch guard:** if implementable phased **`[ ]`** still denote **skipped required work**, use **`wip/`** (or fix Markdown); do **not** place the doc in **`completed/`**—“use judgment” is **not** a bypass for orphaned TODO boxes.
+
+     **Purely informational** sections plus Markdown **tables whose rows omit `[ ]` / `[X]` entirely** do **not** block **`completed/`**.
+
+   - **3.2 `wip/`**. Honest phased TODOs **`[ ]`**, **`§3.1e`** cuts, **`§3.1d`** blocker, or **`resumimpl`** expected → **`cursor_gen/refactor_plans/wip/`**.
+
+4. **Path rules** (folder meanings: **onlyref** [Plan folder lifecycle](.cursor/rules/onlyref-refactor-plan-author-only.mdc#onlyref-folders) — do not duplicate that table here)
+   - Ensure **`cursor_gen/refactor_plans/new/`**, **`wip/`**, and **`completed/`** exist.
+   - Plan in **`new/`** and **first** implementable phased **`[X]`** in this pass → **`git mv`** to **`wip/`** (same basename).
+   - Plan in **`wip/`** or **`new/`** when **item&nbsp;3.1** satisfied → **`git mv`** to **`completed/`**.
+   - Plan already in **`wip/`** or **`completed/`** → **move between** those two when status **changes**; do not move back to **`new/`**.
+   - Plans at **`cursor_gen/<file>.md`** (root only) → **`wip/`** or **`completed/`** per **item&nbsp;3** above.
+   - Plans **outside** **`cursor_gen/`**: default **`git mv` / copy** under **`wip/`** or **`completed/`** unless the user keeps a canonical path elsewhere—state **both** in step&nbsp;4.
+
+5. **Deferred dedupe.** Deferred / follow-ups **must not duplicate** phased **`[ ]`** after closeout; **one canonical** home — prefer Deferred tables/prose rows that **omit** `[ ]` / `[X]` for backlog items.
+
+---
+
+<h2 id="ir-s4" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Procedure: step 4 — closing response to the user</h2>
+
+When implementation stops (complete or blocked), reply with an **HTML table** summary (MRKD 6.1 pattern), for example:
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th style="padding:8px">Area</th><th style="padding:8px">Outcome</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd;padding:8px">Phases completed</td><td style="background:#e8f5e9;padding:8px">…</td></tr>
+<tr><td style="background:#e3f2fd;padding:8px">Tests run</td><td style="background:#e8f5e9;padding:8px">…</td></tr>
+<tr><td style="background:#e3f2fd;padding:8px">War stories</td><td style="background:#e8f5e9;padding:8px">New **#N** in <code>war_stories/WAR_STORIES.md</code> and/or <code>WAR_STORIES_PROJECT_SPECIFIC.md</code>, or explicit skip per phase (cite duplicate **#N** or trivial reason) — never blank without justification</td></tr>
+<tr><td style="background:#e3f2fd;padding:8px">Plan file</td><td style="background:#e8f5e9;padding:8px">Final path after <a href="#ir-s3-move">step 3.5</a> (<code>cursor_gen/refactor_plans/completed/</code> vs <code>cursor_gen/refactor_plans/wip/</code>) + link to deferred table if any</td></tr>
+<tr><td style="background:#e3f2fd;padding:8px">Blockers</td><td style="background:#ffebee;padding:8px">none or listed</td></tr>
+</tbody>
+</table>
+
+Keep rows **concise**; link paths as full strings.
+
+---
+
+<h2 id="ir-resume" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. <code>resumimpl</code></h2>
+
+Treat **`resumimpl`** as: reload the **same** refactor plan (from **`cursor_gen/refactor_plans/wip/`** if relocated), confirm current **`[X]`** state, run **step 1** only if new ambiguity appeared, then continue **step 3** from the first incomplete checkbox. After each completed phase, run **step 3.4**; when the pass ends, run **step 3.5** and **step 4**.
+
+---
+
+<h2 id="ir-selfcheck" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Self-check (agent)</h2>
+
+- Plan path explicit or inferred once.
+- MRKD-friendly plan structure before coding.
+- Tests + comments + docs expectations visible **in the plan** before coding.
+- No permission spam between phases; interrupt **only** for **§3.1d** true blockers — **not** for **§3.1c** forbidden excuses.
+- After **each** phase: **read both** `war_stories/` collections → **exwar gate** → append **#N** or document skip (duplicate **#N** / trivial only); **same turn** as phase `[X]`. Closing summary **“War stories: none”** requires explicit per-phase skip lines—**not** “mechanism already in demos/code” and **not** “documented only in the plan/chat.” See **aciub** [§5 Exwar gate](aciub-allow-continue-iterations-until-blocked.mdc#aciub-exwar-gate).
+- On close: Relocate plans per **[step&nbsp;3.5](#ir-s3-move)** — **`completed/`** only when phased implementable **`[ ]`** items are **`[X]`**, waived **with rationale**, or moved **out of phased lists** without misleading boxes; **`wip/`** when honest phased TODO boxes remain or blockers/session cuts apply.
+- Final user reply is a **tabular** summary including **war stories** and **final plan path**.

@@ -1,0 +1,140 @@
+---
+description: >-
+  Keywords **implreftdd** / **resumimpltdd**: thin TDD-chain wrapper — execute full **implref** / **resumimpl**
+  procedure, but step 3 micro-loop is test-first (with heuristic back-off). Chain 2 impl spine; pair with **aciubtdd**
+  for continuous loop. Classic chain: **onlyref** → **aciub** → **implref**.
+alwaysApply: false
+---
+
+<h1 id="irtdd-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>implreftdd</code> / <code>resumimpltdd</code> — implement a refactor plan (TDD chain)</h1>
+
+<h2 id="irtdd-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When this applies](#irtdd-when) — keywords and chain placement.
+2. [Classic delegate (required)](#irtdd-delegate) — all non-TDD behavior from **implref**.
+3. [TDD delta — step 3 override](#irtdd-step3) — test-first micro-loop.
+4. [TDD mode heuristics (runtime)](#irtdd-heuristics) — strict vs back off.
+5. [Plan TDD mode line (required)](#irtdd-mode-line) — one line per phase.
+6. [Chain links](#irtdd-chain) — companion TDD rules.
+7. [Anti-drift](#irtdd-drift) — maintenance contract.
+8. [Self-check](#irtdd-self) — agent merge gate.
+
+---
+
+<h2 id="irtdd-when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+| Trigger | Meaning |
+|---------|---------|
+| **`implreftdd`** | User attaches or names a refactor plan **`.md`**. Execute **implref** procedure with **TDD step 3** below. |
+| **`resumimpltdd`** | Resume the same TDD-chain plan: first incomplete `[ ]`, same TDD rules. |
+| **`aciubtdd`** active | **aciubtdd** delegates here for impl spine; do not fall back to plain **implref** mid-run. |
+
+If the plan was authored with **`onlyreftdd`**, read its per-phase **TDD mode** labels before coding.
+
+---
+
+<h2 id="irtdd-delegate" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Classic delegate (required)</h2>
+
+**Read and execute the full procedure** in:
+
+**`.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`** (**`implref`** / **`resumimpl`**)
+
+That covers: step 0 normalize, step 1 ambiguity gate, step 2 Quality bar in plan, step 3 phases, step 3.4 exwar, step 3.5 wip/completed, step 4 closing table, blockers (3.1d / 3.1e), and self-check.
+
+**Non-TDD behavior lives only in the classic file.** Edit classic **`implref`** once when shared impl rules change; edit **this file** only when TDD execution rules change.
+
+**Override:** [step 3 micro-loop](#irtdd-step3) and [heuristics](#irtdd-heuristics) **replace** any implicit code-first ordering from the classic chain.
+
+---
+
+<h2 id="irtdd-step3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. TDD delta — step 3 override</h2>
+
+For each **scoped chunk** (smallest green increment under the current phase):
+
+<h3 id="irtdd-step3-strict" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.1 Mode <code>strict-TDD</code></h3>
+
+1. **Write or extend test(s)** named in the plan Quality bar (or inferred contract).
+2. **Run tests** — expect **red** (or acceptable partial red with documented subset).
+3. **Implement minimal code** to satisfy the contract.
+4. **Re-run tests** until green or a true blocker.
+5. Repeat for the next chunk in the phase.
+
+Loop: **`test → run red → code → test → fix → …`**
+
+<h3 id="irtdd-step3-smoke" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.2 Mode <code>smoke-after-delete</code></h3>
+
+1. Perform the deletion / removal chunk (files, routes, manifest rows, UI tab).
+2. **Run smoke tests** listed in the plan (or repo default suite for touched paths).
+3. Fix breakages until green.
+
+No forced red-first test for pure removal unless the plan explicitly demands one.
+
+<h3 id="irtdd-step3-shared" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.3 Shared (both modes)</h3>
+
+- After phase green + **exwar** (classic step 3.4), mark phase `[X]` per classic **3.2**.
+- When seeds/migrations changed, follow classic **aciub** env-sync expectations via **aciubtdd** if active (SQLite harness + Postgres refresh).
+
+---
+
+<h2 id="irtdd-heuristics" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. TDD mode heuristics (runtime)</h2>
+
+Use the plan label when present. If missing, classify once at phase start:
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Signal</th><th>Mode</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">New/changed API, manifest, emit, pool diff, merge/alias logic</td><td style="background:#e8f5e9"><strong>strict-TDD</strong></td></tr>
+<tr><td style="background:#e3f2fd">Delete files, routes, scopes, tabs, proto assets</td><td style="background:#fff8e1"><strong>smoke-after-delete</strong></td></tr>
+<tr><td style="background:#e3f2fd">Ambiguous</td><td style="background:#e8f5e9"><strong>strict-TDD</strong> (note in plan Decision log)</td></tr>
+</tbody>
+</table>
+
+---
+
+<h2 id="irtdd-mode-line" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Plan TDD mode line (required)</h2>
+
+At the **start of each phase**, emit one line (progress update or silent work header):
+
+```text
+TDD mode phase N: strict-TDD — test-first catalog_pool_mapping emit counts.
+```
+
+or
+
+```text
+TDD mode phase N: smoke-after-delete — remove E2B routes then run clitics e2e smoke.
+```
+
+Do not switch modes mid-phase without documenting in the plan Decision log.
+
+---
+
+<h2 id="irtdd-chain" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Chain links</h2>
+
+| Chain | Plan | Implement |
+|-------|------|-----------|
+| **1 Classic** | **`onlyref`** | **`aciub`** + **`implref`** |
+| **2 TDD** | **`onlyreftdd`** | **`aciubtdd`** + **`implreftdd`** (this file) |
+
+| TDD rule | Path |
+|----------|------|
+| Plan authoring | `.cursor/rules/tdd/onlyreftdd-refactor-plan-author-only.mdc` |
+| Continuous loop | `.cursor/rules/tdd/aciubtdd-allow-continue-iterations-until-blocked.mdc` |
+
+---
+
+<h2 id="irtdd-drift" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Anti-drift</h2>
+
+> **Mirror classic except TDD sections.** Exwar, wip/completed, ambiguity gate, blockers, closing table = **`implref`**. This file adds **step 3 TDD loop**, **heuristics**, and **mode line** only.
+
+---
+
+<h2 id="irtdd-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Self-check (agent)</h2>
+
+- [ ] User invoked **`implreftdd`**, **`resumimpltdd`**, or **`aciubtdd`** with plan in scope.
+- [ ] Full **`implref`** procedure followed except step 3 ordering.
+- [ ] Each phase started with **TDD mode** one-liner.
+- [ ] **`strict-TDD`:** red observed (or documented) before impl; green before `[X]`.
+- [ ] Closing table per classic step 4 (tests run row mentions TDD mode used).

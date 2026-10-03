@@ -1,0 +1,89 @@
+---
+description: >-
+  Keyword **pgjudge** (alias **pglpljudge**) — after PGLPL live harness (`pglpl-live`)
+  or **pgbattest** prints AGENT_JUDGE / FAIL, analyze LPL retries in lay terms
+  (flake vs prompt/code fix). Batch campaigns are owned by **pgbattest**.
+alwaysApply: false
+---
+
+<h1 id="pgjudge-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>pgjudge</code> — lay analysis after PGLPL live retries</h1>
+
+## Document outline
+
+1. [When this applies](#when)
+2. [How to use (with pgbattest)](#howto)
+3. [Harness signal](#signal)
+4. [Required analysis](#analysis)
+5. [Response shape (mandatory)](#shape)
+
+---
+
+<h2 id="when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+- User mentions **`pgjudge`** (or legacy **`pglpljudge`**), **or**
+- **`pgbattest`** hit a live FAIL / `AGENT_JUDGE` and needs an autopsy, **or**
+- Agent (or user) just ran `pglpl-live` / `pgbattest` and stdout contains **`[pglpl-live] AGENT_JUDGE`**.
+
+If the run had **no** `AGENT_JUDGE` lines (first-try pass), skip this rule’s reply.
+
+---
+
+<h2 id="howto" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. How to use (with <code>pgbattest</code>)</h2>
+
+**Most efficient loop:**
+
+```text
+pgbattest places:cities          # run doors
+# …if FAIL / AGENT_JUDGE…
+pgjudge                          # 1–2–3 lay autopsy (this rule)
+# …fix prompt/code…
+pgbattest places:cities          # retry same door / scope
+```
+
+**Judge-only (single harness run, not a campaign):**
+
+```text
+# after: python ops/local/run_all.py pglpl-live --scope places:states
+pgjudge
+```
+
+**Do not:** start a multi-scope campaign from `pgjudge` alone — use **`pgbattest`** for that. For a **recorded** scoreboard run that needs full produce→verify→gate→punch tables (Door A/B/C), use **`pgpbp`**. This rule stays the short live **1–2–3** after `AGENT_JUDGE`.
+
+---
+
+<h2 id="signal" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Harness signal</h2>
+
+| Field | Meaning |
+|-------|---------|
+| `tier=retry_ok` | Passed, but LPL attempts were **&gt; 1** and **≤** `harness_max_lpl_attempts` |
+| `tier=over_budget` | Failed bar and/or attempts **&gt;** harness max (or missing attempt count) |
+| `errors=` / `last_error=` | Compact failed produce/verify steps from the row |
+
+Use those lines plus nearby produce/verify log snippets when present.
+
+---
+
+<h2 id="analysis" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Required analysis</h2>
+
+1. Read attempt errors carefully (phase + message).
+2. Decide:
+   - **Genuine LLM flake** — same prompt/code would usually pass; contradiction or random refusal; **or**
+   - **Obvious improvement** — missing prompt contract, local inject/verify bug, bad seed, wrong expected article, etc.
+3. For **`over_budget`**: always recommend a concrete prompt and/or code change (do not stop at “flake”).
+4. For **`retry_ok`**: say flake **or** soft improvement; if improvement, say what to change.
+
+---
+
+<h2 id="shape" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Response shape (mandatory)</h2>
+
+**Very concise**, **lay terms**, **numbered**:
+
+```text
+1. What went wrong (one short paragraph, plain language).
+2. Flake or real issue? (one sentence).   # for over_budget: say "real issue" (or mix); still do step 3
+3. What we should change (prompt / code / nothing) — bullets only if needed.
+```
+
+**Multi-scope / chip-sweep runs:** A results table is fine for overview, but **every** `AGENT_JUDGE` row still needs its own **1–2–3** block (especially every `over_budget`). Do **not** fold “recommend improvement” only into a Notes column and stop.
+
+Do **not** dump raw JSON. Do **not** ask permission to analyze — just analyze.

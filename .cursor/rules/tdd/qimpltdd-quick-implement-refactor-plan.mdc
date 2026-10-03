@@ -1,0 +1,100 @@
+---
+description: >-
+  Keyword **qimpltdd** [optional task or plan path]: TDD-chain **qimpl** — same orchestration as **qimpl**, but plan
+  with **onlyreftdd**, execute with **aciubtdd** / **implreftdd**. Explicit path substitution table below.
+  Classic counterpart: `.cursor/rules/qimpl-quick-implement-refactor-plan.mdc`.
+alwaysApply: false
+---
+
+<h1 id="qimpltdd-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>qimpltdd</code> — quick implement (TDD chain)</h1>
+
+Use when the user includes **`qimpltdd`**. Same four-step orchestration as **`qimpl`**, but **chain 2** rules replace every chain 1 reference.
+
+---
+
+<h2 id="qimpltdd-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Trigger](#qimpltdd-trigger) — keyword.
+2. [Classic delegate (required)](#qimpltdd-delegate) — full **qimpl** procedure.
+3. [Chain substitution table (required)](#qimpltdd-substitute) — explicit TDD paths.
+4. [TDD delta](#qimpltdd-delta) — plan + loop emphasis.
+5. [Anti-drift](#qimpltdd-drift) — maintenance contract.
+6. [Self-check](#qimpltdd-self) — agent merge gate.
+
+---
+
+<h2 id="qimpltdd-trigger" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Trigger</h2>
+
+| User says | Agent does |
+|-----------|------------|
+| **`qimpltdd`** + task or plan path | Execute **qimpl** steps 1–4 with [substitution table](#qimpltdd-substitute) applied at every delegate. |
+
+**Do not** use plain **`qimpl`**, **`onlyref`**, **`aciub`**, or **`implref`** mid-run on the same refactor.
+
+---
+
+<h2 id="qimpltdd-delegate" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Classic delegate (required)</h2>
+
+**Read and execute** the full procedure in:
+
+**`.cursor/rules/qimpl-quick-implement-refactor-plan.mdc`** (**`qimpl`**)
+
+Steps: ambiguity gate → plan → implement all phases → layman closing table.
+
+**Whenever `qimpl` names a chain 1 rule path or keyword**, use the matching **chain 2 row** in [§3](#qimpltdd-substitute) instead. **`qimpl` does not auto-resolve TDD paths** — this file’s table is authoritative.
+
+**Override when `qimpltdd` is the top-level trigger (not bare `onlyreftdd`):**
+
+| Sub-rule says | Under **`qimpltdd`** |
+|---------------|----------------------|
+| **`onlyreftdd`** §1 — “Do not implement code” | **Ignore for step 3** — plan shape only; **`qimpl` step 3 runs in the same session** |
+| **`onlyreftdd`** closing — “implement with `aciubtdd`” handoff | **Do not stop there** — immediately run **`aciubtdd <plan.md>`** per **`qimpl` step 3** |
+| User also asks for a layman summary table | Step 4 **after** step 3 (or on stop), not instead of step 3 |
+
+Bare **`onlyreftdd`** alone = plan-only handoff. **`qimpltdd`** = full **`qimpl`** orchestration with chain 2 substitution — **never plan-only exit**.
+
+---
+
+<h2 id="qimpltdd-substitute" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Chain substitution table (required)</h2>
+
+| `qimpl` step | Chain 1 (ignore when **qimpltdd**) | Chain 2 (use instead) |
+|--------------|--------------------------------------|------------------------|
+| Step 2 — plan | **`onlyref`** · `.cursor/rules/onlyref-refactor-plan-author-only.mdc` | **`onlyreftdd`** · `.cursor/rules/tdd/onlyreftdd-refactor-plan-author-only.mdc` |
+| Step 3 — implement loop | **`aciub`** · `.cursor/rules/aciub-allow-continue-iterations-until-blocked.mdc` | **`aciubtdd`** · `.cursor/rules/tdd/aciubtdd-allow-continue-iterations-until-blocked.mdc` |
+| Step 3 — impl spine | **`implref`** / **`resumimpl`** · `.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc` | **`implreftdd`** / **`resumimpltdd`** · `.cursor/rules/tdd/implreftdd-resumimpl-refactor-plan-followthrough.mdc` |
+
+**Invocation examples:**
+
+```text
+qimpltdd CR_Task2 remove E2B clitics end-to-end
+qimpltdd cursor_gen/refactor_plans/new/REFACTOR_CLITICS_SCS_FLAT_SCOPES.md
+aciubtdd cursor_gen/refactor_plans/wip/REFACTOR_REMOVE_E2B_CLITICS.md
+```
+
+After step 2, run **`aciubtdd <plan.md>`** (not **`aciub`**) for each plan path — **in the same session**, without asking permission (same bar as **`qimpl` step 2 → step 3**).
+
+---
+
+<h2 id="qimpltdd-delta" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. TDD delta</h2>
+
+In addition to **qimpl** plan requirements:
+
+- Step 2 plans must include per-phase **TDD mode** (`strict-TDD` / `smoke-after-delete`) per **onlyreftdd**.
+- Step 3 loop order: **`test → code → test → fix`** (or smoke-after-delete) per **aciubtdd** / **implreftdd**.
+- Closing table **Tests** row should note TDD modes used.
+
+---
+
+<h2 id="qimpltdd-drift" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Anti-drift</h2>
+
+> **Mirror qimpl except chain substitution + TDD delta.** Orchestration steps, ambiguity gate, layman summary shape, and stop conditions = **`qimpl`**. Edit **`qimpl`** once for shared workflow changes; edit **this file** only when TDD chain paths or TDD emphasis change.
+
+---
+
+<h2 id="qimpltdd-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Self-check (agent)</h2>
+
+- [ ] User invoked **`qimpltdd`**.
+- [ ] Full **qimpl** procedure executed with **§3 substitution table** applied at every delegate.
+- [ ] **Step 3 ran** — not plan-only handoff (unless true blocker in step 1 or step 3).
+- [ ] No chain 1 keywords used for plan/implement on this refactor.
+- [ ] Layman closing table delivered (step 4 — after step 3 or on stop).

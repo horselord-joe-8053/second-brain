@@ -1,0 +1,38 @@
+---
+description: >-
+  Portable coverage kit (collectors vs reporters). Trigger covkit-bootstrap to wire a new repo.
+  Keywords: covkit-bootstrap, coverage_kit, resall --cov, COV_, RESALL_COV_.
+alwaysApply: false
+---
+
+# Coverage kit paradigm
+
+**Canonical spec:** `utils/coverage_kit/HOWTO_USE_COVERAGE_KIT.md` (reporters + `collectors/` TS). **Project home:** `tests/coverage/README.md`.
+
+## Trigger `covkit-bootstrap`
+
+When the user message contains **`covkit-bootstrap`** as a whole-word token:
+
+1. Read **HOWTO § Bootstrap (new repo)** and execute that checklist.
+2. Do not invent paths — use the HOWTO artifact table.
+
+## Non-negotiables
+
+- **Collectors** (test runners, `coverage run`, Vitest, Playwright Istanbul) stay in project code; **reporters** live in `utils/coverage_kit/` + a thin adapter (here: `ops/local/local_tests/resall_coverage_reports.py`).
+- Backend phases 1–2 use **separate** `.coverage.phase*` files, then **`coverage combine`** — never rely on a single overwritten `.coverage`.
+- After `resall --cov`, emit **one** `[coverage] summary` block in `logs/ops/run_tests_only.log` (paths + key %, not full HTML).
+- E2E line coverage is **opt-in**: `RESALL_COV_E2E_INSTRUMENT=0` by default.
+- **Finalize even on ritual failure** (partial coverage note in summary).
+
+## This repo
+
+- Ritual: `uv run python ops/local/run_all.py resall --cov` (phase **11** verifies dashboard after finalize)
+- **Standalone finalize:** `uv run python ops/local/run_all.py cov-finalize` — reporters only; run after `test-* --cov` or partial collection
+- Standalone verify: `uv run python ops/local/run_all.py test-cov-dashboard --cov` (requires `cov-finalize` or completed `resall --cov` finalize)
+- Config: `tests/coverage/.coveragerc`; backend data: `tests/coverage/artifacts/backend/data/`
+- Backend HTML: `tests/coverage/artifacts/backend/api-htmlcov/index.html`
+- Frontend landing: `tests/coverage/artifacts/frontend/index.html` (env `FRONTEND_COVERAGE_DIR=tests/coverage/artifacts/frontend` or `COV_FRONTEND_COVERAGE_DIR`)
+- Per-phase data retention after combine: `COV_DATA_DELETE_AFTER_MERGED=0` (default keep); set `1` to delete inputs
+- **Stage 1 dashboard**: served via `ops/local/run_cov_dashboard.py` on `http://127.0.0.1:5199/` (configurable via `RESALL_COV_DASHBOARD_PORT` / `RESALL_COV_DASHBOARD_BIND`). One-shot coverage verify starts/stops idempotently; `run_all start/stop/restart` manages persistent lifecycle.
+- **Stage 2a**: `utils/coverage_kit/reporters/digesters/` (`CoverageDigester` → `UnifiedCoverageModel`); dashboard overview from model via `build_unified_coverage_model`
+- **Stage 2b** (optional): cross-tool merged metrics — **feasibility/accuracy review required before implementation** (see holistic plan Phase 11)

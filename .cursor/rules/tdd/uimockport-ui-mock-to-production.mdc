@@ -1,0 +1,207 @@
+---
+description: >-
+  Keyword **uimockport** [optional task or plan path]: UI delivery chain — prompt → Canvas sketch → prod components
+  on fixture JSON → wire real API — one **REFACTOR_UI_*.md** plan updated throughout; each phase runs **qimpltdd**
+  TDD discipline on that same plan. Lessons from scoreboard v13 port.
+alwaysApply: false
+---
+
+<h1 id="uimockport-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>uimockport</code> — UI mock → fixture → production</h1>
+
+Use when the user includes **`uimockport`**. Delivers learner-facing UI through **four gated phases** on **one reference plan** — never split into parallel plan files for the same feature.
+
+**Chain:** This rule **extends** **qimpltdd** (`.cursor/rules/tdd/qimpltdd-quick-implement-refactor-plan.mdc`). Apply **§3 substitution table** from **qimpltdd** at every delegate. **Do not** mix chain 1 (**qimpl** / **aciub** / **implref**) on the same UI strand.
+
+---
+
+<h2 id="uimockport-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Trigger](#uimockport-trigger) — keyword and single-plan contract.
+2. [One reference plan](#uimockport-plan) — path, front matter, phase template.
+3. [Workflow phases](#uimockport-phases) — sketch → structure → fixture → API.
+4. [Phase gates](#uimockport-gates) — do not skip ahead.
+5. [Smooth-copy rules](#uimockport-smooth) — avoid canvas translation tax.
+6. [qimpltdd per phase](#uimockport-qimpl) — how TDD maps to each phase.
+7. [Stop conditions](#uimockport-stop) — when to pause.
+8. [Anti-patterns](#uimockport-anti) — scoreboard v13 lessons.
+9. [Self-check](#uimockport-self) — agent merge gate.
+
+---
+
+<h2 id="uimockport-trigger" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Trigger</h2>
+
+| User says | Agent does |
+|-----------|------------|
+| **`uimockport`** + feature description (no plan) | Step 1 ambiguity → create **one** `REFACTOR_UI_*.md` → run phases **1→4** on that plan via **qimpltdd** discipline. |
+| **`uimockport`** + existing **`REFACTOR_UI_*.md`** | Resume first incomplete phase on **that plan only** — refresh plan if drift, then continue. |
+| **`uimockport`** + “phase N only” | Execute **only phase N** on the named plan; update plan checkboxes; do **not** start phase N+1 without user ask. |
+
+**Single-plan rule:** One execution = one **`cursor_gen/refactor_plans/new/REFACTOR_UI_<SHORT_TOPIC>.md`**. Move to **`wip/`** / **`completed/`** per **implreftdd** step 3.5 — never fork a second plan for the same screen/feature.
+
+---
+
+<h2 id="uimockport-plan" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. One reference plan</h2>
+
+**Author with onlyreftdd** shape (MRKD + TDD bar). Required front-matter block (YAML or table after title):
+
+| Field | Content |
+|-------|---------|
+| **Feature** | Plain name (e.g. “Profile scoreboard v13”) |
+| **Canvas path** | `.cursor/projects/<workspace>/canvases/<name>.canvas.tsx` — update when created |
+| **Prod components** | Target dir e.g. `apps/web/src/components/<domain>/` |
+| **Shared types** | e.g. `utils/ui/<domain>/types.ts` |
+| **Fixture JSON** | e.g. `apps/web/src/fixtures/<domain>/<fixture>.json` |
+| **Preview surface** | Dev route (default) or Storybook story path |
+| **API endpoints** | FastAPI routes to wire in phase 4 |
+| **Visual reference** | Link or note: canvas screenshot / `#visual-baseline` in plan |
+
+**Plan MUST contain exactly these numbered phases** (checkboxes `[ ]` / `[X]`):
+
+| Phase | Name | Exit criterion (summary) |
+|-------|------|---------------------------|
+| **1** | Canvas sketch | User-approved layout; tokens extracted to plan |
+| **2** | Prod structure | Components compile; **no** `cursor/canvas` imports in repo |
+| **3** | Fixture + visual match | Preview route/story; Vitest + optional screenshot diff vs canvas |
+| **4** | Wire real data | API + integration tests; profile/production route works |
+
+**Keep updating this file** after every phase: checkboxes, canvas path, fixture path, Decision log, TDD bar rows.
+
+---
+
+<h2 id="uimockport-phases" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Workflow phases</h2>
+
+<h3 id="uimockport-phase1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.1 Phase 1 — Prompt → Canvas sketch</h3>
+
+| Step | Action |
+|------|--------|
+| 1 | **Ambiguity gate** (qimpl step 1): product/layout decisions only. |
+| 2 | Create or edit **`canvases/<feature>-mockup.canvas.tsx`** using **`cursor/canvas`** primitives. |
+| 3 | Iterate with user on **layout, columns, copy placeholders, mock rows** — **fake data inline** is OK here. |
+| 4 | **Extract to plan** before phase 2: `SCOREBOARD_GRID`-style constants (columns, stack width, font sizes, colors) as a table in the plan. |
+| 5 | User sign-off: “canvas looks right” or explicit proceed — **do not port** until phase 1 `[X]`. |
+
+**Canvas = sketchbook only.** After phase 1, **stop editing canvas** for polish; all visual fixes go to prod CSS/components (phase 3).
+
+<h3 id="uimockport-phase2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.2 Phase 2 — Prod component structure (no live API)</h3>
+
+| Step | Action |
+|------|--------|
+| 1 | Create **`utils/ui/<domain>/layout.ts`** (or extend) — import grid/constants from plan extraction; **single source** for CSS. |
+| 2 | Port **structure** into **`apps/web/src/components/<domain>/`** using **MUI + project CSS + i18n** — **zero** `cursor/canvas` imports. |
+| 3 | Use **temporary inline props** or minimal placeholder fixture in Vitest — enough to render empty/table shell. |
+| 4 | Vitest smoke: components mount, testids present. |
+| 5 | **Do not** wire `fetch*` / profile route yet. **Do not** claim visual parity yet. |
+
+<h3 id="uimockport-phase3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.3 Phase 3 — Fixture JSON + visual match</h3>
+
+| Step | Action |
+|------|--------|
+| 1 | **Fixture JSON** — see [§5](#uimockport-smooth); shape **must** match shared TypeScript types (same as API). |
+| 2 | **Preview surface** (default: **dev route** e.g. `apps/web/src/pages/dev/<Feature>PreviewPage.tsx`; optional: Storybook story). |
+| 3 | Feed preview **only** from fixture JSON — **no API**, no login. |
+| 4 | **Pixel checklist** pass: borders, padding, fonts, legend, pills, grid alignment — diff against canvas screenshot; fix **CSS only** unless structure wrong. |
+| 5 | Vitest: fixture-driven tests (untouched segment, friendly labels, grid shell structure). Optional: Playwright screenshot of preview vs baseline PNG. |
+| 6 | Phase 3 `[X]` only when user or checklist confirms **visual match ~90%+** on fixture data. |
+
+<h3 id="uimockport-phase4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.4 Phase 4 — Wire real API + backend</h3>
+
+| Step | Action |
+|------|--------|
+| 1 | Wire production page to **`fetch*`** client; types unchanged from phase 3. |
+| 2 | Backend: aggregation, scope normalization, catalog pool — **strict-TDD** pytest for any new contract. |
+| 3 | Integration test: real API path returns shape matching fixture types. |
+| 4 | Restart API if local (`run_all restart`) when backend changed. |
+| 5 | Compare live profile vs fixture preview — document **data-only** diffs in plan Decision log (not CSS regressions). |
+
+---
+
+<h2 id="uimockport-gates" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Phase gates</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Forbidden skip</th><th>Why</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#ffebee">Phase 2 → live profile/API</td><td style="background:#ffebee">Hides backend bugs in UI tuning (scoreboard cardinals)</td></tr>
+<tr><td style="background:#ffebee">Phase 1 → phase 4 in one prompt</td><td style="background:#ffebee">Structure without fixture → ~50% visual parity</td></tr>
+<tr><td style="background:#ffebee">Ongoing canvas edits after phase 1</td><td style="background:#ffebee">Double maintenance; prod drifts</td></tr>
+<tr><td style="background:#ffebee">Second UI kit in prod handoff</td><td style="background:#ffebee">No `cursor/canvas` in `apps/web`</td></tr>
+</tbody>
+</table>
+
+---
+
+<h2 id="uimockport-smooth" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Smooth-copy rules</h2>
+
+| Rule | Requirement |
+|------|-------------|
+| **Same components** | Preview route and production route render **identical** component tree; only `data` prop source differs. |
+| **Shared constants** | Grid columns, stack width, tone thresholds in **`utils/ui/<domain>/layout.ts`** → CSS vars or imported class maps. |
+| **Fixture JSON sources** | (priority order) ① export rows from canvas mock ② `curl` snapshot of good API response ③ hand-made edge case (e.g. 58 untouched). |
+| **Fixture location** | `apps/web/src/fixtures/<domain>/*.json` — committed to git. |
+| **Types** | `utils/ui/<domain>/types.ts` — fixture and API both satisfy this interface. |
+| **i18n** | All learner-visible strings via **`apps/web/src/i18n/`** — not hardcoded from canvas English. |
+
+---
+
+<h2 id="uimockport-qimpl" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. qimpltdd per phase</h2>
+
+For **each phase** on the single reference plan:
+
+1. **Update plan** — TDD bar row for this phase (mode, test-first artifact, red case, green gate).
+2. **Execute** — **aciubtdd** / **implreftdd** on **that plan path**; complete **only** the current phase’s checkboxes unless user invoked full **`uimockport`** without “phase N only”.
+3. **Test order** — **strict-TDD** for contracts (types, API shape, fixture loader, bucket math); **smoke-after-delete** for removing dev-only scaffolding.
+4. **Mark `[X]`** on phase heading when green gate passes.
+5. **Closing table** — SUPER concise layman HTML table (MRKD 6.1) after each phase **or** after full run — include **Visual %**, **Fixture path**, **Plans path**.
+
+**Delegate map:**
+
+| Need | Rule |
+|------|------|
+| Full orchestration | **qimpltdd** |
+| Plan shape | **onlyreftdd** |
+| Implement loop | **aciubtdd** + **implreftdd** |
+| Layman tables | **evalay** (if user asks) |
+
+---
+
+<h2 id="uimockport-stop" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Stop conditions</h2>
+
+Pause only for:
+
+- User has not approved canvas (phase 1 gate).
+- Product/schema choice only user can make.
+- Phase 3 visual checklist fails after **two** CSS iteration rounds — report diff list + screenshot paths.
+- Backend contract unknown — add pytest red case to plan, stop phase 4 until shape agreed.
+
+**Not** stop conditions: work is multi-phase; tests are verbose; API restart needed.
+
+---
+
+<h2 id="uimockport-anti" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Anti-patterns (scoreboard v13)</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Mistake</th><th>Fix in this rule</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Grid per row → columns drift</td><td style="background:#e8f5e9">Phase 2: single shell grid + subgrid; test DOM structure in phase 3</td></tr>
+<tr><td style="background:#e3f2fd">Canvas fake data hid API bugs</td><td style="background:#e8f5e9">Phase 4 strict-TDD integration; fixture includes edge-case row</td></tr>
+<tr><td style="background:#e3f2fd">Global CSS broke pills</td><td style="background:#e8f5e9">Phase 3 pixel checklist + scoped classes</td></tr>
+<tr><td style="background:#e3f2fd">“Port canvas” = done</td><td style="background:#e8f5e9">Phase 2 = structure only; phase 3 = visual done definition</td></tr>
+</tbody>
+</table>
+
+---
+
+<h2 id="uimockport-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Self-check (agent)</h2>
+
+- [ ] User invoked **`uimockport`**.
+- [ ] Exactly **one** `REFACTOR_UI_*.md` for this feature execution.
+- [ ] Plan lists canvas path, fixture path, preview surface, API routes.
+- [ ] Phases executed in order (or single phase if user scoped).
+- [ ] **No** `cursor/canvas` imports under `apps/web/`.
+- [ ] Phase 3 preview works **without** API.
+- [ ] Phase 4 types match phase 3 fixture interface.
+- [ ] **qimpltdd** chain 2 substitution used throughout.
+- [ ] Layman closing table delivered.

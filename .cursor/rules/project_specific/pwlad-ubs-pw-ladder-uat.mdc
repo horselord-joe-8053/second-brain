@@ -1,0 +1,116 @@
+---
+description: >-
+  Keyword **pwlad** — run UBS Playwright ladder (chain + Playwright on UAT-E :8002 by default);
+  refresh scoreboards after each run. CLI details live in README_UBS.md (read first).
+alwaysApply: false
+---
+
+<h1 id="pwlad-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>pwlad</code> — UBS Playwright ladder + scoreboard</h1>
+
+**Type:** keyword campaign · **Not always-on** — mention **`pwlad`** or `@` this rule.
+
+**Source of truth (CLI):** [`ops/local/pglpl_live/runners/README_UBS.md`](../../../ops/local/pglpl_live/runners/README_UBS.md) — steps, flags, logs, recover vocabulary. **Read it before running**; this rule owns **procedure + chat reply**, not duplicated tables.
+
+**Owns:** (1) resolve alias → run one step or **`ladder`**, (2) scoreboard updates, (3) freshman-plain summary in chat.  
+**Does not own:** git (`gitacp`); chain-only scoreboard (`extesttab`).
+
+## Document outline
+
+1. [Agent checklist](#agent) — what to do when `pwlad` appears.
+2. [Trigger aliases](#when) — chat token → CLI step.
+3. [Locks](#locks) — non-negotiable defaults (detail in README_UBS).
+4. [Failure / recover](#fail) — read stderr hints; do not guess flags.
+5. [Chat reply shape](#reply) — mandatory table.
+6. [Related](#related).
+
+---
+
+<h2 id="agent" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Agent checklist</h2>
+
+When the user message includes **`pwlad`** (whole token):
+
+1. **Read** [`README_UBS.md`](../../../ops/local/pglpl_live/runners/README_UBS.md) § steps, flags, outputs — do not invent CLI from memory.
+2. **Resolve** alias → CLI step ([§2](#when)).
+3. **Preflight** — E2E stack up for target profile (`uat` → `:8002`/`:4173`; `dev` → `:8000`/`:5173`). Pool + disk gates run inside the runner.
+4. **Run** from repo root (pattern in README § quick start):
+
+```bash
+EXPGTEST_UBS_E2E=1 uv run python -m pglpl_live.runners.ubs_close_loop_run --step-run-name <name> --profile uat
+```
+
+5. **Canonical profile:** **`--profile uat`** unless the user explicitly asks for **`dev`** (DEV-E) or **`int`** (chain-only, no Playwright).
+6. **On failure** — search stderr for `LADDER_FAIL_PHASE=` and **`[PWLAD_RECOVER_HINT]`** ([§4](#fail)); paste suggested command only if user wants retry.
+7. **Scoreboard** — runner updates `docs/pglpl/pw_ladder_scoreboard/`; cite latest section in reply.
+8. **Git** — update scoreboard in workspace; **no commit** unless user says **`gitacp`**.
+
+---
+
+<h2 id="when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Trigger aliases</h2>
+
+| User token | CLI step |
+|------------|----------|
+| **`pwlad 0`** / **`pv`** / **`preview`** | `0-preview` |
+| **`pwlad 1`** / **`continent`** | `1-continent` |
+| **`pwlad 2`** … **`6`** / scope name | `2-number` … `6-other` |
+| **`pwlad ladder`** / **`full`** | `default-ladder` (0-preview → … → 6-other; stop on first fail) |
+
+**Purge passthrough:** **`--pb`** → chain pre-purge; **`--pa`** → post-success purge (per sub-step on `ladder`). See README_UBS § flags.
+
+**Recover passthrough:** **`--recover`**, **`--auto-recover-enabled`**, **`--recover-pw`**, **`--step-run-id`** (legacy **`--ladder-id`**) — mutually exclusive rules in README § “Recover — which flag when”.
+
+---
+
+<h2 id="locks" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Locks / defaults</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Topic</th><th>Lock</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Env</td><td style="background:#e8f5e9"><code>EXPGTEST_UBS_E2E=1</code> required</td></tr>
+<tr><td style="background:#e3f2fd">0-preview</td><td style="background:#fff8e1">3-word smoke — scoreboard <code>(parens)</code>; <strong>excluded</strong> from Total</td></tr>
+<tr><td style="background:#e3f2fd">Total row</td><td style="background:#e8f5e9">Steps <strong>1–6</strong> only — 840 words · 32 scopes</td></tr>
+<tr><td style="background:#e3f2fd">Unified log</td><td style="background:#e8f5e9"><code>ops/run-logs/ubs/ubs-run-{label}-{step_run_id}-{chain_id}.log</code></td></tr>
+<tr><td style="background:#e3f2fd">Registry</td><td style="background:#e8f5e9"><code>ops/run-logs/ubs/ladder_registry.json</code> — <code>step_run_id</code> + <code>fail_phase</code></td></tr>
+<tr><td style="background:#e3f2fd">Watch demo</td><td style="background:#fff8e1"><code>0-preview --headed --slow-mo 500</code>; avoid on full <code>ladder</code></td></tr>
+<tr><td style="background:#e3f2fd">DEV-E</td><td style="background:#fff3e0"><code>--profile dev</code> — experimental long runs; prefer single step or <code>0-preview</code> before full <code>ladder --auto-recover-enabled</code></td></tr>
+</tbody>
+</table>
+
+Full step table, timeouts, and artifact paths: **README_UBS** §2–§4.
+
+---
+
+<h2 id="fail" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Failure / recover</h2>
+
+After a failed step, stderr includes:
+
+- **`STEP_RUN_FAIL_PHASE=chain|playwright`** — which phase failed
+- **`[PWLAD_RECOVER_HINT]`** — copy-paste retry commands (also lists `step_run_id` + `chain_id`)
+- **`[PWLAD_DIAGNOSE]`** at run start — mode, tries left
+
+| Fail phase | Meaning | First retry (from hint) |
+|------------|---------|-------------------------|
+| **chain** | Paragraph generation failed / timed out | Same step run + `--recover --step-run-id …` or `--auto-recover-enabled` |
+| **playwright** | Chain OK; browser grading failed | Same step run + `--recover --step-run-id …` or `playwright --chain-id … --recover-pw` |
+
+**Agent rule:** Prefer stderr **`[PWLAD_RECOVER_HINT]`** over reconstructing flags. Flag semantics: README_UBS § “Recover — which flag when”.
+
+---
+
+<h2 id="reply" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Chat reply shape</h2>
+
+Mandatory **HTML table** (mrkd): Step run name · Scope slice · `step_run_id` · `chain_id` · Paras · Browser test · Log · Result.
+
+- **0-preview** metrics in `(parens)`; omit **Total** for preview-only runs.
+- **Total** = steps 1–6 only when applicable.
+- On failure, include **`STEP_RUN_FAIL_PHASE`** and whether **`[PWLAD_RECOVER_HINT]`** was printed.
+
+---
+
+<h2 id="related" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Related</h2>
+
+- **CLI reference:** [`README_UBS.md`](../../../ops/local/pglpl_live/runners/README_UBS.md)
+- **Chain phase:** [`README_EX_CHAIN.md`](../../../ops/local/pglpl_live/chain/README_EX_CHAIN.md)
+- **Runbook:** `docs/pglpl/EXPGTEST_UBS_CLOSE_LOOP_RUNBOOK.md`
+- **Step defs:** `ops/local/pglpl_live/ubs/pwlad_steps.py`

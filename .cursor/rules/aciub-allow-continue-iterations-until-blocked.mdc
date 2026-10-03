@@ -1,0 +1,240 @@
+---
+description: >-
+  Keyword **aciub** [optional plan.md path]: continuous code→test→fix loop until blocked.
+  When a refactor-plan path is given (or inferable), also run full **implref** /
+  **resumimpl** from `.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`
+  (normalize, ambiguity gate, quality bar, phases, exwar, wip/completed relocate).
+  Examples: `aciub cursor_gen/refactor_plans/new/enhance/practices/REFACTOR_UI_ONGOING_NOUN_PRACTICE_UNIFY.md`
+alwaysApply: false
+---
+
+<h1 id="aciub-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">ACIUB: allow continue iterations until blocked (+ <code>implref</code>)</h1>
+
+Use this rule when the user includes the keyword **`aciub`**.
+
+---
+
+<h2 id="aciub-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Trigger and intent](#aciub-trigger) — `aciub` alone vs `aciub <plan.md>`.
+2. [Implref infusion](#aciub-implref) — must follow local **implref** / **resumimpl** when a plan is in scope.
+3. [Execution contract](#aciub-contract) — continuous loop.
+4. [Iteration protocol checklist](#aciub-checklist) — per-iteration sequence.
+5. [Exwar gate (mandatory per phase)](#aciub-exwar-gate) — war-story extraction is a **blocking stage**, not optional homework.
+6. [Progress-update protocol](#aciub-progress-protocol) — tracker docs.
+7. [Project-specific mapping source](#aciub-mapping-source) — where trackers live.
+8. [Stop conditions](#aciub-stop-conditions) — only valid pauses.
+9. [Response-style guardrail](#aciub-guardrail) — no confirmation spam.
+10. [No-handoff enforcement](#aciub-no-handoff) — same session.
+11. [Loop-closure prohibition](#aciub-loop-proof) — Active Next Step proof.
+12. [Cross-env test parity + local DB refresh](#aciub-env-sync) — SQLite harness ≡ Postgres; migrate + bootstrap after seed changes.
+
+---
+
+<h2 id="aciub-trigger" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Trigger and intent</h2>
+
+| User says | Agent does |
+|-----------|------------|
+| **`aciub`** + a refactor plan **`.md` path** (or `@`-mention / attachment of that plan) | Treat as **`implref` on that path** + continuous **aciub** loop until that plan’s implementable scope is done or blocked. |
+| **`aciub`** without a path | Continuous loop on the **already named / in-thread** plan or task; if no plan is clear, ask **one** question: which plan path? |
+| **`aciub`** + **`resumimpl`** (or plan already in `wip/` with partial `[X]`) | Resume: same as **`resumimpl`** — first incomplete `[ ]`, then continuous loop. |
+
+**Examples (sufficient alone):**
+
+```text
+aciub cursor_gen/refactor_plans/new/enhance/practices/REFACTOR_UI_ONGOING_NOUN_PRACTICE_UNIFY.md
+aciub cursor_gen/refactor_plans/new/enhance/practices/REFACTOR_UI_ONGOING.md
+```
+
+Persistent until the user revokes, narrows scope, or a [stop condition](#aciub-stop-conditions) fires.
+
+---
+
+<h2 id="aciub-implref" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Implref infusion (required when a plan is in scope)</h2>
+
+**Do not re-implement `implref` inside this file.** When a plan path is in scope, **read and execute** the full procedure in:
+
+**`.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`**
+
+That includes, in order: **step 0** normalize plan shape → **step 1** ambiguity gate (stop only for true product blockers) → **step 2** strengthen Quality bar (tests including Playwright mocked `test:e2e` / unit / integration as appropriate; comments/docs) → **step 3** implement all phases without mid-phase permission asks → **step 3.4** **mandatory exwar gate** after each phase ([§5](#aciub-exwar-gate)) → **step 3.5** relocate to `wip/` / `completed/` → **step 4** tabular closing summary with **War stories** row.
+
+**aciub adds** the continuous `code → test → fix → test` discipline and [no-handoff](#aciub-no-handoff) rules **on top of** that procedure.
+
+### 2.1 Master / already-complete plans
+
+If the named plan is **already all implementable `[X]`** (e.g. a completed master):
+
+1. Do **not** no-op silently.
+2. Follow **active sidetrack / continuance links** in that file that still have open `[ ]` (e.g. Noun / Verb practice unify under the same folder).
+3. If several open children exist, implement them **in a sensible order** (document order or dependency: Noun then Verb then `practices/next/`), still under **aciub**, without asking permission between children unless a true blocker appears.
+4. If there are **no** open sidetracks, report scope complete (tabular summary) and stop.
+
+### 2.2 Ambiguity gate vs continuous loop
+
+- **True** missing product/schema decisions → stop with a short numbered question list (**implref** step 1 / **§3.1d**). That is an allowed aciub stop.
+- Preferred defaults already written in the plan → **use them**, record in the plan’s Decision log, continue (do not ask).
+
+---
+
+<h2 id="aciub-contract" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Execution contract</h2>
+
+- Loop: **`code → test → fix → test → …`**.
+- Failures: fix properly and re-run relevant tests; do not ignore.
+- Do **not** end an iteration by asking whether to continue.
+- After green tests, continue to the next unchecked `[ ]` / next phase immediately.
+- Never stop solely because a phase looks large (see **implref** §3.1c).
+
+---
+
+<h2 id="aciub-checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Iteration protocol checklist</h2>
+
+For each iteration:
+
+1. Implement the **next** scoped chunk (prefer smallest green increment under the current phase).
+2. Run **relevant** tests for that chunk (unit / Vitest / Playwright mocked e2e as the plan’s Quality bar requires).
+3. On failure: fix and re-run until green or a true blocker.
+4. When a **phase** (or major deliverable) reaches green tests: run the [**Exwar gate**](#aciub-exwar-gate) **before** marking that phase `[X]` or starting the next phase. Record outcome in the plan Decision log or phase notes when useful.
+5. Update Tracker Documents ([§6–7](#aciub-progress-protocol)); mark plan `[X]` only **after** step 4 exwar outcome is recorded (append, or documented skip with cited story **N**).
+6. Continue to the next iteration unless a [stop condition](#aciub-stop-conditions) applies.
+7. Do not end with a handoff-only status; start the next chunk in the same turn when possible.
+8. If backlog remains, do not send a completion-style final response.
+
+---
+
+<h2 id="aciub-exwar-gate" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Exwar gate (mandatory per phase)</h2>
+
+**Exwar is a serious pipeline stage — same weight as “tests green.”** After each completed phase under **`aciub`**, execute **`.cursor/rules/exwar-war-stories-extraction.mdc`** (**exwar**) and **implref** §3.4 **before** the next phase.
+
+A phase is **not complete** until this gate produces one of:
+
+| Outcome | Required evidence |
+|---------|-------------------|
+| **Append** | New story **§N.1–N.5** in the correct file + that file’s **story index** updated in the **same edit** |
+| **Skip (duplicate)** | Lesson **already completely covered** in **`war_stories/WAR_STORIES.md`** or **`war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`** — cite existing story **#N** and one phrase showing overlap |
+| **Skip (trivial)** | Truly **non-significant** per exwar *What qualifies* (typo, chrome-only, no reusable mechanism) — one explicit skip sentence |
+
+<h3 id="aciub-exwar-gate-procedure" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.1 Procedure (every completed phase)</h3>
+
+1. **Read both collections** (story index + recent entries): **`war_stories/WAR_STORIES.md`** and **`war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`** — dedupe against **written lessons**, not against product code.
+2. **Extract candidate lesson** from the phase: trap, contract, design tradeoff, ops failure mode — prefer **mechanism** over “we shipped the checklist.”
+3. **Default: append** if the lesson is **meaningful and not already completely covered** in either file.
+4. **Route** per exwar §2.1: portable → **`WAR_STORIES.md`**; Floor35 / ops / IA / routes → **`WAR_STORIES_PROJECT_SPECIFIC.md`**.
+5. **Write in-repo** when appending — absorb into **§N.4**; do not leave the canonical lesson only in the plan, chat, or `cursor_gen/`.
+6. **Log in turn** (brief): `Exwar phase N: appended #119` or `Exwar phase N: skip duplicate #113` — so closing tables stay honest.
+
+<h3 id="aciub-exwar-gate-forbidden" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.2 Forbidden skips (same class as implref §3.1c)</h3>
+
+**Do not** treat exwar as optional homework or defer it to “later / user will ask.” **Invalid skip reasons:**
+
+- “Mechanism already exists in code / demos / another scope”
+- “Documented in the refactor plan or chat only”
+- “Similar helper already shipped”
+- “No time before next phase”
+- “User did not say `exwar`” — **`aciub` includes exwar by default**
+
+**Valid skip reasons only:** duplicate of existing story **#N** (same lesson text); or exwar *Usually skip* (trivial typo, pure polish with no trap).
+
+<h3 id="aciub-exwar-gate-closing" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.3 Closing table (required row)</h3>
+
+Every **aciub** stop ([§8](#aciub-stop-conditions)) must include a **War stories** row per **implref** step 4: list new **#N** entries (both files if applicable) **or** explicit skip lines with cited **#N** / trivial reason — never blank “none” without justification.
+
+---
+
+<h2 id="aciub-progress-protocol" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Progress-update protocol (generic)</h2>
+
+**Tracker Documents** = files listed via [Project-specific mapping](#aciub-mapping-source).
+
+- Progress in a **top-level section `0`** near the front of each tracker.
+- Prefer one **unified** status table (avoid duplicate front/end trackers).
+- Rows stay consistent with shipped code/tests, plan phases, blockers, and next actions.
+- Use rough **percentage** progress (e.g. `55%`, `100%`), not only vague labels.
+- Each row: **progress (%)** · **completed** · **issues/fixes** · **next step**.
+
+When the active artifact **is** the refactor plan `.md` itself, the plan’s `[ ]`/`[X]` phases are the primary tracker; **`war_stories/` updates are mandatory per [§5 Exwar gate](#aciub-exwar-gate)** when the phase lesson is meaningful and not already completely covered in either collection file.
+
+---
+
+<h2 id="aciub-mapping-source" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Project-specific mapping source</h2>
+
+- Keep this rule free of hard-coded tracker paths beyond the **implref** plan path the user named.
+- Resolve extra trackers from: `war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`.
+- If mapping is missing and a tracker update is required, ask once for the tracker list, then continue.
+
+---
+
+<h2 id="aciub-stop-conditions" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Stop conditions</h2>
+
+Stop and engage the user only if:
+
+- a **true blocker** (align with **implref** §3.1d: unfixable build/tests, missing secrets, unresolved ambiguity after step 1, irreconcilable spec, destructive data without rollback, explicit user scope cut),
+- a **manual** user action is required,
+- the **requested plan scope** (and resolved open sidetracks, if a completed master was named) is fully done, or
+- **session cut** (**implref** §3.1e): leave plan in `wip/`, name exact next `[ ]` + path, tell user to **`aciub`** or **`resumimpl`** that path.
+
+On block: report exact blocker, what was tried, and the minimal input needed.
+
+---
+
+<h2 id="aciub-guardrail" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Response-style guardrail</h2>
+
+- **Do not ask for confirmation between iterations; continue until blocked.**
+- Progress messages may be brief; then immediately continue work.
+- If phase backlog remains, do not emit a terminal wrap-up.
+
+---
+
+<h2 id="aciub-no-handoff" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. No-handoff enforcement while active</h2>
+
+Not allowed unless a stop condition is met:
+
+- Ending with “next I will …” and pausing.
+- Asking permission to proceed to the next phase.
+- Stopping after “iteration passed” without starting the next cycle.
+- “Completed this pass” while the active plan still has open implementable `[ ]`.
+- Marking a phase `[X]` **without** completing the [Exwar gate](#aciub-exwar-gate) for that phase.
+
+Required: after each passing iteration, begin the next scoped iteration in the same session.
+
+---
+
+<h2 id="aciub-loop-proof" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. Loop-closure prohibition + active-next-step proof</h2>
+
+While scoped work remains:
+
+- Do **not** emit a terminal summary that implies a pause.
+- Continue into the next execution cycle in the same session.
+- Every progress update must include one explicit **Active Next Step** line for work **already being executed**, e.g.  
+  `Active Next Step: Exwar gate for Phase 3 — append or cite skip #113.`  
+  or `Active Next Step: implementing Noun Phase 1 projectors + Vitest.`
+- Terminal wrap-up only when a [stop condition](#aciub-stop-conditions) is met (then use **implref** step 4 table).
+
+---
+
+<h2 id="aciub-env-sync" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Cross-env test parity + local DB refresh</h2>
+
+**Goal:** Integration and unittest harnesses must pass **locally (SQLite)** and in **CI/dev (Postgres)** without “works in CI only” excuses. After bootstrap/seed work, local dev DB must reflect the new curated rows.
+
+<h3 id="aciub-env-sync-migrations" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.1 Alembic migrations — dual-dialect</h3>
+
+- Unittest discover uses **`tests/utils/support/sqlite_migrated_harness.py`** (`alembic upgrade head` on SQLite). Local dev and CI use **Postgres** via repo **`.env`** **`DATABASE_URL`**.
+- **Never** ship Postgres-only SQL (`split_part`, `jsonb_*`, etc.) without a **SQLite branch** when the revision runs in the harness. Follow existing patterns: `bind = op.get_bind()` · `bind.dialect.name in ("sqlite", "postgresql")` · portable `instr`/`substr` fallbacks (see `20260821_0066_clitic_surface_backfill.py`).
+- After editing a migration, run at least one **integration test** that uses `acquire_sqlite_migrated_harness` **and** confirm **`alembic upgrade head`** on local Postgres when Postgres is up.
+
+<h3 id="aciub-env-sync-bootstrap" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.2 Local dev refresh (after seed / promote changes)</h3>
+
+When the plan touches **`apps/api/app/ingestion/bootstrap/*_seeds.py`**, clitic/object-form rows, or domain promote logic:
+
+1. **`cd apps/api && alembic upgrade head`** (or `python ops/local/run_all.py start` without `--skip-migrate` if bringing the stack up).
+2. **`python ops/local/run_bootstrap_<domain>.py --refresh`** for each affected domain (clitics example: `run_bootstrap_clitics.py --refresh`). Reads **`DATABASE_URL`** from repo **`.env`**.
+3. Optional strict gate: **`python ops/local/verify_learning_bootstrap.py --strict`** when the plan spans multiple learning suites.
+4. Re-run **integration + unit** tests that assert seed counts or API payloads (`test_clitic_object_form_seeds.py`, `test_learning_suite_api.py`, etc.).
+
+**Do not** skip step 2 and tell the user to run bootstrap manually unless Postgres is down or `.env` is missing — report the blocker instead.
+
+<h3 id="aciub-env-sync-checklist" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.3 Iteration checklist hook</h3>
+
+Extend [§4 step 2–3](#aciub-checklist): when seeds or migrations changed in the current iteration, **before** marking the phase `[X]`:
+
+- [ ] SQLite harness integration test green (not “CI only”).
+- [ ] Local Postgres migrated + domain **`--refresh`** when bootstrap files changed and DB is reachable.
+- [ ] Seed-count / API assertions match the refreshed DB or harness promote fixture.

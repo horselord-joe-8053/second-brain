@@ -1,0 +1,81 @@
+---
+description: >-
+  Keyword **learnuitbl** (learn UI table polish): update refactor plan (onlyref), implement visible learner UI
+  changes (implref), expand seeds/bootstrap, add grouped learn tables + chip filters, then restart stack.
+  Reusable workflow for noun-phrase / places knowledge page polish.
+alwaysApply: false
+---
+
+<h1 id="learnuitbl-title" style="color:#0d47a1;font-size:1.45em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>learnuitbl</code> — learn UI table & chip polish</h1>
+
+## Document outline
+
+1. [When this applies](#learnuitbl-when) — trigger and scope.
+2. [Workflow A — Plan (onlyref)](#learnuitbl-onlyref) — author plan without code.
+3. [Workflow B — Implement (implref)](#learnuitbl-implref) — ship visible UI.
+4. [UI conventions](#learnuitbl-ui) — chips, tables, grouping colors.
+5. [Ops checklist](#learnuitbl-ops) — bootstrap, restart, dogfood.
+
+---
+
+<h2 id="learnuitbl-when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+Use when the user asks to polish **Basic knowledge** learner pages so content is:
+
+- Filtered by **chips** (not long scroll sections) where multiple sub-topics share one tab.
+- Shown in **clean read-only tables** (not card grids) matching atlas-style layout.
+- **Article-first** column order for places (article → noun → example).
+- **Denser seeds** (up to ~20 curated rows per chip/table).
+- **Subtle row-group colors** via shared `LearnGroupedTable` — minimal, not rainbow.
+- **No duplicate** tables (e.g. suffix pattern table + same vocab list on one chip).
+
+**Trigger tokens:** `learnuitbl`, or the full A+B+C pattern: *onlyref plan → implref → cursor rule*.
+
+---
+
+<h2 id="learnuitbl-onlyref" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Workflow A — Plan (onlyref)</h2>
+
+Follow **`.cursor/rules/onlyref-refactor-plan-author-only.mdc`**:
+
+1. Create or update **`cursor_gen/refactor_plans/new/REFACTOR_<TOPIC>.md`** with numbered phases and **`[ ]`** checklists.
+2. Cover: chip IA, table columns/order, seed expansion, dedupe, CSS grouping, tests, bootstrap.
+3. **Do not** implement code or mark items **`[X]`** in the planning pass.
+
+---
+
+<h2 id="learnuitbl-implref" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Workflow B — Implement (implref)</h2>
+
+Follow **`.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`**:
+
+| Layer | Actions |
+|-------|---------|
+| **Frontend** | Chip bars on section-heavy tabs; `LearnGroupedTable` for atlas/locative/people lists; persist chips in filter hooks. |
+| **Backend seeds** | Expand `*_seed.py` / `geo_seed_*.py`; wire `--refresh` to clear + re-seed people/geo/usage rules. |
+| **Practice map** | Update `CHIP_MODE_MAP` for new chip ids. |
+| **Tests** | Vitest for chip switching; unit tests for practice modes if added. |
+| **Plan lifecycle** | Move plan **`new/` → `wip/` → `completed/`**; tick **`[X]`** as phases land. |
+
+---
+
+<h2 id="learnuitbl-ui" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. UI conventions</h2>
+
+- **Chips:** `GenderChipBar` — one active chip; default to the learner’s first skill (e.g. suffix patterns).
+- **Tables:** `LearnGroupedTable` chrome — blue `.learn-table-head-cell` header; `.learn-table-row--g0…g7` bands from **Grouping Note** / `groupOrder` (`% 8`, first-seen order if omitted); title column `.learn-table-cell--accent` (auto-first column if none marked); trailing **Grouping Note** column (≤4 words per group). Prefer group palette over gender-only row tints. **MUI:** tint **cells** (`.learn-table-row--gN > .MuiTableCell-root`), not only `<tr>` — otherwise accent text rotates while row fills look identical.
+- **Determiners:** all four tabs (`demonstratives`, `contractions`, `crase`, `register`) — `determinersTableBuild.ts` for group order/labels.
+- **Queued areas (same pattern):** Verb patterns · Comparatives · Numbers · Clitics.
+- **Places atlas:** Article · Name · Learn as · Example · Note.
+- **Locative tab:** ≤5 chips (Countries · States & cities · Home & shops · Stacked places · From & to); one `LearnGroupedTable` per chip; `placeUsageLocativeConfig.ts` maps API categories; persist `locative` chip in filter hook. **Data:** curated `place_usage_rule_seeds.py` only (guide §5) — do not blind-import `Article+Places` workbook rows.
+- **Animated Same form:** pattern table **or** vocab list — never both showing the same suffix block.
+
+---
+
+<h2 id="learnuitbl-ops" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Ops checklist</h2>
+
+```bash
+uv run python ops/local/run_bootstrap_gender_places.py --bundle top10 --refresh
+uv run python ops/local/run_bootstrap_articles.py --refresh
+```
+
+Restart API + Vite; hard-refresh `/knowledge/noun-phrase` and `/knowledge/places`.
+
+**Exemplar plans:** `REFACTOR_LEARN_UI_TABLE_POLISH.md`, `REFACTOR_LOCATIVE_CHIP_SPLIT.md`, `REFACTOR_PLACES_BASIC_KNOWLEDGE.md` (completed / wip).

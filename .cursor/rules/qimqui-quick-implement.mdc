@@ -1,0 +1,141 @@
+---
+description: >-
+  Keyword **qimqui** [task label or plan.md path]: quick implement — lock scope from the thread, optionally
+  mint a lightweight refactor plan, then execute via classic chain (**aciub** + **implref**). Skips full
+  **onlyref** ceremony when scope is already clear. TDD variant: **qimpltdd** in `.cursor/rules/tdd/`.
+alwaysApply: false
+---
+
+<h1 id="qimqui-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>qimqui</code> — quick implement (classic chain)</h1>
+
+Use when the user includes **`qimqui`**. Faster than **`onlyref` → `aciub` → `implref`** when the task is already named and bounded in the conversation (e.g. <code>CR_Task2</code>, “remove E2B”, “flatten SCS scopes”).
+
+---
+
+<h2 id="qimqui-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When this applies](#qimqui-when) — trigger and inputs.
+2. [What qimqui skips vs keeps](#qimqui-skip-keep) — boundary vs full refactor chain.
+3. [Procedure](#qimqui-procedure) — scope lock → optional mini-plan → execute.
+4. [Execution chain (classic)](#qimqui-chain) — resolved rule paths.
+5. [Stop conditions](#qimqui-stop) — when to pause.
+6. [Closing summary](#qimqui-close) — tabular wrap-up.
+7. [TDD variant pointer](#qimqui-tdd-pointer) — use **qimpltdd** instead.
+8. [Self-check](#qimqui-self) — agent merge gate.
+
+---
+
+<h2 id="qimqui-when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+| User says | Agent does |
+|-----------|------------|
+| **`qimqui`** + task label (e.g. <code>CR_Task2</code>, “remove E2B”) | [Procedure](#qimqui-procedure) on **in-thread scope**. |
+| **`qimqui`** + existing plan **`.md` path** | Treat plan as scope; skip mini-plan step; go straight to execute chain. |
+| **`qimqui`** alone | Use the **most recent named task** in the thread; if none, ask **one** question: which task or plan path? |
+
+**Examples:**
+
+```text
+qimqui CR_Task2 remove E2B end-to-end
+qimqui cursor_gen/refactor_plans/wip/REFACTOR_REMOVE_E2B_CLITICS.md
+```
+
+---
+
+<h2 id="qimqui-skip-keep" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. What qimqui skips vs keeps</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Area</th><th><code>qimqui</code></th><th>Full <code>onlyref</code></th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Long evidence / COMPARE tables in plan</td><td style="background:#e8f5e9">Skip unless user cites them</td><td style="background:#fff8e1">Expected</td></tr>
+<tr><td style="background:#e3f2fd">MRKD polish on plan</td><td style="background:#e8f5e9">Minimal (numbered phases + `[ ]`)</td><td style="background:#fff8e1">Full MRKD</td></tr>
+<tr><td style="background:#e3f2fd">Ambiguity gate</td><td style="background:#e8f5e9">Yes — stop if true blocker</td><td style="background:#e8f5e9">Yes</td></tr>
+<tr><td style="background:#e3f2fd">Tests, exwar, env-sync, wip/completed</td><td style="background:#e8f5e9">Yes — via execute chain</td><td style="background:#e8f5e9">Yes</td></tr>
+<tr><td style="background:#e3f2fd">Continuous loop until blocked</td><td style="background:#e8f5e9">Yes — via <strong>aciub</strong></td><td style="background:#e8f5e9">Yes</td></tr>
+</tbody>
+</table>
+
+---
+
+<h2 id="qimqui-procedure" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Procedure</h2>
+
+<h3 id="qimqui-step1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.1 Scope lock (required)</h3>
+
+1. Restate scope in **one short paragraph**: goal, touch areas (manifest, API, UI, tests), explicit non-goals.
+2. Split into **numbered phases** with **`[ ]`** bullets (3–7 phases typical).
+3. Add a **Quality bar** line per phase: tests to run (unit / integration / Vitest e2e as appropriate).
+4. If **true product ambiguity** remains → numbered question list only; **stop** (same bar as **implref** step 1).
+
+<h3 id="qimqui-step2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.2 Mini-plan file (when no plan path given)</h3>
+
+Write **`cursor_gen/refactor_plans/new/REFACTOR_<SHORT_TOPIC>.md`** with:
+
+- Title + one-line goal
+- Numbered phases + `[ ]` checklists from step 3.1
+- Quality bar subsection
+- Line: **Execute with:** `qimqui` / **`aciub`** on this path
+
+Skip lengthy prose, deferred tables, and evidence dumps unless the user asked for them.
+
+If user **named an existing plan path**, use that file instead; normalize shape only if bullets are missing.
+
+<h3 id="qimqui-step3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.3 Execute (required)</h3>
+
+Immediately run the [Execution chain](#qimqui-chain):
+
+1. Read and follow **`.cursor/rules/aciub-allow-continue-iterations-until-blocked.mdc`** (**`aciub`**) with the plan path.
+2. **`aciub`** delegates impl to **`.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`** (**`implref`** / **`resumimpl`**).
+
+Do **not** ask permission between phases. Do **not** stop after “plan written” — begin **`aciub`** in the same session.
+
+---
+
+<h2 id="qimqui-chain" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Execution chain (classic)</h2>
+
+**This section is the chain resolver for `qimqui`.** The TDD wrapper (**qimpltdd**) replaces every row below with its TDD path — see [TDD variant](#qimqui-tdd-pointer).
+
+| Chain role | Keyword | Rule path |
+|------------|---------|-----------|
+| Optional full plan authoring (not used by default in qimqui) | **`onlyref`** | `.cursor/rules/onlyref-refactor-plan-author-only.mdc` |
+| Continuous loop until blocked | **`aciub`** | `.cursor/rules/aciub-allow-continue-iterations-until-blocked.mdc` |
+| Implement / resume plan phases | **`implref`** / **`resumimpl`** | `.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc` |
+
+**Default qimqui path:** mini-plan (or named plan) → **`aciub <plan.md>`** → **`implref`** inside **aciub**.
+
+---
+
+<h2 id="qimqui-stop" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Stop conditions</h2>
+
+Same closed list as **implref** §3.1d / **aciub** §8: true blocker, manual user action, scope complete, or session cut (§3.1e).
+
+On session cut: plan in **`wip/`**; tell user to resume with **`qimqui`** or **`aciub`** / **`resumimpl`** on the **same plan path**.
+
+---
+
+<h2 id="qimqui-close" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Closing summary</h2>
+
+When stopping, use **implref** step 4 HTML table (phases, tests, war stories, plan path, blockers).
+
+---
+
+<h2 id="qimqui-tdd-pointer" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. TDD variant pointer</h2>
+
+For test-first execution, user says **`qimpltdd`** instead of **`qimqui`**.
+
+| Classic | TDD |
+|---------|-----|
+| **`qimqui`** (this file) | **`.cursor/rules/tdd/qimpltdd-quick-implement.mdc`** |
+
+**Do not mix** **`qimqui`** and **`qimpltdd`** on the same task.
+
+---
+
+<h2 id="qimqui-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Self-check (agent)</h2>
+
+- [ ] User invoked **`qimqui`**.
+- [ ] Scope locked; phases have `[ ]` + Quality bar.
+- [ ] Plan path exists (mini-plan or user-named).
+- [ ] **aciub** + **implref** chain started — not plan-only handoff.
+- [ ] If user wanted TDD: redirected mentally to **`qimpltdd`** (they must say the keyword).

@@ -1,0 +1,25 @@
+---
+description: >-
+  Keyword **gptex** — extract conversation text from a ChatGPT share URL using **utils/chatgpt/** and
+  **HOWTO_EXTRACT_CHATGPT.md**. Include **gptex** when pasting a `chatgpt.com/share/...` link. Cursor does
+  not auto-load rules by keyword; **@**-mention this rule or repeat **gptex** in the prompt.
+globs:
+  - "**/utils/chatgpt/**"
+  - "**/*chatgpt*"
+alwaysApply: false
+---
+
+<h1 id="gptex-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">ChatGPT share extraction (<code>gptex</code>)</h1>
+
+**Trigger:** User types **`gptex`** and provides a **ChatGPT share** URL (or asks to extract from one). Scope is the **active project** (its **`utils/chatgpt/`** tree).
+
+**Canonical how-to:** **`utils/chatgpt/HOWTO_EXTRACT_CHATGPT.md`** — JSON API, Playwright when needed, caveats, file layout.
+
+**Code layout (this repo):**
+
+- **`utils/chatgpt/playwright/`** — Node + Playwright (`package.json`, `fetch_share.mjs`, `extract_transcript.mjs`, **README**).
+- Follow the HOWTO’s **install and run** steps; do not invent transcript text — use the documented fetch/extract path.
+
+**Workflow:** Read the HOWTO → run or adapt the **playwright** scripts as documented → place outputs per the HOWTO (e.g. **`transcripts/`**, **`test_result/`** as applicable).
+
+**Do not:** Scrape the share page HTML as if it were the full conversation; use the **backend API** and/or **Playwright** flow from the HOWTO.

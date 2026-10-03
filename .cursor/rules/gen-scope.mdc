@@ -1,0 +1,123 @@
+---
+description: >-
+  Top-level rule for preparing and generating non-verb grammar scopes on demand.
+  Trigger keywords: `gen-scope`, `prepare scope`, `gen scope`.
+globs:
+  - "config/seeds/catalog-23-pools.json"
+  - "config/scope_paragraph.yaml"
+  - "apps/api/app/ingestion/bootstrap/*"
+alwaysApply: false
+---
+
+<h1 id="gen-scope-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Automated Non-Verb Scope Generator (`gen-scope`)</h1>
+
+## Document outline
+
+1. [Workflow Overview](#workflow-overview) — 2-step prepare → generate sequence.
+2. [Step 1: Research & Proposal (`prepare`)](#step-1-prepare) — candidate vocabulary table.
+ 2.1 [Scope grid contract pipeline](#grid-contract-pipeline) — knowledge → practice → paragraph.
+3. [Step 2: Automated Code Generation (`generate`)](#step-2-generate) — seed, migration, routes, UI, catalog, harness.
+4. [CLI Usage](#cli-usage) — `ops/tools/gen_non_verb_scope.py`.
+5. [Reference implementation](#reference-impl) — clitics four-tab contracts.
+6. [UI verification gate](#ui-verification-gate) — compile + render + boundary coercion (required for UI phases).
+
+---
+
+<h2 id="workflow-overview" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Workflow Overview</h2>
+
+The `gen-scope` rule allows rapid, automated creation of new non-verb grammar scopes (e.g. `noun-phrase:family`, `places:monuments`, etc.) in two explicit steps:
+
+1. **`prepare`**: Research domain vocabulary, construct a proposed seed grid, and present it to the user for approval.
+2. **`generate`**: Feed approved vocabulary into `ops/tools/gen_non_verb_scope.py` to create seeds, migrations, routes, UI pages, catalog entries, chunk policies, and harness tests.
+
+---
+
+<h2 id="step-1-prepare" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Step 1: Research & Proposal (`prepare`)</h2>
+
+When the user requests:
+`gen-scope prepare <parent_scope> <domain_description>`
+
+The agent must:
+1. Research standard Portuguese vocabulary for the target domain.
+2. Draft a structured candidate table with:
+   - **Column 1 (`Word / Lemma`):** e.g. `avô`, `neta`
+   - **Column 2 (`Form Example`):** e.g. `o avô`, `a neta`
+   - **Column 3 (`Example Sentence`):** e.g. `Meu avô mora em Lisboa.`
+   - **Column 4 (`Translation`):** e.g. `My grandfather lives in Lisbon.`
+   - **Column 5 (`Grouping Note / Hint`):** e.g. `Grandparents` / `grandfather`
+3. Output the proposal table and await user confirmation or adjustments.
+
+<h3 id="grid-contract-pipeline" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.1 Scope grid contract pipeline</h3>
+
+For verb-adjacent scopes (clitics, verb-complementation) and any scope with **Basic knowledge + Basic practice + Paragraph practice**, the **`prepare`** step must also declare a **grid contract** (not just vocabulary rows):
+
+| Surface | Agent defines |
+|---|---|
+| **Basic knowledge** | Column ids + headers + DB/API field bindings per tab/profile |
+| **Basic practice** | `answer_field`, `word_field`, ordered `practice_note_fields` (joined with ` \| `) |
+| **Paragraph** | Pool label = Word; graded blank = Form Example; LLM produce = Form Example + Example; bracket = `[Word * Practice note]` |
+
+**Artifacts (mirror Python ↔ TypeScript):**
+
+- `apps/api/app/domain/scope_grid_contract.py` — `ScopeGridContract`, `CLITIC_TAB_CONTRACTS`
+- `apps/web/src/lib/cliticsGridContract.ts` — same profiles for table builders + practice projectors
+
+**`generate` must wire:** table builder columns from contract → practice projector from contract → pool builder + `CliticNaturalPromptAdapter` (or scope equivalent) from contract.
+
+Spec JSON (`var/gen_scope_spec.json`) should include optional `grid_contract` block when the scope uses this pipeline.
+
+---
+
+<h2 id="step-2-generate" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Step 2: Automated Code Generation (`generate`)</h2>
+
+Upon user confirmation (`gen-scope generate` or approval):
+1. Write temporary scope spec file: `var/gen_scope_spec.json`.
+2. Run execution CLI: `python ops/tools/gen_non_verb_scope.py --spec var/gen_scope_spec.json`.
+3. Verify newly generated scope with unit tests, **[UI verification gate §6](#ui-verification-gate)**, and `pwlad temp <scope_key> --pb`.
+
+---
+
+<h2 id="cli-usage" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. CLI Usage</h2>
+
+```bash
+python ops/tools/gen_non_verb_scope.py --spec var/gen_scope_spec.json
+```
+
+---
+
+<h2 id="reference-impl" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Reference implementation</h2>
+
+Clitics four-tab refactor (`REFACTOR_CLITICS_FOUR_TAB_SUITE.md`) is the gold **grid contract** example:
+
+- Tab 2 object-action: Word (verb lemma) + Form Example + subject/object person + DO/IO + Pro/Enclitic → Practice note assembly → paragraph pool/bracket.
+- Tab 1/3: about-yourself suite (person + conjugation in Practice note).
+- Tab 4: se patterns (agreement + conjugation).
+
+Copy this pattern for new scopes rather than ad-hoc column strings in table builders.
+
+---
+
+<h2 id="ui-verification-gate" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. UI verification gate (generate + refactor)</h2>
+
+Any **`generate`** step or manual refactor that touches **knowledge pages**, **practice pages**, or **fetch → table builders** must pass **three layers** before the phase is marked complete. Portable rationale: war stories [153](war_stories/WAR_STORIES.md#war-story-153), [154](war_stories/WAR_STORIES.md#war-story-154); clitics application: [129](war_stories/WAR_STORIES_PROJECT_SPECIFIC.md#war-story-129).
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Layer</th><th>Proves</th><th>Required artifact</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>1 — Compile</strong></td><td style="background:#e8f5e9">Page modules parse (no mid-import syntax errors)</td><td style="background:#e8f5e9"><code>cd apps/web && npm run build</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>2 — Render</strong></td><td style="background:#e8f5e9">Fetch → buildRows → table mounts without throw</td><td style="background:#e8f5e9">Vitest + RTL + mocked fetch — <strong>one test per tab/route variant</strong></td></tr>
+<tr><td style="background:#e3f2fd"><strong>3 — E2E</strong></td><td style="background:#fff3e0">Navigation + practice flow (release / Phase 6)</td><td style="background:#fff3e0">Playwright mocked spec or <code>pwlad temp</code></td></tr>
+</tbody>
+</table>
+
+**Boundary coercion (layer 2 code, not optional):**
+
+- Fetch helpers: coerce list responses — non-array → `[]` (see `cliticsFetch.asFetchRows`).
+- Table builders: `Array.isArray` before `[...rows]`.
+- Async panels: module-level loader functions; `useEffect` deps on stable `reloadKey` only — not inline `load` arrows.
+
+**Helper-only tests** (builders, route parsers, grid contract JSON) **do not satisfy** layer 2. A dynamic import smoke test **does not satisfy** layer 1.
+
+**Ops pairing:** when `generate` adds migrations/seeds, document and run bootstrap refresh before declaring data-dependent tabs done (`alembic upgrade head` + scope promote script).

@@ -1,0 +1,99 @@
+---
+description: >-
+  User types resall / resall_fast / resall_slow: run tiered local rituals (1.1 essential+fast vs 1.2 live LLM).
+  Does not start or stop habitual :8000/:5173. Keywords: resall, resall_fast, resall_slow.
+  Not always-on — @.cursor/rules/resall-restart-full-tests-e2e.mdc if the prompt does not attach this rule.
+alwaysApply: false
+---
+
+# `resall` / `resall_fast` / `resall_slow` — tiered local test rituals
+
+**Purpose:** Repeatable merge gates with **two correctness tiers** so everyday UI/knowledge work does not pay OpenAI + cold-stack tax.
+
+| Chat trigger | CLI | What it proves |
+|--------------|-----|----------------|
+| **`resall_fast`** | `run_all.py resall-fast` | **1.1 essential + fast** — no OpenAI ritual phases |
+| **`resall_slow`** | `run_all.py resall-slow` | **1.2 live LLM / specialty** |
+| **`resall`** | `run_all.py resall` | **1.1 then 1.2** (continue-on-error; one recap) |
+
+**Why tiers:** Fast = wired app/DB/browser correctness without billing. Slow = model-quality and specialty probes. Prefer **`resall_fast`** after UI/knowledge edits; use slow/full when PLGW prompts or live harness change.
+
+**Does not touch** habitual **`:8000`** / **`:5173`**. SQLite E2E uses **`:8002`** / **`:4173`**.
+
+**Catalog:** `ops/local/local_tests/resall_phase_catalog.py` · `uv run python ops/local/run_all.py resall --list-phases`
+
+---
+
+## When this applies
+
+- **Triggers:** whole-word **`resall`**, **`resall_fast`**, or **`resall_slow`** (or `@` this rule).
+- **Intent:** Run the matching CLI **in the real environment**; wait for exit; report `[resall] summary`.
+
+---
+
+## Category 1.1 — `resall-fast` (phases 1–7)
+
+**Why these stay in 1.1:** Stub/SQLite E2E proves product paths without OpenAI; conjugation journey is essential UX; grid-filter is folded into integration to drop stack tax.
+
+| # | Phase | Notes |
+|---|-------|-------|
+| 1 | unittest discover | Share fixtures — wall is bootstrap, not assert count |
+| 2 | pytest openapi | Contract |
+| 3 | Vitest | Knowledge/table growth lands here |
+| 4 | Playwright mocked | Cheap browser; locator discipline |
+| 5 | e2e-test full-stack | Warm stack start |
+| 6 | e2e-test integration | Stub verify-exhaust + **folded grid-filter** |
+| 7 | e2e-test 8-p-full | Conjugation only (`E2E_8P_PLGW=0`) |
+
+```bash
+uv run python ops/local/run_all.py resall-fast
+```
+
+**Warm stack:** Ritual sets `E2E_KEEP_STACK` / `E2E_STACK_ADOPT` across phases 5–7 (API recycle for stub↔normal; Vite kept). Solo `e2e-test *` still start+stop.
+
+---
+
+## Category 1.2 — `resall-slow` (phases 8–10)
+
+**Why only here:** Live generate is orthogonal, slow, and flaky relative to stubs — do not block every UI edit.
+
+| # | Phase | Notes |
+|---|-------|-------|
+| 8 | e2e-test real-llm `--np 4` | **Sole** ritual volume batch |
+| 9 | e2e-test real-llm-conseguir-sf | Specialty |
+| 10 | e2e-test real-llm-verb-family | Specialty |
+
+```bash
+uv run python ops/local/run_all.py resall-slow
+```
+
+**Not in ritual (ad hoc):** `--np 1`, `--np 8`, `real-llm-smoke` (`PW_PLGW_LIVE_SMOKE=1`), solo `e2e-test grid-filter`, solo `8-p-full` with live PLGW. See **eellm** rule / `e2e-test real-llm --np N`.
+
+**Why `--np 4` alone:** Mid-size multi-verb/tense sample; avoids paying for np1+np8+smoke duplicates. **Why no 8-p live PLGW when np 4 runs:** same generate path; double OpenAI is pure cost.
+
+---
+
+## Full `resall`
+
+```bash
+uv run python ops/local/run_all.py resall
+uv run python ops/local/run_all.py resall --cov
+```
+
+Exit markers: `logs/ops/resall.exit` · `resall-fast.exit` · `resall-slow.exit`.
+Reports: `logs/ops/resall-phases/`.
+
+---
+
+## `resall --cov`
+
+- Collectors: phases **1–4** (+ optional E2E when `RESALL_COV_E2E_INSTRUMENT=1`).
+- Post-cov dashboard verify = phase **11** (`test-cov-dashboard`).
+- Kit: `utils/coverage_kit/HOWTO_USE_COVERAGE_KIT.md`.
+
+---
+
+## Related
+
+- **[`fixtests-mixed-test-results.mdc`](fixtests-mixed-test-results.mdc)** — UI fixes may complete on green **`resall-fast`**; PLGW/prompt/harness-slow still need full **`resall`** (or fast+slow).
+- `ops/local/run_all.py` · `resall_runner.py` · `tests/e2e/harness/e2e_stack.py` · `tests/README.md` · `tests/e2e/README.md`

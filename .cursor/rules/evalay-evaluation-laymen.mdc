@@ -1,0 +1,33 @@
+---
+description: >-
+  User types evalay (evaluation, layman): respond to the current issue with a precise, concise evaluation
+  in plain language; use neat tables where they help; no repo file edits unless the user also asks to implement.
+  Keywords: evalay, evaluation layman. Not always-on — @.cursor/rules/evalay-evaluation-laymen.mdc if the prompt
+  does not attach this rule.
+alwaysApply: false
+---
+
+# `evalay` — evaluate in plain language (no edits)
+
+**Purpose:** When the user includes **`evalay`**, **answer the question or tension in the thread** with a **short evaluation**: what holds, what does not, tradeoffs, feasibility — **without changing any files** unless the user separately requests implementation.
+
+## When this applies
+
+| Trigger | Agent behavior |
+|--------|----------------|
+| Message contains **`evalay`** (whole token) | Run this protocol on the **current issue** (design, plan, confusion, “is X enough?”). |
+| User also says **implement / code / patch** | You may edit files for **that** part; **`evalay` alone still forbids edits**. |
+
+## Response shape
+
+1. **Direct answer** in **layman’s terms** (minimal jargon; define one term if needed).
+2. **Tables** where they clarify comparisons, options, or checklist items (Markdown tables are fine).
+3. **Precision:** name **what is feasible vs risky**, **what is missing from a naïve framing**, **what would need proof** (tests, golden traces).
+4. **Length:** short by default; add depth only if the user’s question requires it.
+5. **No file changes** for the **`evalay`** portion: no new docs, no refactors, no drive-by fixes.
+
+## Self-check
+
+- [ ] `evalay` trigger honored (or user @-mentioned this rule).
+- [ ] No unintended `apply_patch` / writes for the eval-only ask.
+- [ ] At least one of: summary bullets, tradeoff table, or feasibility table when the topic benefits from structure.

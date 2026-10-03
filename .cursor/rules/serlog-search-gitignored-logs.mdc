@@ -1,0 +1,32 @@
+---
+description: >-
+  Keyword **serlog** — read and search **`logs/`** (`api.log`, `llm_traffic/*.json`) even when
+  **`logs/` is in `.gitignore`**. Workspace **Grep** and default search omit ignored paths.
+  Mention **serlog** or **@** this rule when digging logs.
+alwaysApply: false
+---
+
+<h1 id="serlog-title" style="color:#0d47a1;font-size:1.45em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Search readable logs despite <code>.gitignore</code> (<code>serlog</code>)</h1>
+
+### Why this exists
+
+Project **`.gitignore`** includes **`logs/`**. Cursor **workspace Grep** (and similar indexes) honor ignore rules so they **do not search** `logs/api.log` or `logs/llm_traffic/` by default. An empty Grep hit list **does not prove** text is absent from disk.
+
+### When investigating
+
+Tracing **batch runs**, **`[LLM-BATCH]`** / **`batch_trace_id`**, **`[LLM-WARN]`**, HTTP **`req_id`**, or **LLM trace JSON**:
+
+1. **`Read`** — open by **absolute path** when you know the file (e.g. `logs/api.log`, bundle path from **`[LLM-BATCH] bundle_file=...`**). Prefer **tail** reads (`offset` near end) for recent events.
+2. **Shell search — bypass ignore rules** — from repo root:
+
+   ```bash
+   rg --no-ignore-vcs -n 'YOUR_PATTERN' logs/
+   ```
+
+   Use this instead of concluding “not in repo” from workspace-only search.
+
+3. **Resolve bundle JSON** — `api.log` lines **`bundle_file=`** point at **`logs/llm_traffic/llm_req_*.json`**; read that file for full request/response attempts.
+
+### Do not
+
+Treat **“no workspace Grep matches in `logs/`”** as **ground truth**. Always **Read** explicit paths or run **`rg --no-ignore-vcs`** on **`logs/`** when logs matter to the answer.

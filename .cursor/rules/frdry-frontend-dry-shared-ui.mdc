@@ -1,0 +1,36 @@
+---
+description: Avoid duplicating React UI markup; extract shared components for repeated patterns (practice surfaces, graded cells, tables).
+alwaysApply: true
+---
+
+# Frontend DRY and shared UI (React)
+
+When editing **`apps/web/src/**`**:
+
+## When to extract a shared component
+
+- **Two or more call sites** use the same JSX structure or the same behavioral pattern (grading feedback blocks, keyed list rows, form field groups with identical layout, duplicated `role="button"` + keyboard handlers).
+- Extract **before or while** adding a third copy—not after the codebase has scattered near-identical JSX.
+
+## Naming and placement
+
+- Put domain-specific shared UI under sensible folders:
+  - Cross-practice learners: **`components/practice/`** (e.g. graded feedback cells).
+  - Conjugation matrix / conjugation-domain: **`components/conjugation/`** (reuse from practice when matrix-specific types are optional props).
+- Prefer **presentational components** props (`answerDisplay`, `ok`, `onRedo`) over coupling to FastAPI types unless the fragment is genuinely API-shaped.
+
+## Styling
+
+- Prefer **shared class names** in `styles.css` (or the project’s stylesheet) for the extracted component rather than repeating inline `style={{}}` blobs across pages.
+- If swapping layout order (e.g. answer vs label), adjust **semantic class names** and document in CSS comments; avoid duplicating the same flex column in multiple TSX files.
+
+## Do not spam abstractions
+
+- One-off layouts and pages that diverge intentionally stay local.
+- Do not unify components that share only a vague name but different behavior or markup trees.
+
+## Checklist before merging UI work
+
+1. Search for duplicated strings or class combos introduced elsewhere (e.g. `conj-practice-feedback`).
+2. If you copy-pasted **more than roughly eight lines** of JSX twice, pause and extract.
+3. Add or extend **Vitest** for the shared component when behavior is non-trivial (keyboard, redo, ordering).

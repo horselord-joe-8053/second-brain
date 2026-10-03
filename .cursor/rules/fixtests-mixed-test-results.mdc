@@ -1,0 +1,125 @@
+---
+description: >-
+  User types fixtests or shares a mixed pass/fail test matrix: triage failures, fix root cause with minimal diffs,
+  then rerun full resall until every phase is green. Do not weaken passing suites. Keywords: fixtests, fix failed tests,
+  mixed results. Not always-on — @.cursor/rules/fixtests-mixed-test-results.mdc if the prompt does not attach this rule.
+alwaysApply: false
+---
+
+# `fixtests` — repair failed phases from mixed test results
+
+**Purpose:** When a test run shows a **mix of pass and fail** (screenshot table, `resall` summary, CI recap), find the real cause, fix with minimal changes, then **rerun the appropriate ritual** (`resall-fast` for UI/knowledge; full `resall` when PLGW/live harness changed) until green — without weakening suites that already passed.
+
+**Repository:** `portuguese-learn` · **Working directory:** repository root unless noted.
+
+---
+
+## When this applies
+
+- **Trigger:** The user’s message includes **`fixtests`** as a whole-word token, **`@fixtests-mixed-test-results`**, or a phase/result table with any **`FAIL`** / `fail` rows.
+- **Intent:** Triage → classify → fix → **mandatory `resall` loop** → final results table for the user.
+
+---
+
+## Workflow
+
+### 1. Inventory failures only (first pass)
+
+Build a short table: **phase** → **failing test(s)** → **error one-liner**.
+
+- Prefer logs under [`ops/run-logs/`](ops/run-logs/) (see [`opslog-ops-run-logs-directory.mdc`](opslog-ops-run-logs-directory.mdc)).
+- Note which phases **passed** so you do not regress them with broad changes.
+
+### 2. Classify before editing
+
+| Kind | Examples | Typical fix |
+|------|----------|-------------|
+| **Environment / order** | `.env` `DATABASE_URL` overrides test sqlite; model env overrides request body | Isolate env in test (`patch.dict`), or align harness order |
+| **Product bug** | Behavior contradicts docstring or API contract | Minimal product fix |
+| **Stale test** | Assertion encodes old behavior after intentional product change | Update test **after triple-check** |
+| **Flake** | Timing, strict locator, race | Stabilize wait/locator; do not weaken assertions |
+
+### 3. Fix discipline
+
+- **Minimal diff**; match surrounding conventions.
+- **Do not** loosen assertions, skip tests, or change shared config only to green failures if that could break phases that already passed.
+- **If the problem is in test code:** triple-check — read product docstring/code, grep related tests, reproduce the single failure in isolation. Prefer env isolation over deleting assertions.
+- **Do not** assume E2E failures came from an E2E refactor without log evidence.
+- **PLGW model in Python tests:** use [`tests/utils/support/plgw_model.py`](tests/utils/support/plgw_model.py) (repo `.env` via `CONJ_PARAGRAPH_AUGMENT_MODEL`), not hardcoded `gpt-4o-mini`.
+
+### 4. Mandatory rerun — completion gate (D10)
+
+After you fix **one or more** failures, pick the ritual by **change surface**:
+
+| Change surface | Completion ritual | Why |
+|----------------|-------------------|-----|
+| Knowledge/UI/harness **without** PLGW prompt/live paths | Green **`resall-fast`** | Essential correctness; no OpenAI wall |
+| PLGW prompts, live harness, specialty LLM | Full **`resall`** (or **`resall-fast` then `resall-slow`**) | Model-quality gate still required |
+
+**Do not** treat a partial suite as the completion gate — prefer the matching **`resall*`** ritual above.
+
+**Foreground only:** wait for ritual exit (fast ~few minutes; full ~10–20+). Capture exit code + log tail before looping.
+
+```bash
+uv run python ops/local/run_all.py resall-fast   # UI / knowledge
+uv run python ops/local/run_all.py resall          # PLGW / full gate
+```
+
+**Phase list** (see `resall --list-phases`): **1.1** unittest → openapi → Vitest → mocked → full-stack → integration(+grid-filter) → 8-p conjugation; **1.2** real-llm `--np 4` → conseguir-sf → verb-family. Ad hoc: np 1/8, smoke, solo grid-filter.
+
+**Loop:** fix → matching ritual again → until final exit **0** or major-refactor stop rule.
+
+**Targeted repro** (allowed **only while debugging between `resall` runs**, never as the final gate):
+
+```bash
+PYTHONPATH="apps/api:${PWD}" uv run --project apps/api python -m unittest discover -s tests -t "${PWD}" -p 'test*.py' -v
+uv run python ops/local/run_all.py e2e-test mocked
+uv run python ops/local/run_all.py e2e-test real-llm --np 1
+```
+
+### 5. When to stop (major refactor only — abnormal)
+
+Stop the fix loop **only** if the right fix is a **large** refactor (new subsystem, wide API redesign, multi-day migration). That should be rare.
+
+Before stopping:
+
+1. **Retrace your steps** — re-read diffs, re-run the smallest failing test, confirm you did not introduce the regression.
+2. If the failure is **not** caused by your changes, prepare a **layman’s summary** for the user (see §6 table B).
+3. Do **not** leave the tree half-fixed without explaining what was done and what still fails.
+
+### 6. Final deliverable — results tables (required)
+
+At the end of a `fixtests` run, always show **two** markdown tables.
+
+#### Table A — All `resall` phases (outcome)
+
+One row per phase from **`[resall] summary`** (exact phase names). Columns: **Phase** | **Result** (`Pass` / `Fail` / `Skip`) | **Notes** (one short line).
+
+Example shape:
+
+| Phase | Result | Notes |
+|-------|--------|-------|
+| restart dev stack | Pass | — |
+| unittest discover | Pass | 332 tests, 2 skipped |
+| Playwright mocked | Pass | 7/7 |
+| e2e-test real-llm --np 4 | Fail | 1 spec timeout |
+| restart dev stack (final) | Pass | — |
+
+**Success:** **`[resall] final exit 0`**. Any nonzero exit means `fixtests` is not done.
+
+#### Table B — Fixes applied (only if you changed code)
+
+Numbered, **very plain language**, one row per distinct fix:
+
+| # | What was wrong (plain English) | What we changed (plain English) |
+|---|-------------------------------|--------------------------------|
+| 1 | … | … |
+
+Skip Table B if the run was verify-only (no code changes).
+
+---
+
+## Related rules
+
+- **[`resall-restart-full-tests-e2e.mdc`](resall-restart-full-tests-e2e.mdc)** — canonical `resall` steps and harness details.
+- **[`evalay-evaluation-laymen.mdc`](evalay-evaluation-laymen.mdc)** — optional extra plain-language framing for evaluations.

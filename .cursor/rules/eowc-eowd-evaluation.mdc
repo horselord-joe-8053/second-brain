@@ -1,0 +1,98 @@
+---
+description: >-
+  User types eowc or eowd (whole word): external-backed evaluation only—no repo edits;
+  concise (eowc) or structured / optional cursor_gen report (eowd). Keywords: eowc, eowd.
+  Not always-on—@.cursor/rules/eowc-eowd-evaluation.mdc if the rule did not attach.
+alwaysApply: false
+---
+
+<h1 id="eowc-eowd-evaluation-only" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>eowc</code> / <code>eowd</code> — evaluation only</h1>
+
+**Purpose:** When the user includes **`eowc`** (*evaluation only with very concise response*) or **`eowd`** (*evaluation only with detailed but not verbose response*) as **whole words** (case-sensitive **`eowc`** / **`eowd`** on typical ASCII prompts), respond with **evaluation and synthesis only**—**no** modifications to tracked project files (no writes/patches/commits) unless the user sends a **separate** follow-up that does not invoke this rule.
+
+**Markdown for optional `eowd` reports:** Any new **`cursor_gen/*.md`** report must follow **`.cursor/rules/mrkd-markdown-authoring.mdc`** as the canonical format spec (outline, HTML heading palette, numbering); include **`mrkd`** or **@** that rule when authoring.
+
+<h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When this applies](#when-this-applies) — triggers and scope.
+2. [What to evaluate](#what-to-evaluate) — subject matter vs trivial filler.
+3. [Conduct](#conduct) — rigor, sources, no fabrication.
+4. [Response shape](#response-shape) — numbering, tables, `eowc` vs `eowd`.
+5. [Optional `eowd` report file](#optional-eowd-report-file) — `cursor_gen/` + link.
+6. [Conflicts with other rules](#conflicts-with-other-rules) — `prcd`, implementation asks.
+7. [Notes](#notes) — limits and good practice.
+
+---
+
+<h2 id="when-this-applies" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+**Trigger A — `eowc` or `eowd` appears as a whole word in the message**
+
+- Match **only** standalone tokens (e.g. surrounded by whitespace, punctuation, or line boundaries)—not substrings inside identifiers.
+- **Case:** **`eowc`** and **`eowd`** as **lowercase** tokens unless the user explicitly standardizes otherwise in the project.
+- If **both** appear, use the **stricter brevity** intent: prefer **`eowc`**-style length unless the user clearly scopes one token to one part of the message.
+
+**Trigger B — the message is only `eowc` / `eowd` (or trivial filler plus the token)**
+
+- Evaluate the **immediately previous user message** together with **your prior reply** to that message (same idea as **`prcd`** Trigger B).
+
+**Scope text:** Everything in the prompt **except** the trigger tokens and trivial filler (e.g. “please”, “thanks”)—that remainder is the **evaluation subject**. If the remainder is empty under Trigger B, use the prior turn as above.
+
+---
+
+<h2 id="what-to-evaluate" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. What to evaluate</h2>
+
+- Focus on **non-trivial** substance: design, correctness, risks, performance, security, API or dependency choices, docs accuracy, test strategy, etc.
+- Skip re-evaluating pure pleasantries unless the user ties them to substance.
+
+---
+
+<h2 id="conduct" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Conduct</h2>
+
+1. **Thorough** — Read the relevant scope carefully; trace implications (edge cases, failure modes) before judging.
+2. **External references when useful** — For claims about **current** best practices, versions, CVEs, vendor behavior, or benchmarks, prefer **recent, credible sources** (official docs, standards bodies, major engineering blogs, well-maintained repos)—use **WebSearch** / **WebFetch** as needed.
+3. **No fabrication** — Do not invent citations, version numbers, or statistics. If evidence is missing, **say what is unknown** and how you would verify.
+4. **No project edits** — Do **not** apply patches, create/rename/delete project files, or run mutating repo commands under this rule. Offering **proposed** diffs as **fenced illustrative code** for discussion is allowed; applying them is not.
+
+---
+
+<h2 id="response-shape" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Response shape</h2>
+
+- Use a **numbered** structure (`1.`, `2.`, …) with **short bold lead-ins** where helpful.
+- Prefer **tables** for comparisons, tradeoffs, checklist pass/fail, or source lists (name | why it matters | link).
+- For each **outside reference**, add **one line**: what it supports and **why** it is credible for that claim.
+
+**`eowc` — very very concise**
+
+- Few bullets; **no** long tables unless indispensable (then at most **one** tiny table).
+- Bottom line first; omit nice-to-have tangents.
+
+**`eowd` — detailed but not verbose**
+
+- Still **scannable**: sections, tables, tight paragraphs—avoid essay length in chat.
+- If the evaluated topic is **large** or the structured answer would **overflow** chat, keep the chat reply **short** and add a **`cursor_gen/<TOPIC>_EVAL.md`** (or similar) per [Optional `eowd` report file](#optional-eowd-report-file).
+
+---
+
+<h2 id="optional-eowd-report-file" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Optional `eowd` report file</h2>
+
+- **When:** Use when an in-chat **`eowd`** answer would be **long** or **reference-heavy**; skip when a compact chat answer suffices.
+- **Where:** Repo root **`cursor_gen/`** (create the file only for this report; do not bundle unrelated edits).
+- **Format:** **`mrkd-markdown-authoring.mdc`** — HTML `h1`/`h2`/`h3` with `id`s, **Document outline**, numbered sections, tables, fenced blocks with language tags (**`mrkd`** / **@** as needed).
+- **Chat:** End with a **single** prominent link to the new file (repo-relative path).
+
+**Exception — rule vs file creation:** Creating this **`cursor_gen/*.md`** is **allowed** for **`eowd`** because it is **evaluation output**, not a product code change. Do **not** use **`eowd`** as cover to change application/source files.
+
+---
+
+<h2 id="conflicts-with-other-rules" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Conflicts with other rules</h2>
+
+- **`prcd` / implementation:** If the same message asks to **implement** and also **`eowc`/`eowd`**, complete **evaluation only** in this turn (**no** `prcd` plan or code edits). Ask the user to **send a follow-up without `eowc`/`eowd`** for implementation—or they may drop the evaluation tokens and use **`prcd`** per **`.cursor/rules/prcd.mdc`**.
+- **`eowc`/`eowd` clarification:** If scope is ambiguous, ask **at most 1–2** focused questions **before** heavy web research—still **no** repo edits.
+
+---
+
+<h2 id="notes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Notes</h2>
+
+- **Live web** can be wrong or stale; prefer primary sources and **date-stated** facts.
+- **Tokens are not secret commands**—describe what you are doing briefly (“Checking vendor docs for …”) when useful, without bloating **`eowc`** output.

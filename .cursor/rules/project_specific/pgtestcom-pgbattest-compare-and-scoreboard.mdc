@@ -1,0 +1,174 @@
+---
+description: >-
+  Keyword **pgtestcom** — run pgbattest for named (or all non-conj) scopes, record
+  the new tip into PGBATTEST_CATALOG_SCOREBOARD.md (with wall duration), compare
+  vs prior §6.xx run(s) in tables, then give a freshman-plain summary table.
+alwaysApply: false
+---
+
+<h1 id="pgtestcom-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>pgtestcom</code> — pgbattest run + scoreboard + compare</h1>
+
+**Type:** keyword campaign · **Not always-on** — mention **`pgtestcom`** or `@` this rule.  
+**Owns:** (1) one live `pgbattest` campaign for the requested scopes, (2) append/update [`docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md`](../../../docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md) with the new tip **including wall duration**, (3) detailed **tabular compare** of relevant scopes vs prior run id(s) **in that scoreboard**, (4) a **freshman-plain** summary table in the chat reply.  
+**Does not own:** `pgjudge` fix→retry budgets (`pgbattest` / `aciub`); paragraph play-by-play (`pgpbp`); git commit/push (`gitacp`).
+
+## Document outline
+
+1. [When this applies](#when) — trigger + parse defaults.
+2. [Locks / defaults](#locks) — ambiguities frozen here.
+3. [Procedure](#procedure) — run → record → compare → reply.
+4. [Scoreboard write shape](#scoreboard) — what to add to the `.md`.
+5. [Compare table shape](#compare) — HTML tables + delta labels.
+6. [Chat reply shape](#reply) — freshman summary (mandatory).
+7. [Examples](#examples).
+8. [Related rules](#related).
+
+---
+
+<h2 id="when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+User message includes **`pgtestcom`** (whole token).
+
+**Parse (do this first):**
+
+| Piece | How it appears | Default if omitted |
+|-------|----------------|--------------------|
+| **`<list_of_scopes>`** | `scopes:[a,b]`, `scopes: a, b`, bare catalog names after `pgtestcom` | **All 23 non-conj catalog scopes** (scoreboard §1 / `pgbattest` catalog) |
+| **`<list_of_runs>`** | `vs:[§6.34,§6.35]`, `vs 6.34 6.35`, `compare:6.33,6.34` | **One** baseline = **last recorded tip** on the scoreboard (§2 timeline newest real row / highest `§6.xx` with a harness log) |
+
+Warn on unknown scope names; intersect with the catalog. Do **not** invent conjugation / PLGW scopes.
+
+---
+
+<h2 id="locks" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Locks / defaults</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Topic</th><th>Lock</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Campaign shape</td><td style="background:#e8f5e9"><strong>One</strong> <code>pgbattest</code> pass (Door A→B→C per harness defaults). <strong>No</strong> auto <code>pgjudge</code> fix→reinvoke loop unless the user also invoked <code>pgbattest</code>/<code>aciub</code> for that.</td></tr>
+<tr><td style="background:#e3f2fd">Door C</td><td style="background:#e8f5e9">On (harness default). Honor <code>--no-door-c</code> only if the user asks.</td></tr>
+<tr><td style="background:#e3f2fd">Last run</td><td style="background:#e8f5e9">Newest scoreboard tip with a real log path — may be full-23 <strong>or</strong> a subset allowlist. When new scopes ⊊ prior run, compare <strong>overlap only</strong> and state coverage mismatch in one sentence.</td></tr>
+<tr><td style="background:#e3f2fd">Multiple prior runs</td><td style="background:#e8f5e9">One compare column per named prior <code>§6.xx</code> + delta vs each (and optional net headline).</td></tr>
+<tr><td style="background:#e3f2fd">Duration</td><td style="background:#e8f5e9">Record wall clock (<code>real</code> from <code>time</code>, or harness elapsed). Prefer seconds + human (~N min).</td></tr>
+<tr><td style="background:#e3f2fd">Git</td><td style="background:#ffebee">Update the scoreboard file in the workspace; <strong>do not</strong> commit/push unless the user says <code>gitacp</code>.</td></tr>
+<tr><td style="background:#e3f2fd">Stack</td><td style="background:#fff3e0">Cold start OK via <code>run_all.py pgbattest</code> (isolated API). Optional <code>run_all restart</code> only if the user asks or the stack is clearly down.</td></tr>
+</tbody>
+</table>
+
+---
+
+<h2 id="procedure" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Procedure</h2>
+
+1. **Resolve scopes + baselines** — catalog list vs request; map `list_of_runs` → scoreboard `§6.xx` (read timeline + detail sections). If a named run cannot be found, ask **one** question.
+2. **Run** — from repo root, time the campaign:
+
+```bash
+# full catalog (default when scopes omitted)
+time python ops/local/run_all.py pgbattest --scopes places:continents,places:countries,places:states,places:cities,places:everyday,places:gentilicos-continent,places:gentilicos-country,places:gentilicos-state,places:gentilicos-city,numbers:cardinals,numbers:ordinals,adjectives:endings,determiners:demonstratives,contractions:blending,por-para:main,inanimate:learn-by-heart,inanimate:suffix-rule-binding,inanimate:meaning-changers,animated:fixed-article,animated:same-form,animated:two-forms,animated:animals,plural:plural
+
+# subset
+time python ops/local/run_all.py pgbattest --scopes <comma-separated>
+```
+
+Capture: overall table, per-scope outcomes, log path under `ops/run-logs/pgbattest-*.log`, Door C JSON under `ops/run-logs/tmp/` when present, **wall duration**.
+
+3. **Record** into the scoreboard ([Scoreboard write shape](#scoreboard)).
+4. **Compare** relevant scopes vs each baseline ([Compare table shape](#compare)) — write that table **into the same new scoreboard section**.
+5. **Reply** with the freshman summary table ([Chat reply shape](#reply)). Optionally point to the new `§6.xx`.
+
+**Ineffective:** stop after CLI without editing the scoreboard; compare without duration; dump raw logs instead of tables; start `pgpbp` unless the user asked.
+
+---
+
+<h2 id="scoreboard" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Scoreboard write shape</h2>
+
+Edit [`docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md`](../../../docs/pglpl/PGBATTEST_CATALOG_SCOREBOARD.md) following existing **`mrkd`** / §6.xx patterns:
+
+1. **§2 Campaign timeline** — append one row: **run stamp** `YYMMDD-hhmm` (local start) · when/end window if known · what (scopes + model if known) · headline counts · **wall duration** (`Ns` + `~N min`) · log filename · summary stamp if expgtest.
+2. **New detail section** — next free `§6.xx` (under the active campaign heading, e.g. Campaign D). Include:
+   - Branch / model / allowlist notes if relevant
+   - Log + Door C JSON paths
+   - **Run stamp** `YYMMDD-hhmm` (local) + summary artifact stamp when present
+   - **Wall time** (required)
+   - Catalog or subset score (verified / quality_failed / failed_first5 / failed_all)
+   - Outcome lists or compact table for **requested** scopes
+3. **Compare subsection** inside that §6.xx — the detailed vs-prior table(s) ([§5](#compare)).
+4. **§3 Latest known** — update rows for every scope in **this** run (outcome + evidence `§6.xx`). Leave other scopes’ “latest” untouched unless this run was full-23 (then refresh the whole §3 tip sentence).
+
+Do **not** delete prior §6 history.
+
+---
+
+<h2 id="compare" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Compare table shape</h2>
+
+**Scope of compare:** only scopes in `<list_of_scopes>` (or all 23). For each baseline in `<list_of_runs>`, pull that scope’s outcome from that §6 section (or §3 if the detail is thin — prefer the named §6).
+
+**Required HTML table** (`mrkd` colors):
+
+| Column | Content |
+|--------|---------|
+| Scope | catalog id |
+| Each prior `§6.xx` | outcome (`verified` / `quality_failed` / `failed_first5` / `failed_all` / n/a) |
+| This run (`§6.new`) | outcome |
+| Delta vs each prior | `improved` / `held` / `regressed` / `n/a` |
+
+Also record **headline deltas** when useful: verified count, Door A/B/C fail counts, wall time vs prior (if prior wall known).
+
+**Mechanics (optional but preferred):** 2–6 bullets under the table for scopes that changed — name the likely contract (verify / Injection Gate / punch / Door C), not a full `pgpbp`.
+
+Delta labels stay freshman-readable: **improved** = worse→better door outcome; **regressed** = better→worse; **held** = same class.
+
+---
+
+<h2 id="reply" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Chat reply shape (mandatory)</h2>
+
+After scoreboard edits, reply for a **college freshman**:
+
+1. One–two sentence tip (new `§6.xx`, wall time, verified / fail mix).
+2. **Layman summary table** (mandatory), e.g.:
+
+| Scope (or group) | Before (prior tip) | Now | Plain English |
+|------------------|--------------------|-----|---------------|
+| … | verified / Door A fail / … | … | got better / worse / same |
+
+3. At most **3** bullets: biggest wins, biggest regressions, next watchlist.  
+No jargon dump; define one label if needed (`verified` = A+B+C ok).
+
+---
+
+<h2 id="examples" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Examples</h2>
+
+```text
+pgtestcom
+pgtestcom scopes:[places:gentilicos-state, numbers:cardinals, inanimate:suffix-rule-binding]
+pgtestcom scopes: contractions:blending, numbers:ordinals  vs:[§6.34, §6.35]
+pgtestcom vs 6.35
+pgtestcom places:countries, places:gentilicos-city compare:6.33,6.34,6.35
+```
+
+Agent behavior:
+
+- `pgtestcom` → full-23 `pgbattest` → new §6.xx vs last tip only → scoreboard + freshman table.
+- `pgtestcom scopes:[…]` → subset campaign; compare those scopes to last tip (overlap).
+- `pgtestcom … vs:[§6.34,§6.35]` → subset or full as scoped; multi-column compare.
+
+---
+
+<h2 id="related" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Related rules</h2>
+
+| Rule | Owns |
+|------|------|
+| **`pgbattest`** | Door budgets, fix→reinvoke when improving a fail |
+| **`pgjudge`** | Short live A/B flake-vs-fix after `AGENT_JUDGE` |
+| **`pgpbp`** | Deep produce→verify→gate play-by-play for a **recorded** fail |
+| **`gitacp`** | Commit/push scoreboard edits when asked |
+| **`opslog`** | `ops/run-logs/` conventions |
+
+**Ineffective (avoid):**
+
+- Treating `pgtestcom` as silent “run only” with no scoreboard edit.
+- Comparing against an undocumented chat run not on the scoreboard.
+- Auto-opening `pgpbp` for every fail (offer only if the user wants autopsy).
+- Committing the scoreboard without `gitacp`.

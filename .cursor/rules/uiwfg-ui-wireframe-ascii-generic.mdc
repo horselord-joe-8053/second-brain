@@ -1,0 +1,219 @@
+---
+description: >-
+  Generic web UI design visualization — ASCII wireframes and Mermaid diagrams for
+  page layout, navigation, and flows. Portable across repos. Trigger uiwfg or
+  @uiwfg-ui-wireframe-ascii-generic when documenting or proposing screen designs.
+alwaysApply: false
+---
+
+<h1 id="uiwfg-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">UI wireframe & diagram — generic (portable)</h1>
+
+**Purpose:** Help humans and agents **visualize web page UI** in Markdown docs using **ASCII wireframes** (layout chrome) and **Mermaid** (logic, flows, dependencies). **Project-agnostic** — copy this file into any repo’s `.cursor/rules/`.
+
+**Trigger:** User says **`uiwfg`**, “wireframe this screen”, “ASCII mockup”, “UI diagram for this page”, or **`@uiwfg-ui-wireframe-ascii-generic`**.
+
+**Not for:** Pixel-perfect Figma specs, component prop APIs, or backend-only architecture with no UI surface.
+
+---
+
+<h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Pick the right medium](#medium) — ASCII vs Mermaid vs table.
+2. [ASCII wireframe conventions](#ascii) — frames, bands, annotations.
+3. [In-page hierarchy](#in-page) — nav, tabs, sections, states.
+4. [Mermaid for UI-related diagrams](#mermaid) — when and how.
+5. [Companion tables](#tables) — routes, labels, data mapping.
+6. [Worked example](#example) — minimal end-to-end pattern.
+7. [Quality checklist](#checklist)
+
+---
+
+<h2 id="medium" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Pick the right medium</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Medium</th><th>Use for</th><th>Avoid for</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>ASCII wireframe</strong></td><td style="background:#e8f5e9">Screen layout · app chrome · nav rows · tabs · toolbars · footers · before/after nav</td><td>API schemas · CI pipelines · deep state machines</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Mermaid</strong></td><td style="background:#e8f5e9">User flows · IA tree · decision trees · cross-page journeys · logical grouping · dependency order</td><td>Pixel layout (use ASCII instead)</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Markdown table</strong></td><td style="background:#fff3e0">Route map · label → URL · role matrix · content source mapping</td><td>Spatial layout</td></tr>
+</tbody>
+</table>
+
+**Rule of thumb:** If the reader needs to **see where things sit on the page**, use ASCII. If they need to **see how choices or pages connect**, use Mermaid. Always pair ASCII with a **route/label table** when URLs matter.
+
+**Do not** use screenshots alone as the spec — add ASCII or structured tables.
+
+---
+
+<h2 id="ascii" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. ASCII wireframe conventions</h2>
+
+<h3 id="ascii-frame" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.1 Outer frame</h3>
+
+Use **box-drawing** characters for the viewport (`┌─┐│└┘├┤`). Fence with language tag **`text`**.
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  {App / product title}                                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  {Global nav / primary chrome}                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  {Secondary nav or context bar — omit if N/A}                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  {Page body — tabs, filters, main content}                                   │
+│                                                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  {Footer / session / actions — omit if N/A}                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+Adapt band count to the app (2–5 bands). **Name each band** in annotations (see §2.2).
+
+<h3 id="ascii-symbols" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.2 Symbols</h3>
+
+| Symbol | Meaning |
+|---|---|
+| `●` | Active / selected item in that row |
+| `[ Label ]` | Button, link, or nav item |
+| `( Label )` | Chip, tag, or filter pill |
+| `▾` | Dropdown trigger |
+| `…` | Truncated items |
+| `← callout` | Right-margin annotation (same line or line below) |
+| `(hold)` | Planned but not shipped |
+
+<h3 id="ascii-annotations" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.3 Annotations</h3>
+
+Add short `←` callouts per band:
+
+```text
+│  [ Home ]  [ Settings ● ]  [ Help ]              ← primary nav
+│  Tab A ● │ Tab B │ Tab C                         ← section tabs
+│  (filter 1)  (filter 2 ●)                        ← in-page filters
+```
+
+Long rationale stays in prose **below** the fence, not inside the box.
+
+---
+
+<h2 id="in-page" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. In-page hierarchy</h2>
+
+Show **named** levels — never an unnamed blob of content:
+
+```text
+│  TABS:   [ Overview ● ]  [ Details ]  [ History ]
+│  CHIPS:  ( All )  ( Active ● )  ( Archived )
+│  CONTENT: table / form / cards for active selection
+│  ACTIONS: [ Save ]  [ Cancel ]
+```
+
+Guidelines:
+
+1. **Prefer 3–4 tabs** per page; deeper topics → chips inside one tab.
+2. Label controls with **user-facing names**, not component or DB identifiers.
+3. Mark **empty, loading, error** states in a separate mini-wireframe when behavior matters.
+
+---
+
+<h2 id="mermaid" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Mermaid for UI-related diagrams</h2>
+
+<h3 id="mermaid-types" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.1 Diagram types</h3>
+
+| Goal | Mermaid type | Example |
+|---|---|---|
+| Site / IA tree | `graph TD` | App → areas → pages |
+| User click path | `graph LR` or `graph TD` | List → detail → edit |
+| Conditional UI | `{Decision}` diamond | Role gate · feature flag |
+| Teaching / prerequisite order | `graph TD` | Step A before step B |
+
+<h3 id="mermaid-style" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.2 Style (readable in docs)</h3>
+
+- **5–11 nodes** per diagram; split if larger.
+- Break long labels with `\n` inside nodes.
+- Optional semantic colors on `style` lines:
+
+```mermaid
+graph TD
+  A[Entry / trigger] --> B{Decision}
+  B --> C[Primary screen]
+  B --> D[Alternate screen]
+
+  style A fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style B fill:#fff8e1,stroke:#ff8f00,stroke-width:1px,font-size:9px
+  style C fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style D fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
+```
+
+- **Blue:** entry / sources · **Amber:** decisions · **Green:** target screens · **Purple:** secondary paths
+
+<h3 id="mermaid-vs-ascii" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.3 Combine both</h3>
+
+Typical doc pattern:
+
+1. **Mermaid** — IA or flow (where pages connect).
+2. **ASCII** — one wireframe per **key screen**.
+3. **Table** — routes and labels.
+
+---
+
+<h2 id="tables" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Companion tables</h2>
+
+After each wireframe, add when applicable:
+
+| Nav label | Route | Role / notes |
+|---|---|---|
+| `{Label}` | `/{path}` | who sees it · shipped vs hold |
+
+Optional third column: content source (doc section, CMS, API) if the design doc maps data.
+
+---
+
+<h2 id="example" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Worked example</h2>
+
+<h3 id="example-ia" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">6.1 IA (Mermaid)</h3>
+
+```mermaid
+graph TD
+  App[App shell] --> List[Item list]
+  App --> Settings[Settings]
+  List --> Detail[Item detail]
+
+  style App fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style List fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style Detail fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style Settings fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
+```
+
+<h3 id="example-wireframe" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">6.2 Screen (ASCII)</h3>
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  {Product name}                                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  [ Items ● ]  [ Settings ]                                    ← primary nav │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  [ Search… ]                    [ + New ]                    ← toolbar      │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  Row 1   Row 2   Row 3                                              │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Label | Route |
+|---|---|
+| Items | `/items` |
+| Settings | `/settings` |
+
+---
+
+<h2 id="checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Quality checklist</h2>
+
+- [ ] Medium chosen deliberately (ASCII vs Mermaid vs both).
+- [ ] ASCII uses box-drawing frame and **`text`** fence.
+- [ ] Active/selected state marked (`●` or explicit label).
+- [ ] At least one `←` annotation per major band.
+- [ ] In-page tabs/chips **named**; not “content here”.
+- [ ] Route/label table follows wireframes when URLs exist.
+- [ ] Mermaid ≤ ~11 nodes; semantic `style` if colored.
+- [ ] Unshipped modes marked `(hold)` or equivalent.
+- [ ] Project-specific chrome delegated to a **local** rule (if any), not duplicated here.

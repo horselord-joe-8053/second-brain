@@ -1,0 +1,125 @@
+---
+description: >-
+  Keyword **pyam**: clitics E2a/E2b content changes through the prototype YAML
+  pipeline — YAML → static proto HTML, generated seeds, fixtures, Vitest matrix,
+  bootstrap DB, live E2a/E2b React UIs. Use when editing grid cells, footnotes,
+  or enclisis forms for object-action clitics.
+alwaysApply: false
+---
+
+<h1 id="pyam-title" style="color:#0d47a1;font-size:1.45em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>pyam</code> — prototype YAML → app pipeline (E2a / E2b clitics)</h1>
+
+## Document outline
+
+1. [Trigger](#pyam-trigger) — when to invoke **`pyam`**.
+2. [Pipeline map](#pyam-map) — one writer, many readers.
+3. [Procedure](#pyam-procedure) — edit order and commands.
+4. [Surfaces](#pyam-surfaces) — proto HTML vs live URLs.
+5. [Hand-maintained exceptions](#pyam-exceptions) — do not regenerate blindly.
+6. [Verification](#pyam-verify) — tests and DB refresh.
+
+---
+
+<h2 id="pyam-trigger" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Trigger</h2>
+
+| User says | Agent does |
+|-----------|------------|
+| **`pyam`** + clitics grid / cell / footnote / seed change | Follow [procedure](#pyam-procedure) end-to-end; do **not** patch live UI strings without updating YAML (or documented hand seed) first. |
+| “Run the YAML pipeline” / “regenerate seeds” | Same as **`pyam`** regenerate step. |
+
+**Operator guide:** `docs/dev/PROTO_YAML_PIPELINE.md`  
+**Script README:** `cursor_gen/refactor_plans/assets/prototypes/pipeline/README.md`
+
+---
+
+<h2 id="pyam-map" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Pipeline map</h2>
+
+Yes — **one E2a cell matrix YAML** fans out to **prototype HTML** and **live app data**; **E2b YAML** drives **E2b proto HTML + structural parity** while **both E2a and E2b live UIs** read the **same flat API rows** and project differently.
+
+```mermaid
+graph TD
+  A[e2a data.yaml] --> B[build_all.sh]
+  A2[e2b data.yaml] --> B
+  B --> C[proto knowledge/practice HTML]
+  B --> D[clitic_object_proto_generated_seeds.py]
+  B --> E[Vitest fixture + matrix]
+  B --> F[proto_contract.json]
+  D --> G[bootstrap clitics --refresh]
+  G --> H[(Postgres / SQLite)]
+  H --> I[GET /clitics/object-forms]
+  I --> J[E2a UI projector]
+  I --> K[E2b UI projector]
+```
+
+| Stage | Source | Output / consumer |
+|-------|--------|-------------------|
+| **Proto UI** | `e2a-clitics-object-action/data.yaml`, `e2b-clitics-object-action/data.yaml` | `knowledge.html`, `practice.html` in each proto folder |
+| **Seeds** | **E2a YAML only** (`emit_python_seeds.py`) | `apps/api/app/ingestion/bootstrap/clitic_object_proto_generated_seeds.py` |
+| **Fixtures** | E2a YAML | `tests/e2e/unit/vitest/proto-pipeline/fixtures/e2aProtoObjectForms.generated.json` |
+| **Live DB** | Bootstrap promote | `python ops/local/run_bootstrap_clitics.py --refresh` |
+| **Live E2a UI** | API rows | `buildObjectActionPlacementBlocks` — `/knowledge/clitics/object-action` |
+| **Live E2b UI** | Same API rows | `buildObjectActionSlotBlocks` — `/knowledge/clitics/object-action-e2b` |
+
+**Do not edit** generated `*.py`, `*.json`, `*.html`, or `e2aProtoCellMatrix.generated.test.ts` by hand — regenerate.
+
+**Legacy import only:** `PROTO_E2A_*.md`, `PROTO_E2B_*.md` — use `build_all.sh --import` only when intentionally re-importing; normal edits go to **`data.yaml`**.
+
+---
+
+<h2 id="pyam-procedure" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Procedure</h2>
+
+1. **Edit YAML** — cell text, `form_example`, footnotes, register:
+   - E2a matrix: `cursor_gen/refactor_plans/assets/prototypes/e2a-clitics-object-action/data.yaml`
+   - E2b slot layout (must stay structurally aligned): `cursor_gen/refactor_plans/assets/prototypes/e2b-clitics-object-action/data.yaml`
+2. **Regenerate** (repo root):
+
+```bash
+bash cursor_gen/refactor_plans/assets/prototypes/pipeline/build_all.sh
+```
+
+3. **Refresh DB** (when seeds changed):
+
+```bash
+python ops/local/run_bootstrap_clitics.py --refresh
+```
+
+4. **TS projector / footnote chrome** — only when layout policy changes (not pure cell text): `apps/web/src/lib/cliticsObjectActionPlacement.ts`, E2b projector files.
+5. **CI parity check** (before commit):
+
+```bash
+bash cursor_gen/refactor_plans/assets/prototypes/pipeline/build_all.sh --check
+```
+
+---
+
+<h2 id="pyam-surfaces" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Surfaces</h2>
+
+| Surface | URL / path |
+|---------|------------|
+| E2a proto | `cursor_gen/.../e2a-clitics-object-action/knowledge.html` |
+| E2b proto | `cursor_gen/.../e2b-clitics-object-action/knowledge.html` |
+| E2a live knowledge | `/knowledge/clitics/object-action` |
+| E2a live practice | `/practice/clitics/object-action` |
+| E2b live knowledge | `/knowledge/clitics/object-action-e2b` |
+| E2b live practice | `/practice/clitics/object-action-e2b` |
+
+---
+
+<h2 id="pyam-exceptions" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Hand-maintained exceptions</h2>
+
+| File | When to touch |
+|------|----------------|
+| `clitic_affected_person_seeds.py` | Affected-person band only |
+| `buildObjectActionSlotBlocks.ts` / E2b TS | Projector policy, not individual cell strings |
+
+---
+
+<h2 id="pyam-verify" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Verification</h2>
+
+| Layer | Command |
+|-------|---------|
+| Python pipeline | `pytest tests/unit/test_proto_pipeline.py` |
+| Vitest contract + matrix | `cd tests/e2e && npm run test -- unit/vitest/proto-pipeline/` |
+| Playwright mocked | `npm run test:e2e -- browser/mocked/clitics-object-action-e2a-*.spec.ts browser/mocked/clitics-object-action-e2b-*.spec.ts` |
+
+After seed/bootstrap changes, spot-check live E2a and E2b knowledge pages for the edited cells.

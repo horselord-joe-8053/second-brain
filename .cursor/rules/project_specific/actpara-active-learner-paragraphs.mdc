@@ -1,0 +1,67 @@
+---
+description: >-
+  Keyword **actpara** — list learner-visible paragraph exercises (Door C pass + Finally OK,
+  canonical scopes only). Runs actpara_list_active.py. Mention **actpara** or @ this rule.
+alwaysApply: false
+---
+
+<h1 id="actpara-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">actpara — active learner paragraph inventory</h1>
+
+## Document outline
+
+1. [Trigger](#trigger) — when to use **actpara**.
+2. [Definition](#definition) — what counts as “active”.
+3. [Run the script](#run) — commands and output.
+4. [Related audits](#related) — legacy vs pipeline rejects.
+
+---
+
+<h2 id="trigger" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Trigger</h2>
+
+Use when the user asks to **list active learner paragraphs**, **audit paragraph inventory**, **find what the UI serves**, or includes **`actpara`** (optionally with a scope like `clitics:pronominal-verb`).
+
+Do **not** hand-roll SQL unless the script fails — reuse the shared legit filter.
+
+---
+
+<h2 id="definition" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Definition</h2>
+
+A row is **active for learners** when **all** of:
+
+| Check | Source |
+|-------|--------|
+| `status == door_c_pass` | `gender_paragraph_status.is_learner_visible_status` |
+| `gen_finally_ok == true` | `gender_paragraph_legit.is_learner_practice_row` |
+| scope **not** in `CLITICS_LEGACY_SCOPE_ALIASES` | `area_paragraph_registry` — nine-chip clitics namespaces the UI no longer queries |
+
+This matches `get_published_exercises()` — the same path practice pages use per subarea.
+
+---
+
+<h2 id="run" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Run the script</h2>
+
+From repo root (requires `DATABASE_URL` in `.env`):
+
+```bash
+cd apps/api && uv run python ../../.cursor/rules/project_specific/code/actpara_list_active.py
+cd apps/api && uv run python ../../.cursor/rules/project_specific/code/actpara_list_active.py --scope clitics:pronominal-verb
+cd apps/api && uv run python ../../.cursor/rules/project_specific/code/actpara_list_active.py --json
+```
+
+Script path: `.cursor/rules/project_specific/code/actpara_list_active.py`
+
+**Default output:** total count + per-scope table (count + sample ids).
+
+**`--json`:** full list `{id, scope, n, status, gen_finally_ok, chars}`.
+
+---
+
+<h2 id="related" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Related audits</h2>
+
+| Question | How |
+|----------|-----|
+| Legacy scope orphans (hidden, old namespace) | `WHERE scope IN CLITICS_LEGACY_SCOPE_ALIASES.keys()` — **not** in actpara output |
+| Pipeline rejects under canonical scopes | `status != door_c_pass` or `gen_finally_ok = false` — admin history only |
+| Per-subarea parity with UI | `get_published_exercises(db, scope=…)` or `--scope` on this script |
+
+**Verified baseline (2026-09-18):** 300 total rows → **204 active** (32 scopes); **56 legacy** clitics orphans excluded; **40** canonical inactive pipeline rows excluded.

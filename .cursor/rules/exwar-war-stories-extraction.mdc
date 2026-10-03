@@ -1,0 +1,454 @@
+---
+description: >-
+  Filename **exwar-war-stories-extraction.mdc**. Project-agnostic war story extraction: when and how to
+  capture lessons from chat or transcripts into the repo’s war-story file; batch + online workflows. Faithful
+  project code snippets with English comments and optional GitHub source links. Calibrate voice and visuals against
+  **both** **`.cursor/rules/war_stories_example/WAR_STORIES_PORT_LEARN_SAMPLES.md`**
+  (primary) and **`WAR_STORIES_AWS.md`** (secondary)—**technical** and **design** stories are both in scope.
+  Key phrase **exwar** with optional duration (e.g. exwar 4h, exwar 4d, exwar 4w) for recent this-chat history;
+  bare **exwar** = 24h lookback intent. Cursor does not auto-load rules by keyword; **@exwar-war-stories-extraction** or repeat **exwar**.
+globs:
+  - "**/war_stories/**"
+  - "**/.cursor/rules/war_stories_example/**"
+  - "**/utils/styles/**"
+alwaysApply: false
+---
+
+<h1 id="generic-war-stories-extraction" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Generic war stories extraction (Cursor rule)</h1>
+
+Turn durable technical lessons and design decisions into **numbered, searchable** entries in the repository’s war-story collection—without depending on another repo’s docs.
+
+<h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Purpose and scope](#purpose-and-scope) — portable rule + `war_stories/` convention.
+    1.1 [Audience, tone, reference examples](#purpose-audience-example) — who reads; skim-first; **`war_stories_example/`** bundle (both files).
+    1.2 [Voice and register](#voice-and-register) — architect-level reasoning; no interview tells.
+2. [War stories directory](#war-stories-directory-portable-convention) — collection files, **`assets/`**, routing, bootstrap.
+3. [What qualifies](#what-qualifies-meaningful-stories) — senior-bar, reusable, not spam; **default skip**.
+4. [Tiering before details](#tiering-arc-first-then-incidents) — batch and online behavior.
+5. [Story kinds](#story-kinds-technical-lessons-vs-design-decisions) — technical vs design keywords.
+6. [Workflow: live conversation](#workflow-live-conversation-online-extraction) — propose then write.
+7. [Workflow: batch from chat history](#workflow-batch-from-chat-history) — ranked list then draft.
+    7.1 [Hand-authoring cadence](#workflow-hand-authoring) — decide → collect artifacts → draft → review.
+8. [Entry structure and metadata](#entry-structure-and-metadata) — sections, timestamps, template.
+    8.1 [Collection scaffolding (outline + story index)](#collection-file-scaffolding) — front matter; maintain on append.
+    8.2 [Minimal template](#minimal-template) — copy-ready story skeleton.
+9. [Readability and Markdown](#readability-and-markdown-authoring) — fences, skim-first prose, **`mrkd`**.
+10. [Code blocks and reusable snippets](#code-blocks) — faithful project excerpts, comments, GitHub links.
+    10.1 [Source attribution and GitHub links](#code-source-attribution) — project name, path, when to hyperlink.
+11. [Visual aids](#visual-aids) — **`mrkd`** §6 tables and Mermaid; arc stories; **`utils/styles/`** clarification.
+12. [Writing quality](#writing-quality-rules) — verification, plain language; **`cursor_gen`** / absorb-in-place rule.
+13. [Checklist before merge](#checklist-before-merge) — self-review (outline, visuals, portability, **file choice**).
+14. [Cursor behavior](#cursor-behavior) — **@** / **exwar** and `globs`; not always-on.
+15. [Session trigger `exwar [duration]`](#session-trigger-exwar-duration) — review this chat; dedupe vs collection.
+16. [Out of scope](#out-of-scope) — limits on volume and duplication.
+
+---
+
+<h2 id="purpose-and-scope" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Purpose and scope</h2>
+
+- **Portable:** This file is the **only** Cursor rule needed for war-story discipline when you copy **`exwar-war-stories-extraction.mdc`** together with **`.cursor/rules/war_stories_example/`** (**both** markdown exemplars) into another project; collection paths remain **`war_stories/`**–relative.
+- **Convention:** Story text and project anchors live under **`war_stories/`** at the repository root (see [War stories directory](#war-stories-directory-portable-convention)). This rule names **only** those relative paths for **live** collections—never product-specific app directories embedded in portable prose.
+
+<h3 id="purpose-audience-example" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">1.1 Audience, tone, reference examples</h3>
+
+**Who should apply this:**
+
+- Humans or assistants **adding/editing entries** in **`war_stories/WAR_STORIES.md`** (and companion **`war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`**).
+- Turning **chat, failures, or debugging** into stories **before merge**—use this rule plus the **`exwar`** flow when extracting from Cursor history.
+
+**Readability:**
+
+- Readers skim **under time pressure**. **Short paragraphs**, **strong headings**, **payoff early** when possible—not long essays.
+- **Length (soft recommendation only):** Aim for roughly **2–4 screenfuls of prose** per story when that still tells the lesson. **Being informative outranks brevity**—especially when [§10](#code-blocks) fenced snippets carry the mechanism; **`§N.4 Resolution`** may grow with code. There is **no hard word or character cap**.
+
+**Example corpus (tone + structure, not verbatim copy destinations):**
+
+Before drafting or reviewing **`exwar`** output, **read both** files under **`.cursor/rules/war_stories_example/`** so formatting, keyword flavor, and **§N.1–N.5** rhythm match project expectations:
+
+| File | Role |
+| --- | --- |
+| **`WAR_STORIES_PORT_LEARN_SAMPLES.md`** | **Primary exemplar** for this repo: **short**, **Portuguese-learn–stack** stories mixing **technical** incidents (bugs, React state, keying) and **design** arcs (pipelines, contracts, autonomy). Use it first for **outline + story index + table/Mermaid** patterns aligned with **`mrkd`**. |
+| **`WAR_STORIES_AWS.md`** | **Secondary / density reference**: longer **AWS-flavored** entries—**comparison tables**, **fenced blocks**, **stack-heavy** narration when you want extra calibration on richness or voice. |
+
+**Do not** paste either exemplar verbatim into **`war_stories/WAR_STORIES.md`** unless you are intentionally archiving a corpus—port **patterns** (especially from **`WAR_STORIES_PORT_LEARN_SAMPLES.md`**).
+
+**Story orientation:** Worthy captures include **technical-oriented** entries ([§5.1 Technical lessons](#technical-lessons)—how the stack behaved and what fixed it) **and** **design-oriented** entries ([§5.2 Design decisions](#design-decisions)—tradeoffs among alternatives, UX or API contracts, system boundaries). **Both kinds are explicitly in scope;** prioritize **signal and reusability**, not “bugs only” or “architecture only.” The exemplars **mix both** (`**keywords:**` ranges from **`react … bug, frontend`** to **`design, system design, …`**).
+
+<h3 id="voice-and-register" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">1.2 Voice and register</h3>
+
+- **Write like a staff/principal architect narrating an internal postmortem or design review**: reason explicitly in **constraints**, **tradeoffs**, **invariants**, and **quantified impact**—tie the prose back to the story's own **`difficulty`** / **`significance`** numbers rather than asserting importance in the abstract. Keep language **plain** per [§1.1 Readability](#purpose-audience-example) and [§9](#readability-and-markdown-authoring); sophistication should show up as **precision**, not vocabulary.
+- **No interview tells:** Never name-drop **`interview`**, "demonstrates my skill," "classic **X** question," "sound bite," or add an **`Interview prompts this answers`**-style Q&A block inside story prose (**Context** through **Takeaway**). The **senior-interview bar** in [§1.1](#purpose-audience-example) / [§3](#what-qualifies-meaningful-stories) decides **which** lessons are worth writing down—it must stay **invisible** in **how** they are phrased. The **`N.1`–`N.5`** structure (situation → mechanism → principle → decision → closing line) already carries that quality without saying so; let it.
+- **First-person is out of register:** stories are written in the same **third-person / imperative** voice as the rest of the collection ("When **X** happens, do **Y**"), not "I did **X**" or "the story I tell." First person only belongs inside a genuine **quoted error message or log line**.
+- **Self-review:** before finalizing, search the new story text for the literal string **`interview`**—if it appears anywhere in **`N.1`**–**`N.5`** prose (metadata **`keywords:`** included), rewrite that sentence to state the principle directly instead.
+
+---
+
+<h2 id="war-stories-directory-portable-convention" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. War stories directory (portable convention)</h2>
+
+**Default paths** (relative to repository root):
+
+| Role | Path | What belongs there |
+| --- | --- | --- |
+| **Portable collection** | **`war_stories/WAR_STORIES.md`** | Lessons that travel: stack traps, contracts, design tradeoffs you could tell in a **senior interview** without Floor35 product vocabulary. May cite **faithful code** from this repo (see [§10](#code-blocks)) when the pattern is generally reusable—treat repos as **future public GitHub** sources. |
+| **Project-specific collection** | **`war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`** | Lessons that **need this product**: suite routes/chips/modes, pedagogy IA, repo-only ops harnesses, path tables, Tracker Document maps. Full numbered **§N.1–N.5** stories **and** operational wiring live here. |
+| **Story assets** | **`war_stories/assets/`** | **Code and images** referenced from war-story **Resolution** sections (recovery scripts, diagrams, screenshots). Keep paths stable; add a one-line row to **`war_stories/assets/README.md`** when adding a new asset. Do **not** park unrelated ops tooling here. |
+
+### 2.1 Routing (after a lesson qualifies)
+
+1. Ask: **Would this still teach without Floor35 / noun-agreement / LBH / PLGW product names?**  
+   - **Yes** → **`WAR_STORIES.md`**  
+   - **No** (depends on this app’s IA, routes, modes, admin chips, seeded pedagogy) → **`WAR_STORIES_PROJECT_SPECIFIC.md`**
+2. **Code vs routing:** Choosing **`WAR_STORIES.md`** does **not** require fake module names or generic API paths in snippets. Use **faithful excerpts** from this repository when they clarify a **general** lesson ([§10](#code-blocks)). Route to **`WAR_STORIES_PROJECT_SPECIFIC.md`** when the **story** depends on product IA, ops harnesses, or vocabulary that does not travel—not merely because real file paths appear in a fence.
+3. **Never append the same story body to both files.** The portable index may keep a **stub row** linking to the project file (`WAR_STORIES_PROJECT_SPECIFIC.md#war-story-N`) when numbers are shared for navigation.
+4. Keep **global story numbers unique** across both files (do not reuse `#91` for two different lessons).
+
+### 2.2 When adding or updating
+
+1. Append to the **correct** file from [§2.1](#war-stories-directory-portable-convention). Create `war_stories/` / the target `.md` if missing.
+2. Update **that** file’s Document outline / story index in the **same** edit.
+3. Keep ops/path tables in **`WAR_STORIES_PROJECT_SPECIFIC.md`** (do not hardcode them into portable Cursor rules).
+4. When a story needs a **runnable playbook** or **illustration**, place it under **`war_stories/assets/`** (see table above), link from **`§N.4 Resolution`**, and index it in **`war_stories/assets/README.md`**. Prefer repo-relative paths like `war_stories/assets/<name>.py`.
+
+**Bootstrap:** If **`war_stories/`** is missing, create it; add **`WAR_STORIES_PROJECT_SPECIFIC.md`** (ops + project stories) and **`WAR_STORIES.md`** when the first **portable** story is written.
+
+**Before drafting:** Read **both** files so new entries do not duplicate.
+
+Do **not** point this rule at other repositories for structure or paths.
+
+---
+
+<h2 id="what-qualifies-meaningful-stories" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. What qualifies (meaningful stories)</h2>
+
+**Default: skip** only when the phase has **no durable lesson**. Completing an `aciub` / `implref` phase does **not** by itself require a new story—but a **good lesson is still a good lesson** even when similar code already shipped elsewhere.
+
+Capture a story when **both** are true:
+
+1. **Useful knowledge** — Non-trivial behavior of systems, frameworks, runtimes, data, security, cost, or reliability—not only “it broke once” with no mechanism.
+2. **Reusable** — Helps **future work in this codebase** *or* could be told in a **senior / tech-lead interview** (tradeoffs, measurement, guardrails).
+
+**Strong fits (examples):** **phased workflows** where each stage can use a different tool; dual or alternate backends; choices backed by **evaluation matrices**; orchestration; correctness under ambiguous inputs; operational safety (timeouts, idempotency). **Also counts:** deployment safety, recurring parser edge cases, cost/security implications, **developer speed** only when the lesson is **non-obvious**; **design strategy** choices (e.g. hybrid shared-helper + family allowlist vs one mega-prompt).
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Dimension</th><th>What it means</th><th>Skip war story?</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><b>A. Lesson already in <code>war_stories/</code></b></td><td style="background:#e8f5e9">Same reusable insight already has an index row (cite story <b>N</b>)</td><td style="background:#c8e6c9"><b>Yes — skip</b> (dedupe). Optional: one-line cross-link if this phase adds a new example.</td></tr>
+<tr><td style="background:#e3f2fd"><b>B. Mechanism already in product code</b></td><td style="background:#fff3e0">e.g. “demos already do neighbor-fit” / pattern already implemented</td><td style="background:#ffcdd2"><b>No — not a skip reason by itself.</b> Code existence ≠ lesson captured. Write the story if the <b>insight</b> is not yet in the collection (or is a meaningfully sharper formulation).</td></tr>
+</tbody>
+</table>
+
+**Forbidden skip excuses:** “mechanism already known from demos/scope X”; “we only swapped prompts”; “partial live win so nothing to teach”; “documented in the refactor plan / chat only.”
+
+**Usually skip:** typos with no pattern; one-off mistakes with no lesson; “we shipped the plan checklist” **without a reusable insight**; pure CSS/chrome polish with no design trap; narratives that boil down to “we tried harder”; pure documentation formatting unless it encodes a **process** decision worth defending; **duplicates of an existing story-index row** (cite the row and skip — that is dimension **A** only).
+
+**Technical vs design:** A candidate does **not** need to be a “classic bug” to qualify—clear **design** decisions ([§5.2](#design-decisions)) belong on equal footing with **implementation** lessons ([§5.1](#technical-lessons)) when they meet the bar above.
+
+---
+
+<h2 id="tiering-arc-first-then-incidents" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Tiering: arc first, then incidents</h2>
+
+**Before** proposing a flood of small fixes, scan for **arc-level** lessons (still backed by concrete files, numbers, or commands):
+
+- **Tier A (prefer):** End-to-end **workflow or system design** (e.g. phased pipeline where each phase may use different tools; dual backends; evaluation matrices that justify defaults; chunking or dedupe policy driven by real constraints).
+- **Tier B:** Important but narrower **implementation** lessons (heuristic bug, race, config key)—include when they encode a **reusable trap** or complete an arc; avoid listing five variants of the same typo.
+
+**Batch from chat:** Produce a **ranked candidate list** (Tier A first), one line each; then draft only approved items.
+
+**Online:** When a Tier A or strong Tier B moment appears, **offer** to add the next numbered story before editing the file.
+
+---
+
+<h2 id="story-kinds-technical-lessons-vs-design-decisions" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Story kinds: technical lessons vs design decisions</h2>
+
+Neither kind is privileged for **`exwar`** extraction or hand authoring: **actively consider both** Tier-B-style technical incidents **and** Tier-A / design-heavy arcs—the curated **`WAR_STORIES_PORT_LEARN_SAMPLES.md`** blend is intentional ([§1.1](#purpose-audience-example)). When one story spans both, follow the **mixed-story** guidance in [§5.2](#design-decisions) for **`keywords:`**.
+
+<h3 id="technical-lessons" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.1 Technical lessons</h3>
+
+- **What:** Debugging outcomes, framework/runtime behavior, migrations, performance, tests, tooling—**how the system behaved** and what changed.
+- **Keywords:** Concrete stack terms (`postgres`, `ffmpeg`, `openapi`, `jsonl`) plus the problem area. Include **`design`** only when the entry is also a design story.
+
+<h3 id="design-decisions" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.2 Design decisions</h3>
+
+- **What:** Choices among **alternatives** with consequences (data model, API shape, pipeline stages, UX rules, system boundaries).
+- **Keywords (required):** the word **`design`** **and** a **second category** keyword, for example **`system design`**, **`API design`**, **`data model design`**, **`UX design`**.
+
+If a story mixes bug fix and design, include **both** technical keywords and **`design` + category**.
+
+**Design category keywords (searchable second term):**
+
+| Second keyword (examples) | Use when the decision is mainly about… |
+| --- | --- |
+| **`system design`** | Platform / datastore / service boundaries, major stack fit |
+| **`API design`** | Endpoints, contracts, optional fields, backward compatibility |
+| **`data model design`** | Tables, keys, normalization, stat granularity |
+| **`UX design`** | Interaction rules, affordances, visibility of feedback |
+
+**Valid `keywords:` line examples (illustrative domains):**
+
+- `keywords: design, system design, PostgreSQL, MongoDB, relational model, language learning`
+- `keywords: design, API design, stat_person_codes, backward compatibility, FastAPI`
+- `keywords: design, UX design, conjugation practice, double-click, submit gating`
+
+**Technical lesson keyword flavor:** favor concrete stack words (`postgres`, `alembic`, `vite`, `cookie`, `react state`, `ffmpeg`, …) plus the problem area.
+
+---
+
+<h2 id="workflow-live-conversation-online-extraction" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Workflow: live conversation (online extraction)</h2>
+
+1. When the chat surfaces something that passes [What qualifies](#what-qualifies-meaningful-stories), **say briefly** why it qualifies (Tier A/B), **which file** ([§2.1](#war-stories-directory-portable-convention)), and ask whether to add **the next numbered story** (after ensuring [War stories directory](#war-stories-directory-portable-convention) exists).
+2. If the user agrees, **append** one story in one edit: pick **N** after the latest story heading **`## N.`** or **`war-story-N`** in the collection, fill all subsections in [Entry structure and metadata](#entry-structure-and-metadata), and **refresh** any [Collection scaffolding](#collection-file-scaffolding) (outline / story index) that file already maintains.
+3. If the user declines, **do not** write the file; a one-sentence takeaway in chat is optional.
+
+---
+
+<h2 id="workflow-batch-from-chat-history" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Workflow: batch from chat history</h2>
+
+1. **Ingest** the provided history (or summary): chronological is fine; completeness matters more than length.
+2. Emit **8–15 one-line candidates**, **Tier A first**, then Tier B, each tied to a concrete artifact when possible (path, command, metric, doc title).
+3. Let the user **select or cap** how many to extract (e.g. top 5, or “only A”).
+4. For each approved item, add **one** numbered story to the **routed** file ([§2.1](#war-stories-directory-portable-convention))—and **extend** that file’s [Collection scaffolding](#collection-file-scaffolding) in the same edit. Avoid merging unrelated threads into a single grab-bag story unless they share one **title-worthy** lesson.
+
+<h3 id="workflow-hand-authoring" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">7.1 Hand-authoring cadence (human or agent)</h3>
+
+When drafting **without** live **`exwar`**, follow this sequence:
+
+1. **Qualify** — passes [What qualifies](#what-qualifies-meaningful-stories)? If it is a trivial typo with no reusable lesson, skip.
+2. **Collect artifacts** (while memory is fresh): exact commands / exit codes / short error text; paths, config keys, env vars, API paths, migration names; symptom vs **how you proved** the fix (test, command, manual check).
+3. **Pick N** — next index after the latest story title in the target collection (**`## N.`** convention or **`id="war-story-N"`** anchor).
+4. **Metadata first** — `creation`, `last_updated`, `keywords`, `difficulty`, `significance` (see [Entry structure](#entry-structure-and-metadata)).
+5. **Fill subsections in order** — Context → Root Cause → Key Insight → Resolution → Takeaway, using evidence from step 2.
+6. **Code blocks** — when the lesson is easier to reuse as code; trim to crucial lines with English comments ([§10](#code-blocks)).
+7. **Visual aids** — tables / Mermaid / sparing inline HTML spans when they beat prose (**`mrkd`** §6 mandatory for tables/diagrams; see [Visual aids](#visual-aids)); **tier A / design** stories should bias toward comparison tables and phased-flow diagrams when the lesson is inherently multi-stage.
+8. **Collection scaffolding** — if **`WAR_STORIES.md`** has a Document outline / story index, **extend it** in this same edit (see [§8.1](#collection-file-scaffolding)).
+9. **Self-review** — [Writing quality](#writing-quality-rules) and [Checklist before merge](#checklist-before-merge).
+
+---
+
+<h2 id="entry-structure-and-metadata" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Entry structure and metadata</h2>
+
+Each story uses this layout.
+
+- **Portable default:** Markdown **`## N. Short title`** and **`### N.m …`** subsections.
+- **Repo override (common for colored previews):** HTML **`<h2>` / `<h3>`** using the **palette and `id` discipline** from **`.cursor/rules/mrkd-markdown-authoring.mdc`** §5. **Required when HTML is used for story titles:** stable anchors so outlines and in-file TOCs keep working—for example **`id="war-story-N"`** on the story title and **`id="war-story-N-sec-M"`** (or equivalent) on **Context / Root Cause / …** subsections. Subsection **labels** must stay **N.1–N.5** in visible text.
+
+**Metadata** (plain lines immediately under the story title, before **N.1**):
+
+- `**creation:** <YYMMDD-HHMMSS>` (or the timestamp style the collection already uses—stay consistent within the file)
+- `**last_updated:** <YYMMDD-HHMMSS>`
+- `**keywords:** ...` (comma-separated; grep-friendly)
+- `**difficulty:** <1–10>` (how hard to find/fix or decide)
+- `**significance:** <1–10>` (cost of repeating the mistake or wrong decision)
+
+**Subsections** (same lesson structure every time):
+
+- **`### N.1 Context`** — situation and goal  
+- **`### N.2 Root Cause`** — mechanism / risk (**not** blame)  
+- **`### N.3 Key Insight`** — memorable principle (optional short **highlight span**—see **`mrkd`** §7 restraint)  
+- **`### N.4 Resolution`** — what we shipped or decided (use **tables / Mermaid** here when comparing options or phased pipelines—see [Visual aids](#visual-aids))  
+- **`### N.5 Takeaway`** — one tight closing line
+
+**While drafting:** collect commands, exit codes, config keys, file paths, and how the fix was **verified**.
+
+- Optional: note **timezone** for timestamps in Context if it matters for the lesson.
+- **Keywords** must keep **`grep`** useful—tools + problem area (e.g. `postgres, login, cookies`).
+
+<h3 id="collection-file-scaffolding" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.1 Collection-level scaffolding (`WAR_STORIES.md`)</h3>
+
+Large rolling collections (**many numbered stories**) should add **navigation and scan aids** near the **top** of **`war_stories/WAR_STORIES.md`**, aligned with **`mrkd`**:
+
+1. **`Document outline`** — A first-class section (Markdown **`## Document outline`** or an **`<h2 id="document-outline">`** with the same role). Explain how stories are numbered and what **§N.1–N.5** mean so first-time readers are not lost.
+2. **Reading guide table** — One compact **HTML table** (**`mrkd`** §6.1): columns such as **Field** / **Meaning** for metadata lines (**creation**, **keywords**, **difficulty**, …) and the five subsection names.
+3. **Story index table** — **HTML table** listing **`#`** | linked **title** (anchor to **`#war-story-N`**) | **one-phrase gist**. Keeps dozens of arcs reachable without brute-force scrolling.
+4. **On every append of story `N`** — Extend the story index row in the **same commit**; adjust intro copy only if filenames or rules drift.
+
+When a repository provides reusable visual snippets under **`utils/styles/*`** (tables, Mermaid templates, badge palettes), **prefer those assets** for war-story visuals so `exwar` output stays consistent with project style packs. If **`utils/styles/*`** is absent, fallback to **`mrkd`** defaults (and keep any project-specific notes in **`war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`**).
+
+Minor collections (only a handful of stories) **may** skip the story index until growth makes it worthwhile—**do** still follow **`mrkd`** outline discipline once the file is multi-topic or long enough to scroll.
+
+<h3 id="minimal-template" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.2 Minimal template (Markdown form)</h3>
+
+```markdown
+## N. Story title
+
+**creation:** <YYMMDD-HHMMSS>
+**last_updated:** <YYMMDD-HHMMSS>
+**keywords:** keyword1, keyword2
+**difficulty:** 1
+**significance:** 1
+
+### N.1 Context
+
+### N.2 Root Cause
+
+### N.3 Key Insight
+
+### N.4 Resolution
+
+### N.5 Takeaway
+```
+
+HTML collections: translate this skeleton into **`<h2 id="war-story-N">` / `<h3 id="war-story-N-sec-M">`** using **`mrkd`** §5 styling; keep the same **N.1–N.5** visible labels.
+
+---
+
+<h2 id="readability-and-markdown-authoring" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Readability and Markdown authoring</h2>
+
+When **creating or editing** the war-story **collection** file (or companion project docs linked from stories), follow the repo’s **`.cursor/rules/mrkd-markdown-authoring.mdc`** as a **hard requirement**:
+
+- Start long **`WAR_STORIES.md`** files with **`## Document outline`** (tight numbering; indented continuation lines **`5.1 [Subsection title](#anchor) — summary.`** mirroring **`mrkd`** §3—**do not** start a **nested Markdown ordered list** inside an outline row, which reintroduces spurious **`1.`**, **`2.`** markers).
+- Use at most **`#` → `##` → `###`** (Markdown) **unless** the collection uses **`mrkd`**-palette **HTML headings** with explicit **`id`**, as allowed in [Entry structure §8](#entry-structure-and-metadata).
+- Prefer **fenced code** with a **language tag**; use **`text`** for log excerpts.
+
+**Collection-specific:** If **`WAR_STORIES.md`** already ships a reading guide plus story-index tables, treat them as **first-class artifacts**—update them whenever you append a story so navigation stays honest ([§8.1](#collection-file-scaffolding)).
+
+If that rule file is unavailable or unreadable, **pause and ask the user how to proceed before finalizing the edit**. Do not silently downgrade formatting standards.
+
+**Skim-first prose (collection files may use light HTML where the repo already does):**
+
+- Slightly **larger or colored** emphasis for the main lesson or a warning is fine when it speeds scanning—**one or two accent colors** per story, not a rainbow.
+- Prefer **full words** over unexplained abbreviations; define a stack-specific term **once** in Context if needed.
+- Expert-expected terms (*migration*, *session cookie*, *CORS*) are fine when accurate; drop insider-only shorthand when a short plain phrase works.
+- **Length vs code:** The [§1.1](#purpose-audience-example) soft length target yields to **clarity**—do not strip fences or shrink **§N.4** when commented snippets are the best teaching device.
+
+---
+
+<h2 id="code-blocks" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Code blocks and reusable snippets</h2>
+
+**Priority:** When a lesson hinges on **how** something was implemented, prefer **curated fenced snippets** over long prose alone. **Informativeness** (including code) outranks informal length guidance ([§1.1](#purpose-audience-example), [§9](#readability-and-markdown-authoring)).
+
+- **When to include:** Technical (and mixed) stories where the fix, contract, guard, API shape, or test pattern is easier to **reuse in another project** as code than as narrative alone. If plain sentences fully suffice, **skip** the fence.
+- **Shape:** Leave layout to the author (before/after pair, single reference block, verification command, etc.). Show only **crucial** lines—trim boilerplate, imports, and noise—but keep enough context that a reader can adapt the pattern elsewhere.
+- **Faithful project code:** Snippets reflect **actual** project code (real symbols and paths). Do **not** anonymize or rename modules solely because the story lives in **`WAR_STORIES.md`** ([§2.1](#war-stories-directory-portable-convention)). Repos are expected to become **public GitHub** projects; faithful excerpts are a feature, not a portability violation.
+- **Inline comments:** Add **English-only** comments inside snippets for non-obvious lines (invariants, merge scope, “why not X,” failure modes). Skip comments that only restate the code.
+- **Syntax highlighting:** Use a correct **language tag** on every opening fence (`bash`, `python`, `typescript`, `tsx`, `yaml`, `json`, `sql`, `text`, …) per **`mrkd`** §8—so previews colorize properly.
+- **Where to put them:**
+  - **Root Cause:** failing command, error fragment, bad config, bad response body.
+  - **Resolution:** fixed command, corrected config or code, “after” snippet.
+  - **Verification:** command (and optional short output) proving the fix.
+- **Longer playbooks:** Put runnable scripts under **`war_stories/assets/`** ([§2](#war-stories-directory-portable-convention)); link from **§N.4** and keep the in-story fence to the **essential** pattern.
+
+<h3 id="code-source-attribution" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.1 Source attribution and GitHub links</h3>
+
+Immediately **above** each project **source** fence—or once at the start of **§N.4** when all snippets share one file—cite:
+
+1. **Project name** — short label (repository folder name, README title, or package name).
+2. **Repo-relative path** — always present, e.g. `apps/api/app/routes/practice_workbench.py`.
+
+**Optional Markdown hyperlink** to the file on GitHub—**only when the link is stable**:
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Use a GitHub link when</th><th>Path text only (no URL)</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e8f5e9"><code>git remote get-url origin</code> resolves to <code>https://github.com/{owner}/{repo}</code> (optional <code>.git</code> suffix)</td><td style="background:#ffebee">No <code>origin</code>, non-GitHub host, or unknown remote</td></tr>
+<tr><td style="background:#e8f5e9">Default branch is known (<code>main</code>, <code>master</code>, or <code>origin/HEAD</code>)</td><td style="background:#ffebee">Default branch cannot be determined</td></tr>
+<tr><td style="background:#e8f5e9">Path is **tracked** and durable (not <code>cursor_gen/</code> or scratch-only)</td><td style="background:#ffebee">Ephemeral or unpublished-only paths ([§12](#writing-quality-rules))</td></tr>
+</tbody>
+</table>
+
+**Link shape (when stable):** `[filename](https://github.com/{owner}/{repo}/blob/{branch}/{repo-relative-path}#L{start}-L{end})` — add `#L`–`L` when the fence maps to contiguous source lines. Line anchors **may drift** after later edits; path + inlined snippet remain authoritative.
+
+**When not stable:** Do **not** guess or ship broken URLs. Use plain text, e.g. **`my-project`** · `path/to/file.py`.
+
+**Example pattern:** One attribution line, then the fenced snippet (language-tagged). The attribution might read: **`portuguese-learn`** · linked `practice_workbench.py` pointing at `https://github.com/{owner}/{repo}/blob/main/apps/api/.../practice_workbench.py#L40-L55`, followed by a language-tagged fence containing the trimmed excerpt and **English** inline comments on non-obvious lines.
+
+---
+
+<h2 id="visual-aids" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. Visual aids</h2>
+
+- Default prose to **plain Markdown** paragraphs and short lists—**earn** visuals.
+- Prefer **comparison tables**, **budget-split tables**, and **pipelined workflows** (**Mermaid**) in **§N.4 Resolution** whenever the arc has **explicit alternatives**, **multiple stages**, or **role boundaries** (e.g. local vs LLM, v1 vs v2). Dense design stories (**Tier A**, [§4](#tiering-arc-first-then-incidents)) should bias toward **`mrkd`** §6 visuals when they replace pages of narration.
+- Follow **`.cursor/rules/mrkd-markdown-authoring.mdc`** **[section 6](#gma-visual-aids)** (HTML tables + Mermaid; keyword **`mrkd`**) as baseline. If **`utils/styles/*`** exists in this repo, `exwar` should actively reuse those visual aids whenever suitable (especially for Tier-A/system-design stories) rather than reinventing ad-hoc table/diagram styling.
+- **`mrkd`** **§6 quick recall:** table headers **`background:#1565c0;color:white`**; optional **aspect** column **`#e3f2fd`**; alternating body tint rows (**`#e8f5e9`**, **`#fff3e0`**, **`#ffebee`** for risk paths); badges per **`mrkd`** §6.1.2 (**✓**, **⚠**, **recommended**, …). **Mermaid:** **`font-size:9px`** and consistent **`stroke-width:1px`** on `style` lines ([§6.2](#gma-mermaid)).
+- Do **not** rely on **binary screenshots** as the main explanation unless the project explicitly standardizes on them (default: **no**).
+
+**Inline badges (optional, use sparingly in story bodies):**
+
+- <span style="background:#e3f2fd;padding:2px 4px">context</span>
+- <span style="background:#fff3e0;padding:2px 4px">root cause</span>
+- <span style="background:#e8f5e9;padding:2px 4px">resolution</span>
+- <span style="background:#ffebee;padding:2px 4px">risk</span>
+
+For **narrative rhythm** and **`mrkd`**-style tables/diagram density, skim **`.cursor/rules/war_stories_example/WAR_STORIES_PORT_LEARN_SAMPLES.md`** first, then **`WAR_STORIES_AWS.md`** (same folder) for longer-form pacing ([§1.1](#purpose-audience-example)).
+
+---
+
+<h2 id="writing-quality-rules" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Writing quality rules</h2>
+
+- Name **real** files, commands, endpoints, settings, or metrics—not only “the pipeline.”
+- **Project code citations:** Pair snippets with **project name + repo-relative path**; add a **GitHub blob link** only when [§10.1](#code-source-attribution) stability checks pass—otherwise path text only.
+- State **how you verified** the fix or decision (command, test, benchmark, doc link).
+- Prefer **reusable guardrails** (“next time, validate X before Y”) over narrative alone.
+- Avoid blame; describe **behavior** and **constraints**.
+- Write in the **architect voice** from [§1.2](#voice-and-register); keep the senior-interview qualification bar out of the prose itself.
+- **Portable body text:** Critical decisions summarized from **scratch plans**, **research docs**, **`cursor_gen/`** drafts, or **local-only notebooks** belong **inside** **`§N.4`** (tables, steps, bullets)—after those sources are trimmed or omitted from git. Readers must not hit **404 anchors** inside the repo tomorrow.
+- **No explicit `cursor_gen/` references in shipped stories:** absorb the content, but do not cite `cursor_gen/*` paths, filenames, or anchors in final **`WAR_STORIES.md`** / **`WAR_STORIES_PROJECT_SPECIFIC.md`** entries. Treat `cursor_gen/` as an authoring workspace, not a durable citation target.
+
+---
+
+<h2 id="checklist-before-merge" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">13. Checklist before merge</h2>
+
+- [ ] **Qualified** under [§3](#what-qualifies-meaningful-stories) — if not, **skip** (do not invent a story)
+- [ ] **File choice** correct ([§2.1](#war-stories-directory-portable-convention)): portable → `WAR_STORIES.md`; product/ops/IA → `WAR_STORIES_PROJECT_SPECIFIC.md`
+- [ ] **Assets:** any linked script or image lives under **`war_stories/assets/`** with **`assets/README.md`** updated
+- [ ] Story number and **§N.1–§N.5** labels match anchor discipline (`###` headings **or** HTML **`h3`** with stable **`war-story-*`** ids)—see [§8](#entry-structure-and-metadata)
+- [ ] Metadata lines present; timestamps plausible **and consistent** with the rest of the file
+- [ ] At least one concrete detail (path, tool, version, endpoint, or number) in Context or Root Cause
+- [ ] Code fences use correct language tags; technical lessons include **crucial** snippets with **English** inline comments when code teaches the lesson ([§10](#code-blocks))
+- [ ] Each project **source** fence has **project name + repo-relative path**; GitHub link only if [§10.1](#code-source-attribution) stable—no broken URLs
+- [ ] **`mrkd`**: outline + hierarchy + visual conventions—as applicable—for the **whole collection file**, not only the new story chunk
+- [ ] Target file’s **story index** / outline updated in the same edit ([§8.1](#collection-file-scaffolding))
+- [ ] **Tier A / design** arcs: **`§N.4`** used comparison or pipeline visuals when prose alone buried the takeaway?
+- [ ] No **exclusive** reliance on ephemeral paths (**`cursor_gen/`**, unpublished plans)—essential decision content **copied inline** (`§N.4`)
+- [ ] Final story text does **not** explicitly reference `cursor_gen/*` paths (content absorbed into durable sections instead)
+- [ ] Tables / Mermaid **only** where helpful; if used, prefer reusable visuals from **`utils/styles/*`** when present, else follow **`mrkd`** **[§6](#gma-visual-aids)** (colors, typography, badges)
+- [ ] Language is **easy to scan**; acronyms and jargon limited or explained **once**
+- [ ] For **design** stories, **keywords** include **`design`** and a **category** keyword (see [Story kinds](#story-kinds-technical-lessons-vs-design-decisions))
+- [ ] **Exemplars:** Checked structure and visuals against **`.cursor/rules/war_stories_example/WAR_STORIES_PORT_LEARN_SAMPLES.md`** (**primary**) and **`WAR_STORIES_AWS.md`** when extra density helps ([§1.1](#purpose-audience-example))
+- [ ] **Voice:** No literal **`interview`** (or "demonstrates my skill" / "classic X question" / "sound bite") inside **`N.1`**–**`N.5`** prose or **`keywords:`**; no first-person "I" narration ([§1.2](#voice-and-register))
+
+<h2 id="cursor-behavior" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">14. Cursor behavior</h2>
+
+- **`alwaysApply: false`** — remains **off** globally. This rule enters context when the user **@**-mentions **`exwar-war-stories-extraction`**, includes **`exwar`** in the prompt, or edits paths matched by **`globs`** (**`war_stories/`**, **`war_stories_example/`** rule bundle).
+- When proposing or drafting stories, **`exwar`** should **consult both** **`.cursor/rules/war_stories_example/WAR_STORIES_PORT_LEARN_SAMPLES.md`** (**primary**) and **`WAR_STORIES_AWS.md`** in that folder (**secondary**) for structure and visuals—without treating either as the live collection ([§1.1](#purpose-audience-example)).
+- Extraction still needs a **qualifying** conversation or an explicit **exwar** / user request (e.g. “extract war stories from the last thread”).
+- If the user wants depth on **this** rule’s structure, point them to **this file**—do not defer to external repos.
+- `exwar` output is considered incomplete unless visual aids are applied appropriately: **use `utils/styles/*` artifacts when available**, otherwise satisfy **`mrkd-markdown-authoring.mdc`** checks (see [Checklist before merge](#checklist-before-merge)).
+
+---
+
+<h2 id="session-trigger-exwar-duration" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">15. Session trigger `exwar [duration]`</h2>
+
+When the user’s prompt contains **`exwar`** as a **standalone token** (whole word), treat it as an instruction to **extract new war stories from this same Cursor chat session**, scoped by time **backward from when the user sent the prompt**.
+
+**Syntax**
+
+| Form | Meaning |
+| --- | --- |
+| **`exwar`** | Review discussion in this chat within the **default lookback: 24 hours** (intent scope). |
+| **`exwar <n>h`** | **`n`** positive integer — lookback **n hours** (e.g. `exwar 4h` → last **4 hours**). |
+| **`exwar <n>d`** | lookback **n days** (e.g. `exwar 4d`). |
+| **`exwar <n>w`** | lookback **n weeks** (e.g. `exwar 4w`). |
+
+Whitespace between **`exwar`** and the duration is allowed (e.g. `exwar 4h`, `exwar  4d`). Unsupported suffixes → ask for clarification or fall back to **`exwar`** default.
+
+**Chat history (what you can read):** For **`exwar`**, **assume this Cursor chat’s thread is readable** for every **user** and **assistant** message the host has **included in the current agent context** for this request. That is the working transcript: **use it** to find new stories. The duration token (**`4h`**, **`4d`**, etc.) is a **relevance / recency filter** for what to emphasize (and a user intent for “how far back to care”); you usually **do not** have reliable per-message wall-clock times in the raw context—treat “last 4 hours” as **recent turns at the end of the visible thread**, not as a server-side query.
+
+**Behavior**
+
+1. **Read** **`war_stories/WAR_STORIES.md`** (and companion **`war_stories/WAR_STORIES_PROJECT_SPECIFIC.md`** if present) so new entries **do not duplicate** stories already captured—focus on **meaningfully different** lessons ([What qualifies](#what-qualifies-meaningful-stories), [Tiering](#tiering-arc-first-then-incidents)).
+2. **Review** this conversation (as visible in context) for material **matching the declared lookback intent**—prioritize **arc-level** and **high-signal** incidents before noise ([Workflow: batch](#workflow-batch-from-chat-history)).
+3. **Draft** ranked candidates, then **append** new numbered stories per [Entry structure and metadata](#entry-structure-and-metadata); apply [Readability](#readability-and-markdown-authoring) (**`mrkd`** / **`mrkd-markdown-authoring.mdc`**). **Maintain** [Collection scaffolding](#collection-file-scaffolding) (story index / outline) when that file already uses it. **Before finalizing**, skim **both** **`.cursor/rules/war_stories_example/`** exemplars—**`WAR_STORIES_PORT_LEARN_SAMPLES.md`** first—for structure, keyword mix, and visuals ([§1.1](#purpose-audience-example)).
+
+**Context window limit:** Long threads may be **truncated, summarized, or compacted** by the IDE—then early turns might be **missing** even if **`exwar 4w`** was asked. If the requested span **likely exceeds** what is visible, **say so**, work from **visible** turns only, or ask the user to **paste** missing parts / export—do **not** invent missing discussion.
+
+---
+
+<h2 id="out-of-scope" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">16. Out of scope</h2>
+
+- Do not turn every chat turn into a story.
+- Do not duplicate **full** chat logs inside **`war_stories/WAR_STORIES.md`**; **distill** and link to commits, PRs, or paths instead.
+- Do not treat **ephemeral** drafting paths (for example scratch directories or **untracked** research notes) as the **sole** home for a captured decision—mirror the durable parts into **`§N.4`** (see [Writing quality §12](#writing-quality-rules)).

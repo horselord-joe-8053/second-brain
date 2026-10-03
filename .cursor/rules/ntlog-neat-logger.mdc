@@ -1,0 +1,21 @@
+---
+description: >-
+  Keyword **ntlog** — use **utils/neat_logger/** for Python CLI logging in this project. Follow
+  **HOWTO_USE_NEAT_LOGGER.md**. Include **ntlog** when you want this guidance for new or edited Python.
+  Cursor does not auto-load rules by keyword; **@**-mention this rule or repeat **ntlog** in the prompt.
+globs:
+  - "**/*.py"
+alwaysApply: false
+---
+
+<h1 id="ntlog-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Python logging with <code>neat_logger</code> (<code>ntlog</code>)</h1>
+
+**Trigger:** User types **`ntlog`** (or **@** this rule) and wants **stdio-friendly, colored, timestamped** logging in **Python** for this repository.
+
+**Defaults:** **`from utils.neat_logger import logger`** → shared **ApiNeatLogger** (`logs/api.log`). Ops: **`NeatLoggerFactory.ops_run_tests(component)`** → `logs/ops/run_tests_only.log` (e.g. resall); **`ops_run_all(component)`** → `logs/ops/run_all.log`. See **`HOWTO_USE_NEAT_LOGGER.md`** §4.3 and **`cursor_gen/refactor_plans/wip/REFACTOR_NEAT_LOGGER_INSTANCE_OPS_TESTS.md`**.
+
+**Long-running work:** Wrap blocking stretches with **`logger.Heartbeat(...)`** — interval defaults come from **`utils/neat_logger/neat_logger_config.yaml`** when **`interval_sec`** is omitted.
+
+**Intent:** Logs should tell a **readable story**—milestones, branches, key inputs/outputs, and errors—without noisy chatter. Prefer **`neat_logger`** over ad-hoc **`print`** for operational progress (**`print`** is fine when the script’s only job is to emit a final line).
+
+**Do not:** Replace **`neat_logger`** with **`logging`** boilerplate in casual CLI tools unless the project already standardizes on **`logging`** elsewhere.

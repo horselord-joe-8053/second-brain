@@ -1,0 +1,110 @@
+---
+description: >-
+  Keyword **onlyreftdd**: thin TDD-chain wrapper — execute full **onlyref** plan authoring, then add per-phase
+  test-first contracts and TDD-mode labels in the Quality bar. Chain 2 plan step; implement with **aciubtdd**.
+  Classic chain: **onlyref** → **aciub** → **implref** (see sibling files under `.cursor/rules/tdd/`).
+alwaysApply: false
+---
+
+<h1 id="onlyreftdd-title" style="color:#0d47a1;font-size:1.45em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>onlyreftdd</code> — refactor plan only (TDD chain)</h1>
+
+<h2 id="onlyreftdd-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When this applies](#onlyreftdd-when) — keyword and chain placement.
+2. [Classic delegate (required)](#onlyreftdd-delegate) — all non-TDD behavior from **onlyref**.
+3. [TDD delta — Quality bar](#onlyreftdd-quality) — per-phase test-first contracts.
+4. [TDD mode heuristics (plan-time)](#onlyreftdd-heuristics) — label phases for execution.
+5. [Chain links](#onlyreftdd-chain) — companion TDD rules.
+6. [Anti-drift](#onlyreftdd-drift) — maintenance contract.
+7. [Self-check](#onlyreftdd-self) — agent merge gate.
+
+---
+
+<h2 id="onlyreftdd-when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+| Trigger | Meaning |
+|---------|---------|
+| User types **`onlyreftdd`** (often with a domain or target plan name) | Author or refresh a refactor plan **`.md`** only — **TDD chain 2**. |
+
+**Do not implement code** under **`onlyreftdd`**. Closing reply must name the plan path and say **implement with `aciubtdd <plan.md>`** (not plain **`aciub`** / **`implref`**).
+
+---
+
+<h2 id="onlyreftdd-delegate" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Classic delegate (required)</h2>
+
+**Read and execute the full procedure** in:
+
+**`.cursor/rules/onlyref-refactor-plan-author-only.mdc`** (**`onlyref`**)
+
+That covers: plan-only boundary, folder lifecycle (`new/` only), MRKD shape, phases, `[ ]` / `[X]` checklists, forbidden actions, and baseline Quality bar.
+
+**Non-TDD behavior lives only in the classic file.** Edit classic **`onlyref`** once when shared plan-authoring rules change; edit **this file** only when TDD planning rules change.
+
+---
+
+<h2 id="onlyreftdd-quality" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. TDD delta — Quality bar</h2>
+
+After **`onlyref`** shape is satisfied, **extend the plan’s Quality bar** (or add **“TDD bar”** subsection) with **per-phase** rows:
+
+| Column | Content |
+|--------|---------|
+| **Phase** | Phase number + short name |
+| **TDD mode** | **`strict-TDD`** or **`smoke-after-delete`** (see [heuristics](#onlyreftdd-heuristics)) |
+| **Test-first artifact** | File path(s) + test name(s) to add **before** production code (fixtures, expected JSON shape, API assertion, Playwright spec) |
+| **Red case** | One sentence: what must fail before the impl lands |
+| **Green gate** | Command or test subset that must pass before phase `[X]` |
+
+**Rules:**
+
+- **`strict-TDD` phases:** plan must name concrete test file(s) and the contract under test (manifest row count, scope id, API payload field, pool-diff unique keys, etc.).
+- **`smoke-after-delete` phases:** plan lists **post-delete smoke tests** only (route 404, grep guard, manifest scope absent, existing suite still green) — no forced red-first test for pure removal.
+- Every phase gets **exactly one** TDD mode label in the plan (execution agent must echo it — see **aciubtdd**).
+
+---
+
+<h2 id="onlyreftdd-heuristics" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. TDD mode heuristics (plan-time)</h2>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Signal in phase</th><th>Plan label</th><th>Test-first?</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">New/changed contract (API, manifest, emit, pool diff, merge logic)</td><td style="background:#e8f5e9"><strong>strict-TDD</strong></td><td style="background:#e8f5e9">Yes — red before code</td></tr>
+<tr><td style="background:#e3f2fd">Behavioral refactor with stable external contract</td><td style="background:#e8f5e9"><strong>strict-TDD</strong></td><td style="background:#e8f5e9">Yes — extend existing tests first</td></tr>
+<tr><td style="background:#e3f2fd">Pure deletion (files, routes, scopes, UI tab removal)</td><td style="background:#fff8e1"><strong>smoke-after-delete</strong></td><td style="background:#fff8e1">No red-first — delete then smoke</td></tr>
+<tr><td style="background:#e3f2fd">Docs-only, plan-only, or comment-only</td><td style="background:#fff8e1"><strong>smoke-after-delete</strong></td><td style="background:#fff8e1">Lint/snapshot if any; no TDD ceremony</td></tr>
+</tbody>
+</table>
+
+When ambiguous, default **`strict-TDD`** and note the assumption in the plan Decision log.
+
+---
+
+<h2 id="onlyreftdd-chain" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Chain links</h2>
+
+| Chain | Plan | Implement / resume |
+|-------|------|-------------------|
+| **1 Classic** | **`onlyref`** | **`aciub`** + **`implref`** / **`resumimpl`** |
+| **2 TDD (this chain)** | **`onlyreftdd`** | **`aciubtdd`** + **`implreftdd`** |
+
+| TDD rule | Path |
+|----------|------|
+| Implement loop | `.cursor/rules/tdd/aciubtdd-allow-continue-iterations-until-blocked.mdc` |
+| Impl procedure | `.cursor/rules/tdd/implreftdd-resumimpl-refactor-plan-followthrough.mdc` |
+
+**Do not mix chains** on one refactor (e.g. **`onlyreftdd`** plan + **`aciub`** execution).
+
+---
+
+<h2 id="onlyreftdd-drift" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Anti-drift</h2>
+
+> **Mirror classic except TDD sections.** Shared plan shape, folders, and forbidden actions = **`onlyref`**. This file adds **Quality bar TDD columns**, **heuristics**, and **chain keywords** only.
+
+---
+
+<h2 id="onlyreftdd-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Self-check (agent)</h2>
+
+- [ ] User invoked **`onlyreftdd`**.
+- [ ] Full **`onlyref`** procedure executed (plan-only, `new/` path, MRKD shape).
+- [ ] Every phase has **TDD mode** + test-first or smoke-after row in Quality bar.
+- [ ] Closing reply names plan path + **`aciubtdd <plan.md>`** — no code shipped.

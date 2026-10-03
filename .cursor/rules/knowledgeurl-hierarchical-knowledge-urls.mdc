@@ -1,0 +1,14 @@
+---
+description: >-
+  Knowledge area URLs use path segments /knowledge/{area}/{tab}[/{chip}], not #hashes.
+  Keyword: knowledgeurl
+alwaysApply: false
+---
+
+# Knowledge hierarchical URLs
+
+- **Shape:** `/knowledge/{area}/{tab}` and optionally `/{chip}` when the tab has chips.
+- **Sources of truth:** `apps/web/src/lib/knowledgeRoute.ts`, `knowledgeLegacyRedirects.ts`.
+- **Do not** add new `to="/knowledge/…#…"` links; use `buildKnowledgePath` / `defaultPathForArea`.
+- **Legacy hashes** belong only in `knowledgeLegacyRedirects.ts`.
+- **Conjugation** still uses query params (`?group=`) — separate follow-up plan.

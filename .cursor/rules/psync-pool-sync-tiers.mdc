@@ -1,0 +1,88 @@
+---
+description: >-
+  Keyword **psync** — emit catalog-23 manifest (optional), apply to INT-E/UAT-E/DEV-E,
+  verify pool diff; show HTML summary table. @.cursor/rules/psync-pool-sync-tiers.mdc
+alwaysApply: false
+---
+
+<h1 id="psync-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>psync</code> — pool sync across *-E tiers</h1>
+
+**Trigger:** User types **`psync`** (whole word) — sync **git manifest** → **tier DBs** → **verify diff**.
+
+**Script:** `ops/local/run_pool_sync_tiers.py` (emit · apply · diff in one run).
+
+---
+
+<h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Run (do not only suggest)](#run) — command + flags.
+2. [Present results](#present) — HTML table for the user.
+3. [Flags cheat sheet](#flags) — common variants.
+
+---
+
+<h2 id="run" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Run (do not only suggest)</h2>
+
+From repo root:
+
+```bash
+uv run python ops/local/run_pool_sync_tiers.py
+```
+
+Default: **`--emit catalog`** → **ensure stack** (tier-specific cold/migrate) → apply **INT-E :8003**, **UAT-E :8002**, **DEV-E :8000** → tier pool diff.
+
+**Ensure policy:** INT/UAT always **full cold** (migrate+seed+pools). DEV **migrate-only** unless `--bootstrap-prerequisites` or API was down. The **`ensure_stack`** step detail states explicitly whether it was full cold start/refresh or migrate-only.
+
+**Teardown:** INT/UAT APIs **started because they were down** stop after the ritual; habitual **DEV :8000** stays up unless **`--ephemeral`**.
+
+Legacy (fail if API down):
+
+```bash
+uv run python ops/local/run_pool_sync_tiers.py --no-ensure-stack
+```
+
+Cold DB:
+
+```bash
+uv run python ops/local/run_pool_sync_tiers.py --bootstrap-prerequisites
+```
+
+Manifest already committed (skip emit):
+
+```bash
+uv run python ops/local/run_pool_sync_tiers.py --skip-emit
+```
+
+Verify only:
+
+```bash
+uv run python ops/local/run_pool_sync_tiers.py --diff-only
+```
+
+---
+
+<h2 id="present" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Present results</h2>
+
+After the script runs:
+
+1. **Show the user the HTML table block** printed to stdout (between `<table>` tags) — render inline in chat; do **not** dump raw logs.
+2. One line below: **PASS / FAIL**, manifest version, entry count, artifact path (`ops/run-logs/pool-sync-*.json`).
+3. On **FAIL**: name the first bad tier and issue (`API down`, `live/expected` mismatch, or first failing scope from diff).
+4. Do **not** repeat the markdown table unless the user asks — HTML is the primary summary.
+
+---
+
+<h2 id="flags" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Flags cheat sheet</h2>
+
+| Flag | Effect |
+| --- | --- |
+| `--skip-emit` / `--emit none` | Apply + diff only (manifest already in git) |
+| `--emit full` | Run full `build_all.sh` before apply |
+| `--bootstrap-prerequisites` | Curated promotes before digest (cold DB) |
+| `--no-ensure-stack` | Skip tier ensure; fail if API down (legacy) |
+| `--ephemeral` | Stop API on exit when this run cold-started that tier |
+| `--diff-only` | No emit/apply — tier diff ritual only |
+| `--apply-only` | Emit + apply; skip diff |
+| `--dry-run` | Plan apply; no DB writes |
+
+**SoT:** `config/seeds/catalog-23-pools.json` — all *-E tiers should match after a successful **psync**.

@@ -1,0 +1,152 @@
+---
+description: >-
+  Floor35 Language Learn — learner suite ASCII wireframes (two-row nav, A/B
+  practice modes). Extends generic uiwfg rule. Trigger uiwf or @ this file when
+  documenting knowledge-area UI in this repo.
+alwaysApply: false
+---
+
+<h1 id="uiwf-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">UI wireframe — Floor35 learner suite (project-specific)</h1>
+
+**Extends (required):** [`.cursor/rules/uiwfg-ui-wireframe-ascii-generic.mdc`](../uiwfg-ui-wireframe-ascii-generic.mdc) — read and follow **§1–§7** there first (ASCII + Mermaid + tables). This file adds **only** Floor35 suite chrome; do not duplicate generic conventions.
+
+**Trigger:** **`uiwf`** · “two-row nav diagram” · “suite wireframe” · **`@uiwf-floor35-language-learn-suite-wireframes`**
+
+**Authority:** [`ANALYSIS_PARADIGM_ALIGNMENT.md`](../../cursor_gen/refactor_plans/new/new_pages/ANALYSIS_PARADIGM_ALIGNMENT.md) §3 (suite UI shell) · [`ANALYSIS_REEVALUATE_DESIGN_v2.md`](../../cursor_gen/refactor_plans/new/new_pages/ANALYSIS_REEVALUATE_DESIGN_v2.md) (knowledge areas · **§4.0 learner labels**)
+
+---
+
+<h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Suite frame](#frame) — mandatory bands for this app.
+2. [Annotation vocabulary](#annotations) — row 1 / row 2 / body / footer.
+3. [Learner-facing labels](#labels) — lay nav · academic in-page only.
+4. [In-page rules](#in-page) — Basic knowledge tabs and chips.
+5. [Route legend](#routes) — `/knowledge/*` and `/practice/*`.
+6. [Template](#template) — copy-paste skeleton.
+7. [Checklist](#checklist) — suite-specific additions.
+
+---
+
+<h2 id="frame" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Suite frame</h2>
+
+Every **learner suite** wireframe in this repo uses these bands (generic §2.1 adapted):
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Floor35 Language Learn                                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  ROW 1 — knowledge areas (`KnowledgeAreaNav`)                                │
+│  [ Admin ▾ ]   [ Conjugations ]   [ {Area} ● ]   …   [ Profile ]            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  ROW 2 — suite bar (`SuiteSubNav`; hide if area has only one mode)           │
+│  Basic knowledge ● │ Basic practice │ Paragraph practice                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  PAGE BODY — existing page components; tabs/chips per area IA doc            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  FOOTER — practice routes only: [ Save My Workbench ]  user@email  [ Log out ]│
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Band | Component | Notes |
+|---|---|---|
+| Title | App h1 | Fixed copy |
+| Row 1 | `KnowledgeAreaNav` | One button per **knowledge area**; **Admin ▾** is not suite bar |
+| Row 2 | `SuiteSubNav` | **Basic knowledge** (A) · **Basic practice** (B.1) · **Paragraph practice** (B.2) |
+| Body | Route `Outlet` | Reuse shipped pages where possible |
+| Footer | `AdminNav` + `WorkbenchProvider` | Session + manual save on practice pages |
+
+**Mermaid for this app:** Use generic §4 for **IA trees** (guide §1 pipelines, area catalog in v2 analysis) — not for row-level pixel layout.
+
+---
+
+<h2 id="annotations" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Annotation vocabulary</h2>
+
+| Callout | Meaning |
+|---|---|
+| `← row 1` | Knowledge area nav |
+| `← row 2` | A / B.1 / B.2 suite bar |
+| `← row 3` | In-page tabs/chips |
+| `← footer` | Workbench + logout strip |
+| `← HOLD` | Mode in IA but practice not shipped (v2 policy) |
+
+---
+
+<h2 id="labels" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Learner-facing labels</h2>
+
+**Required** for all suite wireframes and implref plans — full map in v2 **§4.0**.
+
+| Surface | Use |
+|---|---|
+| Row 1 · tabs · chips | **Lay label (academic)** when a clear academic term exists and space allows — e.g. `Verbs with -se (reflexive)`, row-1 `me, te, se (clitics)` |
+| Tight row-1 | Drop `(academic)` on narrow nav; keep full label on tabs/chips |
+| Area / tab first screen | One-line intro — expand if parentheses were dropped from the button |
+| Routes · slugs · DB | Stable **internal** ids — never the parenthetical |
+| How to choose ▾ | User-facing steps — not “Procedure A” on the button |
+
+**Wireframe convention:** show full **UI label** in `[ brackets ]` including `(academic)` where applicable; note slug in route table, e.g. `nav "me, te, se (clitics)" · slug clitics`.
+
+---
+
+<h2 id="in-page" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. In-page rules</h2>
+
+Under **Basic knowledge**:
+
+1. **Max 3–4 tabs**; overflow → **chips** inside a tab (generic §3).
+2. Name chips from **§4.0 UI labels** or Integrated Guide sections — not DB table names or academic terms alone.
+3. When redesigning, add a **guide § → tab/chip** table under the wireframe ([`ANALYSIS_REEVALUATE_DESIGN_v2.md`](../../cursor_gen/refactor_plans/new/new_pages/ANALYSIS_REEVALUATE_DESIGN_v2.md) §4.2).
+4. Optional: **How to choose ▾** → Procedures A–E (guide §11).
+
+---
+
+<h2 id="routes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Route legend</h2>
+
+| Suite bar label | Route pattern | Logical role |
+|---|---|---|
+| Basic knowledge | `/knowledge/{slug}` | A — read / explore |
+| Basic practice | `/practice/{slug}` | B.1 — drills |
+| Paragraph practice | `/practice/{slug}/paragraph` | B.2 — in context |
+
+**Slugs:** per v2 §4.1 (internal). **Nav labels:** per v2 §4.0.1 — lay term plus `(academic)` when space allows (e.g. slug `clitics` → nav **me, te, se (clitics)**). Legacy `/knowledge/gender-nouns` → migrate to v2 slugs in new docs.
+
+**Admin ▾** (row 1 dropdown, not suite bar): Verbs · Chapter Builder · Paragraph admin · LLM Cost — see paradigm alignment §3.3.
+
+---
+
+<h2 id="template" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Template</h2>
+
+````markdown
+<h3 id="wireframe-{slug}" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">Proposed screen — {Area name}</h3>
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Floor35 Language Learn                                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  [ Admin ▾ ]   [ … ]   [ {Area} ● ]   [ … ]   [ Profile ]                   │  ← row 1
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Basic knowledge ● │ Basic practice (hold) │ Paragraph practice (hold)     │  ← row 2
+├─────────────────────────────────────────────────────────────────────────────┤
+│  TAB: [ {Tab A} ● ]  [ {Tab B} ]                                             │  ← row 3
+│  CHIP: ( {chip 1} )  ( {chip 2} ● )                                          │
+│  (content for active chip)                                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Suite bar | Route | Guide section |
+|---|---|---|
+| Basic knowledge | `/knowledge/{slug}` | §… |
+````
+
+---
+
+<h2 id="checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Checklist (suite additions)</h2>
+
+Generic checklist: **uiwfg §7**. Additionally for this repo:
+
+- [ ] Generic **uiwfg** conventions applied.
+- [ ] Floor35 **five-band** frame (title · row 1 · row 2 · body · footer when practice).
+- [ ] Row 2 labels match paradigm: Basic knowledge / Basic practice / Paragraph practice.
+- [ ] Row 1 / tab / chip labels match v2 **§4.0** — lay term + `(academic)` where applicable; academic never alone on buttons.
+- [ ] Route table uses `/knowledge/{slug}` and `/practice/{slug}` patterns.
+- [ ] Guide § or v2 §4.2 mapping table present when content is redesigned.
+- [ ] Practice rows marked **hold** when doc scope is Basic knowledge only.
