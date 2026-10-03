@@ -1,0 +1,15 @@
+{
+  "name": "@floor35/neat-logger-ts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "TypeScript neat_logger for Playwright/PW helpers — Phase A sibling of utils/neat_logger (Python).",
+  "exports": {
+    ".": "./index.ts",
+    "./factory": "./factory.ts",
+    "./tagStyle": "./tagStyle.ts"
+  },
+  "dependencies": {
+    "yaml": "^2.8.0"
+  }
+}

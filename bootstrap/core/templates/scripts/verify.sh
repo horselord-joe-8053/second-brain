@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# General-project verify gate (copy to repo scripts/verify.sh).
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+echo "== ac-test mapping =="
+if [[ -f "$ROOT/scripts/check-ac-tests.py" ]]; then
+  python3 "$ROOT/scripts/check-ac-tests.py"
+else
+  echo "verify: skip check-ac-tests (not seeded)"
+fi
+
+echo "== tdd pairing (optional PR gate) =="
+if [[ -f "$ROOT/scripts/check-tdd-pairing.sh" ]]; then
+  bash "$ROOT/scripts/check-tdd-pairing.sh"
+fi
+
+if [[ -d "$ROOT/backend" ]] && [[ -f "$ROOT/backend/pyproject.toml" || -f "$ROOT/backend/setup.py" ]]; then
+  echo "== backend: ruff + pytest (optional stack) =="
+  cd "$ROOT/backend"
+  if [[ ! -d .venv ]]; then
+    python3 -m venv .venv
+  fi
+  # shellcheck source=/dev/null
+  source .venv/bin/activate
+  pip install -q -e ".[dev]" 2>/dev/null || pip install -q -e .
+  if command -v ruff >/dev/null 2>&1; then
+    ruff check app tests 2>/dev/null || ruff check .
+  fi
+  export PYTHONPATH="${ROOT}${PYTHONPATH:+:$PYTHONPATH}"
+  pytest -q
+  cd "$ROOT"
+fi
+
+if [[ -d "$ROOT/frontend" ]] && [[ -f "$ROOT/frontend/package.json" ]]; then
+  echo "== frontend: typecheck + vitest (optional stack) =="
+  cd "$ROOT/frontend"
+  if [[ ! -d node_modules ]]; then
+    npm ci
+  fi
+  npm run typecheck
+  npm run test
+  cd "$ROOT"
+fi
+
+if [[ -d "$ROOT/tests" ]] && [[ ! -d "$ROOT/backend" ]]; then
+  echo "== repo tests/ pytest =="
+  export PYTHONPATH="${ROOT}${PYTHONPATH:+:$PYTHONPATH}"
+  python3 -m pytest -q tests
+fi
+
+if [[ -x "$ROOT/scripts/verify-local.sh" ]]; then
+  echo "== project verify-local.sh =="
+  bash "$ROOT/scripts/verify-local.sh"
+fi
+
+echo "verify.sh: all checks passed"

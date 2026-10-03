@@ -1,0 +1,20 @@
+# neat_logger_ts — fallback defaults (Phase A; merge with Python yaml in Phase B).
+#
+# log_root is relative to repository root (REPO_ROOT env when set).
+# Env overrides: NEAT_LOGGER_TS_LOG_ROOT, NEAT_LOGGER_TS_LOG_OUTPUT,
+# NEAT_LOGGER_TS_LOG_FILE_NAME (NEAT_LOGGER_LOG_* also accepted for forward compat).
+
+log_root: logs
+log_output: both
+log_file_name: api.log
+heartbeat_interval_sec: 20.0
+
+# Same project tag colors as Python neat_logger — config/logging.yaml
+project_log_config: config/logging.yaml
+
+roles:
+  frontend_monitor:
+    log_root: logs/monitor
+    log_file_name: monitor_frontend_progress.log
+    log_output: file
+    tag_prefix: ""
