@@ -1,0 +1,18 @@
+# Large binaries under sources (plan §5)
+raw/sources/**/*.pdf
+raw/sources/**/*.docx
+raw/sources/**/*.epub
+raw/sources/**/*.zip
+raw/sources/**/*.png
+raw/sources/**/*.jpg
+raw/sources/**/*.jpeg
+raw/sources/**/*.gif
+raw/sources/**/*.mp4
+raw/sources/**/*.mov
+
+# LLM Wiki local state if mirrored into tree
+.llm-wiki/
+
+# Secrets
+.env
+*.pem

@@ -1,0 +1,18 @@
+# Paste into ~/.hermes/config.yaml under mcp_servers (adjust token).
+# MCP built from sibling nu_llm_wiki repo (source dev).
+
+mcp_servers:
+  llm_wiki:
+    command: node
+    args:
+      - /Users/jjw8053/projects/nu_llm_wiki/mcp-server/dist/src/index.js
+    env:
+      LLM_WIKI_API_TOKEN: "<from LLM Wiki Settings → API + MCP>"
+      # LLM_WIKI_API_BASE_URL: "http://127.0.0.1:19828/api/v1"
+
+  second_brain_fs:
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - /Users/jjw8053/projects/second_brain/brain
