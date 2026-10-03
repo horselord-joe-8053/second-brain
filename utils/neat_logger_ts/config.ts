@@ -89,6 +89,16 @@ function overlayEnv(base: RawNeatLoggerYaml): RawNeatLoggerYaml {
   if (fname) {
     out.log_file_name = fname;
   }
+  const hb = envOverride(
+    "NEAT_LOGGER_TS_HEARTBEAT_INTERVAL_SEC",
+    "NEAT_LOGGER_HEARTBEAT_INTERVAL_SEC",
+  );
+  if (hb) {
+    const n = Number(hb);
+    if (Number.isFinite(n) && n >= 1) {
+      out.heartbeat_interval_sec = n;
+    }
+  }
   return out;
 }
 

@@ -7,7 +7,8 @@ TypeScript sibling of `utils/neat_logger` (Python). Phase A: own yaml; Phase B: 
 1. [Purpose](#purpose) — PW / Playwright logging.
 2. [Line format](#format) — `[TS]` tag.
 3. [Roles](#roles) — `frontendMonitor`.
-4. [Watch progress](#watch) — tail monitor file.
+4. [Heartbeat](#heartbeat) — progress while async work runs.
+5. [Watch progress](#watch) — tail monitor file.
 
 ---
 
@@ -41,11 +42,31 @@ NeatLoggerFactory.frontendMonitor().info("[PWLAD_PROGRESS] …");
 
 Config: `utils/neat_logger_ts/neat_logger_fallback_config.yaml` → `roles.frontend_monitor`.
 
-Env: `REPO_ROOT`, `NEAT_LOGGER_TS_LOG_ROOT`, `NEAT_LOGGER_TS_LOG_FILE_NAME`.
+Env: `REPO_ROOT`, `NEAT_LOGGER_TS_LOG_ROOT`, `NEAT_LOGGER_TS_LOG_FILE_NAME`, `NEAT_LOGGER_TS_HEARTBEAT_INTERVAL_SEC` (or `NEAT_LOGGER_HEARTBEAT_INTERVAL_SEC`).
 
 ---
 
-<h2 id="watch" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Watch progress</h2>
+<h2 id="heartbeat" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Heartbeat</h2>
+
+Same idea as Python `with logger.Heartbeat(...)`: periodic `[HEARTBEAT]` lines, optional soft-wall warning, and a completion line. The timer is `setInterval`, so it ticks while the event loop is free (during `await`). A tight synchronous loop does not tick until it yields.
+
+Default interval is `heartbeat_interval_sec` in `neat_logger_fallback_config.yaml` (20s), minimum 1s.
+
+```typescript
+import { NeatLoggerFactory } from "@floor35/neat-logger-ts/factory";
+
+const log = NeatLoggerFactory.frontendMonitor();
+
+await log.withHeartbeat("load dashboard", async () => {
+  await load();
+});
+```
+
+`heartbeat()` plus `stop(err)` is the manual form. `stop()` with no argument logs success when `announceComplete` is left at its default (`true`). `Symbol.dispose` only clears the timer, so a thrown error is not reported as success.
+
+---
+
+<h2 id="watch" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Watch progress</h2>
 
 ```bash
 tail -f logs/monitor/monitor_frontend_progress.log

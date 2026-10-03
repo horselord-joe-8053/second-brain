@@ -7,5 +7,5 @@ export {
   styledAnsiInFile,
   styledTtyAndFile,
 } from "./tagStyle";
-export { NeatLogger } from "./logger";
+export { NeatLogger, NeatLoggerHeartbeat, type HeartbeatOptions } from "./logger";
 export { NeatLoggerFactory } from "./factory";

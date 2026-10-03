@@ -1,0 +1,21 @@
+---
+description: Enforce red-first TDD and AC-named tests for feature specs marked ac-tests enforced
+globs:
+  - docs/specs/**
+  - backend/**
+  - frontend/src/**
+  - scripts/**
+alwaysApply: true
+---
+
+# TDD and AC test mapping
+
+When implementing or extending a feature under **`docs/specs/`**:
+
+1. Read **`docs/WEBAPP-TDD.md`** and the feature spec **before** editing production code.
+2. If the spec contains **`<!-- ac-tests: enforced -->`**: for each **`**AC-*:**`**, add a **failing** test named **`test_ac_<id>_...`** first, then implement until green. Do not ship feature code without matching `test_ac_*` tests.
+3. Do **not** ask the human to approve test seams — use the spec’s seam table.
+4. Run **`./scripts/verify.sh`** before calling the slice done (`check-ac-tests.py` is part of verify).
+5. Follow **`implement-feature`** per-AC checklist (one failing `test_ac_*`, show failure output, then prod code). Rules alone do not enforce order — CI **`check-tdd-pairing.sh`** does (Tier 2: prod diff requires test diff).
+
+For new non-trivial specs, add the enforcement marker and seam table when the user expects strict TDD.
