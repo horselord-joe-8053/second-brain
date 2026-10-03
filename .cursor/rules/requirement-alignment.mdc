@@ -1,0 +1,16 @@
+---
+description: Run align-requirements (≤3 questions) before implement; record Decisions in spec
+globs:
+  - docs/specs/**
+alwaysApply: true
+---
+
+# Requirement alignment (before IMPLEMENT)
+
+When the user asks to **implement** a spec or **implement tickets**:
+
+1. Run the **`align-requirements`** skill (`.agents/skills/align-requirements/SKILL.md`) — **not** the imported **`grilling`** skill (that is for multi-round plan stress-tests).
+2. Post **at most three** questions; wait for answers or explicit **`skip align`**.
+3. Record outcomes under **`## Decisions`** in the spec before editing **`backend/app/**`** or **`frontend/src/**`** (except trivial one-line fixes the user names).
+
+Matt **`grill-with-docs`** / **`grilling`** remain available for deep design review — separate phase from this gate.

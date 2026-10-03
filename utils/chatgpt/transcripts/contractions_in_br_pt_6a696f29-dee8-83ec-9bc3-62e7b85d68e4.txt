@@ -1,0 +1,697 @@
+----- MESSAGE (role=user) -----
+'Unlike pra/pro, nele/nela are fully standard and are used in all registers, including formal writing.
+
+They are not merely spoken contractions.
+
+Formation
+Full form	Contraction	Status
+em + ele	nele	Standard
+em + ela	nela	Standard
+em + eles	neles	Standard
+em + elas	nelas	Standard
+
+' 
+
+i need a systematic table to help to distinguish when we need to/can use contractions - all the contractions in br-pt. do research based on the latest info
+
+
+----- MESSAGE (role=tool) -----
+The output of this plugin was redacted.
+
+
+----- MESSAGE (role=assistant) -----
+For **Brazilian Portuguese**, the easiest way to think about contractions is this:
+
+> **There are only 4 truly productive prepositions that form standard contractions:**
+>
+> - **de**
+> - **em**
+> - **a**
+> - **por**
+>
+> Everything else is either:
+> - **never contracted** (e.g. com, sem, para in formal writing), or
+> - **colloquial only** (e.g. pra, pro, num in many contexts). citeturn0search5turn0search0
+
+Below is a systematic reference.
+
+---
+
+# 1. Definite article (o/a/os/as)
+
+These are **100% mandatory** in standard Brazilian Portuguese.
+
+| Preposition | o | a | os | as | Formal? |
+|------------|----|----|----|----|----------|
+| de | do | da | dos | das | ✅ Always |
+| em | no | na | nos | nas | ✅ Always |
+| a | ao | à | aos | às | ✅ Always |
+| por | pelo | pela | pelos | pelas | ✅ Always |
+| para | pro | pra | pros | pras | ❌ Informal only |
+
+Examples
+
+- do Brasil
+- na escola
+- ao médico
+- pela manhã
+- pra casa (informal)
+
+The last row (**pro/pra**) is extremely common in speech, but is normally avoided in formal writing. citeturn0search2turn0search5
+
+---
+
+# 2. Third-person pronouns (ele/ela)
+
+These are also **fully standard**.
+
+## de + pronoun
+
+| Full | Contraction | Status |
+|-------|------------|--------|
+| de ele | dele | ✅ |
+| de ela | dela | ✅ |
+| de eles | deles | ✅ |
+| de elas | delas | ✅ |
+
+Examples
+
+- o carro dele
+- a casa dela
+
+---
+
+## em + pronoun
+
+| Full | Contraction | Status |
+|-------|------------|--------|
+| em ele | nele | ✅ |
+| em ela | nela | ✅ |
+| em eles | neles | ✅ |
+| em elas | nelas | ✅ |
+
+Examples
+
+- pensei nele
+- moro nela (rare but correct)
+
+These are **not spoken shortcuts**—they are standard grammar. citeturn0search4turn0search5
+
+---
+
+# 3. Demonstratives
+
+These are also standard.
+
+## de + demonstrative
+
+| Full | Contraction |
+|------|-------------|
+| de este | deste |
+| de esta | desta |
+| de estes | destes |
+| de estas | destas |
+| de isto | disto |
+| de esse | desse |
+| de essa | dessa |
+| de isso | disso |
+| de aquele | daquele |
+| de aquela | daquela |
+| de aquilo | daquilo |
+
+---
+
+## em + demonstrative
+
+| Full | Contraction |
+|------|-------------|
+| em este | neste |
+| em esta | nesta |
+| em isto | nisto |
+| em esse | nesse |
+| em essa | nessa |
+| em isso | nisso |
+| em aquele | naquele |
+| em aquela | naquela |
+| em aquilo | naquilo |
+
+---
+
+## a + demonstrative
+
+Only with the **aquele** family.
+
+| Full | Contraction |
+|------|-------------|
+| a aquele | àquele |
+| a aquela | àquela |
+| a aqueles | àqueles |
+| a aquelas | àquelas |
+| a aquilo | àquilo |
+
+All are completely standard. citeturn0search4turn0search5
+
+---
+
+# 4. Indefinite article (um/uma)
+
+This is where Brazilian Portuguese differs from European Portuguese.
+
+| Full | Contraction | Brazil |
+|------|-------------|---------|
+| de um | dum | Usually avoided in formal writing |
+| de uma | duma | Usually avoided |
+| de uns | duns | Usually avoided |
+| de umas | dumas | Usually avoided |
+| em um | num | Common in speech |
+| em uma | numa | Common in speech |
+| em uns | nuns | Common in speech |
+| em umas | numas | Common in speech |
+
+Examples
+
+Speech
+
+> Moro num apartamento.
+
+Formal writing
+
+> Moro em um apartamento.
+
+In Brazil, **em um / de um** are generally preferred in formal writing, while **num/numa/dum/duma** are common in speech and informal writing. citeturn0search12turn0search5
+
+---
+
+# 5. Locative words
+
+These are standard.
+
+| Full | Contraction |
+|------|-------------|
+| de aqui | daqui |
+| de aí | daí |
+| de ali | dali |
+| de lá | de lá *(already lexicalized; not a contraction)* |
+| de cá | de cá |
+
+Likewise
+
+- daqui
+- daí
+- dali
+
+are completely standard.
+
+---
+
+# 6. Words that NEVER contract
+
+These stay separate.
+
+| Preposition | Example |
+|-------------|---------|
+| com | com o João |
+| sem | sem a Maria |
+| sob | sob a mesa |
+| sobre | sobre o assunto |
+| entre | entre os amigos |
+| desde | desde o início |
+| contra | contra o governo |
+
+No standard contraction exists. citeturn0search5turn0search0
+
+---
+
+# 7. Colloquial contractions
+
+Very common in spoken Brazilian Portuguese.
+
+| Full | Spoken |
+|------|---------|
+| para o | pro |
+| para a | pra |
+| para os | pros |
+| para as | pras |
+| para um | prum |
+| para uma | pruma |
+
+These are fine in texting, WhatsApp, comics and dialogue, but are generally avoided in formal writing. citeturn0search2turn0search5
+
+---
+
+# 8. Master table
+
+| Type | Examples | Formal? |
+|------|----------|----------|
+| de + article | do, da | ✅ Mandatory |
+| em + article | no, na | ✅ Mandatory |
+| a + article | ao, à | ✅ Mandatory |
+| por + article | pelo, pela | ✅ Mandatory |
+| de + pronoun | dele, dela | ✅ Mandatory |
+| em + pronoun | nele, nela | ✅ Mandatory |
+| de + demonstrative | deste, desse, daquele | ✅ Mandatory |
+| em + demonstrative | neste, nesse, naquele | ✅ Mandatory |
+| a + demonstrative | àquele, àquela | ✅ Mandatory |
+| de + indefinite article | dum, duma | ⚠ Mostly informal in Brazil |
+| em + indefinite article | num, numa | ⚠ Mostly informal in Brazil |
+| para + article | pro, pra | ❌ Informal only |
+| para + indefinite article | prum, pruma | ❌ Informal only |
+| com/sem/sobre/etc. | *(no contraction)* | — |
+
+## Rule of thumb (95% accurate for Brazilian Portuguese)
+
+| If you see... | Use |
+|---------------|-----|
+| **de + o/a/os/as** | **Always contract** (do, da, dos, das) |
+| **em + o/a/os/as** | **Always contract** (no, na, nos, nas) |
+| **a + o/a/os/as** | **Always contract** (ao, à, aos, às) |
+| **por + o/a/os/as** | **Always contract** (pelo, pela, pelos, pelas) |
+| **de/em + ele/ela/eles/elas** | **Always contract** (dele, nele, etc.) |
+| **de/em/a + demonstratives** | **Always contract** (deste, nesse, àquele, etc.) |
+| **de/em + um/uma** | Prefer full form in formal Brazilian writing; contractions are common in speech |
+| **para + anything** | Use full form in formal writing; **pra/pro** only in informal speech/writing |
+| **Any other preposition** | Do **not** contract |
+
+
+----- MESSAGE (role=user) -----
+list all of them in one big table and include the following columns with a tick or cross:  
+- everyday writing
+- formal writing
+- everyday speech
+- formal speech
+- not generally used at all
+
+
+----- MESSAGE (role=assistant) -----
+Below is a **complete practical reference for Brazilian Portuguese (2026 standard)**. It distinguishes **what is grammatically correct** from **what Brazilians actually use**.
+
+| Contraction | Full form | Everyday writing | Formal writing | Everyday speech | Formal speech | Not generally used |
+|-------------|-----------|:---------------:|:--------------:|:---------------:|:-------------:|:-----------------:|
+| **do** | de + o | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **da** | de + a | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dos** | de + os | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **das** | de + as | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **no** | em + o | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **na** | em + a | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nos** | em + os | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nas** | em + as | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **ao** | a + o | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **à** | a + a | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **aos** | a + os | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **às** | a + as | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **pelo** | por + o | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **pela** | por + a | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **pelos** | por + os | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **pelas** | por + as | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dele** | de + ele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dela** | de + ela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **deles** | de + eles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **delas** | de + elas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nele** | em + ele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nela** | em + ela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **neles** | em + eles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nelas** | em + elas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **deste** | de + este | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **desta** | de + esta | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **destes** | de + estes | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **destas** | de + estas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **disto** | de + isto | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **desse** | de + esse | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dessa** | de + essa | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **desses** | de + esses | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dessas** | de + essas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **disso** | de + isso | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquele** | de + aquele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquela** | de + aquela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daqueles** | de + aqueles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquelas** | de + aquelas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquilo** | de + aquilo | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **neste** | em + este | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nesta** | em + esta | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nestes** | em + estes | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nestas** | em + estas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nisto** | em + isto | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nesse** | em + esse | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nessa** | em + essa | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nesses** | em + esses | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nessas** | em + essas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nisso** | em + isso | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naquele** | em + aquele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naquela** | em + aquela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naqueles** | em + aqueles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naquelas** | em + aquelas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naquilo** | em + aquilo | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àquele** | a + aquele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àquela** | a + aquela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àqueles** | a + aqueles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àquelas** | a + aquelas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àquilo** | a + aquilo | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daqui** | de + aqui | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daí** | de + aí | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dali** | de + ali | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dum** | de + um | ✓ | ✗ | ✓ | △ | ✗ |
+| **duma** | de + uma | ✓ | ✗ | ✓ | △ | ✗ |
+| **duns** | de + uns | △ | ✗ | △ | ✗ | ✓ |
+| **dumas** | de + umas | △ | ✗ | △ | ✗ | ✓ |
+| **num** | em + um | ✓ | ✗ | ✓ | △ | ✗ |
+| **numa** | em + uma | ✓ | ✗ | ✓ | △ | ✗ |
+| **nuns** | em + uns | △ | ✗ | △ | ✗ | ✓ |
+| **numas** | em + umas | △ | ✗ | △ | ✗ | ✓ |
+| **pro** | para + o | ✓ (informal) | ✗ | ✓ | △ | ✗ |
+| **pra** | para + a | ✓ (informal) | ✗ | ✓ | △ | ✗ |
+| **pros** | para + os | ✓ (informal) | ✗ | ✓ | △ | ✗ |
+| **pras** | para + as | ✓ (informal) | ✗ | ✓ | △ | ✗ |
+| **prum** | para + um | △ | ✗ | ✓ | ✗ | ✗ |
+| **pruma** | para + uma | △ | ✗ | ✓ | ✗ | ✗ |
+
+### Legend
+
+- **✓** = Normal and natural.
+- **△** = Exists but is uncommon, stylistically marked, or avoided by many educated speakers.
+- **✗** = Generally not used in that register.
+
+---
+
+## The three groups worth remembering
+
+### 1. Always standard (safe everywhere)
+
+These can be used in **every register**:
+
+- do, da, dos, das
+- no, na, nos, nas
+- ao, à, aos, às
+- pelo, pela, pelos, pelas
+- dele, dela, deles, delas
+- nele, nela, neles, nelas
+- deste, nesse, naquele, etc.
+- àquele, àquela, etc.
+- daqui, daí, dali
+
+---
+
+### 2. Brazilian informal but extremely common
+
+- pra, pro, pras, pros
+- num, numa
+- dum, duma
+
+These are perfectly natural in conversation, messages, social media and informal writing, but are usually avoided in academic, legal and other highly formal writing.
+
+---
+
+### 3. Rare in modern Brazilian Portuguese
+
+- duns, dumas
+- nuns, numas
+- prum, pruma (much less common than **pra um / pra uma**)
+
+These are grammatically possible but uncommon enough that many Brazilians rarely use them naturally. In everyday Brazilian Portuguese, speakers typically prefer:
+
+- **de uns** instead of **duns**
+- **em uns** instead of **nuns**
+- **pra um** instead of **prum**
+- **pra uma** instead of **pruma**
+
+
+----- MESSAGE (role=user) -----
+are you sure 'numa' and
+
+
+----- MESSAGE (role=assistant) -----
+Good catch. **Yes for _numa_, but with an important nuance.**
+
+I would actually revise the table slightly.
+
+| Contraction | Everyday writing | Formal writing | Everyday speech | Formal speech |
+|-------------|:---------------:|:--------------:|:---------------:|:-------------:|
+| **num** | ✓ | ✗ (or at least generally avoided) | ✓ | ✓ |
+| **numa** | ✓ | ✗ (or generally avoided) | ✓ | ✓ |
+
+### Why?
+
+In **modern Brazilian Portuguese**:
+
+- **num/numa** are **extremely common** in speech across all education levels.
+- They are also **very common in informal writing** (messages, newspapers with a conversational style, novels, magazines, blogs).
+- However, **many Brazilian style guides and school grammar books still recommend _em um_ / _em uma_ in formal writing**, especially in academic, legal and administrative texts.
+
+So, for example:
+
+✅ Everyday
+
+> Moro **num** apartamento.
+
+✅ Formal speech (lecture, interview)
+
+> Moro **num** apartamento.
+
+Preferred in formal writing
+
+> Moro **em um** apartamento.
+
+---
+
+### Compared with **pra**
+
+This is where the difference lies.
+
+| Form | Speech | Formal writing |
+|------|---------|----------------|
+| **pra/pro** | Extremely common | Generally avoided |
+| **num/numa** | Extremely common | More accepted than *pra*, but many editors still prefer **em um/em uma** |
+
+So **num/numa** are actually **more acceptable** than **pra/pro**, but they are **still not the preferred choice in conservative formal writing**.
+
+---
+
+If you're building a **Brazilian Portuguese grammar guide for advanced learners**, I'd probably classify contractions into **four tiers** instead of just yes/no:
+
+1. **Mandatory** (do, no, pelo, nele, deste...)
+2. **Standard but stylistically optional** (num, numa, dum, duma)
+3. **Informal standard** (pra, pro, pras, pros)
+4. **Rare/archaic in Brazil** (duns, dumas, nuns, numas, prum, pruma)
+
+I think this classification best reflects **actual educated Brazilian usage in 2026**.
+
+
+----- MESSAGE (role=user) -----
+triple check everything and reproduce a more accurate entire table
+
+
+----- MESSAGE (role=assistant) -----
+I’ll verify this against current Brazilian normative and usage-oriented sources, then rebuild the table with stricter register labels and no overconfident classifications.
+
+
+----- MESSAGE (role=tool) -----
+The output of this plugin was redacted.
+
+
+----- MESSAGE (role=tool) -----
+The output of this plugin was redacted.
+
+
+----- MESSAGE (role=tool) -----
+The output of this plugin was redacted.
+
+
+----- MESSAGE (role=assistant) -----
+You were right to question the earlier classification. The main correction is:
+
+> **_num, numa, nuns_ and _numas_ are standard contractions and may be used in formal Brazilian Portuguese.**  
+> They are not in the same category as informal **_pra/pro_**.
+
+Official Brazilian writing manuals themselves regularly use **num/numa**, which confirms that these forms are acceptable in formal and official prose. The ABL’s orthographic rules also recognize **dum/duma** and **num/numa**, alongside the uncontracted alternatives. citeturn953543search0turn998258search1turn998258search3turn998258search17
+
+## How to read the table
+
+- **✓** = normal or acceptable in that register.
+- **✗** = normally avoided or inappropriate in that register.
+- **Not generally used ✓** = the form exists, but is rare, literary, old-fashioned or virtually absent from contemporary Brazilian usage.
+- The table covers **grammatical prepositional contractions and fusions**, not arbitrary pronunciation reductions such as *tá* for *está* or *cê* for *você*.
+
+## Comprehensive Brazilian Portuguese table
+
+| Contraction | Formation | Everyday writing | Formal writing | Everyday speech | Formal speech | Not generally used at all |
+|---|---|:---:|:---:|:---:|:---:|:---:|
+| **do** | de + o | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **da** | de + a | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dos** | de + os | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **das** | de + as | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **no** | em + o | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **na** | em + a | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nos** | em + os | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nas** | em + as | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **ao** | a + o | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **à** | a + a | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **aos** | a + os | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **às** | a + as | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **pelo** | por + o | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **pela** | por + a | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **pelos** | por + os | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **pelas** | por + as | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dele** | de + ele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dela** | de + ela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **deles** | de + eles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **delas** | de + elas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nele** | em + ele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nela** | em + ela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **neles** | em + eles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nelas** | em + elas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **deste** | de + este | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **desta** | de + esta | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **destes** | de + estes | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **destas** | de + estas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **disto** | de + isto | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **desse** | de + esse | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dessa** | de + essa | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **desses** | de + esses | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dessas** | de + essas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **disso** | de + isso | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquele** | de + aquele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquela** | de + aquela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daqueles** | de + aqueles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquelas** | de + aquelas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquilo** | de + aquilo | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **neste** | em + este | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nesta** | em + esta | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nestes** | em + estes | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nestas** | em + estas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nisto** | em + isto | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nesse** | em + esse | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nessa** | em + essa | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nesses** | em + esses | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nessas** | em + essas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nisso** | em + isso | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naquele** | em + aquele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naquela** | em + aquela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naqueles** | em + aqueles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naquelas** | em + aquelas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **naquilo** | em + aquilo | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àquele** | a + aquele | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àquela** | a + aquela | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àqueles** | a + aqueles | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àquelas** | a + aquelas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **àquilo** | a + aquilo | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **à qual** | a + a qual | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **às quais** | a + as quais | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **num** | em + um | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **numa** | em + uma | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **nuns** | em + uns | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **numas** | em + umas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dum** | de + um | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **duma** | de + uma | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **duns** | de + uns | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dumas** | de + umas | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daqui** | de + aqui | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daí** | de + aí | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dali** | de + ali | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dacolá** | de + acolá | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **donde** | de + onde | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dentre** | de + entre | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **dantes** | de + antes | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **doravante** | de + ora avante | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **daquém** | de + aquém | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **dalém** | de + além | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **comigo** | com + mim | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **contigo** | com + ti | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **consigo** | com + si | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **conosco** | com + nós | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **convosco** | com + vós | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **dalgum** | de + algum | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **dalguma** | de + alguma | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **dalguns** | de + alguns | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **dalgumas** | de + algumas | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **nalgum** | em + algum | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **nalguma** | em + alguma | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **nalguns** | em + alguns | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **nalgumas** | em + algumas | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **doutro** | de + outro | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **doutra** | de + outra | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **doutros** | de + outros | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **doutras** | de + outras | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **noutro** | em + outro | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **noutra** | em + outra | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **noutros** | em + outros | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **noutras** | em + outras | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **doutrem** | de + outrem | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **noutrem** | em + outrem | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **dalguém** | de + alguém | ✗ | ✗ | ✗ | ✗ | ✓ |
+| **nalguém** | em + alguém | ✗ | ✗ | ✗ | ✗ | ✓ |
+| **dalgo** | de + algo | ✗ | ✗ | ✗ | ✗ | ✓ |
+| **dalhures** | de + alhures | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **dalgures** | de + algures | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **noutrora** | em + outrora | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **doutrora** | de + outrora | ✗ | ✓ | ✗ | ✗ | ✓ |
+| **pra** | reduction of para; also para + a | ✓ | ✗ | ✓ | ✗ | ✗ |
+| **pro** | pra/para + o | ✓ | ✗ | ✓ | ✗ | ✗ |
+| **pras** | pra/para + as | ✓ | ✗ | ✓ | ✗ | ✗ |
+| **pros** | pra/para + os | ✓ | ✗ | ✓ | ✗ | ✗ |
+| **prum** | pra/para + um | ✓ | ✗ | ✓ | ✗ | ✗ |
+| **pruma** | pra/para + uma | ✓ | ✗ | ✓ | ✗ | ✗ |
+| **pruns** | pra/para + uns | ✗ | ✗ | ✓ | ✗ | ✓ |
+| **prumas** | pra/para + umas | ✗ | ✗ | ✓ | ✗ | ✓ |
+
+The standard forms with **de, em, a** and **por** are established by the orthographic and grammatical system. **Pra/pro** belong to informal usage rather than neutral formal prose. citeturn953543search0turn953543search3turn953543search21turn953543search22
+
+## Essential corrections to the earlier table
+
+### 1. **Num/numa are fully standard**
+
+These are all correct, including formal writing:
+
+- **num documento oficial**
+- **numa decisão judicial**
+- **nuns casos específicos**
+- **numas circunstâncias excepcionais**
+
+Using **em um/em uma** is also correct in Brazilian Portuguese. The choice may depend on rhythm, emphasis or avoidance of ambiguity—not simply formality. Brazilian official-writing materials repeatedly use *num* and *numa*. citeturn953543search2turn998258search1turn998258search3turn998258search7turn998258search17
+
+### 2. **Dum/duma are also standard, but less frequent in Brazil**
+
+Both are grammatically valid:
+
+- **O resultado depende dum cálculo complexo.**
+- **Trata-se duma situação incomum.**
+
+Nevertheless, Brazilians frequently prefer:
+
+- **de um cálculo**
+- **de uma situação**
+
+So their relative rarity is a matter of **Brazilian usage preference**, not grammatical incorrectness. The same applies to **duns/dumas**. citeturn953543search0turn953543search10
+
+### 3. **Nuns/numas are not rare grammatical forms**
+
+Their frequency is naturally lower because **uns/umas** occurs less often than **um/uma**, but the contractions themselves are completely regular and standard:
+
+- **Ele voltou nuns dias muito movimentados.**
+- **Isso aconteceu numas cidades do interior.**
+
+### 4. **Pra is not exclusively _para + a_**
+
+This is especially important:
+
+- **pra casa** may correspond to **para casa** or **para a casa**, depending on the syntax.
+- **pra você** = **para você**
+- **pra fazer isso** = **para fazer isso**
+- **pro médico** = **para o médico**
+
+Therefore, **pra** is first of all an informal reduction of the preposition **para**; in certain constructions, it simultaneously absorbs the feminine article **a**. **Pro/pros/pras** visibly include an article. citeturn953543search21turn953543search14
+
+## One important exception: do not contract before an infinitive subject
+
+Normally:
+
+> Gostei **da apresentação da Ana**.
+
+But when **a Ana** is the subject of an infinitive, careful formal writing separates the elements:
+
+> Está na hora **de a Ana apresentar** o projeto.  
+> Apesar **de ele conhecer** o problema, não respondeu.
+
+Not:
+
+> Está na hora **da Ana apresentar** o projeto.
+
+The separation shows that **a Ana** or **ele** belongs syntactically to the infinitive, rather than to the preceding preposition. citeturn953543search5turn953543search19

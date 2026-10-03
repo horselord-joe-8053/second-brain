@@ -1,0 +1,77 @@
+/* Shared level-up expanding ring — keep in sync with expandingRing.ts */
+.f35-level-up-effects {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+}
+
+.f35-expanding-ring-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.f35-expanding-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  box-sizing: border-box;
+  width: 175px;
+  height: 175px;
+  margin-left: -87.5px;
+  margin-top: -87.5px;
+  border-radius: 999px;
+  border: 2px solid #2e7d32;
+  opacity: 0;
+  pointer-events: none;
+  animation-name: f35ExpandingRing;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+@keyframes f35ExpandingRing {
+  0% {
+    transform: scale(0.15);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(var(--f35-ring-max, 2.2));
+    opacity: 0;
+  }
+}
+
+/* Token: shiny-gold-1 — radial ring band (no mask / border-clip; those hid the ring in Canvas) */
+.f35-expanding-ring.f35-expanding-ring--shiny-gold-1 {
+  border: none;
+  background: radial-gradient(
+    circle closest-side,
+    transparent calc(50% - 5px),
+    #7a5420 calc(50% - 5px),
+    #926f34 calc(50% - 3px),
+    #f7ef8a 50%,
+    #edc967 calc(50% + 3px),
+    #ae8625 calc(50% + 5px),
+    transparent calc(50% + 5px)
+  );
+  box-shadow:
+    0 0 10px rgba(247, 239, 138, 0.55),
+    0 0 22px rgba(174, 134, 37, 0.45);
+  filter: saturate(1.15) contrast(1.1);
+  animation-name: f35ExpandingRingGold;
+}
+
+@keyframes f35ExpandingRingGold {
+  0% {
+    transform: scale(0.15);
+    opacity: 0.96;
+  }
+  100% {
+    transform: scale(var(--f35-ring-max, 2.2));
+    opacity: 0;
+  }
+}
