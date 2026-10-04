@@ -31,8 +31,8 @@ def test_ac_sb1_brain_layout() -> None:
 
 def test_ac_sb2_readme_links() -> None:
     readme = (REPO / "README.md").read_text(encoding="utf-8")
-    assert "PLAN_SECOND_BRAIN_HERMES_V1" in readme
-    assert "second-brain-llm-wiki-architecture" in readme
+    assert "docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1" in readme
+    assert "docs_manual_gen/second-brain-llm-wiki-architecture" in readme
     assert "bootstrap/EXECUTE_GEN" in readme or "bootstrap/" in readme
 
 

@@ -177,7 +177,7 @@ second_brain/
 │   ├── wiki/                       # compiled Markdown (Nashsu-maintained)
 │   ├── manifests/                  # source envelope JSON/YAML (project-owned)
 │   └── .gitignore                    # ignore large binaries under raw/
-├── docs/
+├── docs_manual_gen/
 │   ├── second-brain-llm-wiki-architecture.md
 │   └── PLAN_SECOND_BRAIN_HERMES_V1.md   # this file
 └── harness/                        # optional Phase 5
@@ -408,7 +408,7 @@ Nashsu generates Obsidian-compatible layout; LLM Wiki may create `.obsidian/` un
 | **audit-brain** | Hermes (HERMES-3) | Prompted audit using MCP + LLM Wiki Lint/Review in app |
 | **research-gap** | Hermes (HERMES-4) | Deep research → save to `raw/sources/web/` → Nashsu watch |
 
-**Query / read path (HERMES-3):** Treat Nashsu’s desktop **API + MCP** as the **Knowledge Access Layer** — hybrid search, graph, and/or `llm_wiki_chat` over **`brain/wiki/`**, not a second search index inside this repo. Hermes plans and synthesizes; it does not reimplement BM25/LanceDB. Patterns, tool names, and caveats: [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md). Operational setup: [`SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) (embeddings optional, MCP preflight).
+**Query / read path (HERMES-3):** Treat Nashsu’s desktop **API + MCP** as the **Knowledge Access Layer** — hybrid search, graph, and/or `llm_wiki_chat` over **`brain/wiki/`**, not a second search index inside this repo. Hermes plans and synthesizes; it does not reimplement BM25/LanceDB. Patterns, tool names, and caveats: [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) (**§9 L1/L2/L3**, **§10 Known gaps / Nashsu backlog**). Operational setup: [`SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) (embeddings optional, MCP preflight). Delivery ledger: [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md) (*Query fidelity*).
 
 **Source envelope (minimal manifest — implement in Phase 5):**
 
@@ -542,9 +542,9 @@ cd utils/chatgpt/playwright && node fetch_share.mjs "https://chatgpt.com/share/.
 
 | Topic | URL |
 |-------|-----|
-| Architecture (this repo) | [`docs/second-brain-llm-wiki-architecture.md`](./second-brain-llm-wiki-architecture.md) |
-| Query layer + Hermes MCP (follow-on) | [`docs/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) |
-| Setup runbook | [`docs/SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) |
+| Architecture (this repo) | [`docs_manual_gen/second-brain-llm-wiki-architecture.md`](./second-brain-llm-wiki-architecture.md) |
+| Query layer + Hermes MCP (follow-on) | [`docs_manual_gen/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) |
+| Setup runbook | [`docs_manual_gen/SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) |
 | Nashsu LLM Wiki | https://github.com/nashsu/llm_wiki |
 | LLM Wiki MCP server | https://github.com/nashsu/llm_wiki/tree/main/mcp-server |
 | Nashsu agent skill | https://github.com/nashsu/llm_wiki_skill |

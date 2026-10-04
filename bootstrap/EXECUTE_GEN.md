@@ -3,7 +3,7 @@
 **Human says:**
 
 - **`Run bootstrap/EXECUTE_GEN.md`**
-- **`Run bootstrap/EXECUTE_GEN.md implementing docs/<plan>.md`**
+- **`Run bootstrap/EXECUTE_GEN.md implementing docs_manual_gen/<plan>.md`** (or **`docs/<plan>.md`** when the brief lives under **`docs/`**)
 - **`Run bootstrap/EXECUTE_GEN.md for the following project: …`**
 - **`Run bootstrap/EXECUTE_GEN.md profile: webapp for …`**
 - **`delivery-resumimpl docs/plans/<feature>-plan.md`** (resume from first **`[ ]`**)
@@ -34,7 +34,7 @@ Human-visible progress lives in **`docs/plans/<feature>-plan.md`** (**`[ ]` / `[
 
 | Condition | Action |
 |-----------|--------|
-| **`implementing docs/PLAN_*.md`** and **`specific/`** empty or **`plan_source`** mismatch | **`modules/second-brain/ANALYZE_FROM_PLAN.md`** or **`ANALYZE_SPECIFIC.md`** |
+| **`implementing docs_manual_gen/PLAN_*.md`** (or **`docs/PLAN_*.md`**) and **`specific/`** empty or **`plan_source`** mismatch | **`modules/second-brain/ANALYZE_FROM_PLAN.md`** or **`ANALYZE_SPECIFIC.md`** |
 | Web app brief | **`modules/webapp/ANALYZE_WEBAPP.md`**, **`profile: webapp`** |
 | Other brief | **`ANALYZE_SPECIFIC.md`** |
 | Valid **`specific/bootstrap.md`** already matches the request | Skip analyze |

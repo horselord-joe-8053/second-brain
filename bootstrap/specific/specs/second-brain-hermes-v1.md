@@ -6,7 +6,7 @@
 
 ## Goal
 
-Implement in-repo Second Brain foundation per **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`** and **`docs/second-brain-llm-wiki-architecture.md`**: corpus tree, harness contract, backup scripts; external tools via human gates.
+Implement in-repo Second Brain foundation per **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`** and **`docs_manual_gen/second-brain-llm-wiki-architecture.md`**: corpus tree, harness contract, backup scripts; external tools via human gates.
 
 ## Constraints
 
@@ -47,4 +47,7 @@ Implement per **`docs/PROJECT-TDD.md`**.
 
 ## Decisions
 
-<!-- align-requirements / HG confirmations -->
+<!-- align-requirements / HG confirmations; mirror docs/specs/second-brain-hermes-v1.md -->
+
+- **P1 (2026-10-03):** Repo corpus layout, harness stub README, root README, verify scripts seeded.
+- **HG-2 closed (2026-10-04):** LLM Wiki on `brain/`; API/MCP; ingest smoke → wiki pages. Token in gitignored `.env`. See canonical spec **Decisions** in `docs/specs/second-brain-hermes-v1.md`.

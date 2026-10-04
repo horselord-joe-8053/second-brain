@@ -609,6 +609,7 @@ The **write path** is raw sources → Nashsu compile → durable Markdown under 
 4. **RAGFlow bake-off** — incremental maintenance vs generated dataset views.
 5. **YouTube reference** — user-linked Karpathy-style video was **not** retrieved in chat; add transcript/title if that content should inform design.
 6. **Query path vs headless deploy** — until Nashsu runs headless on a VPS, Hermes **`query-brain`** is co-located with the desktop app (localhost MCP); see [§15](#15-knowledge-access-and-query-read-path).
+7. **L2 vs L3 retrieval fidelity** — hybrid MCP/API search indexes **`wiki/`** only; full spreadsheet text often lives in **`raw/sources/**/.cache/*.txt`**; Agent **`source.search`** is keyword-snippet search, not ranked RAG. Tracked backlog: [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) §9–§10; delivery plan *Query fidelity*.
 
 ---
 
@@ -623,9 +624,9 @@ The **write path** is raw sources → Nashsu compile → durable Markdown under 
 | Hermes + Obsidian community workflow | https://github.com/zianCAU/hermes_LLMwiki_Obsidian |
 | RAGFlow | https://github.com/infiniflow/ragflow |
 | Repo extraction HOWTO | `utils/chatgpt/HOWTO_EXTRACT_CHATGPT.md` |
-| Implementation plan (this repo) | [`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) |
-| Query / read path (follow-on) | [`docs/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) |
-| Setup runbook | [`docs/SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) |
+| Implementation plan (this repo) | [`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) |
+| Query / read path (follow-on) | [`docs_manual_gen/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) |
+| Setup runbook | [`docs_manual_gen/SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) |
 
 ---
 

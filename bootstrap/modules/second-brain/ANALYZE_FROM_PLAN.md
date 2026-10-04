@@ -1,8 +1,8 @@
-<h1 id="analyze-from-plan" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Analyze from `docs/PLAN_*.md`</h1>
+<h1 id="analyze-from-plan" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Analyze from `docs_manual_gen/PLAN_*.md`</h1>
 
-**Trigger:** **`EXECUTE_GEN.md implementing docs/<plan>.md`** and **`specific/bootstrap.md`** missing or stale.
+**Trigger:** **`EXECUTE_GEN.md implementing docs_manual_gen/<plan>.md`** (or **`docs/<plan>.md`**) and **`specific/bootstrap.md`** missing or stale.
 
-**Inputs:** the plan file, **`docs/second-brain-llm-wiki-architecture.md`**, **`core/harness/docs/templates/`**.
+**Inputs:** the plan file, **`architecture_doc:`** from bootstrap meta (e.g. **`docs_manual_gen/second-brain-llm-wiki-architecture.md`**), **`core/harness/docs/templates/`**.
 
 **Output:** **`KIT/specific/bootstrap.md`**, **`specs/*.md`**, **`plans/*.md`**.
 

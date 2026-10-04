@@ -3,9 +3,9 @@
 <!-- delivery-status: wip -->
 <!-- plan-for: docs/specs/second-brain-hermes-v1.md -->
 
-Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
+Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
-**Progress:** First open **`[ ]`** is the resume point (kit seed — sync checklists with repo `docs/plans/` after EXECUTE).
+**Progress:** First open **`[ ]`** is the resume point (currently **P3 — Hermes harness / HG-3**; sync with repo `docs/plans/`).
 
 ## Spec link
 
@@ -29,7 +29,7 @@ Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ---
 
-### P2 — LLM Wiki (plan §6)
+### [X] P2 — LLM Wiki (plan §6)
 
 - **HG-2** — desktop-install module; stop until human confirms ingest smoke
 - **Exit:** Human recorded in Decisions; API token location documented (not in repo)
@@ -42,9 +42,10 @@ Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 - [X] Native app **Open project** → `…/second_brain/brain`
 - [X] Source Watch auto-ingest enabled for uploads (and ingest tip documented in runbook)
 - [X] `smoke-test.md` and sample uploads produced wiki pages under `brain/wiki/` (not only `index.md`)
-- [X] `docs/SECOND_BRAIN_RUNBOOK.md` §5–§9 covers HG-2, embeddings, MCP, query path
-- [ ] Human confirms **HG-2 closed** (reply or **Decisions** line explicitly marking HG-2 complete)
-- [ ] Phase **Exit** verified and **Decisions** updated for HG-2 closure
+- [X] `docs_manual_gen/SECOND_BRAIN_RUNBOOK.md` §5–§9 covers HG-2, embeddings, MCP, query path
+- [X] `docs_manual_gen/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md` documents L1/L2/L3, MCP vs Agent tools, **Known gaps / Nashsu backlog** (§9–§10)
+- [X] Human confirms **HG-2 closed** (reply or **Decisions** line explicitly marking HG-2 complete)
+- [X] Phase **Exit** verified and **Decisions** updated for HG-2 closure
 
 ---
 
@@ -55,7 +56,8 @@ Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 **Execution checklist**
 
-- [ ] Hermes CLI installed per runbook §10
+- [X] Runbook §10 + `scripts/brain/hermes-preflight.sh` document P3 install and `hermes doctor` gate
+- [ ] Hermes CLI installed per runbook §10 (`./scripts/brain/hermes-preflight.sh` exits 0)
 - [ ] `hermes doctor` clean (human confirmation)
 - [ ] Spec **Decisions** records HG-3
 
@@ -72,6 +74,7 @@ Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 - [ ] `~/.hermes/config.yaml` includes LLM Wiki MCP + `LLM_WIKI_API_TOKEN` env
 - [ ] Hermes bundled `llm-wiki` compiler skill disabled; llm-wiki agent skill installed
 - [ ] MCP smoke (search or read) recorded in **Decisions**
+- [ ] MCP smoke uses **`llm_wiki_search` + `llm_wiki_read_file`** on a known **`brain/wiki/`** page (L3 path)
 - [ ] Phase **Exit** verified
 
 ---
@@ -96,6 +99,7 @@ Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 **Execution checklist**
 
 - [ ] `harness/second-brain/` ingest skill doc + manifest example (AC-SB6)
+- [ ] `harness/second-brain/skills/query-brain/SKILL.md` — Pattern A/B, L2 escalation, cite-or-abstain (see MORE §10 **G6**)
 - [ ] Optional `scripts/brain/ingest.sh` if plan requires
 - [ ] Pytest AC-SB6 green; `./scripts/verify.sh` green
 - [ ] Spec **Decisions** updated if needed
@@ -125,8 +129,31 @@ Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 - [ ] Human runs architecture acceptance checklist with apps running
 - [ ] Pass or waiver recorded in **Decisions**
 - [ ] Set plan **`<!-- delivery-status: completed -->`**; optional copy to `docs/plans/completed/`
+- [ ] **NB-SB1:** Table/spreadsheet lookup test — answer cites **L2** (`.cache/*.txt`) or **L3** wiki path; no uncited parametric fill (MORE §10)
+
+---
+
+## Query fidelity — Nashsu backlog (non-blocking for P3)
+
+**Detail:** [`docs_manual_gen/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](../../../docs_manual_gen/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) §9–§10 (verified against sibling `nu_llm_wiki`).
+
+**Do not** delay Hermes install (P3) or MCP wiring (P4) on upstream **NB-*** items. Track them for spreadsheet / evidence-bound Q&A quality.
+
+| ID | Track | Owner | Plan hook |
+|----|-------|-------|-----------|
+| G1–G8 | Known gaps (today) | Nashsu + SB skill | MORE §10.1 |
+| NB-1 | L2 hybrid passage search | Nashsu | Optional spike after P4 |
+| NB-2 | Full-table ingest / L2 link in wiki | Nashsu | Re-ingest when available |
+| NB-3 | Evidence-required agent mode | Nashsu | Complements SB cite-or-abstain |
+| NB-4 | MCP/API raw or L2 search | Nashsu | Simplifies Hermes Pattern A |
+| NB-5 | Agent vs MCP tool naming docs | Nashsu | Integrator clarity |
+| NB-SB1 | Acceptance: cited table lookup | SB | P8 checklist |
+
+**Optional P2 operator setting:** LLM Wiki **Settings → Multilingual** output language when corpus is bilingual (helps L3; does not fix G2/G4).
+
+**Spike (optional, post-P4):** Same question via **`llm_wiki_chat`** vs MCP **search+read** — log in **Decisions** (MORE §11).
 
 ## Agent notes
 
-- **Start / resume:** `Run bootstrap/EXECUTE_GEN.md implementing docs/PLAN_SECOND_BRAIN_HERMES_V1.md` or **`delivery-resumimpl docs/plans/second-brain-hermes-v1-plan.md`**
+- **Start / resume:** `Run bootstrap/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md` or **`delivery-resumimpl docs/plans/second-brain-hermes-v1-plan.md`**
 - Rule: **`.cursor/rules/delivery-resumimpl.mdc`**

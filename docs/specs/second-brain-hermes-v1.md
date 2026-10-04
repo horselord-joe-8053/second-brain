@@ -6,7 +6,7 @@
 
 ## Goal
 
-Implement in-repo Second Brain foundation per **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`** and **`docs/second-brain-llm-wiki-architecture.md`**: corpus tree, harness contract, backup scripts; external tools via human gates.
+Implement in-repo Second Brain foundation per **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`** and **`docs_manual_gen/second-brain-llm-wiki-architecture.md`**: corpus tree, harness contract, backup scripts; external tools via human gates.
 
 ## Constraints
 
@@ -50,5 +50,6 @@ Implement per **`docs/PROJECT-TDD.md`**.
 - **P1 (2026-10-03):** Repo corpus layout, harness stub README, root README, verify scripts seeded. Pytest/check-ac-tests skipped locally when `python3` unavailable (Xcode CLT not installed).
 - **HG-2 source build (2026-10-03):** `nu_llm_wiki` sibling repo; CLT; `tauri dev` — API `127.0.0.1:19828`.
 - **HG-2 GUI (2026-10-03):** LLM provider keys/models in app Settings → LLM; API + MCP enabled; bearer in operator `.env` as `LLM_WIKI_API_TOKEN`. Runbook §5–§7. API `GET /projects` → 200.
-- **HG-2 smoke (2026-10-03, partial):** `brain/raw/sources/uploads/smoke-test.md` added; `brain/wiki/index.md` seeded so the app accepts the folder. API rescan detected `smoke-test.md` as a change when `brain` is current (clip `POST /project` or UI). **LLM ingest → wiki pages** still requires **native app → Open project → `second_brain/brain`** with Source Watch auto-ingest; confirm new wiki output then mark HG-2 closed.
+- **HG-2 smoke (2026-10-03):** `brain/raw/sources/uploads/smoke-test.md` added; `brain/wiki/index.md` seeded. Native app **Open project → `second_brain/brain`** with Source Watch; uploads and smoke produced compiled pages under `brain/wiki/` (not only `index.md`).
 - **HG-2 fork (2026-10-04):** Sibling compiler repo pushes to `git@github.com:horselord-joe-8053/llm-wiki.git`; runbook §4 updated. Optional `upstream` remote for upstream merges.
+- **HG-2 closed (2026-10-04):** Human confirmed ingest smoke complete. P2 exit: API/MCP enabled; operator bearer in gitignored `.env` as `LLM_WIKI_API_TOKEN` (not in repo). Query/read path documented in `docs_manual_gen/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md` §9–§10. **Resume P3** (Hermes CLI / `hermes doctor`).

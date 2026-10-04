@@ -8,7 +8,7 @@ Author **`KIT/specific/bootstrap.md`**, **`specs/`**, **`plans/`** only (unless 
 |-------|--------|
 | **Web app** (FastAPI + React MVP) | **`modules/webapp/ANALYZE_WEBAPP.md`** — set **`profile: webapp`** in bootstrap meta |
 | **General / Second Brain / infra** | Sections below — **`profile: general`** |
-| **`implementing docs/PLAN_*.md`** | **`modules/second-brain/ANALYZE_FROM_PLAN.md`** (or use pre-seeded **`specific/`** when **`plan_source`** matches) |
+| **`implementing docs_manual_gen/PLAN_*.md`** (or **`docs/PLAN_*.md`**) | **`modules/second-brain/ANALYZE_FROM_PLAN.md`** (or use pre-seeded **`specific/`** when **`plan_source`** matches) |
 
 ## Meta (`specific/bootstrap.md`)
 

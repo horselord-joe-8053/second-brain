@@ -130,22 +130,32 @@ Vector search is **optional**. With embeddings **disabled**, chat and `POST …/
 
 **Settings → Embeddings** (project **brain** open):
 
-1. Turn **Enable** on (or leave off for lexical-only).
-2. Fill **Endpoint**, **Model**, and **API key** (stored in app `app-state.json`, not `.env` unless you copy values manually).
+1. Turn **Enable vector search** on (or leave off for lexical-only).
+2. Fill **Endpoint**, **Model**, **API key**, and (Gemini only) **Output dimensionality** — stored in app `app-state.json`, not repo `.env`.
+
+**Verified on this host (Gemini, Oct 2026):**
+
+| Field | Value |
+|-------|--------|
+| Endpoint | `https://generativelanguage.googleapis.com/v1beta` |
+| Model | `gemini-embedding-2` |
+| Output dimensionality | `768` |
+| API key | Same Gemini key as **Settings → LLM** |
+| Custom request headers | Leave empty for Gemini (remove third-party provider headers) |
 
 <table>
 <thead>
 <tr style="background:#1565c0;color:white"><th>Provider</th><th>Endpoint (paste as-is)</th><th>Model (examples)</th><th>API key</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd">Google Gemini</td><td style="background:#e8f5e9"><code>https://generativelanguage.googleapis.com/v1beta</code></td><td style="background:#e8f5e9"><code>gemini-embedding-2-flash-001</code>, <code>gemini-embedding-001</code></td><td style="background:#e8f5e9">Gemini API key (<code>x-goog-api-key</code>)</td></tr>
+<tr><td style="background:#e3f2fd">Google Gemini <span style="background:#2e7d32;color:white;padding:1px 4px">verified</span></td><td style="background:#e8f5e9"><code>https://generativelanguage.googleapis.com/v1beta</code></td><td style="background:#e8f5e9"><code>gemini-embedding-2</code> (GA); alternates: <code>gemini-embedding-001</code>, <code>gemini-embedding-2-flash-001</code></td><td style="background:#e8f5e9">Gemini API key</td></tr>
 <tr><td style="background:#e3f2fd">OpenAI</td><td style="background:#fff3e0"><code>https://api.openai.com/v1/embeddings</code></td><td style="background:#fff3e0"><code>text-embedding-3-small</code></td><td style="background:#fff3e0">OpenAI key (Bearer)</td></tr>
-<tr><td style="background:#e3f2fd">Local (Ollama / LM Studio)</td><td style="background:#fff3e0">e.g. <code>http://127.0.0.1:11434/v1/embeddings</code></td><td style="background:#fff3e0">e.g. <code>nomic-embed-text</code></td><td style="background:#fff3e0">Often empty</td></tr>
+<tr><td style="background:#e3f2fd">Local (Ollama / LM Studio)</td><td style="background:#fff3e0">e.g. <code>http://127.0.0.1:1234/v1/embeddings</code> or <code>http://127.0.0.1:11434/v1/embeddings</code></td><td style="background:#fff3e0">Model id shown in the local server</td><td style="background:#fff3e0">Often empty</td></tr>
 </tbody>
 </table>
 
 3. **Test connection** (and optional functional test) in the same panel.
-4. **Reindex / embed all pages** for project **brain** so LanceDB under `brain/.llm-wiki/` is populated (required before vector hits appear in search).
+4. **Reindex / embed all pages** for project **brain** so LanceDB under `brain/.llm-wiki/` is populated (required before vector hits appear in search). Re-run after changing model or dimensionality.
 
 The app detects Google endpoints by hostname or `:embedContent` and builds the REST path from **Endpoint + Model**; OpenAI-compatible servers use JSON `{ "model", "input" }` at the URL you provide.
 
@@ -229,14 +239,22 @@ Replace `{id}` with project UUID, project path, or `current`.
 
 <h2 id="hermes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Hermes (P3–P4)</h2>
 
+**P3 exit (HG-3):** `hermes doctor` reports clean; add one line to **`docs/specs/second-brain-hermes-v1.md` → Decisions**; tick P3 in [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md).
+
 ```bash
 curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
-hermes doctor
-hermes setup
+# Reload shell (new PATH), then:
+./scripts/brain/hermes-preflight.sh   # or: hermes doctor
+hermes setup          # or: hermes setup --portal
 ```
 
-Wire MCP from **`docs/harness/hermes-mcp.example.yaml`** into `~/.hermes/config.yaml`. Disable Hermes bundled `llm-wiki` compiler skill; install the official **llm-wiki** agent skill (API/MCP usage, not a second compiler):  
-`npx skills add https://github.com/nashsu/llm_wiki_skill.git --skill llm-wiki`
+Optional Docker path (prefer **CLI on host** for MCP to `127.0.0.1:19828`): see [`PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) §7.2.
+
+**P4 (HG-4):** Wire MCP from **`docs/harness/hermes-mcp.example.yaml`** into `~/.hermes/config.yaml`. Disable Hermes bundled `llm-wiki` **compiler** skill; install the official **llm-wiki** agent skill (API/MCP usage, not a second compiler):
+
+```bash
+npx skills add https://github.com/nashsu/llm_wiki_skill.git --skill llm-wiki
+```
 
 ---
 

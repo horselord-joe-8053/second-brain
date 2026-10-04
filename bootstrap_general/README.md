@@ -48,7 +48,7 @@ Shared skills (not webapp-only): **`align-requirements`**, **`specify-feature`**
 |------|--------|
 | Author kit from brief | `Run bootstrap_general/ANALYZE_PROJECT_SPECIFIC.md for the following project: …` |
 | Full greenfield | `Run bootstrap_general/EXECUTE_GEN.md for the following project: …` |
-| Execute existing plan | `Run bootstrap_general/EXECUTE_GEN.md implementing docs/PLAN_SECOND_BRAIN_HERMES_V1.md` |
+| Execute existing plan | `Run bootstrap_general/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md` |
 
 Agent should **pause with instructions** on **HG-*** steps only.
 
@@ -56,4 +56,4 @@ Agent should **pause with instructions** on **HG-*** steps only.
 
 <h2 id="second-brain" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Second Brain example</h2>
 
-Use **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`** + **`docs/second-brain-llm-wiki-architecture.md`** as ANALYZE inputs. Phase 2 implements in-repo work (`brain/`, `harness/`, scripts); Hermes / LLM Wiki / Obsidian installs stay **HG-*** gates.
+Use **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`** + **`docs_manual_gen/second-brain-llm-wiki-architecture.md`** as ANALYZE inputs. Phase 2 implements in-repo work (`brain/`, `harness/`, scripts); Hermes / LLM Wiki / Obsidian installs stay **HG-*** gates.

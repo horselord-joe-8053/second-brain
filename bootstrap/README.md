@@ -37,8 +37,8 @@ One workflow (ANALYZE → **`specific/`** → EXECUTE → **`docs/specs`**), **D
 <h2 id="usage" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Usage</h2>
 
 ```text
-Run bootstrap/ANALYZE_SPECIFIC.md implementing docs/PLAN_SECOND_BRAIN_HERMES_V1.md
-Run bootstrap/EXECUTE_GEN.md implementing docs/PLAN_SECOND_BRAIN_HERMES_V1.md
+Run bootstrap/ANALYZE_SPECIFIC.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md
+Run bootstrap/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md
 delivery-resumimpl docs/plans/<feature>-plan.md
 ```
 

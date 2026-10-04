@@ -6,8 +6,8 @@
 profile: general
 phase1_modules: second-brain
 phase2_modules: desktop-install, second-brain
-plan_source: docs/PLAN_SECOND_BRAIN_HERMES_V1.md
-architecture_doc: docs/second-brain-llm-wiki-architecture.md
+plan_source: docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md
+architecture_doc: docs_manual_gen/second-brain-llm-wiki-architecture.md
 feature_id: second-brain-hermes-v1
 spec_file: second-brain-hermes-v1.md
 plan_file: second-brain-hermes-v1-plan.md

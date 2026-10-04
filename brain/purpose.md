@@ -6,7 +6,7 @@ Personal knowledge base compiled by **Nashsu LLM Wiki** from material under `raw
 - **Human UI:** Obsidian (or LLM Wiki) on compiled output under `wiki/`.
 - **Project root for LLM Wiki:** this `brain/` directory.
 
-See [PLAN_SECOND_BRAIN_HERMES_V1.md](../docs/PLAN_SECOND_BRAIN_HERMES_V1.md).
+See [PLAN_SECOND_BRAIN_HERMES_V1.md](../docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md).
 
 ## Language-learning and mixed-language sources
 
