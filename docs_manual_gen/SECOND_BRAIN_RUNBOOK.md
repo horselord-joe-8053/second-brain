@@ -256,7 +256,11 @@ From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs the same driver 
 2. **`merge-hermes-mcp-config.py`** — appends managed `mcp_servers` block to `~/.hermes/config.yaml` (token ref `${LLM_WIKI_API_TOKEN}`).
 3. API health + optional `hermes mcp test llm_wiki`.
 
-Manual reference shape: **`docs/harness/hermes-mcp.example.yaml`**. Disable Hermes bundled `llm-wiki` **compiler** skill (`hermes skills disable llm-wiki`); install Nashsu **llm-wiki** agent skill (API/MCP, not compile):
+Manual reference shape: **`docs/harness/hermes-mcp.example.yaml`**. **`setup-hermes-skills.sh`** sets `skills.disabled: [llm-wiki]` and `external_dirs` → repo `harness/second-brain/skills`. Hub Nashsu install may be blocked by skills-guard — use repo **`nashsu-mcp-read`** / **`query-brain`** skills.
+
+**Smoke:** `./scripts/brain/mcp-smoke-read.sh`
+
+Optional hub install when guard allows:
 
 Optional Docker path (prefer **CLI on host** for MCP to `127.0.0.1:19828`): see [`PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) §7.2.
 
@@ -268,7 +272,22 @@ npx skills add https://github.com/nashsu/llm_wiki_skill.git --skill llm-wiki
 
 ---
 
-<h2 id="verify" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. Verification</h2>
+<h2 id="obsidian" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. Obsidian (HG-5)</h2>
+
+**Recommended vault root:** `…/second_brain/brain/wiki` (compiled Markdown only). Alternative: project root `brain/` if `.obsidian/` was generated there by LLM Wiki.
+
+Open Obsidian → **Open folder as vault** → select that path. Record the chosen path in spec **Decisions** (HG-5).
+
+<h2 id="backup" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Backup</h2>
+
+```bash
+./scripts/brain/backup.sh              # → backups/brain-YYYYMMDD-HHMMSS/
+./scripts/brain/backup.sh /path/to/dir # custom destination
+```
+
+Excludes `brain/.llm-wiki/` (regenerable index). Also back up `~/.hermes/` separately for Hermes config/skills.
+
+<h2 id="verify" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">13. Verification</h2>
 
 ```bash
 cd /Users/jjw8053/projects/second_brain

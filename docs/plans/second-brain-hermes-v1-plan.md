@@ -5,7 +5,7 @@
 
 Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
-**Progress:** First open **`[ ]`** is the resume point (currently **P4 — HG-4** skill disable + **P5** Obsidian).
+**Progress:** First open **`[ ]`** is the resume point (currently **P5 Obsidian HG-5** + **P8 acceptance**).
 
 ## Spec link
 
@@ -63,7 +63,7 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ---
 
-### P4 — Wire harness ↔ compiler (plan §8)
+### [X] P4 — Wire harness ↔ compiler (plan §8)
 
 - **HG-4**; repo may add `docs/harness/hermes-mcp.example.yaml`
 - **Exit:** MCP smoke described in Decisions
@@ -74,9 +74,9 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 - [X] `~/.hermes/config.yaml` includes LLM Wiki MCP (`setup-hermes-mcp.sh` / `${LLM_WIKI_API_TOKEN}` in `~/.hermes/.env`)
 - [X] `second_brain/.env` + `~/.hermes/.env` synced from LLM Wiki `app-state.json` (`sync-llm-wiki-token.sh`)
 - [X] MCP smoke: API health + `hermes mcp test llm_wiki` + hybrid search on `projects/current` (2026-10-05)
-- [ ] Hermes bundled `llm-wiki` compiler skill disabled; Nashsu **llm-wiki** agent skill installed
-- [ ] MCP smoke **`llm_wiki_read_file`** on a known **`brain/wiki/`** page recorded in **Decisions**
-- [ ] Phase **Exit** verified
+- [X] Bundled **`llm-wiki`** disabled via `skills.disabled` + repo **`external_dirs`** (`setup-hermes-skills.sh`); hub Nashsu install blocked by skills-guard — **`nashsu-mcp-read`** repo skill substitute
+- [X] MCP read smoke: `mcp-smoke-read.sh` on `wiki/sources/7-uploads--10-smoke-test--1dwb8eh.md` (2026-10-05)
+- [X] Phase **Exit** verified and **Decisions** updated
 
 ---
 
@@ -92,31 +92,31 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ---
 
-### P6 — Ingestion workflows (plan §10)
+### [X] P6 — Ingestion workflows (plan §10)
 
 - **ACs:** SB6
 - **Exit:** `./scripts/verify.sh` green
 
 **Execution checklist**
 
-- [ ] `harness/second-brain/` ingest skill doc + manifest example (AC-SB6)
-- [ ] `harness/second-brain/skills/query-brain/SKILL.md` — Pattern A/B, L2 escalation, cite-or-abstain (see MORE §10 **G6**)
-- [ ] Optional `scripts/brain/ingest.sh` if plan requires
-- [ ] Pytest AC-SB6 green; `./scripts/verify.sh` green
-- [ ] Spec **Decisions** updated if needed
+- [X] `harness/second-brain/skills/ingest-to-brain/SKILL.md` + `manifests/example-ingest.yaml` (AC-SB6)
+- [X] `harness/second-brain/skills/query-brain/SKILL.md` — Pattern A/B, L2 escalation, cite-or-abstain (MORE §10 **G6**)
+- [X] `scripts/brain/ingest.sh` helper
+- [X] Pytest AC-SB6 green; `./scripts/verify.sh` green
+- [X] Spec **Decisions** updated
 
 ---
 
-### P7 — Backup and ops (plan §11)
+### [X] P7 — Backup and ops (plan §11)
 
 - **ACs:** SB7
 - **Exit:** `./scripts/verify.sh` green
 
 **Execution checklist**
 
-- [ ] `scripts/brain/backup.sh` or equivalent rsync/zip stub (AC-SB7)
-- [ ] Backup steps documented in plan exit / runbook
-- [ ] Pytest AC-SB7 green; `./scripts/verify.sh` green
+- [X] `scripts/brain/backup.sh` rsync stub (AC-SB7)
+- [X] Backup documented in runbook §12
+- [X] Pytest AC-SB7 green; `./scripts/verify.sh` green
 
 ---
 
@@ -127,7 +127,7 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 **Execution checklist**
 
-- [ ] Human runs architecture acceptance checklist with apps running
+- [ ] Human runs [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](ACCEPTANCE-second-brain-hermes-v1.md) with apps running
 - [ ] Pass or waiver recorded in **Decisions**
 - [ ] Set plan **`<!-- delivery-status: completed -->`**; optional copy to `docs/plans/completed/`
 - [ ] **NB-SB1:** Table/spreadsheet lookup test — answer cites **L2** (`.cache/*.txt`) or **L3** wiki path; no uncited parametric fill (MORE §10)

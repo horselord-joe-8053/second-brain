@@ -44,4 +44,7 @@ if command -v hermes >/dev/null 2>&1; then
   fi
 fi
 
+bash "$ROOT/scripts/brain/setup-hermes-skills.sh"
+bash "$ROOT/scripts/brain/mcp-smoke-read.sh"
+
 echo "setup-hermes-mcp: OK"

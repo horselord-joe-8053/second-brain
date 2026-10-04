@@ -36,12 +36,14 @@ def test_ac_sb2_readme_links() -> None:
     assert "bootstrap/EXECUTE_GEN" in readme or "bootstrap/" in readme
 
 
-@pytest.mark.skip(reason="delivery P6")
 def test_ac_sb6_ingest_harness() -> None:
     skill = REPO / "harness" / "second-brain" / "skills" / "ingest-to-brain" / "SKILL.md"
+    manifest = REPO / "harness" / "second-brain" / "manifests" / "example-ingest.yaml"
     assert skill.is_file()
+    assert manifest.is_file()
 
 
-@pytest.mark.skip(reason="delivery P7")
 def test_ac_sb7_backup_script() -> None:
-    assert (REPO / "scripts" / "brain" / "backup.sh").is_file()
+    backup = REPO / "scripts" / "brain" / "backup.sh"
+    assert backup.is_file()
+    assert (REPO / "scripts" / "brain" / "ingest.sh").is_file()
