@@ -5,7 +5,7 @@
 
 Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
-**Progress:** First open **`[ ]`** is the resume point (currently **P4 — Wire harness ↔ compiler / HG-4**).
+**Progress:** First open **`[ ]`** is the resume point (currently **P4 — HG-4** skill disable + **P5** Obsidian).
 
 ## Spec link
 
@@ -71,10 +71,11 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 **Execution checklist**
 
 - [X] Repo documents `docs/harness/hermes-mcp.example.yaml` (template paths)
-- [ ] `~/.hermes/config.yaml` includes LLM Wiki MCP + `LLM_WIKI_API_TOKEN` env
-- [ ] Hermes bundled `llm-wiki` compiler skill disabled; llm-wiki agent skill installed
-- [ ] MCP smoke (search or read) recorded in **Decisions**
-- [ ] MCP smoke uses **`llm_wiki_search` + `llm_wiki_read_file`** on a known **`brain/wiki/`** page (L3 path)
+- [X] `~/.hermes/config.yaml` includes LLM Wiki MCP (`setup-hermes-mcp.sh` / `${LLM_WIKI_API_TOKEN}` in `~/.hermes/.env`)
+- [X] `second_brain/.env` + `~/.hermes/.env` synced from LLM Wiki `app-state.json` (`sync-llm-wiki-token.sh`)
+- [X] MCP smoke: API health + `hermes mcp test llm_wiki` + hybrid search on `projects/current` (2026-10-05)
+- [ ] Hermes bundled `llm-wiki` compiler skill disabled; Nashsu **llm-wiki** agent skill installed
+- [ ] MCP smoke **`llm_wiki_read_file`** on a known **`brain/wiki/`** page recorded in **Decisions**
 - [ ] Phase **Exit** verified
 
 ---

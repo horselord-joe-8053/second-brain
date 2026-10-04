@@ -250,9 +250,17 @@ hermes setup                        # or: hermes setup --portal
 
 From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs the same driver before layout/pytest checks.
 
+**P4 (HG-4) — automated:** `./scripts/brain/setup-hermes-mcp.sh` (also invoked from `setup-local.sh` when LLM Wiki `app-state.json` exists):
+
+1. **`sync-llm-wiki-token.sh`** — reads `apiConfig.token` from `~/Library/Application Support/com.llmwiki.app/app-state.json` → `second_brain/.env` and `~/.hermes/.env` as `LLM_WIKI_API_TOKEN` (never printed).
+2. **`merge-hermes-mcp-config.py`** — appends managed `mcp_servers` block to `~/.hermes/config.yaml` (token ref `${LLM_WIKI_API_TOKEN}`).
+3. API health + optional `hermes mcp test llm_wiki`.
+
+Manual reference shape: **`docs/harness/hermes-mcp.example.yaml`**. Disable Hermes bundled `llm-wiki` **compiler** skill (`hermes skills disable llm-wiki`); install Nashsu **llm-wiki** agent skill (API/MCP, not compile):
+
 Optional Docker path (prefer **CLI on host** for MCP to `127.0.0.1:19828`): see [`PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) §7.2.
 
-**P4 (HG-4):** Wire MCP from **`docs/harness/hermes-mcp.example.yaml`** into `~/.hermes/config.yaml`. Disable Hermes bundled `llm-wiki` **compiler** skill; install the official **llm-wiki** agent skill (API/MCP usage, not a second compiler):
+**P4 (manual remainder):**
 
 ```bash
 npx skills add https://github.com/nashsu/llm_wiki_skill.git --skill llm-wiki

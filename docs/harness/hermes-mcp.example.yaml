@@ -8,7 +8,7 @@ mcp_servers:
     args:
       - /Users/jjw8053/projects/nu_llm_wiki/mcp-server/dist/src/index.js
     env:
-      LLM_WIKI_API_TOKEN: "<from LLM Wiki Settings → API + MCP>"
+      LLM_WIKI_API_TOKEN: "${LLM_WIKI_API_TOKEN}"
       # LLM_WIKI_API_BASE_URL: "http://127.0.0.1:19828/api/v1"
 
   second_brain_fs:
