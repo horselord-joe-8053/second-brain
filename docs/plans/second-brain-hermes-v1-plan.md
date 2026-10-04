@@ -29,7 +29,7 @@ Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ---
 
-### P2 — Nashsu LLM Wiki (plan §6)
+### P2 — LLM Wiki (plan §6)
 
 - **HG-2** — desktop-install module; stop until human confirms ingest smoke
 - **Exit:** Human recorded in Decisions; API token location documented (not in repo)
@@ -69,8 +69,8 @@ Source: **`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 **Execution checklist**
 
 - [X] Repo documents `docs/harness/hermes-mcp.example.yaml` (template paths)
-- [ ] `~/.hermes/config.yaml` includes Nashsu MCP + `LLM_WIKI_API_TOKEN` env
-- [ ] Hermes bundled `llm-wiki` compiler skill disabled; Nashsu skill installed
+- [ ] `~/.hermes/config.yaml` includes LLM Wiki MCP + `LLM_WIKI_API_TOKEN` env
+- [ ] Hermes bundled `llm-wiki` compiler skill disabled; llm-wiki agent skill installed
 - [ ] MCP smoke (search or read) recorded in **Decisions**
 - [ ] Phase **Exit** verified
 

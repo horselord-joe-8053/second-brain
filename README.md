@@ -1,6 +1,6 @@
 # Second Brain
 
-Local-first personal knowledge system: **`brain/`** corpus, [Nashsu LLM Wiki](https://github.com/nashsu/llm_wiki) as compiler, [Hermes](https://hermes-agent.nousresearch.com/) as harness, Obsidian on compiled wiki.
+Local-first personal knowledge system: **`brain/`** corpus, [LLM Wiki fork](https://github.com/horselord-joe-8053/llm-wiki) (`../nu_llm_wiki/`) as compiler, [Hermes](https://hermes-agent.nousresearch.com/) as harness, Obsidian on compiled wiki.
 
 ## Docs
 

@@ -12,12 +12,12 @@ feature_id: second-brain-hermes-v1
 spec_file: second-brain-hermes-v1.md
 plan_file: second-brain-hermes-v1-plan.md
 env_append: none
-done_display_name: Second Brain (Hermes + Nashsu)
+done_display_name: Second Brain (Hermes + LLM Wiki)
 ```
 
 ## Mission
 
-Local-first Second Brain in this repo: **`brain/`** corpus, Nashsu LLM Wiki as compiler, Hermes as harness, Obsidian on compiled wiki. Topology A on Mac. See plan + architecture doc in meta.
+Local-first Second Brain in this repo: **`brain/`** corpus, LLM Wiki (`horselord-joe-8053/llm-wiki` sibling) as compiler, Hermes as harness, Obsidian on compiled wiki. Topology A on Mac. See plan + architecture doc in meta.
 
 ## Ticket slices (delivery order)
 
@@ -26,7 +26,7 @@ Local-first Second Brain in this repo: **`brain/`** corpus, Nashsu LLM Wiki as c
 | P1 | Repo corpus layout (Phase 0) | automated |
 | P2 | LLM Wiki install + project + ingest smoke | HG + verify |
 | P3 | Hermes CLI + doctor | HG |
-| P4 | MCP + Nashsu skill; disable Hermes llm-wiki skill | HG + repo docs |
+| P4 | MCP + llm-wiki agent skill; disable Hermes llm-wiki skill | HG + repo docs |
 | P5 | Obsidian vault | HG |
 | P6 | Ingestion harness + manifest schema | automated |
 | P7 | Backup/ops scripts | automated |
@@ -34,7 +34,7 @@ Local-first Second Brain in this repo: **`brain/`** corpus, Nashsu LLM Wiki as c
 
 ## Glossary / AGENTS
 
-- **Compiler:** Nashsu LLM Wiki only — not Hermes bundled llm-wiki skill.
+- **Compiler:** LLM Wiki desktop app only — not Hermes bundled llm-wiki skill.
 - **Corpus root:** `brain/` (LLM Wiki project folder).
-- **Harness writes:** `brain/raw/sources/`; **never** direct edits to compiler-owned wiki except via Nashsu.
+- **Harness writes:** `brain/raw/sources/`; **never** direct edits to compiler-owned wiki except via LLM Wiki ingest.
 - **TDD:** `docs/PROJECT-TDD.md`; repo ACs in **`second-brain-hermes-v1.md`**.

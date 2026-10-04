@@ -1,6 +1,6 @@
 # Second Brain Agent Guide
 
-Hermes + Nashsu LLM Wiki corpus
+Hermes + LLM Wiki corpus
 
 Domain vocabulary: `GLOSSARY.md`.
 

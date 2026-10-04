@@ -1,7 +1,7 @@
 <h1 id="runbook-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Second Brain — setup runbook (live log)</h1>
 
 **Purpose:** Commands and manual steps to stand up Topology A (Mac). GUI setup for LLM Wiki is required today; automation is a later fork/driver.  
-**Repos:** `second_brain/` (corpus + harness) · sibling `../nu_llm_wiki/` (Nashsu LLM Wiki from source).
+**Repos:** `second_brain/` (corpus + harness) · sibling `../nu_llm_wiki/` ([private LLM Wiki fork](https://github.com/horselord-joe-8053/llm-wiki)).
 
 <h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -36,7 +36,7 @@
 ```text
 /Users/jjw8053/projects/
 ├── second_brain/          # this repo — brain/ corpus, docs, bootstrap
-└── nu_llm_wiki/           # git clone of nashsu/llm_wiki
+└── nu_llm_wiki/           # git@github.com:horselord-joe-8053/llm-wiki.git
 ```
 
 **LLM Wiki project folder (open in app):**  
@@ -51,7 +51,7 @@ From repo root:
 ```bash
 cd /Users/jjw8053/projects/second_brain
 eval "$(bash bootstrap/core/scripts/parse-bootstrap-meta.sh bootstrap/specific/bootstrap.md)"
-bash bootstrap/core/scripts/seed-harness.sh . "Second Brain" "Hermes + Nashsu" "$BOOTSTRAP_PROFILE"
+bash bootstrap/core/scripts/seed-harness.sh . "Second Brain" "Hermes + LLM Wiki" "$BOOTSTRAP_PROFILE"
 bash bootstrap/core/scripts/seed-scaffold-scripts.sh . general
 bash bootstrap/core/scripts/apply-module.sh . second-brain
 bash bootstrap/core/scripts/seed-product.sh .
@@ -78,13 +78,15 @@ node --version   # v22.14.0
 
 ```bash
 cd /Users/jjw8053/projects
-git clone https://github.com/nashsu/llm_wiki.git nu_llm_wiki
+git clone git@github.com:horselord-joe-8053/llm-wiki.git nu_llm_wiki
 cd nu_llm_wiki
 npm install
 npm --prefix mcp-server ci && npm run mcp:build
 source "$HOME/.cargo/env"
 npm run tauri dev
 ```
+
+**Remotes on this machine:** `origin` → private fork (push here). Optional **`upstream`** → `https://github.com/nashsu/llm_wiki.git` for pulling upstream releases; merge then `git push origin main`.
 
 **Dev server:** API **`http://127.0.0.1:19828/api/v1`**, clip **`127.0.0.1:19827`**. Leave the terminal open while using the app.
 
@@ -95,7 +97,7 @@ npm run tauri dev
 
 <h2 id="manual-app" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Manual in-app steps (HG-2)</h2>
 
-<span style="background:#fff9c4;padding:2px 4px">GUI required</span> — no supported repo config file for Nashsu provider keys yet. Order matters:
+<span style="background:#fff9c4;padding:2px 4px">GUI required</span> — no supported repo config file for LLM provider keys yet. Order matters:
 
 1. **Start app** — `npm run tauri dev` (§4).
 2. **Open or create project first** — **File → Open project** (or equivalent) → select  
@@ -113,12 +115,12 @@ npm run tauri dev
 
 | What | Where | Consumed by |
 |------|--------|-------------|
-| OpenAI / Gemini **provider** keys and models | LLM Wiki **Settings → LLM** (+ optional embedding/search sections) | Nashsu desktop ingest, chat, Agent |
+| OpenAI / Gemini **provider** keys and models | LLM Wiki **Settings → LLM** (+ optional embedding/search sections) | Desktop ingest, chat, Agent |
 | Same keys for **Hermes** scripts (optional) | `second_brain/.env` (gitignored) — template **`.env.example`** | Future Hermes / repo scripts only |
 | **Local API bearer** (not an LLM key) | LLM Wiki **Settings → API + MCP**; copy to **`LLM_WIKI_API_TOKEN`** in `.env` | `curl`, MCP `node …`, Hermes `config.yaml` |
 | Hermes MCP layout | **`docs/harness/hermes-mcp.example.yaml`** | Paste into `~/.hermes/config.yaml` (P4) |
 
-Nashsu does **not** read `second_brain/.env` for ingest. Keep provider keys in the app UI; use `.env` for automation convenience on **this machine** only.
+The LLM Wiki app does **not** read `second_brain/.env` for ingest. Keep provider keys in the app UI; use `.env` for automation convenience on **this machine** only.
 
 ---
 
@@ -145,7 +147,7 @@ Vector search is **optional**. With embeddings **disabled**, chat and `POST …/
 3. **Test connection** (and optional functional test) in the same panel.
 4. **Reindex / embed all pages** for project **brain** so LanceDB under `brain/.llm-wiki/` is populated (required before vector hits appear in search).
 
-Nashsu detects Google endpoints by hostname or `:embedContent` and builds the REST path from **Endpoint + Model**; OpenAI-compatible servers use JSON `{ "model", "input" }` at the URL you provide.
+The app detects Google endpoints by hostname or `:embedContent` and builds the REST path from **Endpoint + Model**; OpenAI-compatible servers use JSON `{ "model", "input" }` at the URL you provide.
 
 ---
 
@@ -217,7 +219,7 @@ Replace `{id}` with project UUID, project path, or `current`.
 
 <h2 id="query-path" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Query path (Hermes / MCP)</h2>
 
-**Read path** (HERMES-3 / `query-brain`): compiled knowledge lives in **`brain/wiki/`**; agents should query via Nashsu, not by scanning the whole tree in prompt context.
+**Read path** (HERMES-3 / `query-brain`): compiled knowledge lives in **`brain/wiki/`**; agents should query via LLM Wiki API/MCP, not by scanning the whole tree in prompt context.
 
 - **In app:** Chat / Agent tab on project **brain** (full UI retrieval loop).
 - **For Hermes:** MCP tools `llm_wiki_set_project`, `llm_wiki_search`, `llm_wiki_read_file`, optional `llm_wiki_chat` — see [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) for patterns, caveats, and verified tool names.
@@ -233,7 +235,7 @@ hermes doctor
 hermes setup
 ```
 
-Wire MCP from **`docs/harness/hermes-mcp.example.yaml`** into `~/.hermes/config.yaml`. Disable Hermes bundled `llm-wiki` compiler skill; use Nashsu skill:  
+Wire MCP from **`docs/harness/hermes-mcp.example.yaml`** into `~/.hermes/config.yaml`. Disable Hermes bundled `llm-wiki` compiler skill; install the official **llm-wiki** agent skill (API/MCP usage, not a second compiler):  
 `npx skills add https://github.com/nashsu/llm_wiki_skill.git --skill llm-wiki`
 
 ---
@@ -256,4 +258,4 @@ curl -sS -H "Authorization: Bearer ${LLM_WIKI_API_TOKEN}" \
 
 <h2 id="future-script" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Future: idempotent driver</h2>
 
-Automated sections above → shell/Python. GUI-only Nashsu setup → human gate until `nu_llm_wiki` supports automation config merge.
+Automated sections above → shell/Python. GUI-only LLM Wiki setup → human gate until `nu_llm_wiki` supports automation config merge.
