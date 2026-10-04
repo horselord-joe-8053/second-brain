@@ -242,11 +242,13 @@ Replace `{id}` with project UUID, project path, or `current`.
 **P3 exit (HG-3):** `hermes doctor` reports clean; add one line to **`docs/specs/second-brain-hermes-v1.md` → Decisions**; tick P3 in [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md).
 
 ```bash
-curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
-# Reload shell (new PATH), then:
-./scripts/brain/hermes-preflight.sh   # or: hermes doctor
-hermes setup          # or: hermes setup --portal
+./scripts/brain/setup-local.sh      # idempotent: Hermes install (if needed) + doctor + corpus checks
+# or Hermes only:
+./scripts/brain/setup-hermes.sh
+hermes setup                        # or: hermes setup --portal
 ```
+
+From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs the same driver before layout/pytest checks.
 
 Optional Docker path (prefer **CLI on host** for MCP to `127.0.0.1:19828`): see [`PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) §7.2.
 
@@ -274,6 +276,8 @@ curl -sS -H "Authorization: Bearer ${LLM_WIKI_API_TOKEN}" \
 
 ---
 
-<h2 id="future-script" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Future: idempotent driver</h2>
+<h2 id="future-script" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Idempotent driver</h2>
 
-Automated sections above → shell/Python. GUI-only LLM Wiki setup → human gate until `nu_llm_wiki` supports automation config merge.
+**In repo:** [`scripts/brain/setup-local.sh`](../scripts/brain/setup-local.sh) (Hermes via [`setup-hermes.sh`](../scripts/brain/setup-hermes.sh), corpus layout checks, next-step hints). Extend this script as more steps become automatable.
+
+**Still human-gated:** LLM Wiki GUI (open project, ingest, embeddings) until `nu_llm_wiki` supports automation config merge.

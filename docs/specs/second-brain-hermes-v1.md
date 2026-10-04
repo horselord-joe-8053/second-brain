@@ -24,7 +24,7 @@ Implement in-repo Second Brain foundation per **`docs_manual_gen/PLAN_SECOND_BRA
 ## Human gates
 
 1. **HG-2:** (P2) Human installs LLM Wiki, opens project at repo `brain/`, enables API/MCP, first ingest — agent provides OS-specific steps via **desktop-install**.
-2. **HG-3:** (P3) Human installs Hermes CLI; `hermes doctor` clean — agent gives install commands only.
+2. **HG-3:** (P3) Run `./scripts/brain/setup-local.sh` (or `setup-hermes.sh`); `hermes doctor` exit 0 — then `hermes setup` for API keys as needed.
 3. **HG-4:** (P4) Human configures `~/.hermes/config.yaml` MCP + disables bundled llm-wiki skill; agent supplies template paths from repo docs.
 4. **HG-5:** (P5) Human opens Obsidian vault on wiki root.
 5. **HG-8:** (P8) Human runs architecture acceptance tests with apps running; agent supplies checklist.
@@ -53,3 +53,4 @@ Implement per **`docs/PROJECT-TDD.md`**.
 - **HG-2 smoke (2026-10-03):** `brain/raw/sources/uploads/smoke-test.md` added; `brain/wiki/index.md` seeded. Native app **Open project → `second_brain/brain`** with Source Watch; uploads and smoke produced compiled pages under `brain/wiki/` (not only `index.md`).
 - **HG-2 fork (2026-10-04):** Sibling compiler repo pushes to `git@github.com:horselord-joe-8053/llm-wiki.git`; runbook §4 updated. Optional `upstream` remote for upstream merges.
 - **HG-2 closed (2026-10-04):** Human confirmed ingest smoke complete. P2 exit: API/MCP enabled; operator bearer in gitignored `.env` as `LLM_WIKI_API_TOKEN` (not in repo). Query/read path documented in `docs_manual_gen/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md` §9–§10. **Resume P3** (Hermes CLI / `hermes doctor`).
+- **HG-3 (2026-10-04):** `./scripts/brain/setup-hermes.sh` — official installer (repair path on partial install); binary `~/.hermes/hermes-agent/hermes`. `hermes doctor` exit **0** with advisories (npm audit notes, optional `hermes setup` / `hermes doctor --fix`); core runtime OK. Next: `hermes setup`, then P4 MCP.

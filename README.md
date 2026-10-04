@@ -21,6 +21,13 @@ Run bootstrap/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERM
 
 Kit entry: `bootstrap/specific/bootstrap.md`.
 
+## Local setup (idempotent)
+
+```bash
+./scripts/brain/setup-local.sh    # Hermes install/repair + doctor + corpus checks
+RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh   # same driver, then verify-local
+```
+
 ## Verify
 
 ```bash

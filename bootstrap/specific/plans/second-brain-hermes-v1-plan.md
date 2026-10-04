@@ -5,7 +5,7 @@
 
 Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
-**Progress:** First open **`[ ]`** is the resume point (currently **P3 — Hermes harness / HG-3**; sync with repo `docs/plans/`).
+**Progress:** First open **`[ ]`** is the resume point (currently **P4 — HG-4**; sync with repo `docs/plans/`).
 
 ## Spec link
 
@@ -49,17 +49,17 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ---
 
-### P3 — Hermes harness (plan §7)
+### [X] P3 — Hermes harness (plan §7)
 
 - **HG-3**
 - **Exit:** `hermes doctor` reported clean (human confirmation)
 
 **Execution checklist**
 
-- [X] Runbook §10 + `scripts/brain/hermes-preflight.sh` document P3 install and `hermes doctor` gate
-- [ ] Hermes CLI installed per runbook §10 (`./scripts/brain/hermes-preflight.sh` exits 0)
-- [ ] `hermes doctor` clean (human confirmation)
-- [ ] Spec **Decisions** records HG-3
+- [X] Runbook §10 + `scripts/brain/setup-hermes.sh` / `setup-local.sh` (idempotent install + doctor)
+- [X] Hermes CLI installed (`./scripts/brain/setup-hermes.sh` exits 0)
+- [X] `hermes doctor` exit 0 (2026-10-04; advisories — optional `hermes setup` / `doctor --fix`)
+- [X] Spec **Decisions** records HG-3
 
 ---
 
