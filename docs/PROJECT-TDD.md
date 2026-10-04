@@ -33,4 +33,4 @@ Playwright and Vitest are **optional** — only when the spec declares a browser
 
 ## Implement order
 
-Follow delivery phases `P1`, `P2`, … in the linked plan. Use the **`implement-feature`** skill checklist per AC.
+Follow delivery phases `P1`, `P2`, … in the linked **`docs/plans/*-plan.md`**. Use the **`implement-feature`** skill per AC and maintain **Execution checklist** **`[ ]`/`[X]`** (see **`delivery-resumimpl`**). Resume from the first open **`[ ]`**.

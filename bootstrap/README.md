@@ -38,7 +38,10 @@ One workflow (ANALYZE → **`specific/`** → EXECUTE → **`docs/specs`**), **D
 
 ```text
 Run bootstrap/ANALYZE_SPECIFIC.md implementing docs/PLAN_SECOND_BRAIN_HERMES_V1.md
-Run bootstrap/EXECUTE_GEN.md
+Run bootstrap/EXECUTE_GEN.md implementing docs/PLAN_SECOND_BRAIN_HERMES_V1.md
+delivery-resumimpl docs/plans/<feature>-plan.md
 ```
+
+Progress: **`docs/plans/<feature>-plan.md`** checklists (**`[ ]`/`[X]`**). See **`docs/plans/README.md`** and **`.cursor/rules/delivery-resumimpl.mdc`**.
 
 Second Brain example meta: **`profile: general`**, **`phase2_modules: desktop-install`**.

@@ -6,6 +6,7 @@
 - **`Run bootstrap/EXECUTE_GEN.md implementing docs/<plan>.md`**
 - **`Run bootstrap/EXECUTE_GEN.md for the following project: …`**
 - **`Run bootstrap/EXECUTE_GEN.md profile: webapp for …`**
+- **`delivery-resumimpl docs/plans/<feature>-plan.md`** (resume from first **`[ ]`**)
 
 **`KIT`** = `bootstrap/`.
 
@@ -18,6 +19,10 @@ Carry out §0–§4 **autonomously**. **Only** stop to prompt the human when:
 3. **`AskQuestion`** is required by ANALYZE and the answer blocks ACs.
 
 When stopping: give **numbered steps**, **what to confirm** (e.g. “reply HG-2 done”), and **what you will do next**. Record confirmations in spec **`## Decisions`**. Do **not** ask for approval of test seams, TDD order, or kit mechanics.
+
+<h3 id="delivery-progress" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">Delivery progress (checklists)</h3>
+
+Human-visible progress lives in **`docs/plans/<feature>-plan.md`** (**`[ ]` / `[X]`** under **Execution checklist**), not in the long architecture **`PLAN_*.md`**. Before Part B work (or on any resume), open the spec’s **`<!-- plan: docs/plans/… -->`** file and continue from the **first `[ ]`**. After each phase exit, update checkboxes and **`<!-- delivery-status: new|wip|completed -->`**. Rule: **`.cursor/rules/delivery-resumimpl.mdc`** · template: **`docs/templates/implementation-plan.md`**.
 
 ## Document outline
 
@@ -60,4 +65,4 @@ No **`./scripts/verify.sh`** or core harness missing → §2. Else if verify gre
 
 <h2 id="p2" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Phase 2</h2>
 
-**`seed-product.sh`** then **`core/bootstrap-core.md` Part B** (or **`bootstrap-webapp.md` Part B**). Implement delivery **P1, P2, …** in order. **`apply-module`** for phase tags. Pause only on **HG-*** per mandate above.
+**`seed-product.sh`** then **`core/bootstrap-core.md` Part B** (or **`bootstrap-webapp.md` Part B**). Implement delivery **P1, P2, …** in order from the linked **`docs/plans/*-plan.md`** checklists. **`apply-module`** for phase tags. Pause only on **HG-*** per mandate above. Maintain plan **`[X]`** ticks via **`implement-feature`** + **`delivery-resumimpl`**.

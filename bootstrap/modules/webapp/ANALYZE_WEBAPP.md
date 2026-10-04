@@ -130,6 +130,8 @@ Split work into delivery phases when the product has a real sequence (API before
 
 Each phase lists its ACs, the matching ticket names, what it depends on, an exit check (`./scripts/verify.sh` for those ACs, logging present, smoke command or waiver). Phases are contiguous: **P1**, **P2**, … with no gaps. Every AC in the spec appears in exactly one phase, and every phase id in the spec marker appears as a heading in the plan.
 
+Each phase includes an **Execution checklist** with **`[ ]`** bullets (see **`implementation-plan.md`**) so **`delivery-resumimpl`** can resume from the first open item.
+
 Ensure **`mkdir -p KIT/specific/plans`** before writing.
 
 ---

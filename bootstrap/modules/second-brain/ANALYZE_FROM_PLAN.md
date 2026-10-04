@@ -10,6 +10,7 @@
 
 - **`profile: general`**, **`phase2_modules: desktop-install, second-brain`**
 - Map plan **Phase 0…7** → delivery **P1…P8** (one plan file; HG-heavy phases use **`<!-- ac-tests: optional -->`** or mixed AC + HG)
+- Seed **`plans/<plan_file>`** with **`<!-- delivery-status: new -->`**, per-phase **Execution checklist** **`[ ]`** bullets per **`docs/templates/implementation-plan.md`**
 - **Automated ACs** only for repo-verifiable work (tree, gitignore, harness skills, backup scripts, pytest)
 - **HG-*** for LLM Wiki `.dmg`, Hermes install, API token in app, Obsidian vault, Telegram, acceptance tests that need running apps
 - Do **not** ask human to confirm test seams; **do** stop on HG with clear steps per **`human-gate.md`**

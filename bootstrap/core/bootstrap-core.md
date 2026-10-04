@@ -69,7 +69,7 @@ For each **`phase1_modules`** token: `bash "$CORE/scripts/apply-module.sh" <repo
 
 <h2 id="b3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">B3–B5. Tickets, implement, done</h2>
 
-**general:** delivery phases + **`implement-feature`** (core) + **`PROJECT-TDD.md`**.  
+**general:** delivery phases + **`implement-feature`** (core) + **`PROJECT-TDD.md`**. Progress ledger: **`docs/plans/<feature>-plan.md`** (**`[ ]`/`[X]`** checklists; **`delivery-resumimpl`** / **`EXECUTE_GEN.md`** delivery-progress).  
 **webapp:** §B3–B6 in **`bootstrap-webapp.md`**.
 
 **Second Brain / HG-heavy:** pause per **`EXECUTE_GEN.md` agent mandate**; never simulate external installs.
