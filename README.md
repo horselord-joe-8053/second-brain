@@ -7,6 +7,7 @@ Local-first personal knowledge system: **`brain/`** corpus, [Nashsu LLM Wiki](ht
 - [Architecture](docs/second-brain-llm-wiki-architecture.md)
 - [Implementation plan (Hermes v1)](docs/PLAN_SECOND_BRAIN_HERMES_V1.md)
 - [Setup runbook (commands + manual steps)](docs/SECOND_BRAIN_RUNBOOK.md)
+- [Query layer + Hermes MCP (follow-on chat)](docs/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md)
 - Product specs: `docs/specs/` (seeded from `bootstrap/specific/`)
 
 ## Bootstrap / delivery

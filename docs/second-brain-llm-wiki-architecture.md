@@ -21,9 +21,10 @@
 12. [LLM configuration in Nashsu](#12-llm-configuration-in-nashsu) — models and API keys.
 13. [Performance trade-offs](#13-performance-trade-offs) — cost, latency, duplication.
 14. [Second-Brain contract](#14-second-brain-contract) — portable boundary across harnesses.
-15. [Open risks and next investigations](#15-open-risks-and-next-investigations) — scaling and headless deploy.
-16. [Reference links](#16-reference-links) — primary repos and skills.
-17. [Implementation plan](#17-implementation-plan) — phased Hermes + Nashsu rollout in this repo.
+15. [Knowledge access and query (read path)](#15-knowledge-access-and-query-read-path) — Nashsu MCP/API, not a second index.
+16. [Open risks and next investigations](#16-open-risks-and-next-investigations) — scaling and headless deploy.
+17. [Reference links](#17-reference-links) — primary repos and skills.
+18. [Implementation plan](#18-implementation-plan) — phased Hermes + Nashsu rollout in this repo.
 
 ---
 
@@ -588,17 +589,30 @@ The contract is the **stable boundary** between replaceable harnesses and the du
 
 ---
 
-<h2 id="15-open-risks-and-next-investigations" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">15. Open risks and next investigations</h2>
+<h2 id="15-knowledge-access-and-query-read-path" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">15. Knowledge access and query (read path)</h2>
+
+The **write path** is raw sources → Nashsu compile → durable Markdown under the project wiki tree (e.g. `brain/wiki/`). The **read path** is separate: agents and humans **query compiled knowledge** through Nashsu’s **Knowledge Access** surface—hybrid search, graph navigation, and Agent chat—exposed on localhost via **HTTP API** and **MCP**.
+
+**Design rule for Second Brain V1:** Hermes (and other harnesses) implement **`query-brain`** by calling Nashsu (`llm_wiki_set_project`, `llm_wiki_search`, `llm_wiki_read_file`, optional `llm_wiki_chat`). Do **not** duplicate BM25/LanceDB indexing inside this repo; the desktop app owns retrieval indexes under the project (e.g. `brain/.llm-wiki/`).
+
+**Operational coupling (V1):** Query and MCP require the **native LLM Wiki app** running with project **`brain`** open (or explicitly selected via MCP). Embeddings are **optional** (lexical search still works); setup is documented in [`SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md).
+
+**Deep dive (follow-on chat, Oct 2026):** patterns, tool verification, and Hermes wiring — [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) (source share: https://chatgpt.com/share/6ac1d050-44dc-83e8-9d93-88785c5cd9f1).
+
+---
+
+<h2 id="16-open-risks-and-next-investigations" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">16. Open risks and next investigations</h2>
 
 1. **Headless Nashsu on Linux/VPS** — Tauri desktop vs server deployment for watch/ingest/MCP/API.
 2. **Scale bottleneck** — how Nashsu selects existing wiki pages to retrieve/rewrite during ingest at 1k / 10k / 100k pages.
 3. **Durable raw archive policy** — Drive-only vs later S3/R2/MinIO for immutable versioning.
 4. **RAGFlow bake-off** — incremental maintenance vs generated dataset views.
 5. **YouTube reference** — user-linked Karpathy-style video was **not** retrieved in chat; add transcript/title if that content should inform design.
+6. **Query path vs headless deploy** — until Nashsu runs headless on a VPS, Hermes **`query-brain`** is co-located with the desktop app (localhost MCP); see [§15](#15-knowledge-access-and-query-read-path).
 
 ---
 
-<h2 id="16-reference-links" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">16. Reference links</h2>
+<h2 id="17-reference-links" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">17. Reference links</h2>
 
 | Resource | URL |
 |----------|-----|
@@ -610,9 +624,11 @@ The contract is the **stable boundary** between replaceable harnesses and the du
 | RAGFlow | https://github.com/infiniflow/ragflow |
 | Repo extraction HOWTO | `utils/chatgpt/HOWTO_EXTRACT_CHATGPT.md` |
 | Implementation plan (this repo) | [`docs/PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) |
+| Query / read path (follow-on) | [`docs/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) |
+| Setup runbook | [`docs/SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) |
 
 ---
 
-<h2 id="17-implementation-plan" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">17. Implementation plan</h2>
+<h2 id="18-implementation-plan" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">18. Implementation plan</h2>
 
 A phased, CLI-oriented rollout for building the Second Brain **inside this repository** (default Hermes, Nashsu compiler, local-first topology) lives in **[`PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md)**.

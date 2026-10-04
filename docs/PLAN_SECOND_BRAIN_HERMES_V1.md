@@ -1,7 +1,7 @@
 <h1 id="plan-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">PLAN: Second Brain in <code>second_brain</code> (Hermes + Nashsu LLM Wiki)</h1>
 
 **Status:** Draft implementation plan (3 October 2026)  
-**Architecture source:** [`second-brain-llm-wiki-architecture.md`](./second-brain-llm-wiki-architecture.md) · [`rank_llm_wiki_projects_…txt`](../utils/chatgpt/transcripts/rank_llm_wiki_projects_6ac0a93d-aee4-83e8-bb20-02de4c2dbbd2.txt)  
+**Architecture source:** [`second-brain-llm-wiki-architecture.md`](./second-brain-llm-wiki-architecture.md) · [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) (Query / read path) · [`rank_llm_wiki_projects_…txt`](../utils/chatgpt/transcripts/rank_llm_wiki_projects_6ac0a93d-aee4-83e8-bb20-02de4c2dbbd2.txt)  
 **Default harness:** [Hermes Agent](https://hermes-agent.nousresearch.com/) · **Knowledge core:** [nashsu/llm_wiki](https://github.com/nashsu/llm_wiki)
 
 <h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
@@ -408,6 +408,8 @@ Nashsu generates Obsidian-compatible layout; LLM Wiki may create `.obsidian/` un
 | **audit-brain** | Hermes (HERMES-3) | Prompted audit using MCP + LLM Wiki Lint/Review in app |
 | **research-gap** | Hermes (HERMES-4) | Deep research → save to `raw/sources/web/` → Nashsu watch |
 
+**Query / read path (HERMES-3):** Treat Nashsu’s desktop **API + MCP** as the **Knowledge Access Layer** — hybrid search, graph, and/or `llm_wiki_chat` over **`brain/wiki/`**, not a second search index inside this repo. Hermes plans and synthesizes; it does not reimplement BM25/LanceDB. Patterns, tool names, and caveats: [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md). Operational setup: [`SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) (embeddings optional, MCP preflight).
+
 **Source envelope (minimal manifest — implement in Phase 5):**
 
 ```yaml
@@ -541,6 +543,8 @@ cd utils/chatgpt/playwright && node fetch_share.mjs "https://chatgpt.com/share/.
 | Topic | URL |
 |-------|-----|
 | Architecture (this repo) | [`docs/second-brain-llm-wiki-architecture.md`](./second-brain-llm-wiki-architecture.md) |
+| Query layer + Hermes MCP (follow-on) | [`docs/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) |
+| Setup runbook | [`docs/SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) |
 | Nashsu LLM Wiki | https://github.com/nashsu/llm_wiki |
 | LLM Wiki MCP server | https://github.com/nashsu/llm_wiki/tree/main/mcp-server |
 | Nashsu agent skill | https://github.com/nashsu/llm_wiki_skill |

@@ -1,5 +1,6 @@
-# Paste into ~/.hermes/config.yaml under mcp_servers (adjust token).
-# MCP built from sibling nu_llm_wiki repo (source dev).
+# Paste into ~/.hermes/config.yaml under mcp_servers.
+# Token: same as LLM Wiki Settings → API + MCP (optional copy in second_brain/.env as LLM_WIKI_API_TOKEN).
+# MCP built from sibling nu_llm_wiki repo (source dev). See docs/SECOND_BRAIN_RUNBOOK.md §7.
 
 mcp_servers:
   llm_wiki:
