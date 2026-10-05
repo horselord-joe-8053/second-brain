@@ -276,7 +276,14 @@ npx skills add https://github.com/nashsu/llm_wiki_skill.git --skill llm-wiki
 
 **Recommended vault root:** `…/second_brain/brain/wiki` (compiled Markdown only). Alternative: project root `brain/` if `.obsidian/` was generated there by LLM Wiki.
 
-Open Obsidian → **Open folder as vault** → select that path. Record the chosen path in spec **Decisions** (HG-5).
+**Automated install (macOS + Homebrew):**
+
+```bash
+./scripts/brain/setup-obsidian.sh
+OPEN_OBSIDIAN_VAULT=1 ./scripts/brain/setup-obsidian.sh   # also launch Obsidian on the vault
+```
+
+Also runs from **`./scripts/brain/setup-local.sh`**. Record the vault path in spec **Decisions** (HG-5) after first open.
 
 <h2 id="backup" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Backup</h2>
 

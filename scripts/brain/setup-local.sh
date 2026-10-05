@@ -25,10 +25,12 @@ test -d "$ROOT/brain/manifests"
 test -f "$ROOT/brain/purpose.md"
 test -f "$ROOT/harness/second-brain/README.md"
 
+bash "$ROOT/scripts/brain/setup-obsidian.sh"
+
 echo ""
 echo "Next (human gates — may remain):"
 echo "  • LLM Wiki: open project at ${ROOT}/brain — runbook docs_manual_gen/SECOND_BRAIN_RUNBOOK.md §5–§8"
-echo "  • Hermes: disable bundled llm-wiki compiler skill; npx skills add …/llm_wiki_skill (read/MCP)"
+echo "  • Obsidian: OPEN_OBSIDIAN_VAULT=1 ./scripts/brain/setup-obsidian.sh (or Open folder → ${ROOT}/brain/wiki)"
 echo "  • Verify: ./scripts/verify-local.sh && ./scripts/verify.sh"
 echo ""
 echo "setup-local.sh: done"

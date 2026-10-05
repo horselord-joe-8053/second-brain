@@ -87,7 +87,8 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 **Execution checklist**
 
-- [ ] Obsidian vault opened on compiled wiki root (`brain/wiki/` or project root per plan)
+- [X] Obsidian installed via `./scripts/brain/setup-obsidian.sh` (brew cask; part of `setup-local.sh`)
+- [ ] Obsidian vault opened on **`brain/wiki/`** (`OPEN_OBSIDIAN_VAULT=1 ./scripts/brain/setup-obsidian.sh` or manual)
 - [ ] Spec **Decisions** records vault path (HG-5)
 
 ---
