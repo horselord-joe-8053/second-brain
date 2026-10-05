@@ -1,7 +1,7 @@
 # Feature: Second Brain Hermes v1
 
 <!-- ac-tests: enforced -->
-<!-- delivery-phase: P1 P6 P7 -->
+<!-- delivery-phase: P1 P8 -->
 <!-- plan: docs/plans/second-brain-hermes-v1-plan.md -->
 
 ## Goal
@@ -58,4 +58,4 @@ Implement per **`docs/PROJECT-TDD.md`**.
 - **P6 (2026-10-05):** Harness skills + `example-ingest.yaml`, `ingest.sh`; pytest AC-SB6.
 - **P7 (2026-10-05):** `scripts/brain/backup.sh`; pytest AC-SB7; `./scripts/verify.sh` green.
 - **HG-5 closed (2026-10-05):** Obsidian vault **`/Users/jjw8053/projects/second_brain/brain/wiki`** (vault name **wiki** in UI).
-- **HG-8 (pending):** [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](../ACCEPTANCE-second-brain-hermes-v1.md); **NB-SB1** table lookup not yet run.
+- **HG-8 closed (2026-10-05):** Post-reboot: LLM Wiki + Obsidian up; `./scripts/brain/acceptance-automated.sh` green (`setup-local.sh` exit 0, `mcp-smoke-read`, `hermes mcp list` + **`hermes mcp test llm_wiki`**, `skills.disabled: llm-wiki`). **NB-SB1:** `nb-sb1-probe.sh` → L3 `wiki/sources/7-uploads--46-james-homemade-conjugation-notes-o-2026-verb-a--e9m6g0.md`. Plan **`delivery-status: completed`**. Hermes chat: runbook §10.2 (`hermes setup` → `~/.hermes/.env` for OpenAI/Gemini); optional MCP prompt §10.1.

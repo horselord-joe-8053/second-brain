@@ -49,10 +49,23 @@ fi
 echo "hermes: $(command -v hermes)"
 hermes --version 2>/dev/null || true
 echo "--- hermes doctor ---"
-if ! hermes doctor; then
-  echo "hermes doctor failed — re-running official installer to repair partial install"
-  run_official_install
-  ensure_hermes_path || true
-  echo "--- hermes doctor (retry) ---"
-  hermes doctor
+doctor_rc=0
+hermes doctor || doctor_rc=$?
+if [[ "$doctor_rc" -ne 0 ]]; then
+  if hermes --version >/dev/null 2>&1; then
+    echo "hermes doctor: exit ${doctor_rc} (often optional: API keys, npm audit) — CLI OK; skipping full reinstall."
+    echo "  Run 'hermes setup' for model keys; 'hermes doctor --fix' for auto-fixes when desired."
+  else
+    echo "hermes doctor failed and CLI broken — re-running official installer to repair partial install"
+    run_official_install
+    ensure_hermes_path || true
+    echo "--- hermes doctor (retry) ---"
+    hermes doctor || true
+  fi
 fi
+
+if ! hermes --version >/dev/null 2>&1; then
+  echo "hermes: CLI not runnable after setup"
+  exit 1
+fi
+echo "setup-hermes.sh: OK ($(command -v hermes))"

@@ -7,6 +7,8 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 if [[ "${RUN_BRAIN_SETUP:-0}" == "1" ]] && [[ -x "$ROOT/scripts/brain/setup-local.sh" ]]; then
   bash "$ROOT/scripts/brain/setup-local.sh"
+elif [[ "${RUN_BRAIN_ACCEPTANCE:-0}" == "1" ]] && [[ -x "$ROOT/scripts/brain/acceptance-automated.sh" ]]; then
+  bash "$ROOT/scripts/brain/acceptance-automated.sh"
 fi
 
 echo "== second-brain: brain/ layout =="

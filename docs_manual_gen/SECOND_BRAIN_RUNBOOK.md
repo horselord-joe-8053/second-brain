@@ -14,8 +14,11 @@
 7. [Embeddings (optional)](#embeddings) — vector search; lexical-only OK.
 8. [Local API and MCP](#api-mcp) — token, curl, endpoints, Hermes snippet.
 9. [Query path (Hermes / MCP)](#query-path) — read path pointer.
-10. [Hermes (P3–P4)](#hermes) — install and wire MCP.
-11. [Verification](#verify) — scripts and API smoke.
+10. [Hermes (P3–P4)](#hermes) — install, wire MCP, UI start, API keys (§10.2).
+11. [Obsidian (HG-5)](#obsidian) — vault on compiled wiki.
+12. [Backup](#backup) — rsync stub.
+13. [Verification](#verify) — scripts and API smoke.
+14. [After reboot + P8 acceptance (HG-8)](#p8-acceptance) — stack order, Hermes integration chat, checklist.
 
 ---
 
@@ -260,15 +263,57 @@ Manual reference shape: **`docs/harness/hermes-mcp.example.yaml`**. **`setup-her
 
 **Smoke:** `./scripts/brain/mcp-smoke-read.sh`
 
-Optional hub install when guard allows:
+**PATH after reboot:** `export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"` before `hermes` / `hermes mcp list`.
 
 Optional Docker path (prefer **CLI on host** for MCP to `127.0.0.1:19828`): see [`PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) §7.2.
 
-**P4 (manual remainder):**
+<h3 id="hermes-integration-smoke" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.1 Hermes integration smoke (PLAN §8.4 — manual, post-P4)</h3>
+
+Requires **LLM Wiki** running with project **brain** current, **MCP** enabled, and **`hermes setup`** (or another configured model provider) so the agent can call tools.
+
+1. Start Hermes: `hermes` (TUI/CLI) or your usual Hermes desktop entrypoint.
+2. Prompt (Pattern A — see `harness/second-brain/skills/query-brain/SKILL.md`):
+   - *“Use LLM Wiki MCP: `llm_wiki_set_project` for this repo’s `brain/` folder, `llm_wiki_search` for **smoke test**, then read the top wiki path and summarize with citations.”*
+3. Confirm tool calls hit **`llm_wiki_*`** (not generic web search only).
+4. Confirm Hermes does **not** rewrite `brain/wiki/` as compiler — ingest stays **raw → LLM Wiki → wiki**.
+
+This step is **not** fully scripted; automated MCP/API checks live in **`acceptance-automated.sh`** (below).
+
+<h3 id="hermes-ui-and-keys" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.2 Where is Hermes UI? How to start? API keys?</h3>
+
+**UI (macOS — both use `~/.hermes/` config):**
+
+| Surface | Start |
+|---------|--------|
+| **Terminal (default)** | `export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"` then **`hermes`** |
+| **Terminal (newer TUI)** | **`hermes --tui`** |
+| **Desktop app** | Install [Hermes Desktop](https://hermes-agent.nousresearch.com/desktop) (DMG → **Applications** → **Hermes.app**), or after CLI install: **`hermes desktop`** |
+
+There is no separate “Second Brain app” — Hermes is the agent shell; LLM Wiki + Obsidian are the compiler and reader.
+
+**OpenAI and Gemini keys — not the repo `.env` for chat:**
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>File</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>~/.hermes/.env</code></td><td style="background:#e8f5e9"><span style="background:#2e7d32;color:white;padding:1px 4px">Hermes chat</span> — set via <code>hermes setup</code> or edit manually: <code>OPENAI_API_KEY</code>; Gemini: <code>GEMINI_API_KEY</code> or <code>GOOGLE_API_KEY</code>. Also <code>LLM_WIKI_API_TOKEN</code> (from <code>sync-llm-wiki-token.sh</code>, not OpenAI).</td></tr>
+<tr><td style="background:#e3f2fd"><code>second_brain/.env</code></td><td style="background:#fff3e0">Repo scripts + curl — <code>LLM_WIKI_API_TOKEN</code> (synced). Optional <code>LLM_API_KEY</code> / <code>GEMINI_*</code> in <code>.env.example</code> for <strong>this repo’s</strong> harness/scripts only; Hermes does <strong>not</strong> read those names unless you copy the same keys into <code>~/.hermes/.env</code>.</td></tr>
+<tr><td style="background:#e3f2fd">LLM Wiki app Settings</td><td style="background:#e8f5e9">Provider keys for <strong>ingest / compile / embeddings</strong> inside Nashsu (separate from Hermes).</td></tr>
+</tbody>
+</table>
+
+**Recommended once after install:**
 
 ```bash
-npx skills add https://github.com/nashsu/llm_wiki_skill.git --skill llm-wiki
+export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"
+hermes setup          # wizard → writes ~/.hermes/.env + config.yaml
+hermes model          # pick OpenAI or Gemini model if needed
+hermes doctor         # advisories OK; need at least one provider key for chat
 ```
+
+Official refs: [Configuration](https://hermes-agent.nousresearch.com/docs/user-guide/configuration) · [Environment variables](https://hermes-agent.nousresearch.com/docs/reference/environment-variables).
 
 ---
 
@@ -310,8 +355,33 @@ curl -sS -H "Authorization: Bearer ${LLM_WIKI_API_TOKEN}" \
 
 ---
 
+<h2 id="p8-acceptance" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">14. After reboot + P8 acceptance (HG-8)</h2>
+
+**Stack order (Mac):**
+
+1. **LLM Wiki** desktop app — open project **`…/second_brain/brain`**, API/MCP on.
+2. **Obsidian** — vault **`…/second_brain/brain/wiki`** (already registered as **wiki**).
+3. **Hermes wiring (no chat required yet):**
+
+```bash
+cd /Users/jjw8053/projects/second_brain
+export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"
+./scripts/brain/setup-local.sh
+# or full P8 automated seams in one pass:
+RUN_BRAIN_ACCEPTANCE=1 ./scripts/brain/setup-local.sh
+# equivalent:
+./scripts/brain/acceptance-automated.sh
+```
+
+4. **Hermes integration chat** — [§10.1](#hermes-integration-smoke) (start `hermes` after `hermes setup` if needed).
+5. **NB-SB1** — automated seam: `./scripts/brain/nb-sb1-probe.sh` (search must hit L3 James conjugation wiki path). Full agent answer: ask in LLM Wiki Agent or Hermes with citations; record in **Decisions** if waiving the probe.
+
+Checklist mirror: [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](../docs/ACCEPTANCE-second-brain-hermes-v1.md). Plan exit: [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md) **P8**.
+
 <h2 id="future-script" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Idempotent driver</h2>
 
-**In repo:** [`scripts/brain/setup-local.sh`](../scripts/brain/setup-local.sh) (Hermes via [`setup-hermes.sh`](../scripts/brain/setup-hermes.sh), corpus layout checks, next-step hints). Extend this script as more steps become automatable.
+**In repo:** [`scripts/brain/setup-local.sh`](../scripts/brain/setup-local.sh) — Hermes ([`setup-hermes.sh`](../scripts/brain/setup-hermes.sh)), MCP when LLM Wiki app-state exists ([`setup-hermes-mcp.sh`](../scripts/brain/setup-hermes-mcp.sh)), Obsidian install hint, P8 optional via **`RUN_BRAIN_ACCEPTANCE=1`**.
 
-**Still human-gated:** LLM Wiki GUI (open project, ingest, embeddings) until `nu_llm_wiki` supports automation config merge.
+**P8 automated:** [`scripts/brain/acceptance-automated.sh`](../scripts/brain/acceptance-automated.sh) — wiki page count, MCP smoke, `hermes mcp list`, `skills.disabled: llm-wiki`, [`nb-sb1-probe.sh`](../scripts/brain/nb-sb1-probe.sh).
+
+**Still human-gated:** LLM Wiki GUI (open project, ingest, embeddings), Hermes interactive MCP chat (§10.1), NB-SB1 cited table lookup.

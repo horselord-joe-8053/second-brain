@@ -1,11 +1,11 @@
 # Plan: second-brain-hermes-v1
 
-<!-- delivery-status: wip -->
+<!-- delivery-status: completed -->
 <!-- plan-for: docs/specs/second-brain-hermes-v1.md -->
 
 Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
-**Progress:** First open **`[ ]`** is the resume point (currently **P5 Obsidian HG-5** + **P8 acceptance**; sync with repo `docs/plans/`).
+**Progress:** **P8 / HG-8 complete** (2026-10-05). Optional: interactive Hermes chat after `hermes setup` (runbook §10.1).
 
 ## Spec link
 
@@ -128,10 +128,11 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 **Execution checklist**
 
-- [ ] Human runs [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](ACCEPTANCE-second-brain-hermes-v1.md) with apps running
-- [ ] Pass or waiver recorded in **Decisions**
-- [ ] Set plan **`<!-- delivery-status: completed -->`**; optional copy to `docs/plans/completed/`
-- [ ] **NB-SB1:** Table/spreadsheet lookup test — answer cites **L2** (`.cache/*.txt`) or **L3** wiki path; no uncited parametric fill (MORE §10)
+- [X] Human runs [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](ACCEPTANCE-second-brain-hermes-v1.md) with apps running (2026-10-05; **`acceptance-automated.sh`**)
+- [X] Pass or waiver recorded in **Decisions** (HG-8)
+- [ ] Optional: Hermes interactive MCP chat (PLAN §8.4 / runbook §10.1) after `hermes setup` — not required for delivery exit
+- [X] Set plan **`<!-- delivery-status: completed -->`**; copy in `docs/plans/completed/`
+- [X] **NB-SB1:** `nb-sb1-probe.sh` — L3 James conjugation source path in search results
 
 ---
 
