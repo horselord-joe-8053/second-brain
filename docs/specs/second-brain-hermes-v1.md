@@ -57,5 +57,5 @@ Implement per **`docs/PROJECT-TDD.md`**.
 - **HG-4 closed (2026-10-05):** Automated P4 via `setup-hermes-mcp.sh` / `setup-local.sh`: token sync, MCP config, `skills.disabled: [llm-wiki]`, `external_dirs` → repo harness skills. Read smoke: `mcp-smoke-read.sh`. Nashsu hub skill install **blocked** by Hermes skills-guard (localhost API patterns) — repo **`nashsu-mcp-read`**, **`query-brain`**, **`ingest-to-brain`** substitute.
 - **P6 (2026-10-05):** Harness skills + `example-ingest.yaml`, `ingest.sh`; pytest AC-SB6.
 - **P7 (2026-10-05):** `scripts/brain/backup.sh`; pytest AC-SB7; `./scripts/verify.sh` green.
-- **HG-5 (pending):** Default vault **`…/second_brain/brain/wiki`** — confirm when Obsidian opened (runbook §11).
+- **HG-5 closed (2026-10-05):** Obsidian vault **`/Users/jjw8053/projects/second_brain/brain/wiki`** (vault name **wiki** in UI).
 - **HG-8 (pending):** [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](../ACCEPTANCE-second-brain-hermes-v1.md); **NB-SB1** table lookup not yet run.

@@ -80,7 +80,7 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ---
 
-### P5 — Obsidian (plan §9)
+### [X] P5 — Obsidian (plan §9)
 
 - **HG-5**
 - **Exit:** vault path recorded in Decisions
@@ -88,8 +88,8 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 **Execution checklist**
 
 - [X] Obsidian installed via `./scripts/brain/setup-obsidian.sh` (brew cask; part of `setup-local.sh`)
-- [ ] Obsidian vault opened on **`brain/wiki/`** (`OPEN_OBSIDIAN_VAULT=1 ./scripts/brain/setup-obsidian.sh` or manual)
-- [ ] Spec **Decisions** records vault path (HG-5)
+- [X] Obsidian vault opened on **`/Users/jjw8053/projects/second_brain/brain/wiki`** (2026-10-05)
+- [X] Spec **Decisions** records vault path (HG-5)
 
 ---
 
