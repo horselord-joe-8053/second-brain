@@ -3,6 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+export ROOT
 APP_STATE="${LLM_WIKI_APP_STATE:-$HOME/Library/Application Support/com.llmwiki.app/app-state.json}"
 ENV_FILE="$ROOT/.env"
 HERMES_ENV="${HERMES_HOME:-$HOME/.hermes}/.env"

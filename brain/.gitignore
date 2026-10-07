@@ -13,6 +13,10 @@ raw/sources/**/*.mov
 # LLM Wiki local state if mirrored into tree
 .llm-wiki/
 
+# Hermes detach pid/log (start-hermes.sh --detach)
+.cache/hermes-chat.pid
+.cache/hermes-chat.log
+
 # Secrets
 .env
 *.pem

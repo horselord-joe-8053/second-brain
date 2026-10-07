@@ -1,0 +1,53 @@
+# Copy to config/brain-stack.yaml (gitignored) — operator source of truth for this machine.
+# secrets: values live ONLY in brain-stack.yaml (not committed). Optional legacy: repo .env fallback.
+version: 1
+
+paths:
+  repo_root: "."
+  brain_root: "brain"
+  wiki_vault: "brain/wiki"
+
+llm_wiki:
+  api_base_url: "http://127.0.0.1:19828/api/v1"
+  # Token: generated in LLM Wiki app; scripts pull → .env (not set here).
+
+# Optional: add `secrets:` here instead of repo .env (same key names). Gitignored brain-stack.yaml only.
+hermes:
+  # Defaults for ./scripts/brain/start-hermes.sh (Desktop or --tui)
+  chat_provider: "gemini"
+  chat_model: "gemini-3.1-flash-lite"
+  ui: "desktop"
+  sync_env_keys:
+    - OPENAI_API_KEY
+    - OPENROUTER_API_KEY
+    - GEMINI_API_KEY
+    - GOOGLE_API_KEY
+    - LLM_WIKI_API_TOKEN
+    # Messaging (optional — keep in gitignored .env or brain-stack.yaml secrets:)
+    - TELEGRAM_BOT_TOKEN
+    - TELEGRAM_ALLOWED_USERS
+    - TELEGRAM_HOME_CHANNEL
+    - TELEGRAM_HOME_CHANNEL_THREAD_ID
+    - WHATSAPP_ENABLED
+    - WHATSAPP_MODE
+    - WHATSAPP_ALLOWED_USERS
+    - WHATSAPP_HOME_CHANNEL
+    - WHATSAPP_HOME_USER_ID
+    - WHATSAPP_HOME_CHANNEL_THREAD_ID
+  sync_env_keys_optional:
+    - OPENROUTER_API_KEY
+    - GOOGLE_API_KEY
+    - TELEGRAM_BOT_TOKEN
+    - TELEGRAM_ALLOWED_USERS
+    - TELEGRAM_HOME_CHANNEL
+    - TELEGRAM_HOME_CHANNEL_THREAD_ID
+    - WHATSAPP_ENABLED
+    - WHATSAPP_MODE
+    - WHATSAPP_ALLOWED_USERS
+    - WHATSAPP_HOME_CHANNEL
+    - WHATSAPP_HOME_USER_ID
+    - WHATSAPP_HOME_CHANNEL_THREAD_ID
+  mcp_server_js: "../nu_llm_wiki/mcp-server/dist/src/index.js"
+
+obsidian:
+  vault_path: "brain/wiki"

@@ -14,11 +14,13 @@
 7. [Embeddings (optional)](#embeddings) — vector search; lexical-only OK.
 8. [Local API and MCP](#api-mcp) — token, curl, endpoints, Hermes snippet.
 9. [Query path (Hermes / MCP)](#query-path) — read path pointer.
-10. [Hermes (P3–P4)](#hermes) — install, wire MCP, UI start, API keys (§10.2).
+10. [Hermes Desktop (P3–P4)](#hermes) — install/start Desktop, MCP, smoke (§10.1–§10.3).
 11. [Obsidian (HG-5)](#obsidian) — vault on compiled wiki.
 12. [Backup](#backup) — rsync stub.
 13. [Verification](#verify) — scripts and API smoke.
-14. [After reboot + P8 acceptance (HG-8)](#p8-acceptance) — stack order, Hermes integration chat, checklist.
+14. [Brain stack config](#brain-stack) — yaml overlay + apply script.
+15. [After reboot + P8 acceptance (HG-8)](#p8-acceptance) — stack order, Hermes integration chat, checklist.
+16. [Hermes messaging (Telegram / WhatsApp)](#messaging) — gateway env, config merge, Second Brain from phone.
 
 ---
 
@@ -121,9 +123,11 @@ npm run tauri dev
 | OpenAI / Gemini **provider** keys and models | LLM Wiki **Settings → LLM** (+ optional embedding/search sections) | Desktop ingest, chat, Agent |
 | Same keys for **Hermes** scripts (optional) | `second_brain/.env` (gitignored) — template **`.env.example`** | Future Hermes / repo scripts only |
 | **Local API bearer** (not an LLM key) | LLM Wiki **Settings → API + MCP**; copy to **`LLM_WIKI_API_TOKEN`** in `.env` | `curl`, MCP `node …`, Hermes `config.yaml` |
-| Hermes MCP layout | **`docs/harness/hermes-mcp.example.yaml`** | Paste into `~/.hermes/config.yaml` (P4) |
+| Hermes MCP layout | **`docs/harness/hermes-mcp.example.yaml`** | Managed block via **`merge-hermes-wiring.py`** (P4) |
+| Telegram / WhatsApp | **`~/.hermes/.env`** (synced from repo `.env` when listed in **`hermes.sync_env_keys`**) | Hermes **gateway** (Desktop sidebar **Gateway ready** or **`hermes gateway`**) |
+| Messaging `platforms:` | **`~/.hermes/config.yaml`** wiring block | **`merge-hermes-wiring.py`** when env vars are set (§16) |
 
-The LLM Wiki app does **not** read `second_brain/.env` for ingest. Keep provider keys in the app UI; use `.env` for automation convenience on **this machine** only.
+The LLM Wiki app does **not** read `second_brain/.env` for ingest. Keep provider keys in the app UI; use `.env` for automation convenience on **this machine** only. **Never commit** bot tokens or API keys.
 
 ---
 
@@ -240,15 +244,21 @@ Replace `{id}` with project UUID, project path, or `current`.
 
 ---
 
-<h2 id="hermes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Hermes (P3–P4)</h2>
+<h2 id="hermes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Hermes (P3–P4) — Desktop UI</h2>
 
-**P3 exit (HG-3):** `hermes doctor` reports clean; add one line to **`docs/specs/second-brain-hermes-v1.md` → Decisions**; tick P3 in [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md).
+**Install + start Desktop (not TUI):**
 
 ```bash
-./scripts/brain/setup-local.sh      # idempotent: Hermes install (if needed) + doctor + corpus checks
-# or Hermes only:
-./scripts/brain/setup-hermes.sh
-hermes setup                        # or: hermes setup --portal
+cd /Users/jjw8053/projects/second_brain
+./scripts/brain/install-and-start-hermes-desktop.sh --provider gemini -m gemini-3.0-flash
+```
+
+Split steps: **`setup-hermes-desktop.sh`** (once) → **`start-hermes.sh`**. Terminal TUI only if needed: **`start-hermes.sh --tui`**.
+
+**P3 exit (HG-3):** `hermes doctor` reports clean (via **`setup-hermes.sh`** inside the scripts above).
+
+```bash
+./scripts/brain/setup-local.sh      # corpus + MCP + stack; does not replace Desktop install
 ```
 
 From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs the same driver before layout/pytest checks.
@@ -256,7 +266,7 @@ From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs the same driver 
 **P4 (HG-4) — automated:** `./scripts/brain/setup-hermes-mcp.sh` (also invoked from `setup-local.sh` when LLM Wiki `app-state.json` exists):
 
 1. **`sync-llm-wiki-token.sh`** — reads `apiConfig.token` from `~/Library/Application Support/com.llmwiki.app/app-state.json` → `second_brain/.env` and `~/.hermes/.env` as `LLM_WIKI_API_TOKEN` (never printed).
-2. **`merge-hermes-mcp-config.py`** — appends managed `mcp_servers` block to `~/.hermes/config.yaml` (token ref `${LLM_WIKI_API_TOKEN}`).
+2. **`merge-hermes-wiring.py`** — managed **`mcp_servers`** (`llm_wiki`, `second_brain_fs`) plus optional **`platforms.telegram` / `platforms.whatsapp`** from env (§16).
 3. API health + optional `hermes mcp test llm_wiki`.
 
 Manual reference shape: **`docs/harness/hermes-mcp.example.yaml`**. **`setup-hermes-skills.sh`** sets `skills.disabled: [llm-wiki]` and `external_dirs` → repo `harness/second-brain/skills`. Hub Nashsu install may be blocked by skills-guard — use repo **`nashsu-mcp-read`** / **`query-brain`** skills.
@@ -267,27 +277,64 @@ Manual reference shape: **`docs/harness/hermes-mcp.example.yaml`**. **`setup-her
 
 Optional Docker path (prefer **CLI on host** for MCP to `127.0.0.1:19828`): see [`PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) §7.2.
 
-<h3 id="hermes-integration-smoke" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.1 Hermes integration smoke (PLAN §8.4 — manual, post-P4)</h3>
+<h3 id="hermes-integration-smoke" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.1 Automated preflight</h3>
 
-Requires **LLM Wiki** running with project **brain** current, **MCP** enabled, and **`hermes setup`** (or another configured model provider) so the agent can call tools.
+```bash
+./scripts/brain/smoke-integrated.sh
+```
 
-1. Start Hermes: `hermes` (TUI/CLI) or your usual Hermes desktop entrypoint.
-2. Prompt (Pattern A — see `harness/second-brain/skills/query-brain/SKILL.md`):
-   - *“Use LLM Wiki MCP: `llm_wiki_set_project` for this repo’s `brain/` folder, `llm_wiki_search` for **smoke test**, then read the top wiki path and summarize with citations.”*
-3. Confirm tool calls hit **`llm_wiki_*`** (not generic web search only).
-4. Confirm Hermes does **not** rewrite `brain/wiki/` as compiler — ingest stays **raw → LLM Wiki → wiki**.
+Runs **`acceptance-automated.sh`** (wiki, MCP, `hermes mcp test`, NB-SB1 probe) and prints **Desktop chat prompts** below.
 
-This step is **not** fully scripted; automated MCP/API checks live in **`acceptance-automated.sh`** (below).
+<h3 id="hermes-desktop-smoke" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.3 Integrated smoke in Hermes Desktop (PLAN §8.4)</h3>
+
+With **LLM Wiki** open on **`…/second_brain/brain`**, **Hermes Desktop** running (**Gateway ready** in sidebar), and model selected (e.g. **Gemini 2.5 Flash** — avoid retired **`gemini-2.0-flash`**, API returns 404):
+
+1. **Capabilities** (left sidebar) — confirm MCP servers **`llm_wiki`** and **`second_brain_fs`**. If missing, run **`./scripts/brain/apply-stack-config.sh`** and restart Desktop or reload MCP in-app.
+2. **New session** — working directory should be **`…/second_brain`** (from **`start-hermes.sh`** / **`HERMES_DESKTOP_CWD`**).
+3. **Prompt 1 (wiki):** *Use LLM Wiki MCP only. Set project to `/Users/jjw8053/projects/second_brain/brain`. Search "smoke test", read the top `wiki/` hit, summarize with path citations. No web search.*
+4. **Pass:** Activity shows **`llm_wiki_search`** / **`llm_wiki_read_file`**; answer cites **`wiki/sources/…smoke-test…`**.
+5. **Prompt 2 (NB-SB1):** *Search James conjugation verb table, read wiki source, cite `wiki/` path.*
+6. **Prompt 3 (boundary):** *Where do new files go for ingest? Do not edit `brain/wiki/` as the compiler.*
+7. **Obsidian check (optional):** Same page visible under **`brain/wiki`** in Obsidian.
+
+Skill reference: **`harness/second-brain/skills/query-brain/SKILL.md`**. TUI equivalent: **`start-hermes.sh --tui`** — same prompts.
 
 <h3 id="hermes-ui-and-keys" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.2 Where is Hermes UI? How to start? API keys?</h3>
 
-**UI (macOS — both use `~/.hermes/` config):**
+**Three different “UIs” (do not confuse):**
 
-| Surface | Start |
-|---------|--------|
-| **Terminal (default)** | `export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"` then **`hermes`** |
-| **Terminal (newer TUI)** | **`hermes --tui`** |
-| **Desktop app** | Install [Hermes Desktop](https://hermes-agent.nousresearch.com/desktop) (DMG → **Applications** → **Hermes.app**), or after CLI install: **`hermes desktop`** |
+| Surface | What it is | Start (Second Brain) |
+|---------|------------|----------------------|
+| **Desktop app** | Native **Electron** chat (recommended) | `./scripts/brain/start-hermes.sh` |
+| **Terminal TUI** | `hermes chat --tui` in Terminal | `./scripts/brain/start-hermes.sh --tui` |
+| **Web dashboard** | Local **settings** UI (`hermes dashboard`, default `http://127.0.0.1:9119`) | `hermes dashboard` (config/keys; not the main agent chat) |
+
+**Not** the agent UI: **`setup-hermes-desktop.sh`** may run **`open https://hermes-agent.nousresearch.com/desktop`** — that is only the **DMG download page** in Safari. Flag **`--no-open-download-page`** skips that step (alias **`--no-browser`**); it does **not** disable Hermes’s web dashboard.
+
+| Stop | Command |
+|------|---------|
+| Desktop | `./scripts/brain/stop-hermes.sh` |
+| Web dashboard | Ctrl+C in its terminal, or `hermes dashboard --stop` |
+
+**Install Hermes Desktop (one-time):**
+
+```bash
+./scripts/brain/setup-hermes-desktop.sh
+```
+
+Opens the [DMG download page](https://hermes-agent.nousresearch.com/desktop) unless you pass **`--no-open-download-page`**. Install **Hermes.app** to **Applications**, or build from CLI:
+
+```bash
+./scripts/brain/setup-hermes-desktop.sh --build --no-open-download-page
+```
+
+**Start** (applies stack env, sets provider/model on `~/.hermes/config.yaml`, cwd = repo):
+
+```bash
+./scripts/brain/start-hermes.sh --provider gemini -m gemini-3.0-flash
+```
+
+If **Hermes.app** is in `/Applications`, the script opens it; otherwise it runs **`hermes desktop --cwd …`** (first launch may build Electron — several minutes).
 
 There is no separate “Second Brain app” — Hermes is the agent shell; LLM Wiki + Obsidian are the compiler and reader.
 
@@ -307,10 +354,8 @@ There is no separate “Second Brain app” — Hermes is the agent shell; LLM W
 **Recommended once after install:**
 
 ```bash
-export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"
-hermes setup          # wizard → writes ~/.hermes/.env + config.yaml
-hermes model          # pick OpenAI or Gemini model if needed
-hermes doctor         # advisories OK; need at least one provider key for chat
+./scripts/brain/apply-stack-config.sh   # repo .env → ~/.hermes/.env
+./scripts/brain/start-hermes.sh --provider gemini -m gemini-3.0-flash
 ```
 
 Official refs: [Configuration](https://hermes-agent.nousresearch.com/docs/user-guide/configuration) · [Environment variables](https://hermes-agent.nousresearch.com/docs/reference/environment-variables).
@@ -355,7 +400,23 @@ curl -sS -H "Authorization: Bearer ${LLM_WIKI_API_TOKEN}" \
 
 ---
 
-<h2 id="p8-acceptance" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">14. After reboot + P8 acceptance (HG-8)</h2>
+<h2 id="brain-stack" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">14. Brain stack config (three apps)</h2>
+
+**Single overlay:** gitignored **`config/brain-stack.yaml`** (paths, MCP, `hermes.sync_env_keys`). **Secrets in repo `.env`** (gitignored); optional **`secrets:`** block in yaml if you prefer one file.
+
+```bash
+cp config/brain-stack.example.yaml config/brain-stack.yaml
+# Edit hermes.chat_provider + hermes.chat_model (e.g. gemini / gemini-3.0-flash)
+# Put GEMINI_API_KEY, OPENAI_API_KEY, LLM_WIKI_API_TOKEN in .env
+./scripts/brain/verify-stack-config.sh   # names only, no secrets printed
+./scripts/brain/apply-stack-config.sh  # .env → ~/.hermes/.env + hermes model + MCP
+```
+
+**Do not** rely on `GEMINI_MODEL` or `OPENAI_MODEL` in `.env` for Hermes — set **`hermes.chat_model`** in **`brain-stack.yaml`** instead.
+
+Also runs at the start of **`./scripts/brain/setup-local.sh`**. **Does not** write LLM Wiki provider keys into the desktop app (GUI remains source for ingest).
+
+<h2 id="p8-acceptance" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">15. After reboot + P8 acceptance (HG-8)</h2>
 
 **Stack order (Mac):**
 
@@ -374,13 +435,78 @@ RUN_BRAIN_ACCEPTANCE=1 ./scripts/brain/setup-local.sh
 ```
 
 4. **Hermes integration chat** — [§10.1](#hermes-integration-smoke) (start `hermes` after `hermes setup` if needed).
-5. **NB-SB1** — automated seam: `./scripts/brain/nb-sb1-probe.sh` (search must hit L3 James conjugation wiki path). Full agent answer: ask in LLM Wiki Agent or Hermes with citations; record in **Decisions** if waiving the probe.
+5. **Messaging (optional)** — [§16](#messaging): `./scripts/brain/setup-hermes-messaging.sh`; confirm **Gateway ready** before Telegram/WhatsApp capture.
+6. **NB-SB1** — automated seam: `./scripts/brain/nb-sb1-probe.sh` (search must hit L3 James conjugation wiki path). Full agent answer: ask in LLM Wiki Agent or Hermes with citations; record in **Decisions** if waiving the probe.
 
 Checklist mirror: [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](../docs/ACCEPTANCE-second-brain-hermes-v1.md). Plan exit: [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md) **P8**.
 
+<h2 id="messaging" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">16. Hermes messaging (Telegram / WhatsApp)</h2>
+
+Phone chat uses the **Hermes gateway**, not LLM Wiki directly. For Second Brain, the Mac must still run **LLM Wiki** (MCP **`llm_wiki`**) so Hermes can query **`brain/wiki/`** and write captures to **`brain/raw/sources/<channel>/`** (Telegram is transport — not the **`chat/`** source folder; see **`ingest-to-brain`** skill).
+
+<h3 id="messaging-prereq" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">16.1 Prerequisites</h3>
+
+| Requirement | Notes |
+|-------------|--------|
+| Hermes installed | §10 — Desktop or CLI |
+| P4 wiring | **`llm_wiki`** + **`second_brain_fs`** MCP ( **`./scripts/brain/setup-hermes-mcp.sh`** ) |
+| LLM Wiki up | Project **`…/second_brain/brain`** open; API/MCP on (§5–§8) |
+| Gateway running | Hermes Desktop shows **Gateway ready**, or **`hermes gateway`** / **`hermes gateway install`** (macOS user service) |
+
+Official guides: [Telegram](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/telegram) · [WhatsApp](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/whatsapp) · guided **`hermes gateway setup`**.
+
+<h3 id="messaging-one-time" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">16.2 One-time pairing (human)</h3>
+
+**Telegram (recommended for Second Brain V1.1)**
+
+1. Create bot via **@BotFather** (`/newbot`) **or** Hermes Desktop / dashboard **Messaging → Telegram → Create with QR** (writes token + your user id).
+2. Put secrets in gitignored **`second_brain/.env`** (see **`.env.example`** `[hermes-sync]` messaging block) or only in **`~/.hermes/.env`**.
+3. **`/start`** your bot in Telegram; optional **`/sethome`** in DM so cron/delivery knows the home chat.
+
+**WhatsApp (Baileys bridge — unofficial; use a dedicated number)**
+
+1. Run **`hermes whatsapp`** (or **`hermes gateway setup`** → WhatsApp) and scan QR on the **bot** phone.
+2. Set **`WHATSAPP_ENABLED=true`**, **`WHATSAPP_MODE=bot`**, and **`WHATSAPP_ALLOWED_USERS`** (E.164 **without** `+`, comma-separated). See upstream doc for `*` / pairing behavior.
+
+<h3 id="messaging-automation" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">16.3 Repo automation</h3>
+
+```bash
+cd /Users/jjw8053/projects/second_brain
+# Copy messaging vars into .env from .env.example; fill tokens (never commit).
+./scripts/brain/setup-hermes-messaging.sh
+# Also runs from ./scripts/brain/setup-local.sh
+```
+
+What the script does:
+
+1. **`apply-stack-config.sh`** — copies messaging keys listed in **`config/brain-stack.yaml`** → **`hermes.sync_env_keys`** into **`~/.hermes/.env`** (same as LLM/chat keys).
+2. **`merge-hermes-wiring.py`** — refreshes managed block in **`~/.hermes/config.yaml`**:
+   - **`mcp_servers`**: `llm_wiki`, `second_brain_fs`
+   - **`platforms.telegram` / `platforms.whatsapp`**: `enabled: true` when env is complete; optional **`home_channel`** from **`TELEGRAM_HOME_CHANNEL`** / **`WHATSAPP_HOME_CHANNEL`** (preserves existing **`home_channel`** if env omits them).
+3. Prints **`hermes gateway status`** when CLI is available.
+
+Managed region markers (do not edit by hand between them):
+
+```text
+# --- second-brain wiring (scripts/brain/merge-hermes-wiring.py) ---
+… mcp_servers …
+… platforms …   # optional
+# --- end second-brain wiring ---
+```
+
+<h3 id="messaging-smoke" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">16.4 Smoke from phone</h3>
+
+1. Mac: LLM Wiki on **`brain`**, Hermes **Gateway ready**.
+2. Telegram or WhatsApp: ask a **wiki** question (should use **`llm_wiki_*`** tools) or ask to **save research** → expect file under **`brain/raw/sources/web/`** (or **`uploads/`** for attachments), then Nashsu Source Watch → **`brain/wiki/`**.
+3. If MCP fails from gateway: re-run **`./scripts/brain/apply-stack-config.sh`**, restart Desktop, or **`/reload-mcp`** in session.
+
+**macOS gateway service:** if WhatsApp bridge reports Node missing while Terminal works, re-run **`hermes gateway install`** so launchd snapshots PATH (upstream troubleshooting).
+
+---
+
 <h2 id="future-script" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Idempotent driver</h2>
 
-**In repo:** [`scripts/brain/setup-local.sh`](../scripts/brain/setup-local.sh) — Hermes ([`setup-hermes.sh`](../scripts/brain/setup-hermes.sh)), MCP when LLM Wiki app-state exists ([`setup-hermes-mcp.sh`](../scripts/brain/setup-hermes-mcp.sh)), Obsidian install hint, P8 optional via **`RUN_BRAIN_ACCEPTANCE=1`**.
+**In repo:** [`scripts/brain/setup-local.sh`](../scripts/brain/setup-local.sh) — Hermes ([`setup-hermes.sh`](../scripts/brain/setup-hermes.sh)), messaging ([`setup-hermes-messaging.sh`](../scripts/brain/setup-hermes-messaging.sh)), MCP when LLM Wiki app-state exists ([`setup-hermes-mcp.sh`](../scripts/brain/setup-hermes-mcp.sh)), Obsidian install hint, P8 optional via **`RUN_BRAIN_ACCEPTANCE=1`**.
 
 **P8 automated:** [`scripts/brain/acceptance-automated.sh`](../scripts/brain/acceptance-automated.sh) — wiki page count, MCP smoke, `hermes mcp list`, `skills.disabled: llm-wiki`, [`nb-sb1-probe.sh`](../scripts/brain/nb-sb1-probe.sh).
 
