@@ -10,6 +10,9 @@ raw/sources/**/*.gif
 raw/sources/**/*.mp4
 raw/sources/**/*.mov
 
+# LLM Wiki Agent scratch output (not ingest corpus)
+agent-workspace/
+
 # LLM Wiki local state if mirrored into tree
 .llm-wiki/
 
