@@ -158,5 +158,5 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ## Agent notes
 
-- **Start / resume:** `Run bootstrap_seed/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md` or **`delivery-resumimpl seed_grow/plans/second-brain-hermes-v1-plan.md`**
+- **Start / resume:** `Run .cursor/skills/fabrication/references/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md` or **`delivery-resumimpl seed_grow/plans/second-brain-hermes-v1-plan.md`**
 - Rule: **`.cursor/rules/delivery-resumimpl.mdc`**

@@ -1,6 +1,6 @@
 <h1 id="refactor-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: Fabrication skill, checkpoint log, roadmap</h1>
 
-**Status:** plan only (5 October 2026). Every implementable box is `[ ]`.
+**Status:** **completed** (8 October 2026) on **`feature/bootstrap-seeding-skill`**. Every implementable box below is **`[X]`**. **TDD mode:** smoke-after-delete (no strict red-first); verify: `./scripts/verify.sh` + `bash .cursor/skills/fabrication/scripts/check-seed-kit.sh`.
 
 **After:** [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](./REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md). Do not start until that plan’s implementable boxes are `[X]`.
 
@@ -28,9 +28,9 @@
 
 <h2 id="1-phase-1" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Phase 1 — Gate</h2>
 
-- [ ] Confirm [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](./REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md) has every implementable box `[X]`. If any `[ ]` remains, stop.
-- [ ] Confirm `bootstrap_seed/core/scripts/check-seed-kit.sh` exists and exits 0.
-- [ ] Confirm a run is specified to write `seed_grow/` and not to edit the kit.
+- [X] Confirm [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](./REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md) has every implementable box `[X]`. If any `[ ]` remains, stop.
+- [X] Confirm `.cursor/skills/fabrication/scripts/check-seed-kit.sh` exists and exits 0.
+- [X] Confirm a run is specified to write `seed_grow/` and not to edit the kit (`references/EXECUTE_GEN.md`).
 
 ---
 
@@ -38,20 +38,20 @@
 
 The model does not write this log. Scripts append one JSON object per line.
 
-- [ ] Add `bootstrap_seed/references/checkpoints.json` (path may still be `bootstrap_seed/` until phase 4) listing ids in order: `analyze`, `harness-seeded`, `modules-applied`, `verify-gate`, `product-seeded`. Mark `analyze` as repeatable.
-- [ ] Add a helper `append-checkpoint.sh` that appends to `$REPO_ROOT/seed_grow/progress.jsonl`. Each line is `{"ts","phase","checkpoint","status"}` with `status` of `done` or `failed`. `ts` is UTC ISO-8601.
-- [ ] Call it from `seed-harness.sh` (`harness-seeded`), `apply-module.sh` (`modules-applied`), `seed-product.sh` (`product-seeded`), and the verify step named in `EXECUTE_GEN.md` (`verify-gate`). `ANALYZE_SPECIFIC.md`’s success step calls it for `analyze`.
-- [ ] A repeated `analyze` appends a new line. Readers use the last line for that id.
-- [ ] The helper refuses to write inside the kit directory.
+- [X] Add `references/checkpoints.json` listing ids in order: `analyze`, `harness-seeded`, `modules-applied`, `verify-gate`, `product-seeded`. Mark `analyze` as repeatable.
+- [X] Add `scripts/append-checkpoint.sh` → `$REPO_ROOT/seed_grow/progress.jsonl` (`ts`, `phase`, `checkpoint`, `status`; UTC ISO-8601).
+- [X] Wired from `seed-harness.sh`, `apply-module.sh`, `seed-product.sh`, `EXECUTE_GEN.md` gate (`verify-gate`), `ANALYZE_SPECIFIC.md` success (`analyze`).
+- [X] Repeated `analyze` appends; readers use the last line per id.
+- [X] Helper refuses writes under the skill directory.
 
 ---
 
 <h2 id="3-phase-3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Phase 3 — Roadmap viewer</h2>
 
-- [ ] Add `bootstrap_seed/assets/render-roadmap.sh`. It reads `checkpoints.json` and `seed_grow/progress.jsonl` and writes `seed_grow/roadmap.html`.
-- [ ] The HTML shows the ids in catalog order. A checkpoint whose last status is `done` is marked done. The latest line is the current node, with a CSS animation on that node only.
-- [ ] `append-checkpoint.sh` runs `render-roadmap.sh` after a successful append.
-- [ ] A missing log still renders the catalog with no node done.
+- [X] Add `assets/render-roadmap.sh` → `seed_grow/roadmap.html`.
+- [X] Catalog order; last `done` per id; latest line = current node (CSS pulse).
+- [X] `append-checkpoint.sh` invokes renderer after append.
+- [X] Missing log renders catalog with no nodes done.
 
 ---
 
@@ -59,7 +59,7 @@ The model does not write this log. Scripts append one JSON object per line.
 
 Move the kit from `bootstrap_seed/` into `.cursor/skills/fabrication/`. Do not leave a second copy at `bootstrap_seed/`.
 
-- [ ] Layout:
+- [X] Layout:
 
 ```text
 .cursor/skills/fabrication/
@@ -69,21 +69,20 @@ Move the kit from `bootstrap_seed/` into `.cursor/skills/fabrication/`. Do not l
 └── assets/           # render-roadmap.sh inputs that are not scripts, plus utils and module templates
 ```
 
-- [ ] `SKILL.md` frontmatter: `name: fabrication`. Description states when to run: `run EXECUTE_GEN.md on <description>` and `run EXECUTE_GEN.md implementing <plan>`. Do not set `disable-model-invocation`.
-- [ ] The body only points at `references/EXECUTE_GEN.md`, names `seed_grow/` as the write target, and forbids creating or editing files under `.cursor/skills/fabrication/`.
-- [ ] Keep the body short. Procedures stay in `references/` and `scripts/`.
-- [ ] Retarget this repo’s pointers from `bootstrap_seed/` to `.cursor/skills/fabrication/` (`AGENTS.md`, `docs_manual_gen/README.md`, runbook, `seed_grow/` plan resume lines, `delivery-resumimpl`).
-- [ ] Add this plan to the index in `docs_manual_gen/README.md`.
+- [X] `SKILL.md` frontmatter `name: fabrication`; description covers EXECUTE_GEN on / implementing prompts.
+- [X] Body points at `references/EXECUTE_GEN.md`; forbids skill-tree edits; names `seed_grow/`.
+- [X] Procedures remain in `references/` and `scripts/`.
+- [X] Repo pointers retargeted to `.cursor/skills/fabrication/` (AGENTS, runbook, plans, rules).
+- [X] Plan indexed in `docs_manual_gen/README.md`.
 
 ---
 
 <h2 id="5-phase-5" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Phase 5 — Paths and purity</h2>
 
-- [ ] Scripts resolve the kit from their own directory (the skill tree), not from `$REPO_ROOT/bootstrap_seed/`.
-- [ ] Move `check-seed-kit.sh` with the kit. It still fails on `specific/`, `modules/second-brain/`, `utils/pglpl_cert/`, `utils/chatgpt/transcripts/`, and the strings `Second Brain`, `second-brain`, `docs_manual_gen`, `PLAN_SECOND_BRAIN`, `portuguese-learn`, `gcp_pmle`.
-- [ ] It also fails if `SKILL.md` does not name `seed_grow/` and does not forbid edits to the skill directory.
-- [ ] `check-seed-kit.sh` exits 0. `./scripts/verify.sh` exits 0.
-- [ ] Copy `.cursor/skills/fabrication/` to `~/.cursor/skills/fabrication/` so another repo on this machine can invoke it. Do not commit that home-directory copy.
+- [X] Scripts resolve paths via `fabrication-paths.sh` (skill tree, not repo-root kit).
+- [X] `check-seed-kit.sh` guards `assets/` paths and forbidden strings; validates `SKILL.md` + `references/EXECUTE_GEN.md`.
+- [X] `check-seed-kit.sh` exit 0; `./scripts/verify.sh` exit 0.
+- [X] Copied to `~/.cursor/skills/fabrication/` on this machine (not committed).
 
 ---
 

@@ -7,7 +7,7 @@ Implement an approved spec with red → green TDD per `docs/PROJECT-TDD.md`.
 ## Before code
 
 1. **`align-requirements`** satisfied (`## Decisions` or **`skip align`**).
-2. Read spec and linked **`docs/plans/*-plan.md`** (`<!-- plan: … -->`). List ACs and **HG-*** by delivery phase; **resume from the first `[ ]`** in **Execution checklist** (see **`delivery-resumimpl`** rule).
+2. Read spec and linked **`seed_grow/plans/*-plan.md`** (`<!-- plan: … -->`). List ACs and **HG-*** by delivery phase; **resume from the first `[ ]`** in **Execution checklist** (see **`delivery-resumimpl`** rule).
 3. For **`<!-- ac-tests: enforced -->`**, add failing `test_ac_*` before production edits.
 4. For each **HG-***, post clear human instructions and **stop** until confirmed — do not simulate external installs.
 
@@ -27,7 +27,7 @@ After each completed checklist bullet or phase **Exit**:
 2. Set **`<!-- delivery-status: wip -->`** on first progress (from **`new`**).
 3. Set **`<!-- delivery-status: completed -->`** when every implementable checklist item is **`[X]`** (optional archive copy under **`docs/plans/completed/`**).
 
-Spec **`## Decisions`** = audit trail; **`docs/plans/…-plan.md`** = tick state.
+Spec **`## Decisions`** = audit trail; **`seed_grow/plans/…-plan.md`** = tick state.
 
 ## Complete
 

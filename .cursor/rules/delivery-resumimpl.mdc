@@ -2,7 +2,7 @@
 description: >-
   Keywords delivery-resumimpl, resumimpl (with seed_grow/plans path), EXECUTE_GEN resume: follow
   seed_grow/plans/*-plan.md checklists — [ ]/[X] per delivery phase P1…; update after each exit;
-  optional docs/plans/wip|completed archive. Companion to bootstrap_seed/EXECUTE_GEN.md and
+  optional docs/plans/wip|completed archive. Companion to .cursor/skills/fabrication/references/EXECUTE_GEN.md and
   implement-feature. Refactor plans under cursor_gen/refactor_plans/ still use implref.
 alwaysApply: false
 ---
@@ -25,7 +25,7 @@ alwaysApply: false
 |---------|---------|
 | **`delivery-resumimpl`** | User names **`seed_grow/plans/<feature>-plan.md`** (or spec `<!-- plan: … -->` target). Execute from first **`[ ]`**. |
 | **`resumimpl seed_grow/plans/…`** | Same as **`delivery-resumimpl`** when the path is under **`seed_grow/plans/`**. |
-| **`Run bootstrap_seed/EXECUTE_GEN.md …`** (resume) | Before coding: open linked **`seed_grow/plans/*-plan.md`**, honor **`[X]`**, continue from first **`[ ]`**. |
+| **`Run .cursor/skills/fabrication/references/EXECUTE_GEN.md …`** (resume) | Before coding: open linked **`seed_grow/plans/*-plan.md`**, honor **`[X]`**, continue from first **`[ ]`**. |
 
 If ambiguous, ask **one** question: which **`seed_grow/plans/*.md`** is the delivery ledger?
 
@@ -40,7 +40,7 @@ Delivery plans **must** match **`docs/templates/implementation-plan.md`**:
 - Phase heading may prefix **`[X]`** when **all** checklist bullets in that phase are **`[X]`**
 - **Exit** / **ACs** / **HG-*** prose stays; checkboxes are the human-visible progress bar
 
-**Canonical path:** always **`docs/plans/<feature>-plan.md`** (spec `<!-- plan: -->` must keep pointing here). Do **not** move the only copy into **`wip/`**.
+**Canonical path (zone 2):** **`seed_grow/plans/<feature>-plan.md`** (spec **`<!-- plan: -->`** must keep pointing here). Do **not** move the only copy into **`docs/plans/wip/`**.
 
 ---
 
@@ -63,7 +63,7 @@ Delivery plans **must** match **`docs/templates/implementation-plan.md`**:
 | Path | Use |
 |------|-----|
 | **`docs/plans/wip/`** | Optional **read-only snapshot** when human wants a dated copy mid-flight — **not** the live ledger. |
-| **`docs/plans/completed/`** | Optional archive copy when **`delivery-status: completed`** — live file remains at **`docs/plans/<feature>-plan.md`**. |
+| **`docs/plans/completed/`** | Optional archive copy when **`delivery-status: completed`** — live file remains at **`seed_grow/plans/<feature>-plan.md`**. |
 
 See **`docs/plans/README.md`**. Agent **may** copy (not move) the plan to **`completed/`** on full completion if the human uses archives.
 
@@ -73,7 +73,7 @@ See **`docs/plans/README.md`**. Agent **may** copy (not move) the plan to **`com
 
 | Tree | Rule |
 |------|------|
-| **`docs/plans/*-plan.md`** | **`delivery-resumimpl`** (this file) + **`EXECUTE_GEN.md`** |
+| **`seed_grow/plans/*-plan.md`** | **`delivery-resumimpl`** (this file) + **`EXECUTE_GEN.md`** |
 | **`cursor_gen/refactor_plans/**`** | **`implref`** / **`resumimpl`** + **`onlyref`** |
 
 Do not mix checklist files across those trees in one session without explicit user direction.

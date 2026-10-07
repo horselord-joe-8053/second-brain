@@ -55,11 +55,11 @@ From repo root:
 
 ```bash
 cd /Users/jjw8053/projects/second_brain
-eval "$(bash bootstrap_seed/core/scripts/parse-bootstrap-meta.sh seed_grow/bootstrap.md)"
-bash bootstrap_seed/core/scripts/seed-harness.sh . "Second Brain" "Hermes + LLM Wiki" "$BOOTSTRAP_PROFILE"
-bash bootstrap_seed/core/scripts/seed-scaffold-scripts.sh . general
-bash bootstrap_seed/core/scripts/apply-module.sh . second-brain
-bash bootstrap_seed/core/scripts/seed-product.sh .
+eval "$(bash .cursor/skills/fabrication/scripts/parse-bootstrap-meta.sh seed_grow/bootstrap.md)"
+bash .cursor/skills/fabrication/scripts/seed-harness.sh . "Second Brain" "Hermes + LLM Wiki" "$BOOTSTRAP_PROFILE"
+bash .cursor/skills/fabrication/scripts/seed-scaffold-scripts.sh . general
+bash .cursor/skills/fabrication/scripts/apply-module.sh . second-brain
+bash .cursor/skills/fabrication/scripts/seed-product.sh .
 ./scripts/verify.sh
 ```
 

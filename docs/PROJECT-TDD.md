@@ -2,7 +2,7 @@
 
 ## Scope
 
-This policy applies to **any** project bootstrapped with `bootstrap_seed/` (core profile **general** or **webapp**): infra, agents, docs-only corpora, mixed repos, or optional web stacks.
+This policy applies to **any** project bootstrapped with `.cursor/skills/fabrication/` (core profile **general** or **webapp**): infra, agents, docs-only corpora, mixed repos, or optional web stacks.
 
 ## Enforced specs
 
@@ -33,4 +33,4 @@ Playwright and Vitest are **optional** — only when the spec declares a browser
 
 ## Implement order
 
-Follow delivery phases `P1`, `P2`, … in the linked **`docs/plans/*-plan.md`**. Use the **`implement-feature`** skill per AC and maintain **Execution checklist** **`[ ]`/`[X]`** (see **`delivery-resumimpl`**). Resume from the first open **`[ ]`**.
+Follow delivery phases `P1`, `P2`, … in the linked **`seed_grow/plans/*-plan.md`**. Use the **`implement-feature`** skill per AC and maintain **Execution checklist** **`[ ]`/`[X]`** (see **`delivery-resumimpl`**). Resume from the first open **`[ ]`**.

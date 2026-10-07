@@ -2,8 +2,8 @@
 
 **When:** Hermes + Nashsu LLM Wiki + `brain/` corpus (`profile: general`, plan **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**).
 
-**Agent:** Implement **in-repo** work (tree, docs, `harness/`, scripts). **Never** commit secrets. **Stop** on **HG-*** with **`human-gate.md`**-style instructions; continue only after human confirms (record in **## Decisions**). Tick **`docs/plans/*-plan.md`** **Execution checklist** after each exit (**`delivery-resumimpl`**).
+**Agent:** Implement **in-repo** work (tree, docs, `harness/`, scripts). **Never** commit secrets. **Stop** on **HG-*** with **`human-gate.md`**-style instructions; continue only after human confirms (record in **## Decisions**). Tick **`seed_grow/plans/*-plan.md`** **Execution checklist** after each exit (**`delivery-resumimpl`**).
 
-**Apply:** `bash bootstrap_seed/core/scripts/apply-module.sh <repo> second-brain` — installs **`scripts/verify-local.sh`** template if missing.
+**Apply:** `bash .cursor/skills/fabrication/scripts/apply-module.sh <repo> second-brain` — installs **`scripts/verify-local.sh`** template if missing.
 
 **Analyze:** If **`seed_grow/`** is empty but human said **`implementing docs_manual_gen/PLAN_…`**, run **`ANALYZE_FROM_PLAN.md`** first.

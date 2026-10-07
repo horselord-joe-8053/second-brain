@@ -8,7 +8,9 @@ Long-form Second Brain material authored or extracted outside the bootstrap **`d
 | [`PLAN_SECOND_BRAIN_HERMES_V1.md`](./PLAN_SECOND_BRAIN_HERMES_V1.md) | Full implementation plan (EXECUTE_GEN brief) |
 | [`SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) | Setup runbook (commands + HG steps) |
 | [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) | Query / read path + Hermes MCP |
+| [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](./REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md) | Three-zone kit refactor (**completed** — checklist closed 8 Oct 2026) |
+| [`REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md`](./REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md) | Fabrication skill + roadmap (**completed** — kit at `.cursor/skills/fabrication/`) |
 
 **Delivery progress:** [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../seed_grow/plans/second-brain-hermes-v1-plan.md) (**`[ ]`/`[X]`**).
 
-**Kick-start:** `Run bootstrap_seed/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`
+**Product resume:** `delivery-resumimpl seed_grow/plans/second-brain-hermes-v1-plan.md` or `Run .cursor/skills/fabrication/references/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`.

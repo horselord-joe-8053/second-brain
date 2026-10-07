@@ -31,8 +31,8 @@ Do **not** move the only copy of a plan into subfolders; the spec link must stay
 <h2 id="plans-run" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. How to run</h2>
 
 ```text
-Run bootstrap_seed/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_….md
+Run .cursor/skills/fabrication/references/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_….md
 delivery-resumimpl seed_grow/plans/<feature>-plan.md
 ```
 
-See **`bootstrap_seed/EXECUTE_GEN.md`**, **`.cursor/rules/delivery-resumimpl.mdc`**, and **`docs/templates/implementation-plan.md`**.
+See **`.cursor/skills/fabrication/references/EXECUTE_GEN.md`**, **`.cursor/rules/delivery-resumimpl.mdc`**, and **`docs/templates/implementation-plan.md`**.
