@@ -10,4 +10,4 @@ Thin skills and docs for the **Second-Brain contract v1**: capture → `brain/ra
 
 **Compiler:** Nashsu LLM Wiki only — never run Hermes bundled `llm-wiki` skill as a second compiler.
 
-**Delivery ledger:** [`docs/plans/second-brain-hermes-v1-plan.md`](../../docs/plans/second-brain-hermes-v1-plan.md) (resume at first `[ ]`).
+**Delivery ledger:** [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../../seed_grow/plans/second-brain-hermes-v1-plan.md) (resume at first `[ ]`).

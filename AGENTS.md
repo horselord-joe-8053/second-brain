@@ -22,7 +22,7 @@ Domain vocabulary: `GLOSSARY.md`.
 - **ALIGN:** `align-requirements` — ≤3 questions; `## Decisions` in spec.
 - **PLAN:** `docs/plans/<feature>-plan.md` with delivery phases `P1`, `P2`, … and **Execution checklist** **`[ ]`/`[X]`** (human-visible progress).
 - **IMPLEMENT:** `implement-feature` — red → green per AC when enforced; respect **human gates** (`HG-*`); tick plan checkboxes after each exit.
-- **RESUME:** `delivery-resumimpl docs/plans/<feature>-plan.md` or **`Run bootstrap/EXECUTE_GEN.md`** (agent reads plan first).
+- **RESUME:** `delivery-resumimpl docs/plans/<feature>-plan.md` or **`Run bootstrap_seed/EXECUTE_GEN.md`** (agent reads plan first).
 - **VERIFY:** `./scripts/verify.sh` plus any phase **Exit** commands in the plan.
 - **UI-CHOOSE:** enable **`profile: webapp`** and **`ui-choose`** module when a spec needs factory UI polish; otherwise document UI in the spec without UI-CHOOSE.
 

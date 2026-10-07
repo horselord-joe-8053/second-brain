@@ -8,7 +8,7 @@ Local-first personal knowledge system: **`brain/`** corpus, [LLM Wiki fork](http
 - [Implementation plan (Hermes v1)](docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md)
 - [Setup runbook (commands + manual steps)](docs_manual_gen/SECOND_BRAIN_RUNBOOK.md)
 - [Query layer + Hermes MCP (follow-on chat)](docs_manual_gen/MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md)
-- Product specs: `docs/specs/` (seeded from `bootstrap/specific/`)
+- Product ledger: `seed_grow/` (specs, plans, project modules); kit: `bootstrap_seed/`
 - Manual design docs: [`docs_manual_gen/`](docs_manual_gen/README.md)
 
 ## Bootstrap / delivery
@@ -16,10 +16,10 @@ Local-first personal knowledge system: **`brain/`** corpus, [LLM Wiki fork](http
 Implementation follows the unified kit:
 
 ```text
-Run bootstrap/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md
+Run bootstrap_seed/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md
 ```
 
-Kit entry: `bootstrap/specific/bootstrap.md`.
+Kit entry: `seed_grow/bootstrap.md`.
 
 ## Local setup (idempotent)
 

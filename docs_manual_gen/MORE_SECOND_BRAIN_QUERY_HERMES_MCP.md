@@ -279,7 +279,7 @@ graph TD
 
 <h2 id="10-backlog" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Known gaps / Nashsu backlog</h2>
 
-Items below are **verified against `nu_llm_wiki`** (Oct 2026). IDs are for the [delivery plan](../docs/plans/second-brain-hermes-v1-plan.md) cross-reference. **Owner:** Nashsu upstream unless noted **SB** (this repo).
+Items below are **verified against `nu_llm_wiki`** (Oct 2026). IDs are for the [delivery plan](../seed_grow/plans/second-brain-hermes-v1-plan.md) cross-reference. **Owner:** Nashsu upstream unless noted **SB** (this repo).
 
 <h3 id="10-1-gaps" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.1 Product gaps (behavior today)</h3>
 
@@ -320,7 +320,7 @@ Items below are **verified against `nu_llm_wiki`** (Oct 2026). IDs are for the [
 1. **Persist transcript** under `utils/chatgpt/transcripts/` (same fetch script as `rank_llm_wiki_projects_…`) for offline diffing.
 2. **`harness/second-brain/skills/query-brain/SKILL.md`** — Pattern A/B, **L1/L2/L3 escalation**, cite-or-abstain (G6).
 3. **Spike:** Same question via **`llm_wiki_chat`** (may call `source.search`) vs **MCP search+read** (L3 only) on **`brain`** — record in Decisions.
-4. **Delivery plan:** Track **NB-*** and **NB-SB1** in [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md) (see plan § *Query fidelity*).
+4. **Delivery plan:** Track **NB-*** and **NB-SB1** in [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../seed_grow/plans/second-brain-hermes-v1-plan.md) (see plan § *Query fidelity*).
 
 ---
 
@@ -333,5 +333,5 @@ Items below are **verified against `nu_llm_wiki`** (Oct 2026). IDs are for the [
 | Nashsu LLM Wiki | https://github.com/nashsu/llm_wiki |
 | MCP server README | `nu_llm_wiki/mcp-server/README.md` (sibling clone) |
 | Hermes MCP example | [`docs/harness/hermes-mcp.example.yaml`](../docs/harness/hermes-mcp.example.yaml) |
-| Delivery plan (query fidelity) | [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md) |
+| Delivery plan (query fidelity) | [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../seed_grow/plans/second-brain-hermes-v1-plan.md) |
 | Local runbook | [`docs_manual_gen/SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) |

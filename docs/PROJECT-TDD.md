@@ -2,7 +2,7 @@
 
 ## Scope
 
-This policy applies to **any** project bootstrapped with `bootstrap/` (core profile **general** or **webapp**): infra, agents, docs-only corpora, mixed repos, or optional web stacks.
+This policy applies to **any** project bootstrapped with `bootstrap_seed/` (core profile **general** or **webapp**): infra, agents, docs-only corpora, mixed repos, or optional web stacks.
 
 ## Enforced specs
 

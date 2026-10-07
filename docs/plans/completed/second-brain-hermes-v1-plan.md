@@ -1,7 +1,7 @@
 # Plan: second-brain-hermes-v1
 
 <!-- delivery-status: completed -->
-<!-- plan-for: docs/specs/second-brain-hermes-v1.md -->
+<!-- plan-for: seed_grow/specs/second-brain-hermes-v1.md -->
 
 Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
@@ -9,7 +9,7 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ## Spec link
 
-`docs/specs/second-brain-hermes-v1.md`
+`seed_grow/specs/second-brain-hermes-v1.md`
 
 ---
 
@@ -158,5 +158,5 @@ Source: **`docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`**
 
 ## Agent notes
 
-- **Start / resume:** `Run bootstrap/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md` or **`delivery-resumimpl docs/plans/second-brain-hermes-v1-plan.md`**
+- **Start / resume:** `Run bootstrap_seed/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md` or **`delivery-resumimpl seed_grow/plans/second-brain-hermes-v1-plan.md`**
 - Rule: **`.cursor/rules/delivery-resumimpl.mdc`**

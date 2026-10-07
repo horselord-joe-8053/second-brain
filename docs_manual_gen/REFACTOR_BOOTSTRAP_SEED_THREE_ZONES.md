@@ -1,8 +1,8 @@
 <h1 id="refactor-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: three-zone bootstrap (<code>bootstrap_seed</code> / <code>seed_grow</code> / product)</h1>
 
-**Status:** plan only (5 October 2026). Every implementable box is `[ ]`.
+**Status:** implemented (8 October 2026) on branch **`feature/bootstrap-seeding`**. Verify: `./scripts/verify.sh` + `bash bootstrap_seed/core/scripts/check-seed-kit.sh`.
 
-**Execute with:** [`implref`](../.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc) on **this file**. Do not run `bootstrap/EXECUTE_GEN.md implementing` this plan. That command uses the kit this plan replaces and would write into `bootstrap/specific/`.
+**Execute with:** [`implref`](../.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc) on **this file**. Do not run `bootstrap_seed/EXECUTE_GEN.md implementing` this plan. That command uses the kit this plan replaces and would write into `bootstrap/specific/`.
 
 **Canonical path:** `docs_manual_gen/REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`. On `implref` closeout, leave the file here. Do not `git mv` it to `cursor_gen/refactor_plans/`.
 
@@ -10,13 +10,13 @@
 
 1. [Evidence](#1-evidence) — what git already shows.
 2. [Zones](#2-zones) — what each tree holds.
-3. [Phase 1 — Build the seed kit](#3-phase-1) — `bootstrap_seed/` from today’s agnostic `bootstrap/` files.
+3. [Phase 1 — Build the seed kit](#3-phase-1) — `bootstrap_seed/` from today’s agnostic `bootstrap_seed/` files.
 4. [Phase 2 — Writes leave the kit](#4-phase-2) — `seed_grow/` is the only project slot.
 5. [Phase 3 — Static gate](#5-phase-3) — the seed is safe to copy into a greenfield repo.
 6. [Phase 4 — Back-fill this repo](#6-phase-4) — move this project’s ledger and instruction pack.
 7. [Phase 5 — Retarget pointers](#7-phase-5) — this repo reads the new paths.
 8. [Phase 6 — Product still verifies](#8-phase-6) — `./scripts/verify.sh`.
-9. [Phase 7 — Delete the old kits](#9-phase-7) — `bootstrap/` and `bootstrap_general/` only.
+9. [Phase 7 — Delete the old kits](#9-phase-7) — `bootstrap_seed/` and `bootstrap_general/` only.
 10. [Quality bar](#10-quality-bar) — tests, comments, docs.
 11. [Deferred](#11-deferred) — out of this plan.
 
@@ -27,10 +27,10 @@
 | Fact | Where |
 |------|--------|
 | Unified kit, `bootstrap/specific/`, `bootstrap/modules/second-brain/`, and the `second-brain)` branch in `apply-module.sh` arrived together | `ba3e1fb` (3 Oct 2026) |
-| `apply-module.sh` has no diff after that commit | `git diff ba3e1fb HEAD -- bootstrap/core/scripts/apply-module.sh` |
+| `apply-module.sh` has no diff after that commit | `git diff ba3e1fb HEAD -- bootstrap_seed/core/scripts/apply-module.sh` |
 | Later kit edits retargeted example paths to `docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md` and added checklist resume | `b38fd27`, `6e80fcc` (4 Oct 2026) |
 | `bootstrap_general/EXECUTE_GEN.md` does not name a project module | same birth commit; keep that idea, do not keep the tree |
-| Living checklist today | `docs/plans/second-brain-hermes-v1-plan.md` (resume follows this copy, not only `bootstrap/specific/plans/`) |
+| Living checklist today | `seed_grow/plans/second-brain-hermes-v1-plan.md` (resume follows this copy, not only `bootstrap/specific/plans/`) |
 | Product code already outside the kit | `brain/`, `harness/second-brain/`, `scripts/`, `scripts/verify-local.sh`, `tests/` |
 
 Non-goals (prose, not checklist): do not reinstall Hermes, LLM Wiki, or Obsidian. Do not move `brain/`, `harness/`, `scripts/brain/`, `tests/`, or `docs_manual_gen/` into `seed_grow/`. Do not delete `bootstrap_webapp/` or the repo-root `utils/` copy in this plan.
@@ -56,14 +56,14 @@ Non-goals (prose, not checklist): do not reinstall Hermes, LLM Wiki, or Obsidian
 
 <h2 id="3-phase-1" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Phase 1 — Build <code>bootstrap_seed/</code></h2>
 
-Copy from `bootstrap/` only. Do not edit `bootstrap/` in this phase. Omit `bootstrap/specific/` and `bootstrap/modules/second-brain/`.
+Copy from `bootstrap_seed/` only. Do not edit `bootstrap_seed/` in this phase. Omit `bootstrap/specific/` and `bootstrap/modules/second-brain/`.
 
 - [ ] Copy `core/` (include `core/harness/cursor/rules/delivery-resumimpl.mdc`), `modules/webapp/`, `modules/logging-neat/`, `modules/desktop-install/`, `utils/` except the two trees in the next box, plus `README.md`, `EXECUTE_GEN.md`, `ANALYZE_SPECIFIC.md`.
 - [ ] Omit `utils/pglpl_cert/` and `utils/chatgpt/transcripts/`. Nothing outside `pglpl_cert/` imports it. Playwright writes new transcripts under `utils/chatgpt/playwright/test_result/transcripts/`, not the archived folder.
 - [ ] In `utils/chatgpt/HOWTO_EXTRACT_CHATGPT.md`, remove the instruction to commit copies into `utils/chatgpt/transcripts/` and the link to the missing `transcripts/README.md`.
 - [ ] Replace Second Brain example names in `README.md`, `EXECUTE_GEN.md`, `core/bootstrap-core.md`, `core/harness/docs/ARCHITECTURE.md`, and `modules/desktop-install/MODULE.md` with placeholders: `<project name>`, `<project general description file path>`.
 - [ ] Replace leftover product names that would ship inside the seed: `~/.hermes` and LLM Wiki in `EXECUTE_GEN.md` and `core/harness/docs/SECURITY.md`; `portuguese-learn` in `utils/neat_logger/neat_logger.py` and `HOWTO_USE_NEAT_LOGGER.md`; `gcp_pmle` in `utils/chatgpt/playwright/README.md`. Use a generic placeholder (`<tool config dir>`, `<repo root>`). Leave `@floor35/*` package names as the published npm names.
-- [ ] Rewrite every hardcoded `bootstrap/` kit path in the copied tree to `bootstrap_seed/` (`EXECUTE_GEN.md`, `README.md`, `core/bootstrap-core.md`, `delivery-resumimpl.mdc`, webapp factory docs, `desktop-install/MODULE.md`, skill files, `seed-utils.sh` comment). Shell scripts that compute `KIT` from their own path stay relative.
+- [ ] Rewrite every hardcoded `bootstrap_seed/` kit path in the copied tree to `bootstrap_seed/` (`EXECUTE_GEN.md`, `README.md`, `core/bootstrap-core.md`, `delivery-resumimpl.mdc`, webapp factory docs, `desktop-install/MODULE.md`, skill files, `seed-utils.sh` comment). Shell scripts that compute `KIT` from their own path stay relative.
 
 ---
 
@@ -96,12 +96,12 @@ This is the check that a later copy of `bootstrap_seed/` into an empty repo can 
 
 <h2 id="6-phase-4" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Phase 4 — Back-fill this repo</h2>
 
-One living ledger. `docs/plans/second-brain-hermes-v1-plan.md` is the copy resume uses today. If it differs from `bootstrap/specific/plans/second-brain-hermes-v1-plan.md`, the `docs/plans` file wins.
+One living ledger. `seed_grow/plans/second-brain-hermes-v1-plan.md` is the copy resume uses today. If it differs from `bootstrap/specific/plans/second-brain-hermes-v1-plan.md`, the `docs/plans` file wins.
 
-- [ ] Create `seed_grow/`. Move `bootstrap/specific/bootstrap.md`, `bootstrap/specific/specs/`, and the winning plan into `seed_grow/` (`bootstrap.md`, `specs/second-brain-hermes-v1.md`, `plans/second-brain-hermes-v1-plan.md`).
+- [ ] Create `seed_grow/`. Move `seed_grow/bootstrap.md`, `bootstrap/specific/specs/`, and the winning plan into `seed_grow/` (`bootstrap.md`, `specs/second-brain-hermes-v1.md`, `plans/second-brain-hermes-v1-plan.md`).
 - [ ] Move `bootstrap/modules/second-brain/` to `seed_grow/modules/second-brain/` (`MODULE.md`, `ANALYZE_FROM_PLAN.md`, `templates/verify-local.sh`).
 - [ ] Leave `scripts/verify-local.sh` where it is.
-- [ ] Remove the duplicate feature files `docs/plans/second-brain-hermes-v1-plan.md` and `docs/specs/second-brain-hermes-v1.md` after the move. Keep `docs/plans/README.md`, `docs/plans/wip/`, and `docs/plans/completed/`. Point `docs/plans/README.md` at `seed_grow/plans/`.
+- [ ] Remove the duplicate feature files `seed_grow/plans/second-brain-hermes-v1-plan.md` and `seed_grow/specs/second-brain-hermes-v1.md` after the move. Keep `docs/plans/README.md`, `docs/plans/wip/`, and `docs/plans/completed/`. Point `docs/plans/README.md` at `seed_grow/plans/`.
 - [ ] In `seed_grow/specs/second-brain-hermes-v1.md`, set the plan comment to `seed_grow/plans/second-brain-hermes-v1-plan.md`.
 - [ ] Do not move `docs_manual_gen/`, `brain/`, `harness/`, or `scripts/brain/`.
 
@@ -112,7 +112,7 @@ One living ledger. `docs/plans/second-brain-hermes-v1-plan.md` is the copy resum
 Installed copies, not the kit templates already edited in phase 2.
 
 - [ ] `AGENTS.md`, `.cursor/rules/delivery-resumimpl.mdc`, `.agents/skills/specify-feature/SKILL.md`, `.agents/skills/implement-feature/SKILL.md`, `docs/templates/implementation-plan.md`, `docs/PROJECT-TDD.md`: resume and kit paths say `bootstrap_seed/EXECUTE_GEN.md` and `seed_grow/plans/<feature>-plan.md`.
-- [ ] `docs_manual_gen/README.md`: add this plan to the index. Change the kick-start line so it no longer says `Run bootstrap/EXECUTE_GEN.md implementing …`. State that this refactor runs by `implref` on this file, and that future product work resumes from `seed_grow/plans/second-brain-hermes-v1-plan.md`.
+- [ ] `docs_manual_gen/README.md`: add this plan to the index. Change the kick-start line so it no longer says `Run bootstrap_seed/EXECUTE_GEN.md implementing …`. State that this refactor runs by `implref` on this file, and that future product work resumes from `seed_grow/plans/second-brain-hermes-v1-plan.md`.
 - [ ] `docs_manual_gen/SECOND_BRAIN_RUNBOOK.md`: `parse-bootstrap-meta.sh` reads `seed_grow/bootstrap.md` via `bootstrap_seed/core/scripts/parse-bootstrap-meta.sh`. Plan links point at `seed_grow/plans/`.
 - [ ] `docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md` and `MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`: delivery-ledger links point at `seed_grow/plans/second-brain-hermes-v1-plan.md`.
 - [ ] `harness/second-brain/README.md` and `seed_grow/plans/second-brain-hermes-v1-plan.md`: start/resume lines use `bootstrap_seed/` and `seed_grow/plans/`.
@@ -124,17 +124,17 @@ Installed copies, not the kit templates already edited in phase 2.
 
 - [ ] `./scripts/verify.sh` exits 0 (it calls `scripts/verify-local.sh` and `tests/test_second_brain_corpus.py`).
 - [ ] `bash bootstrap_seed/core/scripts/check-seed-kit.sh` still exits 0 after the back-fill.
-- [ ] `rg` over the repo finds no `bootstrap/EXECUTE_GEN`, `bootstrap/specific`, or `bootstrap/modules/second-brain` outside `bootstrap/` and `bootstrap_general/` (those two trees are deleted in phase 7).
+- [ ] `rg` over the repo finds no `bootstrap/EXECUTE_GEN`, `bootstrap/specific`, or `bootstrap/modules/second-brain` outside `bootstrap_seed/` and `bootstrap_general/` (those two trees are deleted in phase 7).
 
 ---
 
 <h2 id="9-phase-7" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Phase 7 — Delete the old kits</h2>
 
-- [ ] `rg` for `bootstrap_general/` and for `bootstrap/` as a kit path. Fix any remaining live reference (product docs, rules, skills, runbook) before deleting.
-- [ ] Delete the directory `bootstrap/`.
+- [ ] `rg` for `bootstrap_general/` and for `bootstrap_seed/` as a kit path. Fix any remaining live reference (product docs, rules, skills, runbook) before deleting.
+- [ ] Delete the directory `bootstrap_seed/`.
 - [ ] Delete the directory `bootstrap_general/`.
 - [ ] Re-run `check-seed-kit.sh` and `./scripts/verify.sh`. Both exit 0.
-- [ ] `rg` finds no path `bootstrap/` or `bootstrap_general/` except historical sentences inside this plan and inside `bootstrap_webapp/` if that tree mentions them.
+- [ ] `rg` finds no path `bootstrap_seed/` or `bootstrap_general/` except historical sentences inside this plan and inside `bootstrap_webapp/` if that tree mentions them.
 
 ---
 

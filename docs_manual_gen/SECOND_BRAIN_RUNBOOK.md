@@ -55,11 +55,11 @@ From repo root:
 
 ```bash
 cd /Users/jjw8053/projects/second_brain
-eval "$(bash bootstrap/core/scripts/parse-bootstrap-meta.sh bootstrap/specific/bootstrap.md)"
-bash bootstrap/core/scripts/seed-harness.sh . "Second Brain" "Hermes + LLM Wiki" "$BOOTSTRAP_PROFILE"
-bash bootstrap/core/scripts/seed-scaffold-scripts.sh . general
-bash bootstrap/core/scripts/apply-module.sh . second-brain
-bash bootstrap/core/scripts/seed-product.sh .
+eval "$(bash bootstrap_seed/core/scripts/parse-bootstrap-meta.sh seed_grow/bootstrap.md)"
+bash bootstrap_seed/core/scripts/seed-harness.sh . "Second Brain" "Hermes + LLM Wiki" "$BOOTSTRAP_PROFILE"
+bash bootstrap_seed/core/scripts/seed-scaffold-scripts.sh . general
+bash bootstrap_seed/core/scripts/apply-module.sh . second-brain
+bash bootstrap_seed/core/scripts/seed-product.sh .
 ./scripts/verify.sh
 ```
 
@@ -438,7 +438,7 @@ RUN_BRAIN_ACCEPTANCE=1 ./scripts/brain/setup-local.sh
 5. **Messaging (optional)** — [§16](#messaging): `./scripts/brain/setup-hermes-messaging.sh`; confirm **Gateway ready** before Telegram/WhatsApp capture.
 6. **NB-SB1** — automated seam: `./scripts/brain/nb-sb1-probe.sh` (search must hit L3 James conjugation wiki path). Full agent answer: ask in LLM Wiki Agent or Hermes with citations; record in **Decisions** if waiving the probe.
 
-Checklist mirror: [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](../docs/ACCEPTANCE-second-brain-hermes-v1.md). Plan exit: [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md) **P8**.
+Checklist mirror: [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](../docs/ACCEPTANCE-second-brain-hermes-v1.md). Plan exit: [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../seed_grow/plans/second-brain-hermes-v1-plan.md) **P8**.
 
 <h2 id="messaging" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">16. Hermes messaging (Telegram / WhatsApp)</h2>
 

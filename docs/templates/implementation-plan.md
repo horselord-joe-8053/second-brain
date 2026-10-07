@@ -46,6 +46,6 @@
 
 ## Agent notes
 
-- **Start:** `Run bootstrap/EXECUTE_GEN.md` (or **`delivery-resumimpl docs/plans/[feature]-plan.md`**).
+- **Start:** `Run bootstrap_seed/EXECUTE_GEN.md` (or **`delivery-resumimpl docs/plans/[feature]-plan.md`**).
 - **Resume:** same; agent reads this file first.
 - Rule: **`.cursor/rules/delivery-resumimpl.mdc`**

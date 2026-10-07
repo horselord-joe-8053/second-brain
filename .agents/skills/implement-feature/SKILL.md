@@ -2,7 +2,7 @@
 
 Implement an approved spec with red → green TDD per `docs/PROJECT-TDD.md`.
 
-**Provenance:** `bootstrap/core` harness. AC mapping: `scripts/check-ac-tests.py`.
+**Provenance:** `bootstrap_seed/core` harness. AC mapping: `scripts/check-ac-tests.py`.
 
 ## Before code
 

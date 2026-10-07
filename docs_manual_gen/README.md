@@ -9,6 +9,6 @@ Long-form Second Brain material authored or extracted outside the bootstrap **`d
 | [`SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) | Setup runbook (commands + HG steps) |
 | [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) | Query / read path + Hermes MCP |
 
-**Delivery progress:** [`docs/plans/second-brain-hermes-v1-plan.md`](../docs/plans/second-brain-hermes-v1-plan.md) (**`[ ]`/`[X]`**).
+**Delivery progress:** [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../seed_grow/plans/second-brain-hermes-v1-plan.md) (**`[ ]`/`[X]`**).
 
-**Kick-start:** `Run bootstrap/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`
+**Kick-start:** `Run bootstrap_seed/EXECUTE_GEN.md implementing docs_manual_gen/PLAN_SECOND_BRAIN_HERMES_V1.md`

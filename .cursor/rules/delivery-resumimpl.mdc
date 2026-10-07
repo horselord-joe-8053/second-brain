@@ -1,8 +1,8 @@
 ---
 description: >-
-  Keywords delivery-resumimpl, resumimpl (with docs/plans path), EXECUTE_GEN resume: follow
-  docs/plans/*-plan.md checklists — [ ]/[X] per delivery phase P1…; update after each exit;
-  optional docs/plans/wip|completed archive. Companion to bootstrap/EXECUTE_GEN.md and
+  Keywords delivery-resumimpl, resumimpl (with seed_grow/plans path), EXECUTE_GEN resume: follow
+  seed_grow/plans/*-plan.md checklists — [ ]/[X] per delivery phase P1…; update after each exit;
+  optional docs/plans/wip|completed archive. Companion to bootstrap_seed/EXECUTE_GEN.md and
   implement-feature. Refactor plans under cursor_gen/refactor_plans/ still use implref.
 alwaysApply: false
 ---
@@ -23,11 +23,11 @@ alwaysApply: false
 
 | Trigger | Meaning |
 |---------|---------|
-| **`delivery-resumimpl`** | User names **`docs/plans/<feature>-plan.md`** (or spec `<!-- plan: … -->` target). Execute from first **`[ ]`**. |
-| **`resumimpl docs/plans/…`** | Same as **`delivery-resumimpl`** when the path is under **`docs/plans/`**. |
-| **`Run bootstrap/EXECUTE_GEN.md …`** (resume) | Before coding: open linked **`docs/plans/*-plan.md`**, honor **`[X]`**, continue from first **`[ ]`**. |
+| **`delivery-resumimpl`** | User names **`seed_grow/plans/<feature>-plan.md`** (or spec `<!-- plan: … -->` target). Execute from first **`[ ]`**. |
+| **`resumimpl seed_grow/plans/…`** | Same as **`delivery-resumimpl`** when the path is under **`seed_grow/plans/`**. |
+| **`Run bootstrap_seed/EXECUTE_GEN.md …`** (resume) | Before coding: open linked **`seed_grow/plans/*-plan.md`**, honor **`[X]`**, continue from first **`[ ]`**. |
 
-If ambiguous, ask **one** question: which **`docs/plans/*.md`** is the delivery ledger?
+If ambiguous, ask **one** question: which **`seed_grow/plans/*.md`** is the delivery ledger?
 
 ---
 
