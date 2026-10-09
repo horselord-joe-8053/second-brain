@@ -1,0 +1,8 @@
+# Hermes envelope: this block is merged as top-level mcp_servers: in ~/.hermes/config.yaml.
+# Canonical server definitions: config/second-brain.mcp-servers.yaml (harness-agnostic).
+# Idempotent merge: ./scripts/brain/adapters/hermes/merge-hermes-wiring.py
+
+# See resolved shape after merge — example keys only:
+# mcp_servers:
+#   llm_wiki: …
+#   second_brain_fs: …

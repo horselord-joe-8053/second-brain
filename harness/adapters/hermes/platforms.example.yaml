@@ -1,0 +1,18 @@
+# Hermes-only: Telegram / WhatsApp gateway (not in shared MCP catalog).
+# merge-hermes-wiring.py emits platforms: from repo .env / ~/.hermes/.env or preserves prior block.
+#
+# Example when TELEGRAM_BOT_TOKEN + TELEGRAM_ALLOWED_USERS are set:
+
+platforms:
+  telegram:
+    enabled: true
+    home_channel:
+      platform: telegram
+      chat_id: "123456789"
+      user_id: "123456789"
+  whatsapp:
+    enabled: true
+    home_channel:
+      platform: whatsapp
+      chat_id: "15551234567@lid"
+      user_id: "15551234567"

@@ -6,11 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-
-
 def main() -> int:
-    wiring = ROOT / "scripts" / "brain" / "merge-hermes-wiring.py"
+    wiring = Path(__file__).resolve().with_name("merge-hermes-wiring.py")
     return subprocess.call([sys.executable, str(wiring)])
 
 

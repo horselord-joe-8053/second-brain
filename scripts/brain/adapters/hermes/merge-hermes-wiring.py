@@ -9,10 +9,15 @@ from pathlib import Path
 
 # Legacy single marker (mcp-only); new managed region uses START/END.
 LEGACY_MCP_MARKER = "# --- second-brain mcp_servers (scripts/brain/setup-hermes-mcp.sh) ---"
-WIRING_START = "# --- second-brain wiring (scripts/brain/merge-hermes-wiring.py) ---"
+WIRING_START = "# --- second-brain wiring (scripts/brain/adapters/hermes/merge-hermes-wiring.py) ---"
 WIRING_END = "# --- end second-brain wiring ---"
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[4]
+SCRIPTS_BRAIN = ROOT / "scripts" / "brain"
+if str(SCRIPTS_BRAIN) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_BRAIN))
+from brain_stack import format_mcp_servers_block, load_brain_stack, load_mcp_servers_catalog
+
 DEFAULT_MCP = ROOT.parent / "nu_llm_wiki" / "mcp-server" / "dist" / "src" / "index.js"
 
 
@@ -94,10 +99,8 @@ def _platforms_from_env() -> str | None:
 
 def main() -> int:
     config_path = Path(os.environ.get("HERMES_CONFIG", Path.home() / ".hermes" / "config.yaml"))
-    mcp_js = Path(os.environ.get("NU_LLM_WIKI_MCP", DEFAULT_MCP))
-    brain = ROOT / "brain"
-    token_ref = "${LLM_WIKI_API_TOKEN}"
-
+    stack = load_brain_stack(ROOT)
+    mcp_js = Path(os.environ.get("NU_LLM_WIKI_MCP", stack["hermes"]["mcp_server_js"]))
     if not config_path.is_file():
         print(f"merge-hermes-wiring: missing {config_path}", file=sys.stderr)
         return 1
@@ -116,20 +119,8 @@ def main() -> int:
 
     before, preserved_tail = _strip_managed_region(text)
 
-    mcp_block = f"""mcp_servers:
-  llm_wiki:
-    command: node
-    args:
-      - {mcp_js}
-    env:
-      LLM_WIKI_API_TOKEN: "{token_ref}"
-  second_brain_fs:
-    command: npx
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-filesystem"
-      - {brain}
-"""
+    catalog = load_mcp_servers_catalog(ROOT, stack)
+    mcp_block = format_mcp_servers_block(catalog)
 
     platforms = _platforms_from_env()
     if not platforms:

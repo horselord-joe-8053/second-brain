@@ -2,6 +2,8 @@
 # secrets: values live ONLY in brain-stack.yaml (not committed). Optional legacy: repo .env fallback.
 version: 1
 
+active_harness: hermes
+
 paths:
   repo_root: "."
   brain_root: "brain"
@@ -11,19 +13,9 @@ llm_wiki:
   api_base_url: "http://127.0.0.1:19828/api/v1"
   # Token: generated in LLM Wiki app; scripts pull → .env (not set here).
 
-# Optional: add `secrets:` here instead of repo .env (same key names). Gitignored brain-stack.yaml only.
-hermes:
-  # Defaults for ./scripts/brain/start-hermes.sh (Desktop or --tui)
-  chat_provider: "gemini"
-  chat_model: "gemini-3.1-flash-lite"
-  ui: "desktop"
+# Shared messaging env key names (Hermes platforms: / OpenClaw channels when wired).
+messaging:
   sync_env_keys:
-    - OPENAI_API_KEY
-    - OPENROUTER_API_KEY
-    - GEMINI_API_KEY
-    - GOOGLE_API_KEY
-    - LLM_WIKI_API_TOKEN
-    # Messaging (optional — keep in gitignored .env or brain-stack.yaml secrets:)
     - TELEGRAM_BOT_TOKEN
     - TELEGRAM_ALLOWED_USERS
     - TELEGRAM_HOME_CHANNEL
@@ -34,6 +26,19 @@ hermes:
     - WHATSAPP_HOME_CHANNEL
     - WHATSAPP_HOME_USER_ID
     - WHATSAPP_HOME_CHANNEL_THREAD_ID
+
+# Optional: add `secrets:` here instead of repo .env (same key names). Gitignored brain-stack.yaml only.
+hermes:
+  # Defaults for ./scripts/brain/adapters/hermes/start-hermes.sh (Desktop or --tui)
+  chat_provider: "gemini"
+  chat_model: "gemini-3.1-flash-lite"
+  ui: "desktop"
+  sync_env_keys:
+    - OPENAI_API_KEY
+    - OPENROUTER_API_KEY
+    - GEMINI_API_KEY
+    - GOOGLE_API_KEY
+    - LLM_WIKI_API_TOKEN
   sync_env_keys_optional:
     - OPENROUTER_API_KEY
     - GOOGLE_API_KEY

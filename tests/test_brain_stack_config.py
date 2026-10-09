@@ -24,6 +24,20 @@ def test_load_brain_stack_example() -> None:
     assert stack["paths"]["brain_root"].endswith("/brain") or stack["paths"]["brain_root"].endswith("brain")
     assert "OPENAI_API_KEY" in stack["hermes"]["sync_env_keys"]
     assert stack["llm_wiki"]["api_base_url"].startswith("http")
+    assert stack.get("active_harness") == "hermes"
+
+
+def test_active_harness_and_messaging_keys() -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO / "scripts" / "brain"))
+    from brain_stack import active_harness, load_brain_stack, messaging_sync_env_keys
+
+    stack = load_brain_stack(REPO)
+    assert active_harness(stack) == "hermes"
+    msg = messaging_sync_env_keys(stack)
+    assert "TELEGRAM_BOT_TOKEN" in msg
+    assert "WHATSAPP_ENABLED" in msg
 
 
 def test_expand_env_in_stack(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

@@ -24,7 +24,7 @@ def test_merge_wiring_platforms_from_env(tmp_path: Path, monkeypatch) -> None:
 
     env = {**os.environ, "PYTHONPATH": str(REPO / "scripts" / "brain")}
     subprocess.run(
-        [sys.executable, str(REPO / "scripts" / "brain" / "merge-hermes-wiring.py")],
+        [sys.executable, str(REPO / "scripts" / "brain" / "adapters" / "hermes" / "merge-hermes-wiring.py")],
         check=True,
         env=env,
         cwd=REPO,
@@ -66,7 +66,7 @@ platforms:
 
     env = {**os.environ, "PYTHONPATH": str(REPO / "scripts" / "brain")}
     subprocess.run(
-        [sys.executable, str(REPO / "scripts" / "brain" / "merge-hermes-wiring.py")],
+        [sys.executable, str(REPO / "scripts" / "brain" / "adapters" / "hermes" / "merge-hermes-wiring.py")],
         check=True,
         env=env,
         cwd=REPO,

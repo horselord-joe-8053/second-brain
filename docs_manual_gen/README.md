@@ -9,7 +9,10 @@ Long-form Second Brain material authored or extracted outside the bootstrap **`d
 | [`SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) | Setup runbook (commands + HG steps) |
 | [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) | Query / read path + Hermes MCP |
 | [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](./REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md) | Three-zone kit refactor (**completed** — checklist closed 8 Oct 2026) |
-| [`REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md`](./REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md) | Fabrication skill + roadmap (**completed** — kit at `.cursor/skills/fabrication/`) |
+| [`REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md`](./REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md) | Fabrication skill + harness adapters + shared MCP (**Part I–II**; Phase 14 runbook split) |
+| [`RUNBOOK_HARNESS_HERMES.md`](./RUNBOOK_HARNESS_HERMES.md) | Hermes install, MCP, smoke, messaging |
+| [`RUNBOOK_HARNESS_OPENCLAW.md`](./RUNBOOK_HARNESS_OPENCLAW.md) | OpenClaw harness (skeleton) |
+| [`todos/TODO_SAMSUNG_RETAIL_STRUCTURED_DATA_AND_WIKI.md`](./todos/TODO_SAMSUNG_RETAIL_STRUCTURED_DATA_AND_WIKI.md) | Samsung BR retail — PDFs + PG + LLM Wiki (design) |
 
 **Delivery progress:** [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../seed_grow/plans/second-brain-hermes-v1-plan.md) (**`[ ]`/`[X]`**).
 

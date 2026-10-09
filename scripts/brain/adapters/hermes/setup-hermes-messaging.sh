@@ -2,9 +2,10 @@
 # Idempotent: sync Telegram/WhatsApp env → ~/.hermes/.env, merge platforms in config.yaml, gateway hints.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-# shellcheck source=scripts/brain/hermes-env.sh
-source "$(dirname "$0")/hermes-env.sh"
+HERMES_AD="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$HERMES_AD/../../../.." && pwd)"
+# shellcheck source=scripts/brain/adapters/hermes/hermes-env.sh
+source "$HERMES_AD/hermes-env.sh"
 
 echo "== setup-hermes-messaging =="
 
@@ -16,7 +17,7 @@ set -a
 [[ -f "$ROOT/.env" ]] && source "$ROOT/.env"
 set +a
 
-python3 "$ROOT/scripts/brain/merge-hermes-wiring.py"
+python3 "$HERMES_AD/merge-hermes-wiring.py"
 
 has_tg=0
 has_wa=0
@@ -38,4 +39,3 @@ echo ""
 echo "setup-hermes-messaging: OK"
 echo "  Telegram: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/telegram"
 echo "  WhatsApp: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/whatsapp"
-echo "  Second Brain: LLM Wiki must be up for MCP query/ingest from phone; capture → brain/raw/sources/<channel>/"

@@ -487,7 +487,7 @@ From architecture doc — manual acceptance for V1:
 | **B Topology** | Hermes Docker on Hostinger; Syncthing/Drive sync to Mac LLM Wiki |
 | **Connectors** | Hermes Google Drive/Gmail/GitHub skills → `raw/sources/*` |
 | **RAGFlow bake-off** | Same corpus in RAGFlow Knowledge Compilation vs Nashsu |
-| **OpenClaw / DSH** | Thin adapters to same `brain/` + MCP contract |
+| **OpenClaw / DSH** | Thin adapters to same `brain/` + MCP contract — layout: [`REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md`](./REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md) Part II §8–§18 |
 
 ---
 

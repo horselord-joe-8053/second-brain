@@ -109,6 +109,97 @@ def _local_stack_path(repo: Path) -> Path | None:
     return None
 
 
+def mcp_catalog_path(repo: Path) -> Path:
+    return repo / "config" / "second-brain.mcp-servers.yaml"
+
+
+def _substitute_placeholders(obj: Any, mapping: dict[str, str]) -> Any:
+    if isinstance(obj, dict):
+        return {k: _substitute_placeholders(v, mapping) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_substitute_placeholders(v, mapping) for v in obj]
+    if isinstance(obj, str):
+        out = obj
+        for key, val in mapping.items():
+            out = out.replace(f"${{{key}}}", val)
+        return out
+    return obj
+
+
+def load_mcp_servers_catalog(repo: Path | None = None, stack: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Load config/second-brain.mcp-servers.yaml with paths resolved from brain-stack."""
+    repo = repo or Path(__file__).resolve().parents[2]
+    path = mcp_catalog_path(repo)
+    if not path.is_file():
+        raise FileNotFoundError(f"missing {path}")
+    stack = stack or load_brain_stack(repo)
+    raw = _parse_simple_yaml(path.read_text(encoding="utf-8"))
+    mapping = {
+        "NU_LLM_WIKI_MCP": str(stack["hermes"]["mcp_server_js"]),
+        "BRAIN_ROOT": str(stack["paths"]["brain_root"]),
+    }
+    return _substitute_placeholders(raw, mapping)
+
+
+def format_mcp_servers_block(servers: dict[str, Any]) -> str:
+    """Emit Hermes-style mcp_servers: YAML subtree (no wiring markers)."""
+
+    def emit_scalar(key: str, val: str, indent: int) -> list[str]:
+        pad = " " * indent
+        if val == "${LLM_WIKI_API_TOKEN}" or (val.startswith("${") and val.endswith("}")):
+            return [f"{pad}{key}: \"{val}\""]
+        if " " in val or ":" in val:
+            return [f'{pad}{key}: "{val}"']
+        return [f"{pad}{key}: {val}"]
+
+    lines: list[str] = ["mcp_servers:"]
+    for name, spec in servers.items():
+        if not isinstance(spec, dict):
+            continue
+        lines.append(f"  {name}:")
+        for k, v in spec.items():
+            if k == "args" and isinstance(v, list):
+                lines.append("    args:")
+                for item in v:
+                    s = str(item)
+                    if s.startswith("-") or " " in s:
+                        lines.append(f'      - "{s}"' if s == "-y" else f"      - {s}")
+                    else:
+                        lines.append(f"      - {s}")
+            elif k == "env" and isinstance(v, dict):
+                lines.append("    env:")
+                for ek, ev in v.items():
+                    lines.extend(emit_scalar(ek, str(ev), 6))
+            elif isinstance(v, str):
+                lines.extend(emit_scalar(k, v, 4))
+    return "\n".join(lines)
+
+
+def active_harness(stack: dict[str, Any]) -> str:
+    h = (stack.get("active_harness") or "hermes").strip().lower()
+    return h if h in ("hermes", "openclaw") else "hermes"
+
+
+def messaging_sync_env_keys(stack: dict[str, Any]) -> list[str]:
+    msg = stack.get("messaging") or {}
+    keys = list(msg.get("sync_env_keys") or [])
+    if keys:
+        return keys
+    hermes = stack.get("hermes") or {}
+    all_keys = list(hermes.get("sync_env_keys") or [])
+    messaging_prefixes = ("TELEGRAM_", "WHATSAPP_")
+    return [k for k in all_keys if k.startswith(messaging_prefixes)]
+
+
+def hermes_core_sync_env_keys(stack: dict[str, Any]) -> list[str]:
+    hermes = stack.get("hermes") or {}
+    keys = list(hermes.get("sync_env_keys") or [])
+    msg_keys = set(messaging_sync_env_keys(stack))
+    if not msg_keys:
+        return keys
+    return [k for k in keys if k not in msg_keys]
+
+
 def load_brain_stack(repo: Path | None = None) -> dict[str, Any]:
     repo = repo or Path(__file__).resolve().parents[2]
     example = repo / "config" / "brain-stack.example.yaml"
@@ -177,7 +268,10 @@ def upsert_env_file(dst: Path, src: Path, keys: list[str]) -> None:
 
 def collect_hermes_secrets(stack: dict[str, Any], repo: Path) -> dict[str, str]:
     """Secrets for Hermes: brain-stack.yaml `secrets:` first, then repo `.env` fallback."""
-    keys = list(stack.get("hermes", {}).get("sync_env_keys") or [])
+    hermes_keys = hermes_core_sync_env_keys(stack)
+    keys = hermes_keys + [k for k in messaging_sync_env_keys(stack) if k not in hermes_keys]
+    if not keys:
+        keys = list(stack.get("hermes", {}).get("sync_env_keys") or [])
     raw = stack.get("secrets") or {}
     out: dict[str, str] = {}
     if isinstance(raw, dict):

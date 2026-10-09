@@ -116,7 +116,7 @@ if [[ "$UI" == "desktop" ]]; then
   fi
   # Prefer hermes desktop when model flags set so config is read on launch (open -a reuses old app/session).
   if [[ -n "$PROVIDER" || -n "$MODEL" ]]; then
-    bash "$ROOT/scripts/brain/stop-hermes.sh" >/dev/null 2>&1 || true
+    bash "$(dirname "$0")/stop-hermes.sh" >/dev/null 2>&1 || true
     exec hermes desktop --cwd "$ROOT"
   fi
   if launch_desktop_app; then

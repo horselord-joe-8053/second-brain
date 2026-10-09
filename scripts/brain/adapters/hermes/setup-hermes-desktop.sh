@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Hermes Desktop: ensure CLI, stack env, then install or build the native app (macOS).
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-# shellcheck source=scripts/brain/hermes-env.sh
-source "$(dirname "$0")/hermes-env.sh"
+HERMES_AD="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=scripts/brain/adapters/hermes/hermes-env.sh
+source "$HERMES_AD/hermes-env.sh"
+ROOT="$SECOND_BRAIN_ROOT"
 
 DESKTOP_PAGE="${HERMES_DESKTOP_URL:-https://hermes-agent.nousresearch.com/desktop}"
 CACHE_DIR="$ROOT/brain/.cache"
@@ -24,7 +25,7 @@ find_hermes_app() {
   return 1
 }
 
-bash "$ROOT/scripts/brain/setup-hermes.sh"
+bash "$HERMES_AD/setup-hermes.sh"
 bash "$ROOT/scripts/brain/apply-stack-config.sh"
 
 OPEN_DOWNLOAD_PAGE=1

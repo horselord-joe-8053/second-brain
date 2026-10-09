@@ -7,7 +7,7 @@ Manual run with **LLM Wiki** + **Hermes** up. Tick in **Decisions** or plan P8.
 ```bash
 cd /Users/jjw8053/projects/second_brain
 export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"
-./scripts/brain/acceptance-automated.sh
+./scripts/brain/adapters/hermes/acceptance-automated.sh
 # or:
 RUN_BRAIN_ACCEPTANCE=1 ./scripts/brain/setup-local.sh
 ```

@@ -118,7 +118,7 @@ The chat’s screenshot flow (question → active context → `index.md` → hyb
 | `llm_wiki_files` | Discover tree (`root=wiki\|sources\|all`) |
 | `llm_wiki_rescan_sources` | Write-path helper; not query |
 
-Example Hermes wiring: [`docs/harness/hermes-mcp.example.yaml`](../docs/harness/hermes-mcp.example.yaml).
+Shared MCP catalog: [`config/second-brain.mcp-servers.yaml`](../config/second-brain.mcp-servers.yaml). Hermes adapter: [`harness/adapters/hermes/`](../harness/adapters/hermes/).
 
 <h3 id="4-3-chat-vs-compose" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.3 `llm_wiki_chat` vs compose-your-own retrieval</h3>
 
@@ -332,6 +332,7 @@ Items below are **verified against `nu_llm_wiki`** (Oct 2026). IDs are for the [
 | Karpathy LLM Wiki gist | https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f |
 | Nashsu LLM Wiki | https://github.com/nashsu/llm_wiki |
 | MCP server README | `nu_llm_wiki/mcp-server/README.md` (sibling clone) |
-| Hermes MCP example | [`docs/harness/hermes-mcp.example.yaml`](../docs/harness/hermes-mcp.example.yaml) |
+| MCP catalog | [`config/second-brain.mcp-servers.yaml`](../config/second-brain.mcp-servers.yaml) |
+| Hermes adapter | [`harness/adapters/hermes/`](../harness/adapters/hermes/) |
 | Delivery plan (query fidelity) | [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../seed_grow/plans/second-brain-hermes-v1-plan.md) |
 | Local runbook | [`docs_manual_gen/SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) |

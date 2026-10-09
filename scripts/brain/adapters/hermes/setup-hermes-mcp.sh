@@ -2,7 +2,8 @@
 # Idempotent P4: sync API token, merge MCP into ~/.hermes/config.yaml, smoke-test API.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+HERMES_AD="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$HERMES_AD/../../../.." && pwd)"
 export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"
 
 bash "$ROOT/scripts/brain/sync-llm-wiki-token.sh"
@@ -24,7 +25,7 @@ if [[ ! -f "$MCP_JS" ]]; then
   exit 1
 fi
 
-python3 "$ROOT/scripts/brain/merge-hermes-wiring.py"
+python3 "$HERMES_AD/merge-hermes-wiring.py"
 
 echo "--- LLM Wiki API health ---"
 if curl -fsS -H "Authorization: Bearer ${LLM_WIKI_API_TOKEN}" \
@@ -44,7 +45,7 @@ if command -v hermes >/dev/null 2>&1; then
   fi
 fi
 
-bash "$ROOT/scripts/brain/setup-hermes-skills.sh"
+bash "$HERMES_AD/setup-hermes-skills.sh"
 bash "$ROOT/scripts/brain/mcp-smoke-read.sh"
 
 echo "setup-hermes-mcp: OK"

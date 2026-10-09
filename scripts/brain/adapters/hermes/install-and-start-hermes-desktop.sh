@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # One command: wire Second Brain → Hermes config, ensure Desktop app, launch Desktop (not TUI).
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+HERMES_AD="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$HERMES_AD/../../../.." && pwd)"
 cd "$ROOT"
 
 PROVIDER=""
@@ -27,7 +28,7 @@ done
 if [[ "$SKIP_INSTALL" -eq 0 ]]; then
   extra=()
   [[ "$OPEN_DL" -eq 0 ]] && extra+=(--no-open-download-page)
-  bash "$ROOT/scripts/brain/setup-hermes-desktop.sh" "${extra[@]}"
+  bash "$HERMES_AD/setup-hermes-desktop.sh" "${extra[@]}"
 fi
 
 bash "$ROOT/scripts/brain/apply-stack-config.sh"
@@ -36,4 +37,4 @@ start_args=()
 [[ -n "$PROVIDER" ]] && start_args+=(--provider "$PROVIDER")
 [[ -n "$MODEL" ]] && start_args+=(-m "$MODEL")
 
-exec bash "$ROOT/scripts/brain/start-hermes.sh" "${start_args[@]}"
+exec bash "$HERMES_AD/start-hermes.sh" "${start_args[@]}"
