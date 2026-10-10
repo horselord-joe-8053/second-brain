@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator, List, TextIO
 
-from retail_brain.market import cities_for_market, issues_for_market, market_profile
-from retail_brain.models import MODELS, STATUSES, RESOLVED
+from retail_brain.models import STATUSES, RESOLVED
+from retail_brain.seed_narrative import format_stored_customer_query, narrative_parts
 
 
 @dataclass
@@ -45,31 +45,24 @@ SERVICE_FIELDNAMES = [
 
 
 def generate_tickets(*, count: int, seed: int = 42, market: str | None = None) -> List[TicketRecord]:
-    profile = market_profile(market)
-    prefix = profile["customer_query_prefix"]
-    cities = cities_for_market(market)
-    issues = issues_for_market(market)
     rows: List[TicketRecord] = []
     for i in range(count):
-        city, state = cities[i % len(cities)]
-        model = MODELS[i % len(MODELS)]
-        issue, fix = issues[i % len(issues)]
+        parts = narrative_parts(seed=seed, index=i, market=market)
         status = RESOLVED if i % 4 != 0 else STATUSES[i % len(STATUSES)]
         tid = f"T-{seed:04d}-{i:06d}"
         item_number = f"ITM-{i:08d}"
+        store_id = f"ST-{i % 120:04d}"
         rows.append(
             TicketRecord(
                 ticket_id=tid,
                 item_number=item_number,
-                store_id=f"ST-{i % 120:04d}",
-                city=city,
-                state=state,
-                model=model,
+                store_id=store_id,
+                city=parts.city,
+                state=parts.state,
+                model=parts.model,
                 status=status,
-                customer_query_text=(
-                    f"{prefix}{issue} on {model}. Case ref {item_number} / {tid}."
-                ),
-                resolution_text=fix if status == RESOLVED else "",
+                customer_query_text=format_stored_customer_query(parts, market=market),
+                resolution_text=parts.fix if status == RESOLVED else "",
                 opened_at="2025-01-01T10:00:00Z",
                 updated_at="2025-01-02T10:00:00Z",
                 closed_at="2025-01-03T10:00:00Z" if status == RESOLVED else "",

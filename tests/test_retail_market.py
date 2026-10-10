@@ -34,10 +34,11 @@ def test_au_seed_english_copy(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_paraphrase_follows_market_template(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("RETAIL_MARKET", "AU")
-    text = "Customer reports: battery drains quickly on Galaxy A16 5G."
-    q = paraphrase_query(text, "T-0042-000001")
+    q = paraphrase_query("T-0042-000001", seed=42)
     assert q.startswith("Need help:")
     assert "Customer reports:" not in q
+    assert "ST-" not in q
+    assert "Case ref" not in q
 
 
 def test_unknown_market_fails_fast(monkeypatch: pytest.MonkeyPatch) -> None:

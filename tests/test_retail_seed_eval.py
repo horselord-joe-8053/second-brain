@@ -25,6 +25,26 @@ def test_each_ticket_has_unique_stored_text() -> None:
     assert len(texts) == len(set(texts))
 
 
+def test_customer_query_has_no_operational_ids() -> None:
+    rows = generate_tickets(count=50, seed=42)
+    forbidden = ("Case ref", "ITM-", "ST-", "T-0042")
+    for r in rows:
+        text = r.customer_query_text
+        for token in forbidden:
+            assert token not in text, f"{token} leaked into prose for {r.ticket_id}"
+
+
+def test_eval_query_has_no_operational_ids(tmp_path: Path) -> None:
+    rows = generate_tickets(count=20, seed=7)
+    manifest = tmp_path / "ticket_manifest.jsonl"
+    write_manifest(manifest, rows, seed=7)
+    eval_rows = build_eval_rows(manifest, max_rows=10)
+    forbidden = ("Case ref", "ITM-", "ST-", "(ref ", "T-0042")
+    for ev in eval_rows:
+        for token in forbidden:
+            assert token not in ev["query"], ev["eval_id"]
+
+
 def test_strict_gold_single_expected_id(tmp_path: Path) -> None:
     rows = generate_tickets(count=12, seed=42)
     manifest = tmp_path / "ticket_manifest.jsonl"

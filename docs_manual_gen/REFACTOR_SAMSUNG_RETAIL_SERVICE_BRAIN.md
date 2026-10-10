@@ -23,6 +23,7 @@
 12. [Phase 3 — FRU sidecar + skill + MCP](#12-phase-3) — ticket plane V1.
 13. [Phase 4 — Ticket retrieval eval baseline](#13-phase-4) — harness, CI gate.
 14. [Phase 5 — V1.1 hybrid search (required)](#14-phase-5) — tsvector + RRF + A/B.
+ 14.1 [Phase 5.1 — FTS normalize + richer seed (follow-up)](#14-1-rrf-strip-fluff) — child plan when lexical leg was empty.
 15. [Phase 6 — Operator gate: Postgres V1 vs V1.1 A/B](#15-phase-6) — prep scripts, Hermes wiki, run `04`.
 16. [Deferred — Samsung V5 FRU agent harness](#16-deferred-v5) — model scope, SQL+RAG loop, generic `utils/pg_rag`.
 17. [Deferred — Samsung V2 automation](#17-deferred-v2) — themes, cron, exports.
@@ -41,6 +42,7 @@
 - [X] Phase 3 complete
 - [X] Phase 4 complete
 - [X] Phase 5 complete (**required** — V1.1 hybrid + A/B gate per D6)
+- [X] **Phase 5.1** — hybrid lexical normalize + seed uniqueness ([`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md); war story [4](../war_stories/WAR_STORIES.md#war-story-4))
 - [X] **Phase 6** — operator prep + Postgres A/B shakedown ([section 15](#15-phase-6); operator log `scripts/retail/eval/reports/phase6_operator_log.md`)
 - [ ] **Samsung V2** — themes/exports/automation ([section 17](#17-deferred-v2))
 - [ ] **Platform** — `brain/personal` migration ([section 18](#18-deferred-platform))
@@ -438,6 +440,10 @@ Lesson and caveats: [war story 2](../war_stories/WAR_STORIES.md#war-story-2).
 - [X] Pytests: `tests/test_retail_hybrid_rrf.py`.
 - [X] **Exit:** `./scripts/verify.sh` green (28 pytest).
 
+<h3 id="14-1-rrf-strip-fluff" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">14.1 Phase 5.1 — FTS normalize + richer seed (follow-up)</h3>
+
+Phase 6 shakedown showed **V1.1 ≡ V1** because the lexical leg never matched paraphrase queries. **Child refactor plan (canonical):** [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) — finite **`search_text`** strip at embed time, `websearch_to_tsquery` on normalized queries, richer seeded ticket bodies, regen fixtures. **War story:** [4](../war_stories/WAR_STORIES.md#war-story-4). Operator: re-run [`03_pg_up_and_load.sh`](../cursor_gen/retail_v11_prep/03_pg_up_and_load.sh) + [`04_run_ab_postgres.sh`](../cursor_gen/retail_v11_prep/04_run_ab_postgres.sh) after merge to measure lexical contribution.
+
 ---
 
 <h2 id="15-phase-6" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">15. Phase 6 — Operator gate: Postgres V1 vs V1.1 A/B</h2>
@@ -690,7 +696,8 @@ Replace the single [`HERMES_PREP_PROMPT.md`](../cursor_gen/retail_v11_prep/HERME
 | Powabase Postgres agent | [blog](https://powabase.ai/blog/build-an-ai-customer-support-agent-on-postgres/) |
 | pgvector production | [Jacar](https://jacar.es/en/rag-with-postgres-and-pgvector-in-production-from-poc-to-slo/) |
 | V1.1 prep (interim) | [`cursor_gen/retail_v11_prep/`](../cursor_gen/retail_v11_prep/) |
-| War stories (planes + embed-once A/B) | [`war_stories/WAR_STORIES.md`](../war_stories/WAR_STORIES.md) — [story 1](../war_stories/WAR_STORIES.md#war-story-1), [story 2](../war_stories/WAR_STORIES.md#war-story-2) |
+| War stories (planes + embed-once A/B + hybrid RRF) | [`war_stories/WAR_STORIES.md`](../war_stories/WAR_STORIES.md) — [1](../war_stories/WAR_STORIES.md#war-story-1), [2](../war_stories/WAR_STORIES.md#war-story-2), [4](../war_stories/WAR_STORIES.md#war-story-4) |
+| Phase 5.1 child plan (FTS normalize) | [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) |
 | Hermes MCP runbook | [`RUNBOOK_HARNESS_HERMES.md`](./RUNBOOK_HARNESS_HERMES.md) |
 | OpenClaw harness (future) | [`RUNBOOK_HARNESS_OPENCLAW.md`](./RUNBOOK_HARNESS_OPENCLAW.md) |
 

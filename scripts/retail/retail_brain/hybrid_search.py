@@ -10,6 +10,7 @@ from typing import Dict, List, Optional, Sequence
 from retail_brain.embeddings import cosine_distance, embed_text
 from retail_brain.models import RESOLVED
 from retail_brain.rrf import reciprocal_rank_fusion
+from retail_brain.text_normalize import fts_query_text, search_text_for_fts
 
 
 @dataclass
@@ -69,8 +70,18 @@ def lexical_rank(
         for r in rows
         if r.status == RESOLVED and (model_filter is None or r.model == model_filter)
     ]
+    q_norm = fts_query_text(query)
     scored = sorted(
-        ((r.ticket_id, lexical_score(query, r.customer_query_text)) for r in candidates),
+        (
+            (
+                r.ticket_id,
+                lexical_score(
+                    q_norm,
+                    search_text_for_fts(r.customer_query_text),
+                ),
+            )
+            for r in candidates
+        ),
         key=lambda x: (-x[1], x[0]),
     )
     return [tid for tid, score in scored[:limit] if score > 0]

@@ -25,6 +25,8 @@ CSV="$ROOT/scripts/retail/seed/generated/service_queries.csv"
 test -f "$CSV" || { echo "Run 02_generate_corpus.sh first" >&2; exit 1; }
 
 export RETAIL_MARKET="${RETAIL_MARKET:-AU}"
+echo "03: apply schema migrations (idempotent)..."
+docker compose exec -T retail_pg psql -U retail -d retail -f - < "$ROOT/scripts/retail/schema/002_search_text.sql"
 echo "03: truncating service_queries (clean reload for current CSV/market)..."
 docker compose exec -T retail_pg psql -U retail -d retail -c "TRUNCATE service_queries;"
 

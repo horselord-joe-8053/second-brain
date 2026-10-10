@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS service_queries (
   model TEXT NOT NULL,
   status TEXT NOT NULL,
   customer_query_text TEXT NOT NULL,
+  search_text TEXT,
   resolution_text TEXT,
   opened_at TIMESTAMPTZ,
   updated_at TIMESTAMPTZ,

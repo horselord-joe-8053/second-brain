@@ -17,6 +17,7 @@ load_repo_env(ROOT)
 
 from retail_brain.embeddings import EMBEDDING_DIMENSION, embed_text  # noqa: E402
 from retail_brain.market import pg_ts_config  # noqa: E402
+from retail_brain.text_normalize import search_text_for_fts  # noqa: E402
 
 
 def main() -> None:
@@ -42,14 +43,16 @@ def main() -> None:
                 if len(emb) != EMBEDDING_DIMENSION:
                     raise RuntimeError(f"unexpected embedding size for {tid}")
                 emb_literal = "[" + ",".join(str(x) for x in emb) + "]"
+                fts_body = search_text_for_fts(text or "")
                 cur.execute(
                     """
                     UPDATE service_queries
                     SET query_embedding = %s::vector,
-                        query_tsv = to_tsvector(%s, coalesce(customer_query_text, ''))
+                        search_text = %s,
+                        query_tsv = to_tsvector(%s, coalesce(%s, ''))
                     WHERE ticket_id = %s
                     """,
-                    (emb_literal, ts_cfg, tid),
+                    (emb_literal, fts_body, ts_cfg, fts_body, tid),
                 )
         conn.commit()
         print(f"embedded + tsvector updated for {len(rows)} rows (dim={EMBEDDING_DIMENSION})")

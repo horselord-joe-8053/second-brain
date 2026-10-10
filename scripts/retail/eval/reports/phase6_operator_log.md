@@ -15,14 +15,16 @@
 
 <h2 id="p6-ab" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">A/B results (6.9–6.10)</h2>
 
-**Latest (strict gold, unique ticket text, paraphrase strips case ref):**
+**Latest (Phase 5 deterministic narrative seed, `03` reload + re-embed, 2026-10-11):**
 
-| Mode | recall@1 | paraphrase | literal_token |
-|------|----------|------------|---------------|
-| V1 vector | 0.955 | 0.932 | 1.000 |
-| V1.1 hybrid | 0.955 | 0.932 | 1.000 |
+| Mode | recall@1 | lexical leg |
+|------|----------|-------------|
+| V1 vector | 0.836 | n/a |
+| V1.1 hybrid | 0.851 | **67/67** nonempty |
 
-Reports: `pg_baseline_v1.json`, `pg_ab_v1_v11.json`. Hybrid tied vector — **no D6 promotion**.
+Reports: `pg_baseline_v1.json`, `pg_ab_v1_v11.json`. Modest hybrid lift on realistic prose (no store/case-ref tokens in text). **90-ticket shakedown** — not D6 promotion.
+
+**Prior runs:** pre–5.1 ID-in-prose cabinet (misleading hybrid lift); pre-normalize lexical 0/67.
 
 **D6:** 90-ticket shakedown only — re-run at 500+ scale + optional `llm_author_gold.py` before changing defaults.
 

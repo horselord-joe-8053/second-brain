@@ -50,11 +50,11 @@ eval_id, query, model_filter, expected_ticket_ids, stratum, source_ticket_id
   [, acceptable_ticket_ids] [, gold_rationale]   # optional — offline LLM author only
 ```
 
-- **`expected_ticket_ids`:** **Strict D6 gold** — default generator sets **`[source_ticket_id]`** only. Each ticket has **unique** `customer_query_text` (case ref in seed) so recall@1 is discriminative.
+- **`expected_ticket_ids`:** **Strict D6 gold** — default generator sets **`[source_ticket_id]`** only. Each ticket has **unique** `customer_query_text` via deterministic **`seed_narrative`** (10-issue pool + seeded detail slots). **No** operational IDs (`store_id`, `ticket_id`, `item_number`, case ref) in customer-visible prose.
 - **`acceptable_ticket_ids`:** Optional secondary set from **offline** `seed/llm_author_gold.py` (not runtime). Harness reports `acceptable_recall_at_1` when present; **D6 promotion uses strict `recall_at_1` only**.
 - **Pipeline:** `generate_tickets` → `generate_eval_from_manifest` → (optional) `llm_author_gold.py` → commit JSONL → A/B harness. Re-run full chain when `SEED`/`COUNT` changes.
 - **`stratum`:** `paraphrase` | `literal_token` | `sql_routed`
-- **Anti-leakage:** `query` must not equal manifest `customer_query_text` for `source_ticket_id`. Paraphrase **strips** the seed’s `Case ref ITM-… / T-…` suffix so the exam question does not copy the unique cabinet key (stored tickets still include it).
+- **Anti-leakage:** `query` must not equal manifest `customer_query_text` for `source_ticket_id`. Eval queries use **`eval_query_template`** (caller + city + model + issue + one detail) — **no** copying full stored body and **no** operational ID tokens in `query`.
 
 **Gold authorship (D8):** The **data author** sets `query`, `expected_ticket_ids`, and `stratum` from manifest provenance (generators or human holdout). The **implementor** only runs the harness that compares ranker output to that preset gold — never copies top‑k ids back into JSONL. See refactor plan [§8.2](../docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md#8-2-gold-roles).
 

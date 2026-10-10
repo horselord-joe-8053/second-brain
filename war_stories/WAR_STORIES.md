@@ -8,6 +8,7 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 2. [Story 1 — Ticket vs wiki planes + D6 A/B gates](#war-story-1)
 3. [Story 2 — Embed once, share vectors for A/B](#war-story-2)
 4. [Story 3 — Operator load: empty CSV timestamps and eval `.env` parity](#war-story-3)
+5. [Story 4 — Hybrid RRF beside RAG: BM25-class lexical + dense + fuse, not overlap hacks](#war-story-4)
 
 ---
 
@@ -21,6 +22,7 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 <tr><td style="background:#e3f2fd">1</td><td><a href="#war-story-1">Split ticket PG from manual wiki; promote hybrid search only on recall + precision</a></td><td>Two indexes; D6 needs literal recall up and wrong-fix reuse flat.</td></tr>
 <tr><td style="background:#e3f2fd">2</td><td><a href="#war-story-2">Embed the cabinet once; both A and B read the same stored vectors</a></td><td>Live models jitter; freeze docs and queries. Hash mock is for CI only.</td></tr>
 <tr><td style="background:#e3f2fd">3</td><td><a href="#war-story-3">Operator PG load: CSV null timestamps and eval `.env` parity</a></td><td>Empty CSV cells ≠ SQL NULL; embed script and eval must load the same `.env`.</td></tr>
+<tr><td style="background:#e3f2fd">4</td><td><a href="#war-story-4">Hybrid RRF beside RAG: inverted lexical + dense + fuse</a></td><td>Normalize index text once; vectors for paraphrase; reject O(n) overlap on condensed strings.</td></tr>
 </tbody>
 </table>
 
@@ -200,3 +202,162 @@ Map blank timestamp fields to **SQL NULL** in `load_service_queries.py`. Call `l
 <h3 id="war-story-3-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">3.4 Takeaway</h3>
 
 Operator scripts are part of the product surface: treat CSV edge cases, `.env` loading, and **market locale** as **one contract** across every path that embeds or full-text searches tickets.
+
+---
+
+<h2 id="war-story-4" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">4. Hybrid RRF beside RAG: inverted lexical + dense + fuse (not overlap hacks)</h2>
+
+**Payoff (read this first):** Ticket **RAG (retrieval-augmented generation: fetch similar past cases before the model answers)** needs **two retrieval legs** in production: **dense vectors** for customer paraphrase, and an **inverted lexical index** (BM25-class full-text, e.g. Postgres `tsvector` + GIN) on **index text you control once per ticket**. Fuse ranked lists with **RRF (reciprocal rank fusion: add scores from rank position, not raw similarity)**—optionally **rerank** top candidates with a cross-encoder. Do **not** scan every row counting **% token overlap** on LLM-condensed strings at query time; that is neither best practice nor scalable. Batch LLM enrichment of index copy is fine **offline**; infinite live boilerplate stripping is not the whole answer.
+
+**creation:** 261010-234500  
+**last_updated:** 261010-234500  
+**keywords:** rag, hybrid-search, rrf, bm25, pgvector, tsvector, eval, design, retrieval, second-brain  
+**difficulty:** 6  
+**significance:** 9  
+
+<h3 id="war-story-4-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.1 Context</h3>
+
+Samsung retail **Second Brain** stores ~90–100k-scale **service tickets** in Postgres with **pgvector** embeddings and an optional **V1.1** mode: vector leg + lexical leg + **RRF**. Manual PDFs stay on a **separate wiki plane** (story #1). Eval uses **paraphrase questions** (anti-leakage): stored tickets carry `"Customer reports: … Case ref ITM-… / T-…"`, while exam queries sound like live callers and omit case refs.
+
+After Phase 6 A/B with real Gemini embeddings, **strict recall@1** was ~95% on vectors—but **every eval row reported an empty lexical leg**, so **hybrid top-1 identical to vector-only**. Hybrid was wired; it was not **contributing**.
+
+<h3 id="war-story-4-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.2 What industry practice actually looks like</h3>
+
+Modern **hybrid retrieval** stacks (Elasticsearch/OpenSearch **RRF**, Azure AI Search hybrid, Vespa, many RAG tutorials) converge on the same shape:
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Stage</th><th>Role</th><th>Typical tech</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">① Lexical</td><td style="background:#e8f5e9">Exact/rare tokens, SKUs, error codes, product strings</td><td style="background:#e8f5e9">Inverted index — BM25 or Postgres FTS (`tsvector`, GIN)</td></tr>
+<tr><td style="background:#e3f2fd">② Dense</td><td style="background:#e8f5e9">Paraphrase, vague customer wording</td><td style="background:#e8f5e9">Embedding + ANN (pgvector, HNSW, etc.)</td></tr>
+<tr><td style="background:#e3f2fd">③ Fuse</td><td style="background:#fff3e0">Merge two rank lists without calibrating scores</td><td style="background:#fff3e0">RRF (Cormack et al.; widely adopted in OpenSearch 2.x+)</td></tr>
+<tr><td style="background:#e3f2fd">④ Rerank (optional)</td><td style="background:#ede7f6">Precision on top 20–50</td><td style="background:#ede7f6">Cross-encoder or LTR model</td></tr>
+</tbody>
+</table>
+
+**References (external):**
+
+- [OpenSearch — Reciprocal rank fusion](https://opensearch.org/docs/latest/search-plugins/search-relevance/rrf/) — productized RRF over lexical + neural legs.
+- [Azure AI Search — Hybrid search (BM25 + vectors)](https://learn.microsoft.com/en-us/azure/search/hybrid-search-overview) — official hybrid overview.
+- [Cormack, Clarke, Büttcher — Reciprocal Rank Fusion outperforms Condorcet (2009)](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) — original RRF paper.
+
+**RAG** here means: retrieve ticket (or wiki) chunks **before** the agent composes an answer—not “vectors only.” Hybrid is how you keep **both** “SM-A156” keyword signal **and** “my phone gets hot and dies by lunch” semantic signal.
+
+<h3 id="war-story-4-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.3 Root cause in our stack</h3>
+
+```mermaid
+graph TD
+  A[Stored ticket prose] --> B{What gets indexed?}
+  B -->|Before fix| C[raw customer_query_text]
+  C --> D[to_tsvector english]
+  E[Paraphrase exam query] --> F[plainto_tsquery live text]
+  D --> G{token overlap?}
+  F --> G
+  G -->|prefix + Case ref only on index| H[lexical leg empty]
+  I[Vector leg] --> J[recall ok alone]
+  H --> K[RRF adds nothing]
+  J --> K
+
+  style A fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style H fill:#ffebee,stroke:#c62828,stroke-width:1px,font-size:9px
+  style K fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
+  style J fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+```
+
+Three reinforcing bugs:
+
+1. **Index/query asymmetry** — FTS built from boilerplate-heavy stored text; exams omit `"Customer reports:"` and `"Case ref …"`.
+2. **Weak query parser** — `plainto_tsquery` on unnormalized paraphrase vs `websearch_to_tsquery` on normalized text.
+3. **Corpus twins** — cyclic issue templates produced duplicate `(model, body)` rows; strict gold expects a single ticket id (vectors tie).
+
+<h3 id="war-story-4-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.4 Anti-pattern we rejected</h3>
+
+A tempting shortcut: **LLM-condense every ticket to a short string**, then at query time **scan all rows** and pick max **% word overlap**.
+
+| Approach | Verdict |
+|----------|---------|
+| O(n) overlap on condensed strings | <span style="background:#ffcdd2;padding:2px 4px">⚠</span> No inverted index; latency scales with cabinet size; brittle to live prefixes |
+| Infinite regex strip at query time | <span style="background:#ffcdd2;padding:2px 4px">⚠</span> Cannot enumerate all future boilerplate |
+| Batch LLM `search_text` at ingest | <span style="background:#c8e6c9;padding:2px 4px">✓</span> Valid **offline** enrichment (controlled once per ticket) |
+| FTS on normalized `search_text` + dense + RRF | <span style="background:#c8e6c9;padding:2px 4px">✓</span> Matches industry hybrid shape |
+
+<h3 id="war-story-4-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.5 Resolution (code anchors)</h3>
+
+**Finite normalize at embed time** (`scripts/retail/retail_brain/text_normalize.py`):
+
+```python
+def search_text_for_fts(raw: str, *, market: str | None = None) -> str:
+    """Index/query text for the lexical leg: drop prefix and case-ref trailer."""
+    core = strip_market_prefix(raw or "", market=market)
+    return strip_case_ref_suffix(core)
+```
+
+**Embed path** writes both vector (full prose for semantics) and lexical index (normalized body):
+
+```python
+fts_body = search_text_for_fts(text or "")
+cur.execute(
+    """
+    UPDATE service_queries
+    SET query_embedding = %s::vector,
+        search_text = %s,
+        query_tsv = to_tsvector(%s, coalesce(%s, ''))
+    WHERE ticket_id = %s
+    """,
+    (emb_literal, fts_body, ts_cfg, fts_body, tid),
+)
+```
+
+**Search path** — same normalize on the live query; inverted lookup via Postgres:
+
+```python
+q = fts_query_text(query)
+# ...
+AND query_tsv @@ websearch_to_tsquery(%s, %s)
+ORDER BY ts_rank_cd(query_tsv, websearch_to_tsquery(%s, %s)) DESC
+```
+
+**RRF** unchanged in spirit — fuse vector rank list with lexical rank list (`retail_brain/rrf.py`):
+
+```python
+def reciprocal_rank_fusion(ranked_lists: Sequence[Sequence[str]], k: int = 60) -> List[Tuple[str, float]]:
+    scores: Dict[str, float] = {}
+    for ranked in ranked_lists:
+        for rank, doc_id in enumerate(ranked, start=1):
+            scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank)
+    return sorted(scores.items(), key=lambda x: (-x[1], x[0]))
+```
+
+**Seed** adds store/city so strict eval ids are not confounded by identical templates.
+
+```mermaid
+graph LR
+  T[Ticket CSV] --> N[search_text_for_fts at embed]
+  N --> GIN[GIN tsvector]
+  T --> V[query_embedding Gemini]
+  Q[Live paraphrase] --> EQ[fts_query_text]
+  Q --> EV[query embedding]
+  EQ --> LEX[lexical rank]
+  EV --> VEC[vector rank]
+  LEX --> RRF[RRF fuse]
+  VEC --> RRF
+  RRF --> TOP[top-k tickets to agent]
+
+  style T fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style GIN fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style V fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style RRF fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
+  style TOP fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
+```
+
+**Plan + parent link:** [`docs_manual_gen/REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](../docs_manual_gen/REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) under [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) Phase 5.1.
+
+<h3 id="war-story-4-sec-6" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.6 Promotion rule (D6) unchanged</h3>
+
+Turning hybrid on by default still requires **D6 (promotion rule: don’t enable hybrid search by default until tests show a clear upside)** evidence: literal **recall@1 (does the right ticket rank first?)** up or flat, and **false reuse (confidently applying another customer’s wrong answer)** not worse on paraphrase stratum (test questions worded differently from stored ticket text). Phase 5.1 makes the lexical leg **measurable**; operator must **re-embed** (`03_pg_up_and_load.sh`) before the next A/B.
+
+<h3 id="war-story-4-sec-7" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.7 Takeaway</h3>
+
+**RAG over tickets is hybrid by default in mature systems:** dense for language variation, inverted lexical for tokens that actually appear, **RRF** to combine ranks without score calibration. Control **index text once** (finite strip + optional offline LLM enrich); let **vectors** carry live paraphrase. That is the course we ship on `feature/rrf-strip-fluff`—not query-time LLM fluff stripping and not O(n) overlap scans.

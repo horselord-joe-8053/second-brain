@@ -56,7 +56,10 @@ def main() -> None:
     extra = ""
     if "acceptable_recall_at_1" in report:
         extra = f" acceptable_recall@1={report['acceptable_recall_at_1']:.3f}"
-    print(f"mode={report['mode']} recall@1={report['recall_at_1']:.3f}{extra} -> {args.report}")
+    lex = ""
+    if report.get("lexical_leg_nonempty") is not None:
+        lex = f" lexical_nonempty={report['lexical_leg_nonempty']}/{report['total']}"
+    print(f"mode={report['mode']} recall@1={report['recall_at_1']:.3f}{extra}{lex} -> {args.report}")
 
 
 if __name__ == "__main__":

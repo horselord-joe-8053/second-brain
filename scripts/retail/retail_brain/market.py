@@ -14,6 +14,9 @@ _PROFILES: Dict[MarketCode, Dict[str, Any]] = {
         "pg_ts_config": "english",
         "customer_query_prefix": "Customer reports: ",
         "paraphrase_template": "Need help: caller says {core} (ref {ref})",
+        "eval_query_template": (
+            "Need help: {caller} in {city} with a {model} — {issue}. {detail}"
+        ),
         "cities": [
             ("Sydney", "NSW"),
             ("Melbourne", "VIC"),
@@ -32,6 +35,34 @@ _PROFILES: Dict[MarketCode, Dict[str, Any]] = {
                 "SM-A156 SIM not recognised",
                 "Reseat SIM and validate operator 5G bands.",
             ),
+            (
+                "mobile data drops when switching to 5G",
+                "Reset APN settings and verify carrier VoLTE profile.",
+            ),
+            (
+                "camera app crashes on open",
+                "Clear camera cache and apply latest security patch.",
+            ),
+            (
+                "fingerprint sensor stopped working",
+                "Re-register prints after wiping sensor area.",
+            ),
+            (
+                "Bluetooth will not pair with car audio",
+                "Forget device, reset network settings, pair again.",
+            ),
+            (
+                "phone overheats during normal calls",
+                "Check for rogue background sync and reduce brightness.",
+            ),
+            (
+                "wireless charging pad not detected",
+                "Test with another pad and inspect case thickness.",
+            ),
+            (
+                "notifications delayed by several hours",
+                "Disable battery optimization for messaging apps.",
+            ),
         ],
     },
     "BR": {
@@ -40,6 +71,9 @@ _PROFILES: Dict[MarketCode, Dict[str, Any]] = {
         "pg_ts_config": "portuguese",
         "customer_query_prefix": "Cliente relata: ",
         "paraphrase_template": "Preciso de ajuda: usuário descreve {core} (ref {ref})",
+        "eval_query_template": (
+            "Preciso de ajuda: {caller} em {city} com {model} — {issue}. {detail}"
+        ),
         "cities": [
             ("São Paulo", "SP"),
             ("Rio de Janeiro", "RJ"),
@@ -57,6 +91,34 @@ _PROFILES: Dict[MarketCode, Dict[str, Any]] = {
             (
                 "SM-A156 não reconhece chip",
                 "Reassentar SIM e validar bandas 5G da operadora.",
+            ),
+            (
+                "dados móveis caem ao mudar para 5G",
+                "Redefinir APN e validar perfil VoLTE.",
+            ),
+            (
+                "app da câmera fecha ao abrir",
+                "Limpar cache da câmera e aplicar patch.",
+            ),
+            (
+                "leitor de digital parou de funcionar",
+                "Recadastrar digitais após limpar sensor.",
+            ),
+            (
+                "Bluetooth não emparelha no carro",
+                "Esquecer dispositivo e parear de novo.",
+            ),
+            (
+                "telefone esquenta durante ligações",
+                "Verificar sync em segundo plano.",
+            ),
+            (
+                "carregamento sem fio não detectado",
+                "Testar outra base e remover capa grossa.",
+            ),
+            (
+                "notificações atrasam horas",
+                "Desativar otimização de bateria no app.",
             ),
         ],
     },

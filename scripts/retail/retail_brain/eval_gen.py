@@ -3,28 +3,23 @@
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-# Unique case ref lives on stored tickets; exam questions omit it (customer wording).
-_CASE_REF_SUFFIX = re.compile(
-    r"\s*Case ref ITM-\d+ / T-\d+-\d+\.\s*$",
-    re.IGNORECASE,
-)
-
-from retail_brain.market import market_profile
 from retail_brain.models import RESOLVED
 from retail_brain.seed import iter_manifest
+from retail_brain.seed_narrative import format_eval_query, parts_for_ticket_id
 
 
-def paraphrase_query(manifest_text: str, ticket_id: str, *, market: str | None = None) -> str:
-    """Deterministic paraphrase — must differ from manifest customer_query_text."""
-    profile = market_profile(market)
-    prefix = profile["customer_query_prefix"]
-    core = manifest_text.replace(prefix, "").strip()
-    core = _CASE_REF_SUFFIX.sub("", core).strip()
-    return profile["paraphrase_template"].format(core=core, ref=ticket_id[-6:])
+def paraphrase_query(
+    ticket_id: str,
+    *,
+    seed: int,
+    market: str | None = None,
+) -> str:
+    """Deterministic exam wording — no operational IDs; must differ from stored prose."""
+    parts = parts_for_ticket_id(ticket_id, seed=seed, market=market)
+    return format_eval_query(parts, market=market)
 
 
 def equivalence_key(model: str, customer_query_text: str) -> Tuple[str, str]:
@@ -55,10 +50,11 @@ def build_eval_rows(manifest_path: Path, *, max_rows: int = 50) -> List[dict]:
             break
         tid = rec["ticket_id"]
         original = rec["customer_query_text"]
-        query = paraphrase_query(original, tid)
+        row_seed = int(rec.get("seed", 42))
+        query = paraphrase_query(tid, seed=row_seed)
         if query.strip() == original.strip():
             raise ValueError(f"eval leakage: verbatim query for {tid}")
-        stratum = "literal_token" if "SM-" in original else "paraphrase"
+        stratum = "literal_token" if "SM-" in query else "paraphrase"
         rows.append(
             {
                 "eval_id": f"eval-{i:04d}",
