@@ -26,7 +26,8 @@ alwaysApply: false
 9. [Procedure: step 3.5 — relocate plan under <code>cursor_gen/refactor_plans/completed/</code> vs <code>cursor_gen/refactor_plans/wip/</code>](#ir-s3-move)
 10. [Procedure: step 4 — closing summary](#ir-s4)
 11. [<code>resumimpl</code>](#ir-resume)
-12. [Self-check (agent)](#ir-selfcheck)
+12. [Operator / desktop gates (§3.1f)](#ir-s3-1f)
+13. [Self-check (agent)](#ir-selfcheck)
 
 **Related authoring rule:** `.cursor/rules/mrkd-markdown-authoring.mdc` — use it when **creating or reorganizing** the refactor plan `.md` (numbered outline, hierarchy, HTML headings or portable palette where appropriate).
 
@@ -100,7 +101,7 @@ After editing, proceed to step 3.
 | **3.1 Stops** | Do **not** pause between phases to ask permission. Continue through **all** phases the user asked you to execute unless **blocked** — see **§3.1d** for the **closed list** of true blockers. If blocked, ask **precise, minimal** questions; after answers, continue. |
 | **3.1b <code>resumimpl</code>** | Same as resume: pick up from first <code>[ ]</code> after user unblocks. |
 | **3.1c Not a blocker (forbidden excuses)** | **Never** stop or defer **`implref`** solely because: a phase looks large or risky; the diff might be huge; migrations/UI feel “better as a separate PR”; you prefer confirmation before altering schema; subjective time estimates; internal model/context pressure **while the turn still runs** (**§3.1e** handles when the host **cuts** the turn); **skipping or deferring the [§3.4 exwar gate](#ir-s3-war)** to rush the next phase or because the user did not say `exwar`. **Instead:** execute the **next unchecked** actionable bullet (smallest increment that stays green under tests), and complete **§3.4** before marking a phase `[X]`. |
-| **3.1d True blockers** | **Allowed** reasons to pause and engage the user **with the §3.1d label** in the closing table: build/test failures you cannot resolve in-repo; missing secrets/env; unresolved **ambiguous** requirements after **[step&nbsp;1](#ir-s1)**; irreconcilable spec vs code; destructive data change **without** rollback path required by the plan; **explicit** user revocation or smaller scope (**“only phases A–B today”**) where you **narrow** checklist targets **before** starting. |
+| **3.1d True blockers** | **Allowed** reasons to pause and engage the user **with the §3.1d label** in the closing table: build/test failures you cannot resolve in-repo; missing secrets/env; unresolved **ambiguous** requirements after **[step&nbsp;1](#ir-s1)**; irreconcilable spec vs code; destructive data change **without** rollback path required by the plan; **explicit** user revocation or smaller scope (**“only phases A–B today”**) where you **narrow** checklist targets **before** starting; **operator / desktop gates** listed in **[§3.1f](#ir-s3-1f)** after one automated check (fail-fast — no install loops). |
 | **3.1e Host / session cut** | If the tooling **truncates or ends** your turn (**output budget**, disconnect) before all **`[ ]`** → **`[X]`**, classify as **§3.1e Session cut** — **not** “implref succeeded.” Finish current edit batch safely; keep plan honest **`[ ]`**; **§3.5 → `wip`**; closing table **must** name **§3.1e** and the **exact next bullet + path** plus an explicit **`resumimpl`** follow-up naming that plan file. |
 | **3.2 Plan updates** | After completing each **phase** (or major deliverable), set its bullets to <code>[X]</code> and mark the **phase heading** with <code>[X]</code> when fully done. Save the plan file in the same commit batch when practical. |
 | **3.3 Cannot implement** | If something is **not** implementable for reasons **other** than 3.1 (e.g. out-of-repo service, scope cut), add a **new final phase** to the plan, e.g. **“Deferred / follow-ups”**, containing an **HTML table** (MRKD section 6.1 style: dark blue header row) with columns: **Item** · **Reason** · **Urgency** (brief) · **Recommended handling**. |
@@ -194,12 +195,46 @@ Treat **`resumimpl`** as: reload the **same** refactor plan (from **`cursor_gen/
 
 ---
 
+<h2 id="ir-s3-1f" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Operator / desktop gates (§3.1f — fail-fast human steps)</h2>
+
+When the plan includes **Phase 6** (Samsung retail Postgres A/B), **`cursor_gen/retail_v11_prep/`**, or explicit **Hermes / Nashsu / Cua** operator work:
+
+1. **Try once** (PATH must include <code>~/.local/bin</code>):
+   - <code>export PATH="$HOME/.local/bin:$PATH"</code>
+   - <code>cua-driver doctor</code> — if OK, may drive **Hermes Desktop** to paste/send the plan’s Hermes prompt; **do not** add <code>llm_wiki</code> MCP to Cursor (product agent is Hermes).
+2. **Never** auto-install Docker Desktop, CuaDriver.app, or Nashsu from the agent. Prep scripts use <code>require_cmd</code> — honor **exit 1** and stop.
+3. On failure, **stop immediately** and reply with a **Human gate** table (MRKD 6.1). Use these IDs when the plan references them:
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Gate ID</th><th>Symptom</th><th>What you do (human)</th><th>Then agent resumes</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>HG-DOCKER</strong></td><td style="background:#ffebee"><code>docker</code> missing or daemon down after wait</td><td style="background:#fff3e0">Install/start Docker Desktop; wait until <code>docker info</code> works</td><td style="background:#e8f5e9"><code>00_docker_ensure.sh</code> → Phase 6 from 6.2</td></tr>
+<tr><td style="background:#e3f2fd"><strong>HG-DOCKER-UPDATE</strong></td><td style="background:#ffebee">Daemon blocked by Docker Desktop **update/restart** (or wait timeout with update-like errors)</td><td style="background:#fff3e0">Finish update in Docker Desktop UI **or** <code>RETAIL_DOCKER_BREW_UPGRADE=1 bash cursor_gen/retail_v11_prep/00_docker_ensure.sh</code> (Homebrew cask only)</td><td style="background:#e8f5e9">Re-run 6.2 when <code>docker info</code> succeeds</td></tr>
+<tr><td style="background:#e3f2fd"><strong>HG-PY-PG</strong></td><td style="background:#ffebee"><code>import psycopg2</code> fails</td><td style="background:#fff3e0"><code>pip install psycopg2-binary</code></td><td style="background:#e8f5e9"><code>03_pg_up_and_load.sh</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>HG-PDF-SOURCE</strong></td><td style="background:#ffebee">No PDFs in Downloads or after <code>01_copy_manuals.sh</code></td><td style="background:#fff3e0">Place 6 manuals; re-run 01</td><td style="background:#e8f5e9">Hermes prompt step</td></tr>
+<tr><td style="background:#e3f2fd"><strong>HG-NASHSU</strong></td><td style="background:#ffebee">Wiki not on <code>127.0.0.1:19828</code></td><td style="background:#fff3e0">Start Nashsu LLM Wiki app</td><td style="background:#e8f5e9">Hermes prompt (paste or Cua)</td></tr>
+<tr><td style="background:#e3f2fd"><strong>HG-CUA</strong></td><td style="background:#ffebee"><code>cua-driver</code> not found or <code>doctor</code> fails</td><td style="background:#fff3e0">Install from <a href="https://cua.ai/docs/cua-driver">cua.ai/docs/cua-driver</a>; <code>open -n -g -a CuaDriver --args serve</code>; <code>cua-driver permissions grant</code>; add MCP <code>cua-driver mcp</code> to Cursor if you want agent-driven UI</td><td style="background:#e8f5e9">Retry Hermes automation or paste prompt manually</td></tr>
+<tr><td style="background:#e3f2fd"><strong>HG-HERMES</strong></td><td style="background:#ffebee">Rescan/search smoke failed in Hermes</td><td style="background:#fff3e0">Fix project path, MCP on Hermes, or ingest errors; paste plan §15.4 prompt</td><td style="background:#e8f5e9">Mark 6.5 <code>[X]</code> or waive with reason; ticket A/B may continue</td></tr>
+<tr><td style="background:#e3f2fd"><strong>HG-EMBED</strong></td><td style="background:#ffebee"><code>embed_text</code> / <code>03_pg_up_and_load.sh</code> raises missing key or model</td><td style="background:#fff3e0">Set <code>GEMINI_API_KEY</code> and <code>EMBEDDING_MODEL=gemini-embedding-2</code> in repo <code>.env</code> — **no mock fallback**</td><td style="background:#e8f5e9">Re-run 03 after keys set; drop/recreate PG if vector dimension changed (768)</td></tr>
+</tbody>
+</table>
+
+4. **Hermes success criteria** (for checkbox **6.5**): project <code>…/brain/retail</code>, rescan done, ≥1 wiki page under <code>brain/retail/wiki/</code>, one <code>llm_wiki_search</code> + <code>llm_wiki_read_file</code> reported in chat log.
+5. **Ticket A/B success** ( **6.9** ): both <code>pg_baseline_v1.json</code> and <code>pg_ab_v1_v11.json</code> (or paths printed by <code>04_run_ab_postgres.sh</code>).
+
+Label closing-table blockers as <strong>§3.1d / §3.1f</strong> with the **Gate ID** so <code>resumimpl</code> can continue from the exact bullet.
+
+---
+
 <h2 id="ir-selfcheck" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Self-check (agent)</h2>
 
 - Plan path explicit or inferred once.
 - MRKD-friendly plan structure before coding.
 - Tests + comments + docs expectations visible **in the plan** before coding.
-- No permission spam between phases; interrupt **only** for **§3.1d** true blockers — **not** for **§3.1c** forbidden excuses.
+- No permission spam between phases; interrupt **only** for **§3.1d** true blockers (including **§3.1f** operator gates after one check) — **not** for **§3.1c** forbidden excuses.
+- Phase 6 / retail prep: attempted **§3.1f** gates before asking human; Hermes prompt from plan **§15.4** when applicable.
 - After **each** phase: **read both** `war_stories/` collections → **exwar gate** → append **#N** or document skip (duplicate **#N** / trivial only); **same turn** as phase `[X]`. Closing summary **“War stories: none”** requires explicit per-phase skip lines—**not** “mechanism already in demos/code” and **not** “documented only in the plan/chat.” See **aciub** [§5 Exwar gate](aciub-allow-continue-iterations-until-blocked.mdc#aciub-exwar-gate).
 - On close: Relocate plans per **[step&nbsp;3.5](#ir-s3-move)** — **`completed/`** only when phased implementable **`[ ]`** items are **`[X]`**, waived **with rationale**, or moved **out of phased lists** without misleading boxes; **`wip/`** when honest phased TODO boxes remain or blockers/session cuts apply.
 - Final user reply is a **tabular** summary including **war stories** and **final plan path**.

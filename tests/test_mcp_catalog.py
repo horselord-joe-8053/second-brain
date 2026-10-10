@@ -16,6 +16,7 @@ def test_mcp_catalog_resolves_repo_paths_not_home() -> None:
     catalog = load_mcp_servers_catalog(REPO)
     assert "llm_wiki" in catalog
     assert "second_brain_fs" in catalog
+    assert "retail_pg" in catalog
 
     mcp_js = catalog["llm_wiki"]["args"][0]
     brain_root = catalog["second_brain_fs"]["args"][-1]

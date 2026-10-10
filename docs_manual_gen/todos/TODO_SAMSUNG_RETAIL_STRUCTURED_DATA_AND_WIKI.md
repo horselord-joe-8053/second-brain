@@ -1,13 +1,13 @@
-<h1 id="todo-samsung-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">TODO: Samsung Brazil retail — service Second Brain (PDFs + PostgreSQL + LLM Wiki)</h1>
+<h1 id="todo-samsung-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">TODO: Samsung Australia retail — service Second Brain (PDFs + PostgreSQL + LLM Wiki)</h1>
 
 **Status:** design / spec (not implemented)  
-**Domain:** nationwide Brazil retail — sales + **after-sales service** for **Galaxy A15 5G**, **Galaxy A16 5G**, **Galaxy A25 5G** only.  
+**Domain:** nationwide **Australia** retail (default **`RETAIL_MARKET=AU`**) — sales + **after-sales service** for **Galaxy A15 5G**, **Galaxy A16 5G**, **Galaxy A25 5G** only.  
 **Extends:** [`second-brain-llm-wiki-architecture.md`](../second-brain-llm-wiki-architecture.md) · [`nu_llm_wiki`](../../nu_llm_wiki) MCP · FRU pattern [`ultra-fru-genai-analytics-new`](../../ultra-fru-genai-analytics-new).  
-**last_aligned:** 2026-10-09 — **V1** (FRU ticket plane) + **V1.1** (optional PG hybrid + A/B) + **V2** (automation only); see **§1**.
+**last_aligned:** 2026-10-10 — **V1** retail + **platform domain layout** (§1.4); **V1.1** / **V2** / **platform migration** as below.
 
 <h2 id="todo-samsung-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
-1. [Requirement alignment](#1-decisions) — V1, V1.1, V2 slices.
+1. [Requirement alignment](#1-decisions) — V1, V1.1, V2; brain domain layout.
 2. [Feasibility](#2-feasibility) — structured DB + LLM Wiki split.
 3. [Industry alignment](#3-industry) — two planes; PG hybrid is V1.1 not wiki.
 4. [Target architecture](#4-architecture) — FRU sidecar + wiki.
@@ -47,10 +47,30 @@
 | **D4** | **No cron / schedulers** in V1/V1.1 — manual CSV load, one-shot embed, manual LLM Wiki rescan when PDFs change. |
 | **D5** | **Ticket plane default:** FRU sidecar for V1 ship; Postgres MCP alone is fallback for dev smoke only. |
 | **D6** | **V1.1 promotion:** Enable hybrid by default only if **§8 A/B** shows predeclared wins without higher false-reuse rate (see **§8.4**). |
+| **D7** | **Brain domains (platform):** Samsung V1 adds a **thin** Nashsu root at **`brain/retail/`** only. **Legacy personal corpus stays at `brain/`** until a **later platform release** migrates it to **`brain/personal/`** (§1.4). **Do not** split `scripts/brain/` — retail ops live under **`scripts/retail/`**. |
 
-<h3 id="1-3-v2-deferred" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">1.3 V2 deferred (optional later)</h3>
+<h3 id="1-3-v2-deferred" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">1.3 V2 deferred (Samsung automation)</h3>
 
 Theme clustering → `raw/sources/db-exports/` → wiki playbooks; sales summary MD exports; watermark + `flock` + cron; optional `POST …/sources/rescan` after export. **Same PG schema — automation and derived KB content only** (orthogonal to V1 vs V1.1 retrieval).
+
+<h3 id="1-4-brain-domains" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">1.4 Brain domain layout (platform — later vs now)</h3>
+
+**End state (multi-domain Second Brain, one repo):** sibling Nashsu project roots under `brain/` — **`brain/personal/`** + **`brain/retail/`** — so wiki ingest and hybrid search do not share one index.
+
+**Rollout plan (approved):**
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>When</th><th>Layout</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e8f5e9"><strong>Samsung V1</strong></td><td style="background:#e8f5e9">Add <code>brain/retail/</code> (<code>purpose.md</code>, <code>raw/sources/</code>, <code>wiki/</code>, own <code>.llm-wiki/</code>)</td><td style="background:#e8f5e9">Thin retail wiki corpus only; tickets/sales in PG + <code>scripts/retail/</code></td></tr>
+<tr><td style="background:#fff3e0"><strong>Same period</strong></td><td style="background:#fff3e0">Keep existing corpus at <code>brain/</code> (legacy personal root)</td><td style="background:#fff3e0">No big-bang move during retail bootstrap</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Later platform version</strong></td><td style="background:#e3f2fd">One migration: <code>brain/</code> → <code>brain/personal/</code></td><td style="background:#e3f2fd">Update <code>brain-stack</code> paths, Obsidian vault, skills (<code>query-brain</code> → personal project path), acceptance scripts; optional <code>domains:</code> in stack config</td></tr>
+</tbody>
+</table>
+
+**Query:** `query-retail-brain` calls <code>llm_wiki_set_project</code> to the **absolute** `brain/retail` path; `query-brain` keeps using legacy `brain/` until platform migration, then `brain/personal`.
 
 ---
 
@@ -98,12 +118,12 @@ Two **retrieval planes**: compiled manuals (LLM Wiki) vs operational tickets (Po
 
 ```mermaid
 graph TD
-  PDF[6 PDFs] --> RAW[raw/sources/samsung-docs]
+  PDF[6 PDFs] --> RAW[brain/retail/raw/sources/samsung-docs]
   GEN[generate_tickets.py + manifest] --> CSV[service_queries.csv]
   CSV --> LOAD[load + embed]
   LOAD --> PG[(PostgreSQL + pgvector + tsvector V1.1)]
   RAW --> SW[Nashsu rescan]
-  SW --> WIKI[brain/wiki]
+  SW --> WIKI[brain/retail/wiki]
   AGENT[Hermes / harness]
   AGENT --> MCPW[llm_wiki MCP]
   AGENT --> FRU[FRU retail sidecar HTTP]
@@ -138,7 +158,8 @@ V2 adds **PG → export → raw/db-exports → SW** (not in diagram above).
 | Item | V1 / V1.1 |
 |------|-----------|
 | **Content** | User + repair guide × **A15 / A16 / A25 5G** → **6 PDFs** |
-| **Placement** | `brain/raw/sources/samsung-docs/{a15,a16,a25}/` |
+| **Placement** | `brain/retail/raw/sources/samsung-docs/{a15,a16,a25}/` |
+| **Nashsu project** | Open / MCP pin **`…/second_brain/brain/retail`** (separate from legacy `brain/`) |
 | **Update** | Manual rescan in LLM Wiki |
 
 <h3 id="5-2-source-b" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.2 Source B — Sales (PostgreSQL)</h3>
@@ -275,7 +296,7 @@ Default hybrid **on** only if V1.1 beats V1 on predeclared strata (e.g. Recall@5
 <tr style="background:#1565c0;color:white"><th>Phase</th><th>Deliverable</th><th>Verify</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd"><strong>P1 Corpus</strong></td><td><code>brain/purpose.md</code>; <code>samsung-docs/</code>; synthetic data **spec** stub</td><td><code>tests/test_retail_corpus_layout.py</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>P1 Corpus</strong></td><td><code>brain/retail/purpose.md</code>; <code>brain/retail/raw/sources/samsung-docs/</code>; synthetic data **spec** stub; legacy <code>brain/</code> untouched</td><td><code>tests/test_retail_corpus_layout.py</code></td></tr>
 <tr><td style="background:#e3f2fd"><strong>P2 Data</strong></td><td><code>generate_tickets.py</code>; load + embed; <code>generate_eval_from_manifest.py</code> → <code>eval/ticket_retrieval.jsonl</code></td><td>Row counts; manifest↔eval linkage pytest</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P3 Sidecar + skill</strong></td><td>FRU retail sidecar; <code>query-retail-brain</code>; catalog entry</td><td>Smoke: prior-case + wiki + SQL aggregate</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P4 Eval baseline</strong></td><td><code>eval_ticket_search.py</code>; V1 metrics on CI with <code>HYBRID_SEARCH=0</code></td><td>Baseline report artifact; threshold frozen</td></tr>
@@ -289,6 +310,10 @@ Export/themes → `db-exports/`; cron; optional rescan after export. **Does not*
 
 **Out of scope V1/V1.1:** Nashsu ingest of ticket rows; OpenClaw live channels; theme/playbook generation; schedulers.
 
+<h3 id="9-3-platform-domains" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.3 Platform domain migration (later system version)</h3>
+
+Tracked as **Second Brain platform** work (not Samsung V2): relocate legacy tree **`brain/` → `brain/personal/`**, document dual-project ops in hub runbook, domain entries in `config/brain-stack.example.yaml`. **Prerequisite for clean symmetry** with `brain/retail/`; **not** a blocker for Samsung **P1–P4**.
+
 ---
 
 <h2 id="10-references" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. References</h2>
@@ -301,4 +326,4 @@ Export/themes → `db-exports/`; cron; optional rescan after export. **Does not*
 | Postgres support agent | [Powabase — AI support on Postgres](https://powabase.ai/blog/build-an-ai-customer-support-agent-on-postgres/) |
 | pgvector + tsvector in production | [Jacar — RAG with Postgres](https://jacar.es/en/rag-with-postgres-and-pgvector-in-production-from-poc-to-slo/) |
 
-**Next:** `specify-feature` → `docs/specs/samsung-retail-synthetic-data.md` (or plan) → `seed_grow/plans/samsung-retail-service-brain-plan.md` → **P1–P4** (V1 ship), then **P5** if A/B warrants.
+**Execute:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) via **`implref`** (Phases 0–4 V1 ship; Phase 5 optional V1.1).

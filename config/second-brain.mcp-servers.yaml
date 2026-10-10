@@ -13,3 +13,11 @@ llm_wiki:
 second_brain_fs:
   command: npx
   args: ["-y", "@modelcontextprotocol/server-filesystem", ${BRAIN_ROOT}]
+
+# Dev smoke for retail PG — production ticket path uses FRU retail sidecar (query-retail-brain).
+retail_pg:
+  command: npx
+  args:
+    - "-y"
+    - "@modelcontextprotocol/server-postgres"
+    - "${RETAIL_DATABASE_URL}"

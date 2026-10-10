@@ -39,7 +39,7 @@ If the plan was authored with **`onlyreftdd`**, read its per-phase **TDD mode** 
 
 **`.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`** (**`implref`** / **`resumimpl`**)
 
-That covers: step 0 normalize, step 1 ambiguity gate, step 2 Quality bar in plan, step 3 phases, step 3.4 exwar, step 3.5 wip/completed, step 4 closing table, blockers (3.1d / 3.1e), and self-check.
+That covers: step 0 normalize, step 1 ambiguity gate, step 2 Quality bar in plan, step 3 phases, step 3.4 exwar, step 3.5 wip/completed, step 4 closing table, blockers (3.1d / 3.1e), **operator gates (§3.1f)**, and self-check.
 
 **Non-TDD behavior lives only in the classic file.** Edit classic **`implref`** once when shared impl rules change; edit **this file** only when TDD execution rules change.
 
