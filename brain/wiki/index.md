@@ -63,7 +63,14 @@
 - [[sources/7-uploads--32-aiapplicationlandscape2026slides--9fbdnl|Source: uploads/AI_Application_Landscape_2026_Slides.pptx]]
 - [[sources/the-language-correction-for-the-document-7-uploads-2026-10-03-195729|The Language Correction for the Document 7-uploads--46-james]]
 
+
 ## Recently Updated
+- [[sources/3-web--30-fine-tune-llama-3-tool-calling--1qnrobg]] — Fine-Tuning Llama 3 for Custom Tool Calling
+- [[entities/lama-3]] — Llama 3
+- [[concepts/fine-tuning]] — Fine-Tuning
+- [[concepts/qlora]] — QLoRA
+- [[concepts/retrieval-augmented-generation]] — Retrieval-Augmented Generation (RAG)
+- [[concepts/lora]] — LoRA (Low-Rank Adaptation)
 - [[sources/7-uploads--2-ch--jlibw9]] — Document Analysis on Personal Knowledge Management
 - [[entities/nashsu-llm-wiki]] — Nashsu LLM Wiki
 - [[concepts/personal-knowledge-base]] — Personal Knowledge Base
