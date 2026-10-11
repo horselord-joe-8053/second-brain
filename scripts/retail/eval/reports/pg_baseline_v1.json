@@ -1,6 +1,7 @@
 {
-  "mode": "vector",
+  "mode": "vector_only",
   "backend": "postgres",
+  "search_mode": "vector_only",
   "hybrid_flag": "0",
   "total": 67,
   "recall_at_1": 0.5671641791044776,

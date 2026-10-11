@@ -21,6 +21,37 @@ def test_rrf_tie_prefers_lexical_rank_one() -> None:
     assert fused[0][0] == "gold"
 
 
+def test_rrf_weighted_favors_vector_leg() -> None:
+    v = ["vec-first", "lex-first"]
+    lex = ["lex-first", "vec-first"]
+    equal = reciprocal_rank_fusion([v, lex], list_weights=[0.5, 0.5])
+    weighted = reciprocal_rank_fusion([v, lex], list_weights=[0.7, 0.3])
+    assert equal[0][0] != weighted[0][0] or equal[0][1] != weighted[0][1]
+    assert weighted[0][0] == "vec-first"
+
+
+def test_code_boost_can_flip_top1() -> None:
+    from retail_brain.rrf import code_boost_scores
+
+    v = ["twin", "gold"]
+    lex = ["twin", "gold"]
+    boost = code_boost_scores(
+        "Error code SAM-E176",
+        ["twin", "gold"],
+        id_to_search_text={
+            "twin": "Technician log: diagnostic code SAM-E193.",
+            "gold": "Technician log: diagnostic code SAM-E176.",
+        },
+        lambda_boost=10.0,
+    )
+    fused = reciprocal_rank_fusion(
+        [v, lex],
+        list_weights=[0.7, 0.3],
+        extra_score_by_id=boost,
+    )
+    assert fused[0][0] == "gold"
+
+
 def test_lexical_leg_uses_fts_normalized_text() -> None:
     """Paraphrase query should overlap index text after prefix strip."""
     from retail_brain.text_normalize import fts_query_text, search_text_for_fts

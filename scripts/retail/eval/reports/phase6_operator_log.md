@@ -24,3 +24,20 @@
 Reports: `pg_baseline_v1.json`, `pg_ab_v1_v11.json`.
 
 **Read:** Stage-1 fixture shows **hybrid beats vector overall** driven by **`error_code`** rows where **vector misses** (twin intake shape) and **lexical hits** (code in query ↔ tech line in FTS). RRF **lexical tie-break** on equal fusion score avoids losing those rows when vector and lexical both rank gold at rank 2.
+
+<h2 id="p6-ab-v1x" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Production-shaped V1.1–V1.3 (same PG snapshot)</h2>
+
+**When:** 2026-10-12  
+**Modes:** `RETAIL_TICKET_SEARCH_MODE` = `vector_only` | `rrf_normal` | `rrf_weighted` | `rrf_weighted_boosted`  
+**Script:** `cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh`
+
+| Mode | recall@1 | error_code (7) |
+|------|----------|----------------|
+| `vector_only` | 0.567 | 0/7 |
+| `rrf_normal` | 0.567 | 0/7 |
+| `rrf_weighted` | 0.567 | 0/7 |
+| `rrf_weighted_boosted` | **0.672** | **7/7** |
+
+Reports: `pg_baseline_v1.json`, `pg_ab_v1_1_normal.json`, `pg_ab_v1_2_weighted.json`, `pg_ab_v1_3_boosted.json`.
+
+**Read:** Rich FTS + equal or 70/30 RRF **does not** recover `error_code` until **V1.3 code boost (λ=10)** — matches D18 acceptance. V1.3 aligns with stage-1 hybrid headline without demo-era tech-line-only FTS rewrite.

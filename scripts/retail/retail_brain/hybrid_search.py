@@ -1,15 +1,21 @@
-"""Ticket search: vector leg, lexical leg, optional RRF (V1 / V1.1)."""
+"""Ticket search: vector leg, lexical leg, optional RRF (V1 / V1.x)."""
 
 from __future__ import annotations
 
-import os
 import re
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Sequence
 
 from retail_brain.embeddings import cosine_distance, embed_text
 from retail_brain.models import RESOLVED
-from retail_brain.rrf import reciprocal_rank_fusion
+from retail_brain.rrf import code_boost_scores, reciprocal_rank_fusion
+from retail_brain.search_mode import (
+    code_boost_enabled,
+    is_hybrid_mode,
+    lexical_code_boost_lambda,
+    resolve_ticket_search_mode,
+    rrf_list_weights,
+)
 from retail_brain.text_normalize import fts_query_text, search_text_for_fts, text_for_embedding
 
 
@@ -91,7 +97,37 @@ def lexical_rank(
 
 
 def hybrid_enabled() -> bool:
-    return os.environ.get("RETAIL_TICKET_HYBRID_SEARCH", "0").strip() in ("1", "true", "yes")
+    """Legacy boolean; prefer resolve_ticket_search_mode()."""
+    return is_hybrid_mode()
+
+
+def _fuse(
+    query: str,
+    rows: Sequence[TicketRow],
+    v_list: List[str],
+    l_list: List[str],
+    *,
+    mode: str,
+    limit: int,
+) -> List[str]:
+    w_v, w_l = rrf_list_weights(mode)
+    extra: Dict[str, float] = {}
+    if code_boost_enabled(mode):
+        by_id = {r.ticket_id: search_text_for_fts(r.customer_query_text) for r in rows}
+        candidates = set(v_list) | set(l_list)
+        extra = code_boost_scores(
+            query,
+            list(candidates),
+            id_to_search_text=by_id,
+            lambda_boost=lexical_code_boost_lambda(),
+        )
+    fused = reciprocal_rank_fusion(
+        [v_list, l_list],
+        list_weights=[w_v, w_l],
+        lexical_rank_order=l_list,
+        extra_score_by_id=extra,
+    )
+    return [doc_id for doc_id, _ in fused[:limit]]
 
 
 def search_ticket_ids(
@@ -101,13 +137,13 @@ def search_ticket_ids(
     model_filter: Optional[str] = None,
     limit: int = 10,
 ) -> List[str]:
-    """V1 vector-only or V1.1 RRF fusion depending on env flag."""
-    if not hybrid_enabled():
+    """Vector-only or RRF fusion depending on RETAIL_TICKET_SEARCH_MODE."""
+    mode = resolve_ticket_search_mode()
+    if mode == "vector_only":
         return vector_rank(query, rows, model_filter=model_filter, limit=limit)
     v_list = vector_rank(query, rows, model_filter=model_filter, limit=limit * 2)
     l_list = lexical_rank(query, rows, model_filter=model_filter, limit=limit * 2)
-    fused = reciprocal_rank_fusion([v_list, l_list], lexical_rank_order=l_list)
-    return [doc_id for doc_id, _ in fused[:limit]]
+    return _fuse(query, rows, v_list, l_list, mode=mode, limit=limit)
 
 
 def row_by_id(rows: Sequence[TicketRow]) -> Dict[str, TicketRow]:

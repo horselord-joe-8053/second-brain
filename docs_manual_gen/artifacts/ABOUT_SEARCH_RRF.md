@@ -488,20 +488,25 @@ Report **overall** and **by stratum**; promotion rule **D6** still cares about *
 
 Artifacts: `scripts/retail/eval/reports/pg_baseline_v1.json`, `pg_ab_v1_v11.json`, `phase6_operator_log.md`.
 
-<h3 id="13-2-pending" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.2 Pending — production-shaped V1.1 / V1.2 / V1.3</h3>
+<h3 id="13-2-v1x" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.2 Production-shaped V1.1 / V1.2 / V1.3 (2026-10-12)</h3>
 
 <table>
 <thead>
-<tr style="background:#1565c0;color:white"><th>Mode</th><th>recall@1</th><th>Report file</th><th>Status</th></tr>
+<tr style="background:#0277bd;color:white"><th>Mode</th><th>recall@1</th><th>paraphrase</th><th>literal_token</th><th>error_code</th><th>Report</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd"><code>rrf_normal</code></td><td style="background:#f5f5f5"><em>TBD</em></td><td style="background:#f5f5f5"><code>pg_ab_v1_1_normal.json</code></td><td style="background:#fff9c4">Phase 7</td></tr>
-<tr><td style="background:#e3f2fd"><code>rrf_weighted</code></td><td style="background:#f5f5f5"><em>TBD</em></td><td style="background:#f5f5f5"><code>pg_ab_v1_2_weighted.json</code></td><td style="background:#fff9c4">Phase 7</td></tr>
-<tr><td style="background:#e3f2fd"><code>rrf_weighted_boosted</code></td><td style="background:#f5f5f5"><em>TBD</em></td><td style="background:#f5f5f5"><code>pg_ab_v1_3_boosted.json</code></td><td style="background:#fff9c4">Phase 7</td></tr>
+<tr><td style="background:#e3f2fd"><code>vector_only</code></td><td style="background:#fff3e0"><strong>0.567</strong></td><td style="background:#fff3e0">0.60</td><td style="background:#e8f5e9">1.00</td><td style="background:#ffebee">0.00</td><td style="background:#f5f5f5"><code>pg_baseline_v1.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_normal</code></td><td style="background:#fff3e0"><strong>0.567</strong></td><td style="background:#fff3e0">0.60</td><td style="background:#e8f5e9">1.00</td><td style="background:#ffebee">0.00</td><td style="background:#f5f5f5"><code>pg_ab_v1_1_normal.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_weighted</code></td><td style="background:#fff3e0"><strong>0.567</strong></td><td style="background:#fff3e0">0.60</td><td style="background:#e8f5e9">1.00</td><td style="background:#ffebee">0.00</td><td style="background:#f5f5f5"><code>pg_ab_v1_2_weighted.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_weighted_boosted</code></td><td style="background:#e8f5e9"><strong>0.672</strong></td><td style="background:#fff3e0">0.60</td><td style="background:#e8f5e9">1.00</td><td style="background:#e8f5e9">1.00</td><td style="background:#f5f5f5"><code>pg_ab_v1_3_boosted.json</code></td></tr>
 </tbody>
 </table>
 
-**Maintenance:** After each operator run, paste stratum table here and add one paragraph **“what surprised us”** under the matching version section above.
+**Read:** Rich FTS + equal or 70/30 fusion **does not lift** `error_code` until **V1.3 λ** — as expected (**D18**). **V1.3** recovers **7/7** `error_code` and overall **0.672**, matching demo-era hybrid headline with production-shaped lexical on other strata.
+
+Run: `cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh`.
+
+**Maintenance:** After each operator run, update this table and add **“what surprised us”** under the matching version section above.
 
 ---
 

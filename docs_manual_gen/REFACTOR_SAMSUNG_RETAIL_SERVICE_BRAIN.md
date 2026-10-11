@@ -46,7 +46,7 @@
 - [X] Phase 5 complete (**required** — V1.1 hybrid + A/B gate per D6)
 - [X] **Phase 5.1** — hybrid lexical normalize + seed uniqueness ([`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md); war story [4](../war_stories/WAR_STORIES.md#war-story-4))
 - [X] **Phase 6** — operator prep + Postgres A/B shakedown ([section 15](#15-phase-6); operator log `scripts/retail/eval/reports/phase6_operator_log.md`)
-- [ ] **Phase 7** — ticket search **V1.1–V1.3** ([section 16](#16-phase-7); child [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md))
+- [X] **Phase 7** — ticket search **V1.1–V1.3** ([section 16](#16-phase-7); child [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md))
 - [ ] **Samsung V2** — themes/exports/automation ([section 17](#17-deferred-v2))
 - [ ] **Platform** — `brain/personal` migration ([section 18](#18-deferred-platform))
 - [ ] **Samsung V3** — operator harness / prep split ([section 19](#19-deferred-v3))
@@ -577,12 +577,12 @@ Stop with a short checklist: project path set, rescan done, N wiki pages visible
 
 **Child plan (execute with `qimpltdd`):** [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md)
 
-- [ ] **7.A** — V1.1 `fts_query_text` / rich FTS ([D15](#2-decisions)); pytest green.
-- [ ] **7.B** — `RETAIL_TICKET_SEARCH_MODE` + legacy alias ([D14](#2-decisions)).
-- [ ] **7.C** — V1.2 weighted RRF 70/30 ([D16](#2-decisions)).
-- [ ] **7.D** — V1.3 code parse + λ=10 ([D17](#2-decisions)).
-- [ ] **7.E** — Operator four-report run; update ABOUT §7 + `phase6_operator_log.md`.
-- [ ] **Exit:** `./scripts/verify.sh` green; **no** gold edits ([D18](#2-decisions)).
+- [X] **7.A** — V1.1 `fts_query_text` / rich FTS ([D15](#2-decisions)); pytest green.
+- [X] **7.B** — `RETAIL_TICKET_SEARCH_MODE` + legacy alias ([D14](#2-decisions)).
+- [X] **7.C** — V1.2 weighted RRF 70/30 ([D16](#2-decisions)).
+- [X] **7.D** — V1.3 code parse + λ=10 ([D17](#2-decisions)).
+- [X] **7.E** — Operator `05_run_abcd_postgres.sh`; ABOUT §13.2 + reports committed.
+- [X] **Exit:** `./scripts/verify.sh` green; **no** gold edits ([D18](#2-decisions)).
 
 **TDD mode:** strict-TDD (Phases A–D in child plan).
 

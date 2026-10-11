@@ -16,11 +16,11 @@
 
 **Execution checklist:**
 
-- [ ] **Phase A** — V1.1 production lexical ([§2](#2-phase-a))
-- [ ] **Phase B** — `RETAIL_TICKET_SEARCH_MODE` ([§3](#3-phase-b))
-- [ ] **Phase C** — V1.2 weighted fusion ([§4](#4-phase-c))
-- [ ] **Phase D** — V1.3 code boost ([§5](#5-phase-d))
-- [ ] **Phase E** — operator run + update artifacts ([§6](#6-phase-e))
+- [X] **Phase A** — V1.1 production lexical ([§2](#2-phase-a))
+- [X] **Phase B** — `RETAIL_TICKET_SEARCH_MODE` ([§3](#3-phase-b))
+- [X] **Phase C** — V1.2 weighted fusion ([§4](#4-phase-c))
+- [X] **Phase D** — V1.3 code boost ([§5](#5-phase-d))
+- [X] **Phase E** — operator run + update artifacts ([§6](#6-phase-e))
 
 ---
 

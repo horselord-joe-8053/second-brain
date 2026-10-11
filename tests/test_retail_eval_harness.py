@@ -12,7 +12,7 @@ def test_eval_harness_vector_mode(retail_seed_dir: Path, tmp_path: Path) -> None
         tickets_csv=retail_seed_dir / "service_queries.csv",
         eval_jsonl=retail_seed_dir / "ticket_retrieval.jsonl",
     )
-    assert report["mode"] == "vector"
+    assert report["mode"] == "vector_only"
     assert report["total"] >= 1
     out = tmp_path / "baseline.json"
     write_report(out, report)

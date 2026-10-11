@@ -9,7 +9,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 from retail_brain.eval_scoring import aggregate_recall, score_top1
-from retail_brain.hybrid_search import hybrid_enabled, search_ticket_ids
+from retail_brain.hybrid_search import search_ticket_ids
+from retail_brain.search_mode import resolve_ticket_search_mode
 from retail_brain.ticket_store import load_ticket_rows
 
 
@@ -41,7 +42,7 @@ def run_eval(
 ) -> Dict[str, Any]:
     rows = load_ticket_rows(tickets_csv)
     cases = load_eval_cases(eval_jsonl)
-    mode = "hybrid" if hybrid_enabled() else "vector"
+    mode = resolve_ticket_search_mode()
     results: List[EvalCaseResult] = []
     for case in cases:
         if case.get("stratum") == "sql_routed":
@@ -71,6 +72,7 @@ def run_eval(
         by_stratum.setdefault(r.stratum, []).append(r.hit_strict)
     summary = {
         "mode": mode,
+        "search_mode": mode,
         "hybrid_flag": os.environ.get("RETAIL_TICKET_HYBRID_SEARCH", "0"),
         **aggregate_recall(case_dicts),
         "by_stratum": {

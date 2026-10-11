@@ -29,6 +29,18 @@ def test_fts_query_strips_paraphrase_ref_tail() -> None:
     assert "battery" in norm.lower()
 
 
+def test_fts_query_screenshot_keeps_symptoms_and_code() -> None:
+    q = (
+        "Need help: Galaxy A15 5G, mobile data drops when switching to 5G. "
+        "Battery drops from full to half within two hours. Error code SAM-E176."
+    )
+    norm = fts_query_text(q, market="AU")
+    assert "SAM-E176" in norm
+    assert "mobile" in norm.lower()
+    assert "battery" in norm.lower()
+    assert len(norm) > len("Technician log: diagnostic code SAM-E176.")
+
+
 def test_fts_query_aligns_eval_template_to_index_shape() -> None:
     q = (
         "Need help: Riley in Melbourne with a Galaxy A16 5G — battery drains quickly. "

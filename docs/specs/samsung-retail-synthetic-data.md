@@ -73,8 +73,9 @@ eval_id, query, model_filter, expected_ticket_ids, stratum, source_ticket_id
 
 - **Operator A/B (D10):** repo `.env` `GEMINI_API_KEY` + `EMBEDDING_MODEL` (e.g. `gemini-embedding-2`); `utils/retail_fru/embeddings.py` — **no mock fallback**. Embed each ticket **once** in PG (`vector(768)`); caveats: [war story 2](../../war_stories/WAR_STORIES.md#war-story-2).
 - **Tests:** pytest stubs `embed_text` only; production always calls Gemini or fails fast.
-- **`RETAIL_TICKET_HYBRID_SEARCH`:** `0` = vector-only (V1); `1` = tsvector + RRF (V1.1).
-- Promotion to default `1` only per plan D6 after A/B on that frozen cabinet.
+- **`RETAIL_TICKET_SEARCH_MODE`:** `vector_only` (V1), `rrf_normal` (V1.1), `rrf_weighted` (V1.2, 70/30 fusion weights), `rrf_weighted_boosted` (V1.3, + λ on parsed `SAM-E###` in query). Legacy **`RETAIL_TICKET_HYBRID_SEARCH=1`** maps to `rrf_normal`.
+- **V1.1 lexical:** screenshot and narrative queries use **rich FTS** (`fts_query_text` = symptoms + code in body), not tech-line-only collapse — see child plan `REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`.
+- Promotion to default hybrid only per plan D6 after A/B on that frozen cabinet; **`error_code`** stratum may stay flat until V1.3 (D18).
 - **Until Samsung V4:** one agent may author gold and implement search; do not set `expected_ticket_ids` from neighbor lists.
 
 <h2 id="decisions" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Decisions</h2>

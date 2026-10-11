@@ -27,6 +27,8 @@ _EVAL_QUERY_PT = re.compile(
     re.DOTALL,
 )
 _CODE_IN_QUERY = re.compile(r"\bcode\s+(SAM-E\d{3})\b", re.IGNORECASE)
+_DIAG_CODE = re.compile(r"SAM-E\d{3}", re.IGNORECASE)
+_NEED_HELP_PREFIX = re.compile(r"^Need help:\s*", re.IGNORECASE)
 
 
 def strip_case_ref_suffix(text: str) -> str:
@@ -52,6 +54,12 @@ def search_text_for_fts(raw: str, *, market: str | None = None) -> str:
     return strip_case_ref_suffix(core)
 
 
+def extract_diag_code(text: str | None) -> str | None:
+    """Parse Samsung-style diagnostic code from query or stored ticket text."""
+    m = _DIAG_CODE.search(text or "")
+    return m.group(0).upper() if m else None
+
+
 def _align_eval_query_to_index_shape(q: str) -> str | None:
     m = _EVAL_QUERY_EN.match(q) or _EVAL_QUERY_PT.match(q)
     if not m:
@@ -68,13 +76,19 @@ def fts_query_text(live_query: str, *, market: str | None = None) -> str:
     """Map live exam wording to the same token shape as indexed search_text."""
     q = (live_query or "").strip()
     q = re.sub(r"\s*\(ref\s+[A-Za-z0-9_-]+\)\s*$", "", q, flags=re.IGNORECASE).strip()
-    code = _CODE_IN_QUERY.search(q)
-    if code and not _EVAL_QUERY_EN.match(q):
-        # Legacy minimal code-only queries (if any remain in fixtures).
-        return f"Technician log: diagnostic code {code.group(1)}."
     aligned = _align_eval_query_to_index_shape(q)
     if aligned:
         return aligned
+    code = _CODE_IN_QUERY.search(q)
+    if code and not _EVAL_QUERY_EN.match(q):
+        # V1.1: screenshot intake — keep symptom/model tokens; append tech-line code for FTS.
+        body = _NEED_HELP_PREFIX.sub("", q).strip()
+        body = re.sub(r"\s*\(ref\s+[A-Za-z0-9_-]+\)\s*$", "", body, flags=re.IGNORECASE).strip()
+        normalized = search_text_for_fts(body, market=market)
+        tech = f"Technician log: diagnostic code {code.group(1)}."
+        if code.group(1).upper() not in normalized.upper():
+            normalized = f"{normalized} {tech}".strip()
+        return normalized
     for lead in ("Need help: caller says ", "Preciso de ajuda: usuário descreve "):
         if q.startswith(lead):
             q = q[len(lead) :].strip()
