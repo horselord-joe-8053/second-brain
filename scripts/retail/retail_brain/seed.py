@@ -61,7 +61,9 @@ def generate_tickets(*, count: int, seed: int = 42, market: str | None = None) -
                 state=parts.state,
                 model=parts.model,
                 status=status,
-                customer_query_text=format_stored_customer_query(parts, market=market),
+                customer_query_text=format_stored_customer_query(
+                    parts, market=market, index=i
+                ),
                 resolution_text=parts.fix if status == RESOLVED else "",
                 opened_at="2025-01-01T10:00:00Z",
                 updated_at="2025-01-02T10:00:00Z",

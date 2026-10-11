@@ -13,6 +13,14 @@ def test_rrf_promotes_shared_doc() -> None:
     assert fused[0][0] in ("b", "a")
 
 
+def test_rrf_tie_prefers_lexical_rank_one() -> None:
+    """Vector #1 wrong twin; lexical #1 gold — same RRF score, lexical wins."""
+    v = ["wrong-twin", "gold"]
+    lex = ["gold", "wrong-twin"]
+    fused = reciprocal_rank_fusion([v, lex], lexical_rank_order=lex)
+    assert fused[0][0] == "gold"
+
+
 def test_lexical_leg_uses_fts_normalized_text() -> None:
     """Paraphrase query should overlap index text after prefix strip."""
     from retail_brain.text_normalize import fts_query_text, search_text_for_fts

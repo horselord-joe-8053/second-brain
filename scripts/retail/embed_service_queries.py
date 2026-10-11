@@ -17,7 +17,7 @@ load_repo_env(ROOT)
 
 from retail_brain.embeddings import EMBEDDING_DIMENSION, embed_text  # noqa: E402
 from retail_brain.market import pg_ts_config  # noqa: E402
-from retail_brain.text_normalize import search_text_for_fts  # noqa: E402
+from retail_brain.text_normalize import search_text_for_fts, text_for_embedding  # noqa: E402
 
 
 def main() -> None:
@@ -39,7 +39,10 @@ def main() -> None:
             rows = cur.fetchall()
             ts_cfg = pg_ts_config()
             for tid, text in rows:
-                emb = embed_text(text or "", task_type="RETRIEVAL_DOCUMENT")
+                emb = embed_text(
+                    text_for_embedding(text or ""),
+                    task_type="RETRIEVAL_DOCUMENT",
+                )
                 if len(emb) != EMBEDDING_DIMENSION:
                     raise RuntimeError(f"unexpected embedding size for {tid}")
                 emb_literal = "[" + ",".join(str(x) for x in emb) + "]"

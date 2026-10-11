@@ -3,10 +3,11 @@
   "backend": "postgres",
   "hybrid_flag": "1",
   "total": 67,
-  "recall_at_1": 0.8507462686567164,
+  "recall_at_1": 0.6716417910447762,
   "by_stratum": {
-    "paraphrase": 0.8548387096774194,
-    "literal_token": 0.8
+    "paraphrase": 0.6,
+    "literal_token": 1.0,
+    "error_code": 1.0
   },
   "cases": [
     {
@@ -19,7 +20,7 @@
     },
     {
       "eval_id": "eval-0002",
-      "stratum": "literal_token",
+      "stratum": "paraphrase",
       "hit": true,
       "top_ticket_id": "T-0042-000002",
       "hit_strict": true,
@@ -28,14 +29,14 @@
     {
       "eval_id": "eval-0003",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000003",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000002",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0005",
-      "stratum": "paraphrase",
+      "stratum": "literal_token",
       "hit": true,
       "top_ticket_id": "T-0042-000005",
       "hit_strict": true,
@@ -43,7 +44,7 @@
     },
     {
       "eval_id": "eval-0006",
-      "stratum": "paraphrase",
+      "stratum": "error_code",
       "hit": true,
       "top_ticket_id": "T-0042-000006",
       "hit_strict": true,
@@ -52,17 +53,17 @@
     {
       "eval_id": "eval-0007",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000007",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000006",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0009",
       "stratum": "paraphrase",
-      "hit": false,
-      "top_ticket_id": "T-0042-000069",
-      "hit_strict": false,
+      "hit": true,
+      "top_ticket_id": "T-0042-000009",
+      "hit_strict": true,
       "hit_acceptable": null
     },
     {
@@ -76,9 +77,9 @@
     {
       "eval_id": "eval-0011",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000011",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000010",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -100,9 +101,9 @@
     {
       "eval_id": "eval-0015",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000015",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000014",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -115,7 +116,7 @@
     },
     {
       "eval_id": "eval-0018",
-      "stratum": "paraphrase",
+      "stratum": "error_code",
       "hit": true,
       "top_ticket_id": "T-0042-000018",
       "hit_strict": true,
@@ -124,9 +125,9 @@
     {
       "eval_id": "eval-0019",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000019",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000018",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -139,7 +140,7 @@
     },
     {
       "eval_id": "eval-0022",
-      "stratum": "literal_token",
+      "stratum": "paraphrase",
       "hit": true,
       "top_ticket_id": "T-0042-000022",
       "hit_strict": true,
@@ -148,14 +149,14 @@
     {
       "eval_id": "eval-0023",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000023",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000022",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0025",
-      "stratum": "paraphrase",
+      "stratum": "literal_token",
       "hit": true,
       "top_ticket_id": "T-0042-000025",
       "hit_strict": true,
@@ -172,9 +173,9 @@
     {
       "eval_id": "eval-0027",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000027",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000026",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -187,7 +188,7 @@
     },
     {
       "eval_id": "eval-0030",
-      "stratum": "paraphrase",
+      "stratum": "error_code",
       "hit": true,
       "top_ticket_id": "T-0042-000030",
       "hit_strict": true,
@@ -196,17 +197,17 @@
     {
       "eval_id": "eval-0031",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000031",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000030",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0033",
       "stratum": "paraphrase",
-      "hit": false,
-      "top_ticket_id": "T-0042-000003",
-      "hit_strict": false,
+      "hit": true,
+      "top_ticket_id": "T-0042-000033",
+      "hit_strict": true,
       "hit_acceptable": null
     },
     {
@@ -221,7 +222,7 @@
       "eval_id": "eval-0035",
       "stratum": "paraphrase",
       "hit": false,
-      "top_ticket_id": "T-0042-000005",
+      "top_ticket_id": "T-0042-000034",
       "hit_strict": false,
       "hit_acceptable": null
     },
@@ -244,9 +245,9 @@
     {
       "eval_id": "eval-0039",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000039",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000038",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -259,7 +260,7 @@
     },
     {
       "eval_id": "eval-0042",
-      "stratum": "literal_token",
+      "stratum": "error_code",
       "hit": true,
       "top_ticket_id": "T-0042-000042",
       "hit_strict": true,
@@ -268,14 +269,14 @@
     {
       "eval_id": "eval-0043",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000043",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000042",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0045",
-      "stratum": "paraphrase",
+      "stratum": "literal_token",
       "hit": true,
       "top_ticket_id": "T-0042-000045",
       "hit_strict": true,
@@ -292,9 +293,9 @@
     {
       "eval_id": "eval-0047",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000047",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000046",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -317,7 +318,7 @@
       "eval_id": "eval-0051",
       "stratum": "paraphrase",
       "hit": false,
-      "top_ticket_id": "T-0042-000021",
+      "top_ticket_id": "T-0042-000050",
       "hit_strict": false,
       "hit_acceptable": null
     },
@@ -331,7 +332,7 @@
     },
     {
       "eval_id": "eval-0054",
-      "stratum": "paraphrase",
+      "stratum": "error_code",
       "hit": true,
       "top_ticket_id": "T-0042-000054",
       "hit_strict": true,
@@ -340,9 +341,9 @@
     {
       "eval_id": "eval-0055",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000055",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000054",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -365,7 +366,7 @@
       "eval_id": "eval-0059",
       "stratum": "paraphrase",
       "hit": false,
-      "top_ticket_id": "T-0042-000029",
+      "top_ticket_id": "T-0042-000058",
       "hit_strict": false,
       "hit_acceptable": null
     },
@@ -379,7 +380,7 @@
     },
     {
       "eval_id": "eval-0062",
-      "stratum": "literal_token",
+      "stratum": "paraphrase",
       "hit": true,
       "top_ticket_id": "T-0042-000062",
       "hit_strict": true,
@@ -388,14 +389,14 @@
     {
       "eval_id": "eval-0063",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000063",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000062",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0065",
-      "stratum": "paraphrase",
+      "stratum": "literal_token",
       "hit": true,
       "top_ticket_id": "T-0042-000065",
       "hit_strict": true,
@@ -403,7 +404,7 @@
     },
     {
       "eval_id": "eval-0066",
-      "stratum": "paraphrase",
+      "stratum": "error_code",
       "hit": true,
       "top_ticket_id": "T-0042-000066",
       "hit_strict": true,
@@ -412,9 +413,9 @@
     {
       "eval_id": "eval-0067",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000067",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000066",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -428,16 +429,16 @@
     {
       "eval_id": "eval-0070",
       "stratum": "paraphrase",
-      "hit": false,
-      "top_ticket_id": "T-0042-000010",
-      "hit_strict": false,
+      "hit": true,
+      "top_ticket_id": "T-0042-000070",
+      "hit_strict": true,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0071",
       "stratum": "paraphrase",
       "hit": false,
-      "top_ticket_id": "T-0042-000011",
+      "top_ticket_id": "T-0042-000070",
       "hit_strict": false,
       "hit_acceptable": null
     },
@@ -461,7 +462,7 @@
       "eval_id": "eval-0075",
       "stratum": "paraphrase",
       "hit": false,
-      "top_ticket_id": "T-0042-000015",
+      "top_ticket_id": "T-0042-000074",
       "hit_strict": false,
       "hit_acceptable": null
     },
@@ -475,7 +476,7 @@
     },
     {
       "eval_id": "eval-0078",
-      "stratum": "paraphrase",
+      "stratum": "error_code",
       "hit": true,
       "top_ticket_id": "T-0042-000078",
       "hit_strict": true,
@@ -484,9 +485,9 @@
     {
       "eval_id": "eval-0079",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000079",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000078",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -499,23 +500,23 @@
     },
     {
       "eval_id": "eval-0082",
-      "stratum": "literal_token",
-      "hit": false,
-      "top_ticket_id": "T-0042-000022",
-      "hit_strict": false,
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-000082",
+      "hit_strict": true,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0083",
       "stratum": "paraphrase",
-      "hit": true,
-      "top_ticket_id": "T-0042-000083",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000082",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0085",
-      "stratum": "paraphrase",
+      "stratum": "literal_token",
       "hit": true,
       "top_ticket_id": "T-0042-000085",
       "hit_strict": true,
@@ -533,7 +534,7 @@
       "eval_id": "eval-0087",
       "stratum": "paraphrase",
       "hit": false,
-      "top_ticket_id": "T-0042-000027",
+      "top_ticket_id": "T-0042-000086",
       "hit_strict": false,
       "hit_acceptable": null
     },
@@ -546,6 +547,6 @@
       "hit_acceptable": null
     }
   ],
-  "lexical_leg_nonempty": 67,
-  "lexical_leg_nonempty_rate": 1.0
+  "lexical_leg_nonempty": 44,
+  "lexical_leg_nonempty_rate": 0.6567164179104478
 }

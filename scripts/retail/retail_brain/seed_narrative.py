@@ -34,6 +34,8 @@ _SYMPTOM_EXTRA: Tuple[str, ...] = (
     "Bluetooth pairing fails in the car every time.",
 )
 
+_DIAG_CODES: Tuple[str, ...] = tuple(f"SAM-E{i:03d}" for i in range(200))
+
 _FIRST_NAMES: Tuple[str, ...] = (
     "Alex",
     "Jordan",
@@ -56,6 +58,7 @@ class NarrativeParts:
     detail_when: str
     detail_symptom: str
     caller_name: str
+    diagnostic_code: str
 
 
 def _rng(seed: int, index: int) -> random.Random:
@@ -68,32 +71,50 @@ def narrative_parts(
     index: int,
     market: str | None = None,
 ) -> NarrativeParts:
+    """Pair indices (0,1), (2,3), … share identical symptom prose; codes differ (eval distractors)."""
     cities = cities_for_market(market)
     issues = issues_for_market(market)
-    city, state = cities[index % len(cities)]
+    pair_id = index // 2
+    city, state = cities[pair_id % len(cities)]
     from retail_brain.models import MODELS
 
-    model = MODELS[index % len(MODELS)]
-    issue, fix = issues[index % len(issues)]
-    r = _rng(seed, index)
+    model = MODELS[pair_id % len(MODELS)]
+    issue, fix = issues[pair_id % len(issues)]
+    code = _DIAG_CODES[(seed * 997 + index * 17) % len(_DIAG_CODES)]
     return NarrativeParts(
         issue=issue,
         fix=fix,
         model=model,
         city=city,
         state=state,
-        detail_when=r.choice(_WHEN_STARTED),
-        detail_symptom=r.choice(_SYMPTOM_EXTRA),
-        caller_name=r.choice(_FIRST_NAMES),
+        detail_when=_WHEN_STARTED[(seed + pair_id * 7) % len(_WHEN_STARTED)],
+        detail_symptom=_SYMPTOM_EXTRA[(seed + pair_id * 13) % len(_SYMPTOM_EXTRA)],
+        caller_name=_FIRST_NAMES[index % len(_FIRST_NAMES)],
+        diagnostic_code=code,
     )
 
 
-def format_stored_customer_query(parts: NarrativeParts, *, market: str | None = None) -> str:
-    prefix = market_profile(market)["customer_query_prefix"]
-    return (
-        f"{prefix}{parts.issue} on {parts.model} in {parts.city}, {parts.state}. "
-        f"{parts.detail_when} {parts.detail_symptom}"
-    )
+def format_stored_customer_query(
+    parts: NarrativeParts,
+    *,
+    market: str | None = None,
+    index: int | None = None,
+) -> str:
+    """Even pair index: CRM-style stored prose. Odd index: intake-shaped twin (same symptoms, other code)."""
+    tech = f"Technician log: diagnostic code {parts.diagnostic_code}."
+    twin_mirror = index is not None and index % 2 == 1
+    if twin_mirror:
+        body = (
+            f"Need help: {parts.model}, {parts.issue}. "
+            f"{parts.detail_when} {parts.detail_symptom} "
+        )
+    else:
+        prefix = market_profile(market)["customer_query_prefix"]
+        body = (
+            f"{prefix}{parts.issue} on {parts.model} in {parts.city}, {parts.state}. "
+            f"{parts.detail_when} {parts.detail_symptom} "
+        )
+    return f"{body}{tech}"
 
 
 def format_eval_query(parts: NarrativeParts, *, market: str | None = None) -> str:
@@ -104,6 +125,14 @@ def format_eval_query(parts: NarrativeParts, *, market: str | None = None) -> st
         model=parts.model,
         issue=parts.issue,
         detail=parts.detail_symptom,
+    )
+
+
+def format_eval_query_with_code(parts: NarrativeParts, *, market: str | None = None) -> str:
+    """Intake mirrors screenshot: model + symptoms + explicit error code (fair to vector + lexical)."""
+    return (
+        f"Need help: {parts.model}, {parts.issue}. {parts.detail_symptom} "
+        f"Error code {parts.diagnostic_code}."
     )
 
 

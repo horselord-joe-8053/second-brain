@@ -8,7 +8,12 @@ from typing import Dict, List, Tuple
 
 from retail_brain.models import RESOLVED
 from retail_brain.seed import iter_manifest
-from retail_brain.seed_narrative import format_eval_query, parts_for_ticket_id
+from retail_brain.seed_narrative import (
+    format_eval_query,
+    format_eval_query_with_code,
+    parts_for_ticket_id,
+    ticket_index_from_id,
+)
 
 
 def paraphrase_query(
@@ -51,10 +56,17 @@ def build_eval_rows(manifest_path: Path, *, max_rows: int = 50) -> List[dict]:
         tid = rec["ticket_id"]
         original = rec["customer_query_text"]
         row_seed = int(rec.get("seed", 42))
-        query = paraphrase_query(tid, seed=row_seed)
+        parts = parts_for_ticket_id(tid, seed=row_seed)
+        # Every 3rd *pair* gold ticket (even index): screenshot query vs intake-shaped twin.
+        tidx = ticket_index_from_id(tid)
+        if tidx % 2 == 0 and (tidx // 2) % 3 == 0:
+            query = format_eval_query_with_code(parts)
+            stratum = "error_code"
+        else:
+            query = paraphrase_query(tid, seed=row_seed)
+            stratum = "literal_token" if "SM-" in parts.issue else "paraphrase"
         if query.strip() == original.strip():
             raise ValueError(f"eval leakage: verbatim query for {tid}")
-        stratum = "literal_token" if "SM-" in query else "paraphrase"
         rows.append(
             {
                 "eval_id": f"eval-{i:04d}",

@@ -12,6 +12,10 @@ _CASE_REF_SUFFIX = re.compile(
     r"\s*Case ref ITM-\d+ / T-\d+-\d+\.\s*$",
     re.IGNORECASE,
 )
+_TECH_CODE_SUFFIX = re.compile(
+    r"\s*Technician log: diagnostic code \S+\.\s*$",
+    re.IGNORECASE,
+)
 
 # Exam JSONL shape from market eval_query_template (align tokens with stored search_text).
 _EVAL_QUERY_EN = re.compile(
@@ -22,6 +26,7 @@ _EVAL_QUERY_PT = re.compile(
     r"^Preciso de ajuda:\s+\S+\s+em\s+(?P<city>.+?)\s+com\s+(?P<model>.+?)\s+—\s+(?P<issue>.+?)\.\s*(?P<detail>.*)$",
     re.DOTALL,
 )
+_CODE_IN_QUERY = re.compile(r"\bcode\s+(SAM-E\d{3})\b", re.IGNORECASE)
 
 
 def strip_case_ref_suffix(text: str) -> str:
@@ -35,8 +40,14 @@ def strip_market_prefix(text: str, *, market: str | None = None) -> str:
     return text.strip()
 
 
+def text_for_embedding(raw: str) -> str:
+    """Vector index: customer-facing prose only (tech diagnostic line excluded)."""
+    core = strip_case_ref_suffix(raw or "").strip()
+    return _TECH_CODE_SUFFIX.sub("", core).strip()
+
+
 def search_text_for_fts(raw: str, *, market: str | None = None) -> str:
-    """Index/query text for the lexical leg: drop prefix and case-ref trailer."""
+    """Lexical index: customer text + diagnostic code (tech line kept for token match)."""
     core = strip_market_prefix(raw or "", market=market)
     return strip_case_ref_suffix(core)
 
@@ -57,6 +68,10 @@ def fts_query_text(live_query: str, *, market: str | None = None) -> str:
     """Map live exam wording to the same token shape as indexed search_text."""
     q = (live_query or "").strip()
     q = re.sub(r"\s*\(ref\s+[A-Za-z0-9_-]+\)\s*$", "", q, flags=re.IGNORECASE).strip()
+    code = _CODE_IN_QUERY.search(q)
+    if code and not _EVAL_QUERY_EN.match(q):
+        # Legacy minimal code-only queries (if any remain in fixtures).
+        return f"Technician log: diagnostic code {code.group(1)}."
     aligned = _align_eval_query_to_index_shape(q)
     if aligned:
         return aligned

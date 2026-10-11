@@ -98,7 +98,7 @@ def search_ticket_ids_pg(
                 return vector_ids(cur, query, model_filter=model_filter, limit=limit)
             v = vector_ids(cur, query, model_filter=model_filter, limit=limit * 2)
             l = lexical_ids(cur, query, model_filter=model_filter, limit=limit * 2)
-            fused = reciprocal_rank_fusion([v, l])
+            fused = reciprocal_rank_fusion([v, l], lexical_rank_order=l)
             return [tid for tid, _ in fused[:limit]]
     finally:
         conn.close()

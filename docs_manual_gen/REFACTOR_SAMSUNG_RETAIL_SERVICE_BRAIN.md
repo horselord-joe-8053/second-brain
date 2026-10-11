@@ -1,6 +1,6 @@
 <h1 id="refactor-samsung-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: Samsung Australia retail service Second Brain (extend <code>second_brain</code>)</h1>
 
-**Status:** **wip** — Phases **0–6** complete; next deferred slices **V2 → platform → V3 → V4** (similarity/eval/governance); **Samsung V5** FRU full loop **last**  
+**Status:** **wip** — Phases **0–6** complete; **Phase 7 (ticket search V1.1–V1.3)** in progress; deferred **Samsung V2** (wiki) → platform → V3 → V4; **Samsung V5** FRU loop **last**  
 **Source spec:** [`todos/TODO_SAMSUNG_RETAIL_STRUCTURED_DATA_AND_WIKI.md`](./todos/TODO_SAMSUNG_RETAIL_STRUCTURED_DATA_AND_WIKI.md) (aligned 2026-10-10)  
 **Domain:** Nationwide **Australia** retail (default **`RETAIL_MARKET=AU`**, en-AU synthetic copy) — sales + after-sales for **Galaxy A15 5G**, **Galaxy A16 5G**, **Galaxy A25 5G** only. Optional **`RETAIL_MARKET=BR`** profile preserves pt-BR + `portuguese` FTS for future operator runs.  
 **Execute with:** [`implreftdd`](../.cursor/rules/tdd/implreftdd-resumimpl-refactor-plan-followthrough.mdc) / **`aciubtdd`** on **this file** (TDD chain). Do not create a separate git repo; extend this product tree.
@@ -16,7 +16,8 @@
 5. [Industry alignment](#5-industry) — benchmark table.
 6. [Ingestion and schema](#6-ingestion) — sources A–C, refresh model.
 7. [Query routing and skills](#7-routing) — customer, manager, MCP.
-8. [Eval and A/B (V1 vs V1.1)](#8-eval) — shared real embeddings, single agent until V4, D6.
+8. [Eval and A/B (V1 vs V1.x)](#8-eval) — shared real embeddings, multi-mode harness, D6.
+ 8.1 [Ticket search V1.x evolution (V1.1–V1.3)](#8-1-v1x-evolution) — RRF modes, article artifact.
 9. [Phase 0 — Synthetic data spec](#9-phase-0) — written contract before generators.
 10. [Phase 1 — Retail Nashsu corpus](#10-phase-1) — `brain/retail/`.
 11. [Phase 2 — PostgreSQL + seed + eval JSONL](#11-phase-2) — PG, scripts under `scripts/retail/`.
@@ -25,14 +26,15 @@
 14. [Phase 5 — V1.1 hybrid search (required)](#14-phase-5) — tsvector + RRF + A/B.
  14.1 [Phase 5.1 — FTS normalize + richer seed (follow-up)](#14-1-rrf-strip-fluff) — child plan when lexical leg was empty.
 15. [Phase 6 — Operator gate: Postgres V1 vs V1.1 A/B](#15-phase-6) — prep scripts, Hermes wiki, run `04`.
-16. [Deferred — Samsung V5 FRU agent harness](#16-deferred-v5) — model scope, SQL+RAG loop, generic `utils/pg_rag`.
-17. [Deferred — Samsung V2 automation](#17-deferred-v2) — themes, cron, exports.
-18. [Deferred — platform `brain/personal`](#18-deferred-platform) — legacy migration.
-19. [Deferred — Samsung V3 operator harness](#19-deferred-v3) — prep split, Hermes vs Cursor, optional Cua.
-20. [Deferred — Samsung V4 role split](#20-deferred-v4) — governance: exam author vs search coder.
-21. [Quality bar](#21-quality-bar) — tests, verify, comments.
-22. [References](#22-references) — specs, prep, war stories, implref.
-23. [aciubtdd readiness](#23-aciubtdd-readiness) — when to start the loop.
+16. [Phase 7 — Ticket search V1.1–V1.3 (RRF modes)](#16-phase-7) — child plan, A/B/C/D, [`ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md).
+17. [Deferred — Samsung V5 FRU agent harness](#16-deferred-v5) — model scope, SQL+RAG loop, generic `utils/pg_rag`.
+18. [Deferred — Samsung V2 automation](#17-deferred-v2) — themes, cron, exports.
+19. [Deferred — platform `brain/personal`](#18-deferred-platform) — legacy migration.
+20. [Deferred — Samsung V3 operator harness](#19-deferred-v3) — prep split, Hermes vs Cursor, optional Cua.
+21. [Deferred — Samsung V4 role split](#20-deferred-v4) — governance: exam author vs search coder.
+22. [Quality bar](#21-quality-bar) — tests, verify, comments.
+23. [References](#22-references) — specs, prep, war stories, implref.
+24. [aciubtdd readiness](#23-aciubtdd-readiness) — when to start the loop.
 
 **Execution checklist (implementable work):**
 
@@ -44,6 +46,7 @@
 - [X] Phase 5 complete (**required** — V1.1 hybrid + A/B gate per D6)
 - [X] **Phase 5.1** — hybrid lexical normalize + seed uniqueness ([`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md); war story [4](../war_stories/WAR_STORIES.md#war-story-4))
 - [X] **Phase 6** — operator prep + Postgres A/B shakedown ([section 15](#15-phase-6); operator log `scripts/retail/eval/reports/phase6_operator_log.md`)
+- [ ] **Phase 7** — ticket search **V1.1–V1.3** ([section 16](#16-phase-7); child [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md))
 - [ ] **Samsung V2** — themes/exports/automation ([section 17](#17-deferred-v2))
 - [ ] **Platform** — `brain/personal` migration ([section 18](#18-deferred-platform))
 - [ ] **Samsung V3** — operator harness / prep split ([section 19](#19-deferred-v3))
@@ -81,7 +84,9 @@
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd"><strong>V1</strong></td><td style="background:#e8f5e9"><strong>FRU retail sidecar</strong>: pgvector <code>semantic_search</code> + <code>execute_sql</code> / <code>generate_sql</code>; filters + similarity threshold</td><td style="background:#e8f5e9">LLM Wiki = <strong>6 PDFs</strong> under <code>brain/retail/</code>; no DB→wiki</td></tr>
-<tr><td style="background:#e3f2fd"><strong>V1.1</strong></td><td style="background:#fff3e0">Same sidecar + <strong>tsvector + RRF</strong>; env <code>RETAIL_TICKET_HYBRID_SEARCH=1</code> (default <code>0</code>)</td><td style="background:#e8f5e9">Unchanged from V1</td></tr>
+<tr><td style="background:#e3f2fd"><strong>V1.1</strong></td><td style="background:#fff3e0"><code>rrf_normal</code> — equal-leg RRF + production FTS (<code>ts_rank_cd</code>)</td><td style="background:#e8f5e9">Unchanged from V1</td></tr>
+<tr><td style="background:#e3f2fd"><strong>V1.2</strong></td><td style="background:#fff3e0"><code>rrf_weighted</code> — <strong>70% vector / 30% lexical</strong> RRF fusion</td><td style="background:#e8f5e9">Unchanged</td></tr>
+<tr><td style="background:#e3f2fd"><strong>V1.3</strong></td><td style="background:#ede7f6"><code>rrf_weighted_boosted</code> — 70/30 + <strong>λ=10</strong> on parsed <code>SAM-E###</code> (text only)</td><td style="background:#e8f5e9">Unchanged</td></tr>
 <tr><td style="background:#e3f2fd"><strong>Samsung V5</strong></td><td style="background:#fff3e0"><strong>FRU agent:</strong> text-to-SQL + <code>semantic_search</code> + wiki RAG <strong>ReAct loop</strong>; <code>model_filter</code> from ticket; HTTP sidecar — [section 16](#16-deferred-v5)</td><td style="background:#e8f5e9">Model-scoped manual search (prompt + paths)</td></tr>
 <tr><td style="background:#e3f2fd"><strong>Samsung V2</strong></td><td style="background:#e8f5e9">Same PG schema unless V1.1 promoted by A/B</td><td style="background:#fff3e0">Themes → <code>db-exports/</code> → wiki playbooks; sales MD; watermark + flock + cron</td></tr>
 <tr><td style="background:#e3f2fd"><strong>Samsung V3</strong></td><td style="background:#e8f5e9">Same ticket plane as promoted V1.x</td><td style="background:#fff3e0"><strong>Operator harness:</strong> split Cursor vs Hermes prep; optional Cua — [section 19](#19-deferred-v3)</td></tr>
@@ -124,6 +129,11 @@ Stock FRU <code>semantic_search</code> is **vector-only**. V1.1 requires **retai
 | **D11** | **Manuals — two steps:** (1) Shell copy PDFs → <code>brain/retail/raw/…</code> (<code>01_copy_manuals.sh</code>). (2) Hermes + <code>llm_wiki</code> **compile/rescan** → searchable <code>brain/retail/wiki/</code>. Copy ≠ ingest. Ticket A/B does not require step 2; product manual Q&A does. [Phase 6 §15.5](#15-5-wiki-vs-tickets). |
 | **D12** | **Model-scoped search:** Resolve <code>model</code> (and structured fields) from the **open ticket** (<code>item_number</code> / <code>ticket_id</code> → SQL) **before</code> <code>semantic_search</code> and when practical for wiki queries. Eval already uses <code>model_filter</code> per row; product path must match ([section 7.1](#7-1-model-scope), **V5**). |
 | **D13** | **Shared utils layout:** Domain-agnostic PG+RAG+SQL primitives live under <code>utils/pg_rag/</code> (target rename from interim <code>utils/retail_fru/</code>). Samsung-specific schema, seed, and adapters stay in <code>scripts/retail/</code>. Full FRU loop is **V5**, not Phase 6. |
+| **D14** | **Ticket search modes:** <code>RETAIL_TICKET_SEARCH_MODE</code> = <code>vector_only</code> \| <code>rrf_normal</code> \| <code>rrf_weighted</code> \| <code>rrf_weighted_boosted</code> → **V1 / V1.1 / V1.2 / V1.3** (ticket plane only; not Samsung wiki V2). Legacy <code>RETAIL_TICKET_HYBRID_SEARCH=1</code> → <code>rrf_normal</code>. |
+| **D15** | **V1.1 lexical:** Light normalize + rich query tokens + Postgres <code>ts_rank_cd</code>; **no** whole-query collapse to tech-line as default. |
+| **D16** | **V1.2 fusion weights:** \(w_v=0.7\), \(w_l=0.3\) on each leg’s <code>1/(k+rank)</code> terms; <strong>k=60</strong>. |
+| **D17** | **V1.3 code boost:** Parse <code>SAM-E\d{3}</code> from text; apply <strong>λ=10</strong> (<code>RETAIL_LEXICAL_CODE_BOOST</code>) to **code-specific** signal only; **no mandatory** <code>diagnostic_code</code> column. |
+| **D18** | **V1.1 eval tradeoff:** Accept <code>error_code</code> stratum regression vs demo-era FTS until **V1.3** ships; do not rewrite gold to recover metrics. |
 
 ---
 
@@ -151,11 +161,19 @@ graph TD
   style EVAL fill:#fff8e1,stroke:#ff8f00,stroke-width:1px,font-size:9px
 ```
 
-**Ticket hybrid env (V1.1):**
+**Ticket search mode (V1.x — Phase 7):**
 
 ```bash
-RETAIL_TICKET_HYBRID_SEARCH=0   # default V1 vector-only
+RETAIL_TICKET_SEARCH_MODE=vector_only          # V1
+RETAIL_TICKET_SEARCH_MODE=rrf_normal           # V1.1
+RETAIL_TICKET_SEARCH_MODE=rrf_weighted         # V1.2 (70/30)
+RETAIL_TICKET_SEARCH_MODE=rrf_weighted_boosted # V1.3 (+ code λ)
+RETAIL_LEXICAL_CODE_BOOST=10
+
+# Legacy: RETAIL_TICKET_HYBRID_SEARCH=0|1 → vector_only | rrf_normal
 ```
+
+Article: [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md).
 
 **MCP catalog (read-only Postgres — dev fallback example):**
 
@@ -312,7 +330,7 @@ graph TD
 
 ---
 
-<h2 id="8-eval" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Eval and A/B (V1 vs V1.1)</h2>
+<h2 id="8-eval" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Eval and A/B (V1 vs V1.x)</h2>
 
 | Artifact | Role |
 |----------|------|
@@ -334,7 +352,7 @@ eval_id, query, model_filter, expected_ticket_ids[], stratum, source_ticket_id
 
 1. `02_generate_corpus.sh` → strict eval JSONL; optional `llm_author_gold.py` **before** any ranker run (never from top-k).
 2. Load Postgres. Embed each ticket **once** via `embed_service_queries.py` (reads repo `.env`; **fails fast** if key/model missing). Build tsvector from the same text. Vectors are **768-d** (`gemini-embedding-2` + `outputDimensionality=768`).
-3. Run harness with `RETAIL_TICKET_HYBRID_SEARCH=0` then `=1` on the **same** PG cabinet (query leg embeds at search time until eval-query storage is added — ticket leg is store-once).
+3. Run harness for each **D14** mode on the **same** PG cabinet (query leg embeds at search time until eval-query storage is added — ticket leg is store-once). Phase 6 used `HYBRID_SEARCH=0|1`; Phase 7 adds **`rrf_weighted`** and **`rrf_weighted_boosted`** reports.
 4. Log top-k ids, scores; aggregate Recall@k, MRR@k, false reuse **by stratum**.
 5. **Pytest** stubs `embed_text` only in tests — production paths never mock.
 
@@ -374,6 +392,21 @@ Lesson and caveats: [war story 2](../war_stories/WAR_STORIES.md#war-story-2).
 **Caveats for D10** (full write-up: [war story 2](../war_stories/WAR_STORIES.md#war-story-2)): question vectors must be frozen too; do not mix model versions in one table; do not change text normalization after storage; do not set gold from neighbors; finish or roll back a partial embed batch.
 
 **Shared code (interim):** `utils/retail_fru/` → migrate to **`utils/pg_rag/`** in **V5** (D13). **No** checksum mock in production.
+
+<h3 id="8-1-v1x-evolution" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.1 Ticket search V1.x evolution (V1.1–V1.3)</h3>
+
+Educational / publishable write-up: [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md) (update **§7 Results** after each operator run).
+
+**Implementation plan (Phase 7):** [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md).
+
+| Label | Mode | Fusion |
+|-------|------|--------|
+| V1 | `vector_only` | — |
+| V1.1 | `rrf_normal` | Equal RRF + rich FTS |
+| V1.2 | `rrf_weighted` | 0.7 vector / 0.3 lexical |
+| V1.3 | `rrf_weighted_boosted` | 0.7 / 0.3 + code λ |
+
+Future ticket-plane tweaks reserve **V1.4, V1.5, …** without reusing **Samsung V2** (wiki automation) version numbers.
 
 ---
 
@@ -538,6 +571,23 @@ Stop with a short checklist: project path set, rescan done, N wiki pages visible
 
 ---
 
+<h2 id="16-phase-7" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">16. Phase 7 — Ticket search V1.1–V1.3 (RRF modes)</h2>
+
+**Goal:** Production-shaped lexical leg + four **D14** modes; A/B/C/D on same frozen gold; publishable narrative in [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md).
+
+**Child plan (execute with `qimpltdd`):** [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md)
+
+- [ ] **7.A** — V1.1 `fts_query_text` / rich FTS ([D15](#2-decisions)); pytest green.
+- [ ] **7.B** — `RETAIL_TICKET_SEARCH_MODE` + legacy alias ([D14](#2-decisions)).
+- [ ] **7.C** — V1.2 weighted RRF 70/30 ([D16](#2-decisions)).
+- [ ] **7.D** — V1.3 code parse + λ=10 ([D17](#2-decisions)).
+- [ ] **7.E** — Operator four-report run; update ABOUT §7 + `phase6_operator_log.md`.
+- [ ] **Exit:** `./scripts/verify.sh` green; **no** gold edits ([D18](#2-decisions)).
+
+**TDD mode:** strict-TDD (Phases A–D in child plan).
+
+---
+
 <h2 id="16-deferred-v5" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">16. Deferred — Samsung V5 FRU agent harness (SQL + RAG loop)</h2>
 
 **Schedule:** **Last major product slice** — after [Samsung V4](#20-deferred-v4) role split. V2–V4 stay focused on corpus automation, operator docs, and eval governance; **V5** adds the full SQL + ticket RAG + wiki **ReAct** loop beyond similarity A/B.
@@ -698,6 +748,8 @@ Replace the single [`HERMES_PREP_PROMPT.md`](../cursor_gen/retail_v11_prep/HERME
 | V1.1 prep (interim) | [`cursor_gen/retail_v11_prep/`](../cursor_gen/retail_v11_prep/) |
 | War stories (planes + embed-once A/B + hybrid RRF) | [`war_stories/WAR_STORIES.md`](../war_stories/WAR_STORIES.md) — [1](../war_stories/WAR_STORIES.md#war-story-1), [2](../war_stories/WAR_STORIES.md#war-story-2), [4](../war_stories/WAR_STORIES.md#war-story-4) |
 | Phase 5.1 child plan (FTS normalize) | [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) |
+| Phase 7 V1.x search evolution | [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md) |
+| V1.x article / results ledger | [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md) |
 | Hermes MCP runbook | [`RUNBOOK_HARNESS_HERMES.md`](./RUNBOOK_HARNESS_HERMES.md) |
 | OpenClaw harness (future) | [`RUNBOOK_HARNESS_OPENCLAW.md`](./RUNBOOK_HARNESS_OPENCLAW.md) |
 
@@ -708,15 +760,18 @@ Replace the single [`HERMES_PREP_PROMPT.md`](../cursor_gen/retail_v11_prep/HERME
 <tr style="background:#1565c0;color:white"><th>Gate</th><th>Status</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd">Plan shape (<code>[ ]</code> / <code>[X]</code>, numbered phases, quality bar)</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">Ready</span></td></tr>
-<tr><td style="background:#e3f2fd">Step 1 ambiguity (product scope for **next** work)</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">Ready</span> — next slice is **Phase 6** only; V5+ deferred with checklists</td></tr>
-<tr><td style="background:#e3f2fd">Phases 0–5</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">Complete</span></td></tr>
-<tr><td style="background:#e3f2fd">First open checkbox</td><td style="background:#fff3e0"><strong>Samsung V2</strong> — [section 17](#17-deferred-v2)</td></tr>
-<tr><td style="background:#e3f2fd">Operator deps</td><td style="background:#e8f5e9">Phase 6 done; PG reload with <code>RETAIL_MARKET=AU</code> via <code>03</code></td></tr>
-<tr><td style="background:#e3f2fd">TDD mode for next slice</td><td style="background:#fff8e1">V2/V3 — mostly smoke/docs; V5 strict-TDD when scheduled last</td></tr>
+<tr><td style="background:#e3f2fd">Plan shape (<code>[ ]</code> / <code>[X]</code>, numbered phases, quality bar)</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">Ready</span> — parent + child Phase 7 plan</td></tr>
+<tr><td style="background:#e3f2fd">Decisions **D14–D18** (modes, weights, λ, lexical, eval tradeoff)</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">Locked</span></td></tr>
+<tr><td style="background:#e3f2fd">Phases 0–6</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">Complete</span></td></tr>
+<tr><td style="background:#e3f2fd">First open implementable slice</td><td style="background:#fff3e0"><strong>Phase 7</strong> — [§16](#16-phase-7) via child plan</td></tr>
+<tr><td style="background:#e3f2fd">Operator deps</td><td style="background:#e8f5e9">Docker PG + Gemini `.env`; demo corpus in repo</td></tr>
+<tr><td style="background:#e3f2fd">TDD mode for Phase 7</td><td style="background:#e8f5e9">strict-TDD per child plan</td></tr>
+<tr><td style="background:#e3f2fd">Remaining ambiguity</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">None</span> for Phase 7 scope</td></tr>
 </tbody>
 </table>
 
-**Start command:** `aciubtdd docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md` (or **`resumimpltdd`** same path). Agent runs **implreftdd** from **Phase 6.1** through **6.9**, **§3.1f** on HG-* failures, **exwar** after Phase 6 `[X]`. Do **not** start **V5** in the same pass unless user expands scope.
+**Start command (recommended):** `qimpltdd cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md` then **`aciubtdd`** same path.
 
-**Implementation:** **`resumimpl`** / **`aciubtdd`** on this file — Phases **0–6** shipped; continue **V2 → platform → V3 → V4 → V5** ([section 16](#16-deferred-v5) last).
+**Parent file:** update Phase 7 checkboxes here after child plan completes; **Samsung V2+** remain deferred — do **not** mix wiki automation into Phase 7.
+
+**Article:** maintain [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md) as results land.

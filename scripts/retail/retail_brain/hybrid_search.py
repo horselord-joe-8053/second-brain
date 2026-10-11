@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Sequence
 from retail_brain.embeddings import cosine_distance, embed_text
 from retail_brain.models import RESOLVED
 from retail_brain.rrf import reciprocal_rank_fusion
-from retail_brain.text_normalize import fts_query_text, search_text_for_fts
+from retail_brain.text_normalize import fts_query_text, search_text_for_fts, text_for_embedding
 
 
 @dataclass
@@ -50,7 +50,10 @@ def vector_rank(
     ]
     scored = sorted(
         (
-            (r.ticket_id, cosine_distance(q_emb, embed_text(r.customer_query_text)))
+            (
+                r.ticket_id,
+                cosine_distance(q_emb, embed_text(text_for_embedding(r.customer_query_text))),
+            )
             for r in candidates
         ),
         key=lambda x: (x[1], x[0]),
@@ -103,7 +106,7 @@ def search_ticket_ids(
         return vector_rank(query, rows, model_filter=model_filter, limit=limit)
     v_list = vector_rank(query, rows, model_filter=model_filter, limit=limit * 2)
     l_list = lexical_rank(query, rows, model_filter=model_filter, limit=limit * 2)
-    fused = reciprocal_rank_fusion([v_list, l_list])
+    fused = reciprocal_rank_fusion([v_list, l_list], lexical_rank_order=l_list)
     return [doc_id for doc_id, _ in fused[:limit]]
 
 

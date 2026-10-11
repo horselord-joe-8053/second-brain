@@ -39,7 +39,7 @@ def test_eval_query_has_no_operational_ids(tmp_path: Path) -> None:
     manifest = tmp_path / "ticket_manifest.jsonl"
     write_manifest(manifest, rows, seed=7)
     eval_rows = build_eval_rows(manifest, max_rows=10)
-    forbidden = ("Case ref", "ITM-", "ST-", "(ref ", "T-0042")
+    forbidden = ("Case ref", "ITM-", "ST-", "(ref ", "T-0042", "Technician log:")
     for ev in eval_rows:
         for token in forbidden:
             assert token not in ev["query"], ev["eval_id"]
