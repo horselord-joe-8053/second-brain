@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 from typing import Optional
 
@@ -16,6 +17,8 @@ _TECH_CODE_SUFFIX = re.compile(
     r"\s*Technician log: diagnostic code \S+\.\s*$",
     re.IGNORECASE,
 )
+
+_DEFAULT_EMBED_STRIP = "Case ref ITM-"
 
 # Exam JSONL shape from market eval_query_template (align tokens with stored search_text).
 _EVAL_QUERY_EN = re.compile(
@@ -35,6 +38,24 @@ def strip_case_ref_suffix(text: str) -> str:
     return _CASE_REF_SUFFIX.sub("", text).strip()
 
 
+def embed_strip_phrases() -> tuple[str, ...]:
+    """Pipe-separated substrings removed from embed/FTS prep (not SAM-E tokens themselves)."""
+    raw = os.environ.get("RETAIL_EMBED_STRIP_PHRASES", _DEFAULT_EMBED_STRIP).strip()
+    if not raw:
+        return ()
+    return tuple(p.strip() for p in raw.split("|") if p.strip())
+
+
+def apply_embed_strip_phrases(text: str) -> str:
+    out = text or ""
+    for phrase in embed_strip_phrases():
+        if phrase.lower().startswith("case ref itm-"):
+            out = _CASE_REF_SUFFIX.sub("", out)
+        else:
+            out = re.sub(re.escape(phrase) + r".*", "", out, flags=re.IGNORECASE)
+    return out.strip()
+
+
 def strip_market_prefix(text: str, *, market: str | None = None) -> str:
     prefix = market_profile(market)["customer_query_prefix"]
     if text.startswith(prefix):
@@ -43,15 +64,16 @@ def strip_market_prefix(text: str, *, market: str | None = None) -> str:
 
 
 def text_for_embedding(raw: str) -> str:
-    """Vector index: customer-facing prose only (tech diagnostic line excluded)."""
+    """Vector index: customer prose + SAM-E; strip only RETAIL_EMBED_STRIP_PHRASES boilerplate."""
     core = strip_case_ref_suffix(raw or "").strip()
-    return _TECH_CODE_SUFFIX.sub("", core).strip()
+    return apply_embed_strip_phrases(core)
 
 
 def search_text_for_fts(raw: str, *, market: str | None = None) -> str:
     """Lexical index: customer text + diagnostic code (tech line kept for token match)."""
     core = strip_market_prefix(raw or "", market=market)
-    return strip_case_ref_suffix(core)
+    core = strip_case_ref_suffix(core)
+    return apply_embed_strip_phrases(core)
 
 
 def extract_diag_code(text: str | None) -> str | None:

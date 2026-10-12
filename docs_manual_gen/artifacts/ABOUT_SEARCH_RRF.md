@@ -3,7 +3,7 @@
 **Audience:** Engineers and product leaders building **repair-desk / retail** retrieval on **Postgres + pgvector**.  
 **Purpose:** Publishable narrative — *why* each ticket-search version exists, *what* we measured, and *what* we implement next.  
 **Status:** **living document** — Phase 7 implementation in flight ([`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md)).  
-**Last updated:** 2026-10-11  
+**Last updated:** 2026-10-12  
 **Context:** Samsung Australia retail **Second Brain** prototype (`second_brain` repo) — synthetic tickets, real **Gemini** embeddings, operator A/B on Postgres.
 
 <!-- Formulas use HTML (not $LaTeX$) so tables and Cursor preview render correctly. -->
@@ -28,6 +28,7 @@
 9. [Mathematics of fusion](#9-math) — RRF, weights, boost, tie-break.
 10. [Worked example: `eval-0006`](#10-example) — full query, tickets, scores.
 11. [Lexical leg deep dive](#11-lexical) — normalize, `ts_rank_cd`, vs BM25.
+ 11.4 [Six-way snapshot (100k+ tickets)](#11-4-six-way) — PG FTS vs bm25x vs Tantivy vs ParadeDB vs OpenSearch vs Qdrant.
 12. [Eval design and metrics](#12-eval) — gold, strata, what “win” means.
 13. [Results ledger](#13-results) — operator numbers; update after each run.
 14. [Config reference](#14-config) — env modes and code paths.
@@ -433,6 +434,252 @@ graph LR
 2. **Score partial overlap** — `ts_rank_cd` rewards matching terms without requiring the demo’s single-line code rewrite.
 3. **Layer code boost (V1.3)** — treat `SAM-E###` like a high-value entity, not the entire query.
 
+<h3 id="11-4-six-way" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.4 Six-way snapshot (100k+ tickets)</h3>
+
+**Scope:** Samsung retail ticket plane — **Postgres stays SoR**; dense leg stays **pgvector** unless you explicitly migrate vectors. Lexical leg must return **ordered `ticket_id` lists** for **RRF** in `retail_brain`. **V1.3 λ** stays in Python (`code_boost_scores`) regardless of engine.
+
+**Legend:** **Ops** = moving parts beyond retail PG · **BM25** = Lucene-family BM25 (not `ts_rank_cd`).
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>#</th><th>Option</th><th>Shape</th><th>Ops</th><th>True BM25</th><th>PG SoR</th><th>RRF fit</th><th>100k retail fit</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">①</td><td><strong>PG FTS</strong> (today)</td><td>In Postgres</td><td style="background:#e8f5e9">Lowest</td><td style="background:#ffebee">No</td><td style="background:#e8f5e9">Native</td><td style="background:#e8f5e9">✓ SQL → ids</td><td style="background:#fff9c4">Paraphrase leg often empty (`websearch` AND)</td></tr>
+<tr><td style="background:#e3f2fd">②</td><td><strong>bm25x</strong> (own bridge)</td><td>Embedded lib + mmap dir</td><td style="background:#e8f5e9">Low</td><td style="background:#e8f5e9">Yes (Lucene default)</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">✓ `LexicalIndex.search` → ids</td><td style="background:#e8f5e9"><span style="background:#2e7d32;color:white;padding:1px 4px">recommended</span> small owned bridge</td></tr>
+<tr><td style="background:#e3f2fd">③</td><td><strong>Tantivy</strong></td><td>Embedded Rust index</td><td style="background:#e8f5e9">Low</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">✓</td><td style="background:#fff3e0">If phrases + schema filters dominate</td></tr>
+<tr><td style="background:#e3f2fd">④</td><td><strong>ParadeDB</strong> `pg_search`</td><td>PG extension</td><td style="background:#fff3e0">Medium</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">Same DB</td><td style="background:#e8f5e9">✓ SQL BM25 → ids</td><td style="background:#fff3e0">When ops allow extensions, not custom code</td></tr>
+<tr><td style="background:#e3f2fd">⑤</td><td><strong>OpenSearch</strong></td><td>Separate JVM service</td><td style="background:#ffebee">High</td><td style="background:#e8f5e9">Yes (Lucene)</td><td style="background:#e8f5e9">Yes (hydrate)</td><td style="background:#e8f5e9">✓</td><td style="background:#ffebee">Overkill unless ES/OS already mandated</td></tr>
+<tr><td style="background:#e3f2fd">⑥</td><td><strong>Qdrant hybrid</strong></td><td>Separate vector service</td><td style="background:#ffebee">High</td><td style="background:#fff9c4">Sparse vectors (BM25-like ingest)</td><td style="background:#e8f5e9">Yes (hydrate)</td><td style="background:#fff3e0">Native fusion or app RRF</td><td style="background:#ffebee">Poor fit while vectors live in pgvector</td></tr>
+</tbody>
+</table>
+
+**Sync pattern (②③):** after `reload_postgres_corpus.py` / embed — rebuild or upsert from `(ticket_id, search_text, model)`; env e.g. `RETAIL_LEXICAL_INDEX_PATH`.
+
+---
+
+<h4 id="11-4-1-pg" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.1 ① Postgres FTS (status quo + interim soften)</h4>
+
+**Install / run:** already in `cursor_gen/retail_v11_prep/03_pg_up_and_load.sh` (retail PG on **5433**).
+
+```bash
+bash cursor_gen/retail_v11_prep/03_pg_up_and_load.sh
+export RETAIL_TICKET_SEARCH_MODE=rrf_normal
+bash cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh
+```
+
+**Lexical leg (production shape today):**
+
+```sql
+SELECT ticket_id
+FROM service_queries
+WHERE status = 'resolved'
+  AND query_tsv @@ websearch_to_tsquery('english', $fts_query_text)
+ORDER BY ts_rank_cd(query_tsv, websearch_to_tsquery('english', $fts_query_text)) DESC
+LIMIT 20;
+```
+
+**Interim soften (still not BM25):** try `plainto_tsquery` or OR-expanded tokens in app code before paying for ②–⑥.
+
+---
+
+<h4 id="11-4-2-bm25x" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.2 ② bm25x — embedded own bridge <span style="background:#2e7d32;color:white;padding:1px 4px;font-size:0.85em">P5 candidate</span></h4>
+
+**Install:**
+
+```bash
+pip install bm25x
+```
+
+**Spike (standalone script — does not connect to Postgres; production still loads the index from PG after corpus reload):** Quick check that `bm25x` installs, ranks with Lucene-style BM25, and persists to disk.
+
+```bash
+python3 - <<'PY'
+from bm25x import BM25
+
+index = BM25(index="tmp/retail_lexical_bm25x_spike", method="lucene")
+index.add([
+    "Galaxy A15 battery drains by noon technician log SAM-E176",
+    "Galaxy A15 overheating same symptoms different code SAM-E193",
+])
+for doc_id, score in index.search("battery dies lunchtime", k=2):
+    print(doc_id, f"{score:.4f}")
+PY
+```
+
+**Bridge sketch (maps integer doc ids ↔ `ticket_id`; reuse `search_text_for_fts`):**
+
+```python
+from bm25x import BM25
+from retail_brain.text_normalize import fts_query_text, search_text_for_fts
+
+class Bm25xLexicalIndex:
+    def __init__(self, path: str):
+        self._path = path
+        self._index = BM25(index=path, method="lucene")
+        self._ticket_by_doc: list[str] = []
+        self._doc_by_ticket: dict[str, int] = {}
+        self._model_by_ticket: dict[str, str] = {}
+
+    def rebuild(self, rows: list[tuple[str, str, str | None]]) -> None:
+        """rows: (ticket_id, customer_query_text, model) — full rebuild after PG load."""
+        import shutil
+        shutil.rmtree(self._path, ignore_errors=True)
+        self._index = BM25(index=self._path, method="lucene")
+        self._ticket_by_doc = [r[0] for r in rows]
+        self._doc_by_ticket = {tid: i for i, tid in enumerate(self._ticket_by_doc)}
+        self._model_by_ticket = {r[0]: r[2] or "" for r in rows}
+        texts = [search_text_for_fts(t) for _, t, _ in rows]
+        self._index.add(texts)
+
+    def search_ids(self, query: str, *, k: int, model_filter: str | None = None) -> list[str]:
+        q = fts_query_text(query)
+        subset = (
+            [self._doc_by_ticket[t] for t, m in self._model_by_ticket.items() if m == model_filter]
+            if model_filter
+            else None
+        )
+        hits = self._index.search(q, k=k, subset=subset) if subset is not None else self._index.search(q, k=k)
+        return [self._ticket_by_doc[d] for d, _ in hits]
+```
+
+**Wire:** replace SQL body of `lexical_ids()` in `pg_search.py` with `Bm25xLexicalIndex.search_ids` when `RETAIL_LEXICAL_BACKEND=bm25x`.
+
+---
+
+<h4 id="11-4-3-tantivy" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.3 ③ Tantivy (embedded)</h4>
+
+**Install:**
+
+```bash
+pip install tantivy
+```
+
+**Spike:**
+
+```python
+import tantivy
+
+schema_builder = tantivy.SchemaBuilder()
+schema_builder.add_text_field("body", stored=True)
+schema_builder.add_text_field("ticket_id", stored=True, tokenizer_name="raw")
+schema_builder.add_text_field("model", stored=True, tokenizer_name="raw")
+schema = schema_builder.build()
+
+index = tantivy.Index(schema, path="tmp/retail_tantivy_spike")
+writer = index.writer(50_000_000)
+writer.add_document(tantivy.Document(
+    body="Galaxy A15 battery drains by noon SAM-E176",
+    ticket_id="T-1001",
+    model="Galaxy A15 5G",
+))
+writer.commit()
+index.reload()
+
+searcher = index.searcher()
+q = index.parse_query('battery "SAM-E176"', ["body"])
+for score, doc_addr in searcher.search(q, 5).hits:
+    doc = searcher.doc(doc_addr)
+    print(doc["ticket_id"][0], score)
+```
+
+---
+
+<h4 id="11-4-4-paradedb" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.4 ④ ParadeDB (Postgres extension)</h4>
+
+**Try (separate from retail PG — spike only):**
+
+```bash
+docker run --rm -e POSTGRES_PASSWORD=retail -p 5434:5432 paradedb/paradedb:latest
+```
+
+**SQL shape (after extension enabled — check [ParadeDB docs](https://docs.paradedb.com/) for current `CREATE EXTENSION` + BM25 API):**
+
+```sql
+-- Illustrative: exact DDL varies by ParadeDB version
+SELECT ticket_id, pdb.score(id) AS rank
+FROM service_queries
+WHERE search_text @@@ 'battery drains'
+  AND status = 'resolved'
+ORDER BY rank DESC
+LIMIT 20;
+```
+
+---
+
+<h4 id="11-4-5-opensearch" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.5 ⑤ OpenSearch (Lucene server)</h4>
+
+**Run single-node dev (requires `vm.max_map_count` on Linux hosts):**
+
+```bash
+docker run -d --name retail-os -p 9200:9200 -p 9600:9600 \
+  -e discovery.type=single-node \
+  -e DISABLE_SECURITY_PLUGIN=true \
+  opensearchproject/opensearch:2
+```
+
+**Index + BM25 search (HTTP):**
+
+```bash
+curl -s -X PUT 'localhost:9200/retail_tickets' -H 'Content-Type: application/json' -d '{
+  "mappings": { "properties": { "search_text": { "type": "text" }, "model": { "type": "keyword" } } }
+}'
+curl -s -X POST 'localhost:9200/retail_tickets/_search' -H 'Content-Type: application/json' -d '{
+  "size": 20,
+  "query": { "bool": { "must": { "match": { "search_text": "battery drains" } },
+    "filter": { "term": { "model": "Galaxy A15 5G" } } } }
+}'
+```
+
+**RRF:** keep fusion in Python; ingest pipeline mirrors embed job from PG.
+
+---
+
+<h4 id="11-4-6-qdrant" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.6 ⑥ Qdrant hybrid (dense + sparse service)</h4>
+
+**Run:**
+
+```bash
+docker run -d --name retail-qdrant -p 6333:6333 -p 6334:6334 qdrant/qdrant:latest
+```
+
+**Client install + sparse+dense sketch (vectors usually precomputed offline):**
+
+```bash
+pip install qdrant-client
+```
+
+```python
+from qdrant_client import QdrantClient, models
+
+client = QdrantClient(url="http://localhost:6333")
+client.create_collection(
+    collection_name="retail_tickets",
+    vectors_config=models.VectorParams(size=768, distance=models.Distance.COSINE),
+    sparse_vectors_config={"text": models.SparseVectorParams()},
+)
+# Upsert: dense embedding + sparse BM25-like weights from your tokenizer pipeline
+client.upsert(
+    collection_name="retail_tickets",
+    points=[models.PointStruct(
+        id="T-1001",
+        vector={"": [0.1] * 768, "text": models.SparseVector(indices=[1, 42], values=[0.8, 1.2])},
+        payload={"model": "Galaxy A15 5G", "search_text": "battery drains SAM-E176"},
+    )],
+)
+results = client.query_points(
+    collection_name="retail_tickets",
+    prefetch=[
+        models.Prefetch(query=[0.1] * 768, using="", limit=20),
+        models.Prefetch(query=models.SparseVector(indices=[1], values=[1.0]), using="text", limit=20),
+    ],
+    query=models.FusionQuery(fusion=models.Fusion.RRF),
+    limit=10,
+)
+```
+
+**Note:** Adopting ⑥ for lexical **without** moving dense vectors off pgvector duplicates the vector leg — only attractive if you migrate **both** legs to Qdrant.
+
 ---
 
 <h2 id="12-eval" style="color:#0277bd;font-size:1.22em;font-weight:650;border-left:5px solid #0288d1;padding-left:10px;margin-top:1.1em;background:#e1f5fe">12. Eval design and metrics</h2>
@@ -508,6 +755,24 @@ Run: `cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh`.
 
 **Maintenance:** After each operator run, update this table and add **“what surprised us”** under the matching version section above.
 
+<h3 id="13-3-llm-v2" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.3 Natural LLM corpus v2 (`rrf_data_llm_gen`, 2026-10-12)</h3>
+
+Profile `tmp/simulated_data/` — **60** tickets, **10** eval, **no twin clones**; **~50%** historical rows with SAM-E; embed index **keeps SAM-E** (`RETAIL_EMBED_STRIP_PHRASES` only).
+
+<table>
+<thead>
+<tr style="background:#0277bd;color:white"><th>Mode</th><th>recall@1</th><th>lexical_nonempty</th><th>Reports</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>vector_only</code></td><td style="background:#e8f5e9"><strong>1.00</strong> (10/10)</td><td style="background:#f5f5f5">—</td><td style="background:#f5f5f5"><code>tmp/simulated_data/reports/pg_baseline_v1.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_normal</code></td><td style="background:#e8f5e9"><strong>1.00</strong></td><td style="background:#ffebee">0/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_1_normal.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_weighted</code></td><td style="background:#e8f5e9"><strong>1.00</strong></td><td style="background:#ffebee">0/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_2_weighted.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_weighted_boosted</code></td><td style="background:#e8f5e9"><strong>1.00</strong></td><td style="background:#ffebee">0/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_3_boosted.json</code></td></tr>
+</tbody>
+</table>
+
+**Read:** Small **N=10** gold set + **distinct** ticket bodies + **SAM-E in document embed** → **vector-only already perfect**; Postgres FTS leg still **empty** on paraphrase queries (`websearch` AND). **Do not** treat 1.00 as proof that V1.1–V1.3 add value on this slice—only that the v2 corpus is easy for dense retrieval. Compare separately to **prag_gen** (§13.2) and plan **BM25/Qdrant** before promotion.
+
 ---
 
 <h2 id="14-config" style="color:#455a64;font-size:1.22em;font-weight:650;border-left:5px solid #78909c;padding-left:10px;margin-top:1.1em;background:#eceff1">14. Config reference</h2>
@@ -545,7 +810,7 @@ LIMIT $limit;
 
 <h2 id="15-future" style="color:#455a64;font-size:1.22em;font-weight:650;border-left:5px solid #78909c;padding-left:10px;margin-top:1.1em;background:#eceff1">15. What comes after V1.3</h2>
 
-Reserve **V1.4, V1.5, …** for ticket-plane tweaks (tunable w<sub>v</sub>/w<sub>l</sub>, phrase rules, optional BM25 extension, cross-encoder rerank experiments) — each with the same article pattern: **hypothesis → change → measured stratum table**.
+Reserve **V1.4, V1.5, …** for ticket-plane tweaks (tunable w<sub>v</sub>/w<sub>l</sub>, phrase rules, **production BM25 via [§11.4](#11-4-six-way)** — especially **② bm25x**, cross-encoder rerank experiments) — each with the same article pattern: **hypothesis → change → measured stratum table**.
 
 **Samsung wiki automation** remains a **separate program version** in the parent refactor (exports, themes, cron) — not numbered as V1.x.
 

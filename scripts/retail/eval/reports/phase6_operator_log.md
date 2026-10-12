@@ -41,3 +41,20 @@ Reports: `pg_baseline_v1.json`, `pg_ab_v1_v11.json`.
 Reports: `pg_baseline_v1.json`, `pg_ab_v1_1_normal.json`, `pg_ab_v1_2_weighted.json`, `pg_ab_v1_3_boosted.json`.
 
 **Read:** Rich FTS + equal or 70/30 RRF **does not** recover `error_code` until **V1.3 code boost (λ=10)** — matches D18 acceptance. V1.3 aligns with stage-1 hybrid headline without demo-era tech-line-only FTS rewrite.
+
+<h2 id="p6-llm-v2" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Natural LLM corpus v2 (`rrf_data_llm_gen`)</h2>
+
+**When:** 2026-10-12  
+**Corpus:** 60 tickets / 10 eval — `generate_llm_corpus_v2.py`; SAM-E in **embed**; no twin clones  
+**Profile:** `RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen`
+
+| Mode | recall@1 | lexical_nonempty |
+|------|----------|------------------|
+| vector_only | **1.00** (10/10) | — |
+| rrf_normal | **1.00** | 0/10 |
+| rrf_weighted | **1.00** | 0/10 |
+| rrf_weighted_boosted | **1.00** | 0/10 |
+
+Reports: `tmp/simulated_data/reports/pg_*.json`
+
+**Read:** All modes tie at **N=10** after embed policy fix; **lexical leg still inactive** on paraphrase eval wording. Use **prag_gen** + larger N for mode differentiation until BM25/Qdrant lands.

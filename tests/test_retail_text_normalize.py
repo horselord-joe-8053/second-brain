@@ -4,6 +4,7 @@ from retail_brain.text_normalize import (
     fts_query_text,
     search_text_for_fts,
     strip_case_ref_suffix,
+    text_for_embedding,
 )
 
 
@@ -39,6 +40,16 @@ def test_fts_query_screenshot_keeps_symptoms_and_code() -> None:
     assert "mobile" in norm.lower()
     assert "battery" in norm.lower()
     assert len(norm) > len("Technician log: diagnostic code SAM-E176.")
+
+
+def test_text_for_embedding_retains_sam_e() -> None:
+    raw = (
+        "Customer reports: NFC fails on Galaxy A25 5G in Sydney, NSW. "
+        "Technician log: diagnostic code SAM-E109."
+    )
+    emb = text_for_embedding(raw)
+    assert "SAM-E109" in emb
+    assert "Technician log:" in emb
 
 
 def test_fts_query_aligns_eval_template_to_index_shape() -> None:

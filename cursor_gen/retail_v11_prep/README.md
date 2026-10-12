@@ -80,6 +80,7 @@ See **`HERMES_PREP_PROMPT.md`** — copy/paste into Hermes Desktop after step 01
 
 <h2 id="4-defaults" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Defaults</h2>
 
+- **Sim data profile:** **`RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen`** (default) — `tmp/simulated_data/*.csv` + eval JSONL; reports under `tmp/simulated_data/reports/`. **`rrf_data_prag_gen`** — `scripts/retail/seed/generated/` + reports under `scripts/retail/eval/reports/prag_gen/`. Steps **03** / **04** / **05** print a banner with the active profile. **03** and **`reload_postgres_corpus.py`** **TRUNCATE** `service_queries` before load (idempotent; no mixed corpora in PG).
 - **Market:** **`RETAIL_MARKET=AU`** (default) — en-AU synthetic copy + Postgres `english` FTS; **`BR`** for pt-BR + `portuguese`. Set in repo `.env` before `02` / `03` / `04`.
-- **Phased corpus:** `COUNT=50` while implementing; **`COUNT=90`** (same `SEED=42`) right before A/B—first 50 rows unchanged. **D6 (promotion to hybrid default)** needs much larger N later (e.g. 500+), not 90.
+- **Phased corpus (prag_gen only):** `COUNT=50` while implementing; **`COUNT=90`** (same `SEED=42`) right before A/B—run **`02_generate_corpus.sh`** when profile is **`rrf_data_prag_gen`**. LLM profile skips **02** if files already exist under **`tmp/simulated_data/`**.
 - **Embeddings:** **Gemini only** — `GEMINI_API_KEY` + `EMBEDDING_MODEL` in repo `.env`; `utils/retail_fru/embeddings.py`. Fails fast if missing. Plan [Phase 6](../../docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md#15-phase-6), **D10–D11**.

@@ -20,6 +20,12 @@ test -f "$ROOT/brain/purpose.md"
 echo "== second-brain: harness stub =="
 test -f "$ROOT/harness/second-brain/README.md"
 
+if [[ -f "$ROOT/tmp/simulated_data/service_queries.csv" ]] && python3 -c "pass" >/dev/null 2>&1; then
+  echo "== retail: validate llm_gen corpus =="
+  export PYTHONPATH="${ROOT}/scripts/retail${PYTHONPATH:+:$PYTHONPATH}"
+  python3 "$ROOT/scripts/retail/seed/validate_llm_corpus.py"
+fi
+
 if [[ -d "$ROOT/tests" ]] && python3 -c "pass" >/dev/null 2>&1; then
   echo "== second-brain: pytest =="
   export PYTHONPATH="${ROOT}${PYTHONPATH:+:$PYTHONPATH}"

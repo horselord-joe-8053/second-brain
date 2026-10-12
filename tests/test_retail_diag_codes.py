@@ -31,14 +31,14 @@ def test_pair_shares_symptom_prose_different_code() -> None:
     assert p0.diagnostic_code != p1.diagnostic_code
 
 
-def test_stored_text_keeps_code_for_fts_not_vector_index() -> None:
+def test_stored_text_keeps_code_for_fts_and_vector_index() -> None:
     from retail_brain.text_normalize import text_for_embedding
 
     parts = narrative_parts(seed=42, index=4)
     stored = format_stored_customer_query(parts, index=4)
     assert parts.diagnostic_code in stored
     assert parts.diagnostic_code in search_text_for_fts(stored)
-    assert parts.diagnostic_code not in text_for_embedding(stored)
+    assert parts.diagnostic_code in text_for_embedding(stored)
 
 
 def test_error_code_eval_query_matches_screenshot_shape() -> None:

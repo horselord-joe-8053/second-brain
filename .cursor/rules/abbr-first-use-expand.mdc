@@ -51,6 +51,15 @@ When you use a **technical term** the user may not carry from earlier turns, add
 - `false reuse (the agent copies a fix from the wrong old ticket)`
 - `paraphrase stratum (test questions worded differently from the stored ticket text)`
 
+**Semi-technical / domain jargon (same rule):** verbs and nouns that are plain English but **mean something specific in code or architecture**—not only acronyms. Gloss on **first use in the reply**, including inside **tables and bullet comparisons**:
+
+- `hydrate (load full ticket rows from Postgres after search returns only ids)`
+- `ingest (write or update rows in the search index when a ticket is saved)`
+- `RTT (round-trip time for one network request there and back)`
+- `cluster (here: OpenSearch’s name for the search engine process—even a single Docker container counts as a one-node cluster)`
+
+**This repo (retail search) — gloss when used as architecture verbs/nouns:** `hydrate`, `ingest`, `fuse`, `stratum`, `corpus`, `gold` / `golden ticket`, `lexical leg`, `dense`, `prefetch`, `sidecar`, `system of record`, unless the same reply already defined them.
+
 If a **whole sentence** is dense with jargon, you may instead append **one bracket after the sentence** that summarizes it in plain language:
 
 - `D6 also caps false reuse on paraphrase queries. (In plain terms: if we turn on V1.1, we must not get *more* cases where the bot confidently applies the wrong previous answer.)`
@@ -65,6 +74,8 @@ If a **whole sentence** is dense with jargon, you may instead append **one brack
 
 Not required in: commit messages, code identifiers, plan checklists the user has open, or verbatim quotes—unless your **new prose** introduces abbreviations or jargon there.
 
+**Still required:** normal **chat replies** to the user—even concise comparison tables, architecture answers, and “eval only” summaries. If a cell or bullet uses a term from section 3, gloss it **in that cell** or in the **first row** that introduces the term (once per reply).
+
 When expanding a **decision ID**, prefer linking to the spec (`REFACTOR_*.md`, `TODO_*.md`) in addition to the gloss.
 
 ---
@@ -76,3 +87,9 @@ When expanding a **decision ID**, prefer linking to the spec (`REFACTOR_*.md`, `
 
 **Avoid:**  
 “False reuse on the paraphrase stratum must not increase per D6.” (no gloss, assumes memory)
+
+**Avoid (semi-technical):**  
+“PG hydrate by id; Qdrant returns ids only.” ( **`hydrate`** never glossed)
+
+**Good (table-friendly):**  
+“**Hydrate (fetch full ticket text from Postgres using those ids)** — one SQL query after Qdrant search.”

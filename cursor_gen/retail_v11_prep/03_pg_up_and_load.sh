@@ -21,17 +21,24 @@ for i in $(seq 1 30); do
   sleep 1
 done
 
-CSV="$ROOT/scripts/retail/seed/generated/service_queries.csv"
-test -f "$CSV" || { echo "Run 02_generate_corpus.sh first" >&2; exit 1; }
+# shellcheck source=cursor_gen/retail_v11_prep/lib/sim_data_profile_env.sh
+source "$PREP_DIR/lib/sim_data_profile_env.sh"
+retail_sim_data_profile_exports "$ROOT"
+retail_sim_data_profile_banner "03_pg_up_and_load (schema + profile reload)"
+test -f "$RETAIL_SIM_CSV" || {
+  if [[ "$RETAIL_SIM_DATA_PROFILE" == "rrf_data_prag_gen" ]]; then
+    echo "Run 02_generate_corpus.sh first (prag_gen CSV missing)" >&2
+  else
+    echo "LLM corpus missing: $RETAIL_SIM_CSV (see tmp/simulated_data/prompt.txt)" >&2
+  fi
+  exit 1
+}
 
 export RETAIL_MARKET="${RETAIL_MARKET:-AU}"
 echo "03: apply schema migrations (idempotent)..."
 docker compose exec -T retail_pg psql -U retail -d retail -f - < "$ROOT/scripts/retail/schema/002_search_text.sql"
-echo "03: truncating service_queries (clean reload for current CSV/market)..."
-docker compose exec -T retail_pg psql -U retail -d retail -c "TRUNCATE service_queries;"
 
 export PYTHONPATH="$ROOT/scripts/retail${PYTHONPATH:+:$PYTHONPATH}"
-python3 "$ROOT/scripts/retail/load_service_queries.py" "$CSV"
-python3 "$ROOT/scripts/retail/embed_service_queries.py"
+python3 "$ROOT/scripts/retail/reload_postgres_corpus.py"
 echo "03: row count:"
 docker compose exec -T retail_pg psql -U retail -d retail -c "SELECT status, count(*) FROM service_queries GROUP BY 1;"
