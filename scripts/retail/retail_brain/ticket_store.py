@@ -1,4 +1,4 @@
-"""In-memory ticket store mirroring PG rows for tests and offline eval."""
+"""Load ``TicketRow`` lists from generated CSV for offline ``hybrid_search`` / ``eval_harness``."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from retail_brain.seed import SERVICE_FIELDNAMES
 
 
 def load_ticket_rows(csv_path: Path) -> List[TicketRow]:
+    """Parse service CSV into ``TicketRow`` objects (columns from ``SERVICE_FIELDNAMES``)."""
     rows: List[TicketRow] = []
     with csv_path.open(encoding="utf-8") as f:
         reader = csv.DictReader(f)

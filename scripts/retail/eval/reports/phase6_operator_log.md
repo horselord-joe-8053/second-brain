@@ -58,3 +58,36 @@ Reports: `pg_baseline_v1.json`, `pg_ab_v1_1_normal.json`, `pg_ab_v1_2_weighted.j
 Reports: `tmp/simulated_data/reports/pg_*.json`
 
 **Read:** All modes tie at **N=10** after embed policy fix; **lexical leg still inactive** on paraphrase eval wording. Use **prag_gen** + larger N for mode differentiation until BM25/Qdrant lands.
+
+<h2 id="p6-lexical-matrix" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Lexical backend matrix (four engines × A/B/C/D)</h2>
+
+**When:** 2026-10-12  
+**Script:** `cursor_gen/retail_v11_prep/06_run_abcd_lexical_matrix.sh`  
+**Summary:** `tmp/simulated_data/reports/lexical_matrix/lexical_matrix_summary.md`
+
+| Backend | rrf_normal recall@1 | lexical_nonempty |
+|---------|---------------------|------------------|
+| tantivy (default) | 0.800 | 10/10 |
+| bm25x | 0.800 | 10/10 |
+| parade_db | 0.800 | 10/10 |
+| open_search | 0.800 | 10/10 |
+
+**Read:** On **llm_gen** with Tantivy/bm25x/Parade/OpenSearch keyword legs, hybrid modes **activate the lexical leg** (10/10) vs earlier PG-FTS run (0/10). Recall@1 on **rrf_normal** is **0.800** for all four backends on this snapshot — keyword engine choice did not change top-1 on N=10.
+
+<h2 id="p6-demo-abcd" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Demo eval A/B/C/D (hybrid teaching ladder)</h2>
+
+**When:** 2026-10-14  
+**Eval:** `abcd_demo_eval_spec.py` → `tmp/simulated_data/ticket_retrieval.jsonl` (eval-only; 60-row CSV unchanged)  
+**Lexical:** `RETAIL_LEXICAL_BACKEND=tantivy`  
+**Script:** `05_run_abcd_postgres.sh`
+
+| Arm | Mode | recall@1 | lexical_nonempty |
+|-----|------|----------|------------------|
+| A | `vector_only` | **0.80** (8/10) | — |
+| B | `rrf_normal` | **0.80** | 10/10 |
+| C | `rrf_weighted` | **0.80** | 10/10 |
+| D | `rrf_weighted_boosted` | **1.00** (10/10) | 10/10 |
+
+**Vector-only misses:** `eval-0001` (gold `T-0042-000000`, dense top `T-0042-000042`), `eval-0005` (gold `T-0042-000030`, dense top `T-0042-000012`). **D-only recovery:** SAM-E in query + V1.3 λ; B/C keep bait at rank 1.
+
+**Recommendation:** To show **B** (equal RRF) and **C** (70/30) lifting before λ, author intakes where gold is **lexical top-1** but **vector rank ≥ 3** and **no SAM-E** in the query (pure fusion story), or inject additional historical neighbors so bait no longer wins the lexical leg.

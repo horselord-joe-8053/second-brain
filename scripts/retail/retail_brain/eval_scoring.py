@@ -1,4 +1,4 @@
-"""Shared eval hit logic: strict gold (D6) vs optional LLM-authored acceptable set."""
+"""Shared eval hit logic: strict gold ticket ids (primary metric) vs optional acceptable set."""
 
 from __future__ import annotations
 

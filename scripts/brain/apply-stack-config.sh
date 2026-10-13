@@ -14,7 +14,7 @@ fi
 
 echo "== apply-stack-config =="
 
-python3 - <<'PY' "$ROOT"
+"$ROOT/scripts/py" - <<'PY' "$ROOT"
 import os
 import sys
 from pathlib import Path
@@ -50,7 +50,7 @@ fi
 
 export NU_LLM_WIKI_MCP="${NU_LLM_WIKI_MCP:-$ROOT/../nu_llm_wiki/mcp-server/dist/src/index.js}"
 if [[ -f "$ROOT/config/brain-stack.yaml" ]] || [[ -f "$ROOT/config/brain-stack.example.yaml" ]]; then
-  export NU_LLM_WIKI_MCP="$(python3 -c "
+  export NU_LLM_WIKI_MCP="$("$ROOT/scripts/py" -c "
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path('$ROOT') / 'scripts' / 'brain'))
@@ -65,7 +65,7 @@ set -a
 [[ -f "$ROOT/.env" ]] && source "$ROOT/.env"
 set +a
 
-HARNESS="$(python3 -c "
+HARNESS="$("$ROOT/scripts/py" -c "
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path('$ROOT') / 'scripts' / 'brain'))
@@ -75,12 +75,12 @@ print(active_harness(load_brain_stack(Path('$ROOT'))))
 
 case "$HARNESS" in
   hermes)
-    python3 "$HERMES_AD/merge-hermes-wiring.py"
-    python3 "$HERMES_AD/merge-hermes-skills-config.py"
+    "$ROOT/scripts/py" "$HERMES_AD/merge-hermes-wiring.py"
+    "$ROOT/scripts/py" "$HERMES_AD/merge-hermes-skills-config.py"
     ;;
   openclaw)
     if [[ -x "$OPENCLAW_AD/merge-openclaw-wiring.py" ]]; then
-      python3 "$OPENCLAW_AD/merge-openclaw-wiring.py"
+      "$ROOT/scripts/py" "$OPENCLAW_AD/merge-openclaw-wiring.py"
     else
       echo "apply-stack-config: openclaw merge stub not executable — skip"
     fi
@@ -90,7 +90,7 @@ case "$HARNESS" in
     ;;
 esac
 
-VAULT="$(python3 -c "
+VAULT="$("$ROOT/scripts/py" -c "
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path('$ROOT') / 'scripts' / 'brain'))

@@ -15,7 +15,7 @@ export TARGET="$PAGE"
 
 curl -fsS -H "Authorization: Bearer ${LLM_WIKI_API_TOKEN}" -H "Content-Type: application/json" \
   -d "{\"query\":\"${STEM}\",\"topK\":5,\"includeContent\":true}" \
-  "${BASE}/projects/current/search" | python3 -c "
+  "${BASE}/projects/current/search" | "$ROOT/scripts/py" -c "
 import json,sys,os
 target=os.environ['TARGET']
 d=json.load(sys.stdin)

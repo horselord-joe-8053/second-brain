@@ -1,4 +1,8 @@
-"""Retail market profile: locale, copy, and Postgres full-text config (one knob for seed → PG → eval)."""
+"""Retail market profile: locale, copy templates, and seed/eval wording (AU vs BR).
+
+``pg_ts_config`` remains for historical seed/load paths; production keyword search uses
+``lexical_search/`` backends, not Postgres FTS.
+"""
 
 from __future__ import annotations
 
@@ -126,6 +130,7 @@ _PROFILES: Dict[MarketCode, Dict[str, Any]] = {
 
 
 def market_code() -> MarketCode:
+    """Active market from ``RETAIL_MARKET`` (default ``AU``)."""
     raw = (os.environ.get("RETAIL_MARKET") or "AU").strip().upper()
     if raw not in _PROFILES:
         allowed = ", ".join(sorted(_PROFILES))
@@ -134,6 +139,7 @@ def market_code() -> MarketCode:
 
 
 def market_profile(code: MarketCode | None = None) -> Dict[str, Any]:
+    """Full profile dict (locale, templates, cities, issues) for a market code."""
     key = (code or market_code()).upper()
     if key not in _PROFILES:
         allowed = ", ".join(sorted(_PROFILES))
@@ -142,12 +148,15 @@ def market_profile(code: MarketCode | None = None) -> Dict[str, Any]:
 
 
 def pg_ts_config(code: MarketCode | None = None) -> str:
+    """Postgres text search config name for legacy load paths (``english`` / ``portuguese``)."""
     return str(market_profile(code)["pg_ts_config"])
 
 
 def cities_for_market(code: MarketCode | None = None) -> List[Tuple[str, str]]:
+    """(city, state) pairs used in synthetic ticket narratives."""
     return list(market_profile(code)["cities"])
 
 
 def issues_for_market(code: MarketCode | None = None) -> List[Tuple[str, str]]:
+    """(customer issue, resolution) pairs for seed narrative rotation."""
     return list(market_profile(code)["issues"])

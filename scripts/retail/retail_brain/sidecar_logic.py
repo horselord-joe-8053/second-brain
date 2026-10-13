@@ -1,4 +1,7 @@
-"""FRU-style tool logic — delegates shared contract to utils.retail_fru.sidecar."""
+"""Agent sidecar entry: semantic ticket search + readonly SQL over in-memory rows.
+
+Wires ``utils.retail_fru.sidecar`` to ``hybrid_search.search_ticket_ids`` (respects search mode env).
+"""
 
 from __future__ import annotations
 
@@ -17,6 +20,7 @@ def semantic_search(
     limit: int = 10,
     similarity_threshold: float = 0.35,
 ) -> Dict[str, Any]:
+    """Sidecar semantic search tool: ranked tickets + similarity metadata."""
     return _semantic_search(
         rows,
         query_text=query_text,

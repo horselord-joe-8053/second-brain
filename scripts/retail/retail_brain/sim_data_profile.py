@@ -22,6 +22,7 @@ VALID_PROFILES = (RRF_DATA_PRAG_GEN, RRF_DATA_LLM_GEN)
 
 
 def repo_root() -> Path:
+    """Absolute path to second_brain repo root (parent of ``scripts/``)."""
     return Path(__file__).resolve().parents[3]
 
 
@@ -37,6 +38,7 @@ class SimDataProfile:
     ticket_manifest_jsonl: Path | None = None
 
     def validate_files(self) -> None:
+        """Raise ``FileNotFoundError`` if CSV or eval JSONL for this profile is missing."""
         if not self.service_queries_csv.is_file():
             raise FileNotFoundError(
                 f"[sim_data_profile={self.profile_id}] missing CSV: {self.service_queries_csv}"
@@ -47,6 +49,7 @@ class SimDataProfile:
             )
 
     def as_report_fields(self) -> Dict[str, str]:
+        """Metadata dict embedded in eval JSON reports."""
         return {
             "sim_data_profile": self.profile_id,
             "sim_data_profile_label": self.label,
@@ -55,6 +58,7 @@ class SimDataProfile:
         }
 
     def log_banner(self, phase: str, *, stream=None) -> None:
+        """Print profile paths to stderr (or ``stream``) at prep-script phase boundaries."""
         out = stream or sys.stderr
         print(
             f"\n=== RETAIL sim_data_profile={self.profile_id} ({self.label}) — {phase} ===\n"
@@ -66,6 +70,7 @@ class SimDataProfile:
 
 
 def _profiles(root: Path) -> Mapping[str, SimDataProfile]:
+    """Static registry of prag vs LLM corpus path bundles."""
     return {
         RRF_DATA_PRAG_GEN: SimDataProfile(
             profile_id=RRF_DATA_PRAG_GEN,
@@ -111,6 +116,7 @@ def shell_exports(root: Path | None = None) -> str:
 
 
 def _main() -> None:
+    """CLI: print paths, bash exports, or validate corpus files."""
     import argparse
 
     p = argparse.ArgumentParser(description="Resolve retail simulated-data profile paths.")

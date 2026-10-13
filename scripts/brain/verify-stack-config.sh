@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 export PATH="${HOME}/.local/bin:${HOME}/.hermes/hermes-agent:${PATH}"
 
-python3 - <<'PY' "$ROOT"
+"$ROOT/scripts/py" - <<'PY' "$ROOT"
 import sys
 from pathlib import Path
 

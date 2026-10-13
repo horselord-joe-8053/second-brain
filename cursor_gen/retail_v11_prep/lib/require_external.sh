@@ -3,6 +3,15 @@
 # Pattern: source this file, call require_cmd / require_python_module — never auto-install.
 set -euo pipefail
 
+_sb_repo_py() {
+  # This file lives at cursor_gen/retail_v11_prep/lib/.
+  local here repo
+  here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  repo="$(cd "$here/../../.." && pwd)"
+  printf '%s\n' "$repo/scripts/py"
+}
+
+
 # require_cmd <name> — prints install_hint (remaining args or stdin) and exits 1 if missing.
 require_cmd() {
   local name="$1"
@@ -25,11 +34,11 @@ require_cmd() {
 require_python_module() {
   local mod="$1"
   local hint="${2:-pip install $mod}"
-  if python3 -c "import ${mod}" >/dev/null 2>&1; then
+  if "$(_sb_repo_py)" -c "import ${mod}" >/dev/null 2>&1; then
     return 0
   fi
   echo "" >&2
-  echo "STOP: Python module '$mod' is not available for python3." >&2
+  echo "STOP: Python module '$mod' is not available for the repo interpreter." >&2
   echo "" >&2
   echo "$hint" >&2
   echo "" >&2

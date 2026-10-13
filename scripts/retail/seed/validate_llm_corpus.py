@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Validate tmp/simulated_data llm_gen corpus (REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL)."""
 
 from __future__ import annotations
@@ -16,6 +16,9 @@ sys.path.insert(0, str(ROOT / "scripts" / "retail"))
 from retail_brain.text_normalize import extract_diag_code  # noqa: E402
 
 _SAM = re.compile(r"SAM-E\d{3}", re.I)
+_DEMO_LIFT = frozenset(
+    {"vector_only", "rrf_normal", "rrf_weighted", "rrf_weighted_boosted"},
+)
 _REQUIRED_EVAL_KEYS = (
     "eval_id",
     "query",
@@ -85,6 +88,9 @@ def validate(corpus_dir: Path) -> list[str]:
             errors.append(f"eval {obj.get('eval_id')}: verbatim leakage vs gold text")
         if gold["model"] != obj.get("model_filter"):
             errors.append(f"eval {obj.get('eval_id')}: model_filter mismatch")
+        lift = obj.get("demo_lift")
+        if lift is not None and lift not in _DEMO_LIFT:
+            errors.append(f"eval {obj.get('eval_id')}: invalid demo_lift {lift!r}")
 
     if len(set(gold_ids)) != len(gold_ids):
         errors.append("duplicate gold ticket_ids across eval rows")

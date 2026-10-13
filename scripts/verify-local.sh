@@ -20,18 +20,18 @@ test -f "$ROOT/brain/purpose.md"
 echo "== second-brain: harness stub =="
 test -f "$ROOT/harness/second-brain/README.md"
 
-if [[ -f "$ROOT/tmp/simulated_data/service_queries.csv" ]] && python3 -c "pass" >/dev/null 2>&1; then
+if [[ -f "$ROOT/tmp/simulated_data/service_queries.csv" ]] && "$ROOT/scripts/py" -c "pass" >/dev/null 2>&1; then
   echo "== retail: validate llm_gen corpus =="
   export PYTHONPATH="${ROOT}/scripts/retail${PYTHONPATH:+:$PYTHONPATH}"
-  python3 "$ROOT/scripts/retail/seed/validate_llm_corpus.py"
+  "$ROOT/scripts/py" "$ROOT/scripts/retail/seed/validate_llm_corpus.py"
 fi
 
-if [[ -d "$ROOT/tests" ]] && python3 -c "pass" >/dev/null 2>&1; then
+if [[ -d "$ROOT/tests" ]] && "$ROOT/scripts/py" -c "pass" >/dev/null 2>&1; then
   echo "== second-brain: pytest =="
   export PYTHONPATH="${ROOT}${PYTHONPATH:+:$PYTHONPATH}"
-  python3 -m pytest -q tests/test_second_brain_corpus.py 2>/dev/null || python3 -m pytest -q tests/
+  "$ROOT/scripts/py" -m pytest -q tests/test_second_brain_corpus.py 2>/dev/null || "$ROOT/scripts/py" -m pytest -q tests/
 elif [[ -d "$ROOT/tests" ]]; then
-  echo "verify-local: skip pytest (python3 unavailable)"
+  echo "verify-local: skip pytest (Python 3.12 unavailable)"
 fi
 
 if ! command -v hermes >/dev/null 2>&1; then

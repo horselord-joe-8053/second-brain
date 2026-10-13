@@ -2,7 +2,7 @@
 
 **Goal:** Single repo **`config/brain-stack.yaml`** (non-secrets) + **`.env`** (secrets) → apply script syncs Hermes env/MCP paths; LLM Wiki token pull unchanged; Obsidian vault path hint.
 
-**Follow-on:** [`docs_manual_gen/REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md`](../../../docs_manual_gen/REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md) **Part II** (§8–§18) — shared **`config/second-brain.mcp-servers.yaml`**, `harness/adapters/{hermes,openclaw}/`, `active_harness` + shared **`messaging`**.
+**Follow-on:** [`REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md`](./REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md) **Part II** (§8–§18) — shared **`config/second-brain.mcp-servers.yaml`**, `harness/adapters/{hermes,openclaw}/`, `active_harness` + shared **`messaging`**.
 
 <h2 id="phases" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Phases</h2>
 

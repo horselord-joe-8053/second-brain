@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Idempotent Postgres reload for the active RETAIL_SIM_DATA_PROFILE corpus.
 
 TRUNCATE service_queries → load profile CSV → embed (Gemini). Safe to re-run; only this
@@ -35,6 +35,28 @@ def _psql_truncate(dsn: str) -> None:
         conn.close()
 
 
+def _rebuild_lexical(dsn: str) -> None:
+    """Copy resolved ticket text into the keyword engine selected by RETAIL_LEXICAL_BACKEND."""
+    import psycopg2
+
+    from retail_brain.lexical_search import rebuild_active
+
+    conn = psycopg2.connect(dsn)
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT ticket_id, coalesce(customer_query_text, ''), model
+                FROM service_queries
+                WHERE status = 'resolved'
+                """
+            )
+            rows = [(row[0], row[1], row[2]) for row in cur.fetchall()]
+    finally:
+        conn.close()
+    rebuild_active(rows)
+
+
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--profile", help="Override RETAIL_SIM_DATA_PROFILE")
@@ -67,6 +89,8 @@ def main() -> None:
     )
     print(f"[sim_data_profile={prof.profile_id}] embed (Gemini)", file=sys.stderr)
     subprocess.run([sys.executable, str(scripts / "embed_service_queries.py")], check=True)
+    print(f"[sim_data_profile={prof.profile_id}] rebuild lexical index", file=sys.stderr)
+    _rebuild_lexical(dsn)
     print(f"[sim_data_profile={prof.profile_id}] reload complete", file=sys.stderr)
 
 

@@ -20,7 +20,7 @@ if [[ ! -f "$ROOT/.env" ]]; then
   exit 0
 fi
 
-python3 - <<'PY' "$ROOT"
+"$ROOT/scripts/py" - <<'PY' "$ROOT"
 import sys
 from pathlib import Path
 

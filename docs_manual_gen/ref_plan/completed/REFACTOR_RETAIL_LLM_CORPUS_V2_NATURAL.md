@@ -1,8 +1,8 @@
 <h1 id="llm-v2-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: natural LLM sim corpus (rrf_data_llm_gen) + honest search eval</h1>
 
-**Status:** P1–P4 complete (P5 deferred)  
+**Status:** P1–P5 complete (lexical path closed via sibling plan)  
 **Branch:** `feature/bootstrap-rrf-evolve-3-llm-gen`  
-**Parent:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](./REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md)  
+**Parent:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md)  
 **Profile:** `RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen` → `tmp/simulated_data/`  
 **Execution:** **`qimpltdd`** after alignment; Phase 1 can start with prompt + regen (no search-code changes required).
 
@@ -103,14 +103,17 @@ Run **V1 / V1.1 / V1.2 / V1.3** A/B/C/D on **`rrf_data_llm_gen`** while treating
 
 - `RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen` → load + `05_run_abcd_postgres.sh`.
 - Write reports under `tmp/simulated_data/reports/`; append summary to `phase6_operator_log.md` (profile + lexical_nonempty + by-stratum).
-- Update [`ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md) §13 with **honest** narrative (no “demo twin” assumption for llm profile).
+- Update [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) §13 with **honest** narrative (no “demo twin” assumption for llm profile).
 
 **Exit:** four JSON reports; stratum table recorded; no gold edits after run.
 
-<h3 id="4-p5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.5 Phase 5 — Lexical production path (deferred decision)</h3>
+<h3 id="4-p5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.5 Phase 5 — Lexical production path <span style="background:#c8e6c9;padding:2px 6px">closed</span></h3>
 
-- Choose **Postgres ParadeDB BM25**, **Qdrant hybrid**, or **softened FTS query**; out of scope until P1–P4 characterize natural corpus metrics.
-- Parent Samsung plan Phase for infra when metrics justify it.
+**Superseded by:** [`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](./REFACTOR_RETAIL_LEXICAL_BACKENDS.md) (P1–P8 complete — same folder).
+
+- **Shipped:** `RETAIL_LEXICAL_BACKEND` default **`tantivy`**; alternates **bm25x**, **parade_db**, **open_search**; Postgres FTS **removed** from `lexical_ids()`.
+- **Not chosen:** Qdrant hybrid (dense stays pgvector); “softened FTS only” (failed honest A/B — see [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) §11.4.1).
+- **Follow-on eval (separate plan):** [`REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md`](REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md) — natural stress rows so hybrid A/B is meaningful on llm_gen.
 
 ---
 
@@ -120,7 +123,7 @@ Run **V1 / V1.1 / V1.2 / V1.3** A/B/C/D on **`rrf_data_llm_gen`** while treating
 - [X] **P2** — `validate_llm_corpus.py` + gate
 - [X] **P3** — `RETAIL_EMBED_STRIP_PHRASES` + retain SAM-E in embed; tests green
 - [X] **P4** — llm profile A/B/C/D + operator log + ABOUT §13.3
-- [ ] **P5** — (optional) BM25/Qdrant/ParadeDB decision doc
+- [X] **P5** — Lexical backends plan complete ([`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](./REFACTOR_RETAIL_LEXICAL_BACKENDS.md)); matrix on `rrf_data_llm_gen`
 
 ---
 

@@ -6,6 +6,7 @@ config/brain_stack.yaml
 config/brain-stack.local.yaml
 
 tmp/handoff/
+tmp/retail_lexical/
 
 .DS_Store
 **/.cache/

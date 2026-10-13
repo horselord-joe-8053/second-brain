@@ -1,8 +1,8 @@
 ---
 description: >-
-  Filename **cdcm-code-comments.mdc**. File headers and inline comments: clear and informative. Keyword
-  **cdcm** — enhance comments on modules, classes, or paths named in the prompt; if none named, review
-  comment quality across the codebase per this rule. **@cdcm-code-comments** or include **cdcm** in the prompt.
+  Filename **cdcm-code-comments.mdc**. File headers; at least one doc line per class and per function/method;
+  inline notes where non-obvious. Keyword **cdcm** — comment pass on named scope or relevant project source.
+  **implref** / **qimpltdd** enforce this bar via §3.2b. **@cdcm-code-comments** or **cdcm** in the prompt.
 alwaysApply: true
 ---
 
@@ -10,8 +10,10 @@ alwaysApply: true
 
 <h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
-1. [Guidelines](#guidelines) — file headers, inline comments, tone, languages covered.
-2. [Trigger `cdcm`](#trigger-cdcm) — scope of comment-enhancement requests.
+1. [Guidelines](#guidelines) — file headers, per-symbol minimum, inline comments, tone.
+2. [Per-class and per-function minimum](#cdcm-per-symbol) — required doc line on every class and callable.
+3. [Trigger `cdcm`](#trigger-cdcm) — scope of comment-enhancement requests.
+4. [Self-check](#cdcm-self) — agent merge gate.
 
 ---
 
@@ -20,18 +22,71 @@ alwaysApply: true
 For **new or edited** source files (not trivial one-line fixes):
 
 1. **File header** — Start with a short block that states what the file is for and how it fits the app (one small paragraph or a few lines for Python module docstrings / TS `/** ... */`).
-2. **Inline comments** — Add them where behavior is non-obvious, where data crosses layers, or where future readers would ask “why this way?”. Skip comments that only restate the code.
-3. **Tone** — Prefer plain language; avoid long essays and redundant docstrings on obvious helpers.
+2. **Per-symbol minimum** — [Section 2](#cdcm-per-symbol): **every** class and **every** function/method gets **at least one** doc line (not optional “when non-obvious”).
+3. **Inline comments** — **In addition** to per-symbol docs: add line or block comments where behavior is non-obvious, data crosses layers, or a reader would ask “why this way?”. Skip inline noise that only restates the code.
+4. **Tone** — Prefer plain language; one-line docstrings are fine; avoid essays on trivial accessors unless they encode a contract.
 
-Applies to Python, TypeScript/TSX, CSS (section headers where layout or intent isn’t obvious), and tests when they encode non-trivial contracts.
+Applies to Python, TypeScript/TSX, CSS (section headers where layout or intent isn’t obvious), and tests (see [exemptions](#cdcm-per-symbol)).
 
 ---
 
-<h2 id="trigger-cdcm" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Trigger `cdcm`</h2>
+<h2 id="cdcm-per-symbol" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Per-class and per-function minimum</h2>
+
+**Default:** On **new or non-trivially edited** modules touched by product work (including **`implref`** phases), **each** of the following MUST have **≥1 line** of documentation immediately above or on the symbol:
+
+| Symbol | Python | TypeScript / TSX |
+|--------|--------|------------------|
+| **Class** (incl. dataclass, `@dataclass`, React component) | Class docstring or `#:` on class line | `/** … */` on class or `function Component` |
+| **Method / function** (module-level, method, staticmethod, `@classmethod`) | Function docstring (PEP 257 one-liner OK) | `/** … */` before `function` / method |
+| **Interface / type alias** (when it names a contract) | N/A or module comment | One-line `/** … */` on the type |
+
+**What the line must convey (pick one or blend briefly):** purpose, inputs/outputs, side effects, caller, invariant, or “why not the obvious alternative.”
+
+**Examples (acceptable one-liners):**
+
+```python
+def rrf_list_weights(mode: str | None = None) -> tuple[float, float]:
+    """Return (vector_weight, lexical_weight) for reciprocal_rank_fusion."""
+```
+
+```typescript
+/** POST body for batch verify — mirrors single-unit shape for parity tests. */
+export type BatchVerifyRequest = { … };
+```
+
+**Exemptions (do not require a new doc line):**
+
+| Case | Rule |
+|------|------|
+| **Trivial one-line edit** | Whole-file pass not required (same as **implref**). |
+| **Nested function / lambda** | Unless >~5 lines or encodes business logic — then one line above. |
+| **Generated / vendored trees** | Unless the user includes them in scope. |
+| **Pure re-export** | `from x import y  # noqa` shims — file header covers re-exports. |
+| **Test functions** | One line naming the **contract under test** (may be the docstring only). |
+| **Obvious protocol stubs** | Empty `__init__` that only calls `super()` — class docstring suffices; method need not duplicate. |
+
+**Anti-patterns (fail the bar):**
+
+- Class with methods where **some** have docstrings and **some** have none in the same edited file.
+- Doc line that repeats the identifier only (`"""search_ids."""`) with no meaning.
+- Using `# TODO: document` instead of a real line before marking **implref** phase `[X]`.
+
+---
+
+<h2 id="trigger-cdcm" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Trigger `cdcm`</h2>
 
 When the prompt contains **`cdcm`** as a **whole-word** token, the user wants **comment and docstring enhancement** following **section 1** above.
 
 - **Scope:** If the user names **specific modules, files, directories, or classes**, limit edits to those targets (and their closely related symbols). If they **do not** name any scope, interpret **`cdcm`** as: apply **section 1** across **relevant source** in the **current project**—prioritize packages and entrypoints the project actually uses; avoid drive-by rewrites of vendored or generated trees unless the user includes them.
-- **Goal:** Improve **module/class/function** headers and **non-obvious** inline notes so maintainers see **intent**, **invariants**, and **gotchas**—not noise.
+- **Goal:** Satisfy [section 2](#cdcm-per-symbol) on scoped files, plus file headers and **non-obvious** inline notes—**intent**, **invariants**, **gotchas**—not noise.
 
-**Note:** **`alwaysApply: true`** keeps these norms in context; adding **`cdcm`** means **perform** a comment/doc pass **now** per sections 1–2 (scoped as above).
+**Note:** **`alwaysApply: true`** keeps these norms in context; adding **`cdcm`** means **perform** a comment/doc pass **now** per sections 1–3 (scoped as above).
+
+---
+
+<h2 id="cdcm-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Self-check (agent)</h2>
+
+- [ ] Every **new or edited** class in scope has ≥1 doc line.
+- [ ] Every **new or edited** function/method in scope has ≥1 doc line (except [exemptions](#cdcm-per-symbol)).
+- [ ] File header present when the file is new or the module role changed.
+- [ ] Non-obvious branches have inline “why” notes where docstrings would be too long.

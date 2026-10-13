@@ -1,4 +1,4 @@
-"""Deterministic ticket retrieval eval (V1 vs V1.1 via env flag)."""
+"""CSV + JSONL retrieval eval (offline rows). For Postgres-backed eval use ``pg_search.run_eval_pg``."""
 
 from __future__ import annotations
 
@@ -16,6 +16,8 @@ from retail_brain.ticket_store import load_ticket_rows
 
 @dataclass
 class EvalCaseResult:
+    """Per-case strict/acceptable hit flags from one retrieval run."""
+
     eval_id: str
     stratum: str
     hit: bool
@@ -25,6 +27,7 @@ class EvalCaseResult:
 
 
 def load_eval_cases(path: Path) -> List[dict]:
+    """Load ticket retrieval eval JSONL into a list of case dicts."""
     cases: List[dict] = []
     with path.open(encoding="utf-8") as f:
         for line in f:
@@ -40,6 +43,7 @@ def run_eval(
     eval_jsonl: Path,
     top_k: int = 5,
 ) -> Dict[str, Any]:
+    """Score recall@1 offline over CSV tickets and JSONL eval cases."""
     rows = load_ticket_rows(tickets_csv)
     cases = load_eval_cases(eval_jsonl)
     mode = resolve_ticket_search_mode()
@@ -84,5 +88,6 @@ def run_eval(
 
 
 def write_report(path: Path, report: Dict[str, Any]) -> None:
+    """Write eval summary JSON for A/B reports."""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

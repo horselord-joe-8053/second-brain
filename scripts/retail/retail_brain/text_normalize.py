@@ -1,4 +1,11 @@
-"""Finite strip of ticket boilerplate for FTS index + query (not live LLM at search time)."""
+"""Normalize ticket and query text before embedding vs keyword indexing.
+
+Two parallel shapes (same raw ticket, different stripping):
+  - ``text_for_embedding`` — vector leg; drops case-ref boilerplate, keeps SAM-E in body when present.
+  - ``search_text_for_fts`` / ``fts_query_text`` — keyword leg; aligns live exam wording to indexed tokens.
+
+No LLM calls here — deterministic regex and market templates only.
+"""
 
 from __future__ import annotations
 
@@ -35,6 +42,7 @@ _NEED_HELP_PREFIX = re.compile(r"^Need help:\s*", re.IGNORECASE)
 
 
 def strip_case_ref_suffix(text: str) -> str:
+    """Remove trailing ``Case ref ITM-… / T-…`` boilerplate from stored tickets."""
     return _CASE_REF_SUFFIX.sub("", text).strip()
 
 
@@ -47,6 +55,7 @@ def embed_strip_phrases() -> tuple[str, ...]:
 
 
 def apply_embed_strip_phrases(text: str) -> str:
+    """Apply ``RETAIL_EMBED_STRIP_PHRASES`` removals (pipe-separated substrings)."""
     out = text or ""
     for phrase in embed_strip_phrases():
         if phrase.lower().startswith("case ref itm-"):
@@ -57,6 +66,7 @@ def apply_embed_strip_phrases(text: str) -> str:
 
 
 def strip_market_prefix(text: str, *, market: str | None = None) -> str:
+    """Drop market-specific CRM prefix (e.g. ``Customer reports: ``)."""
     prefix = market_profile(market)["customer_query_prefix"]
     if text.startswith(prefix):
         return text[len(prefix) :].strip()
@@ -83,6 +93,7 @@ def extract_diag_code(text: str | None) -> str | None:
 
 
 def _align_eval_query_to_index_shape(q: str) -> str | None:
+    """If ``q`` matches exam template, rewrite to indexed ``issue on model in city`` shape."""
     m = _EVAL_QUERY_EN.match(q) or _EVAL_QUERY_PT.match(q)
     if not m:
         return None

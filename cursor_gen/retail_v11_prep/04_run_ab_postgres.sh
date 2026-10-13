@@ -11,11 +11,11 @@ retail_sim_data_profile_exports "$ROOT"
 retail_sim_data_profile_banner "04_run_ab_postgres (legacy V1 vs hybrid flag)"
 mkdir -p "$RETAIL_SIM_REPORTS_DIR"
 
-RETAIL_TICKET_HYBRID_SEARCH=0 python3 "$ROOT/scripts/retail/eval/eval_ticket_search.py" \
+RETAIL_TICKET_HYBRID_SEARCH=0 "$ROOT/scripts/py" "$ROOT/scripts/retail/eval/eval_ticket_search.py" \
   --postgres --eval "$RETAIL_SIM_EVAL" \
   --report "$RETAIL_SIM_REPORTS_DIR/pg_baseline_v1.json"
 
-RETAIL_TICKET_HYBRID_SEARCH=1 python3 "$ROOT/scripts/retail/eval/eval_ticket_search.py" \
+RETAIL_TICKET_HYBRID_SEARCH=1 "$ROOT/scripts/py" "$ROOT/scripts/retail/eval/eval_ticket_search.py" \
   --postgres --eval "$RETAIL_SIM_EVAL" \
   --report "$RETAIL_SIM_REPORTS_DIR/pg_ab_v1_v11.json"
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Generate natural llm_gen profile corpus (60 + 10) per REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md.
 
 Deterministic seed for reproducibility; operators may instead use tmp/simulated_data/prompt_v2.txt

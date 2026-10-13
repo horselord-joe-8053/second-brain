@@ -15,7 +15,7 @@ run_mode() {
   local mode="$1"
   local out="$2"
   echo "[sim_data_profile=${RETAIL_SIM_DATA_PROFILE}] search_mode=${mode} -> ${out}"
-  RETAIL_TICKET_SEARCH_MODE="$mode" python3 "$ROOT/scripts/retail/eval/eval_ticket_search.py" \
+  RETAIL_TICKET_SEARCH_MODE="$mode" "$ROOT/scripts/py" "$ROOT/scripts/retail/eval/eval_ticket_search.py" \
     --postgres --eval "$RETAIL_SIM_EVAL" --report "$out"
 }
 

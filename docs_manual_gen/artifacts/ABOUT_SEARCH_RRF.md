@@ -2,8 +2,8 @@
 
 **Audience:** Engineers and product leaders building **repair-desk / retail** retrieval on **Postgres + pgvector**.  
 **Purpose:** Publishable narrative — *why* each ticket-search version exists, *what* we measured, and *what* we implement next.  
-**Status:** **living document** — Phase 7 implementation in flight ([`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md)).  
-**Last updated:** 2026-10-12  
+**Status:** **living document** — V1.x search plan complete ([`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../ref_plan/completed/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md)); lexical backends complete ([`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](../ref_plan/completed/REFACTOR_RETAIL_LEXICAL_BACKENDS.md)).  
+**Last updated:** 2026-10-13  
 **Context:** Samsung Australia retail **Second Brain** prototype (`second_brain` repo) — synthetic tickets, real **Gemini** embeddings, operator A/B on Postgres.
 
 <!-- Formulas use HTML (not $LaTeX$) so tables and Cursor preview render correctly. -->
@@ -19,7 +19,7 @@
 
 1. [Executive summary](#1-exec) — one-screen takeaway for LinkedIn readers.
 2. [The business problem](#2-problem) — paraphrase, twins, error codes.
-3. [Two retrieval legs](#3-legs) — dense vs sparse; what Postgres runs today.
+3. [Two retrieval legs](#3-legs) — semantic (pgvector) vs lexical (BM25 sidecar); why both matter.
 4. [Evolution timeline](#4-timeline) — visual journey V1 → V1.3.
 5. [Version 0 — baseline V1 (vector only)](#5-v1) — FRU pattern; when it is enough.
 6. [Version 1 — V1.1 equal hybrid (`rrf_normal`)](#6-v11) — why add FTS + RRF; demo-era lesson.
@@ -27,8 +27,9 @@
 8. [Version 3 — V1.3 code boost (`rrf_weighted_boosted`)](#8-v13) — λ on parsed codes.
 9. [Mathematics of fusion](#9-math) — RRF, weights, boost, tie-break.
 10. [Worked example: `eval-0006`](#10-example) — full query, tickets, scores.
-11. [Lexical leg deep dive](#11-lexical) — normalize, `ts_rank_cd`, vs BM25.
- 11.4 [Six-way snapshot (100k+ tickets)](#11-4-six-way) — PG FTS vs bm25x vs Tantivy vs ParadeDB vs OpenSearch vs Qdrant.
+11. [Lexical leg deep dive](#11-lexical) — why lexical + semantic; legacy PG FTS lesson; BM25 backends.
+ 11.0 [Why lexical similarity still matters](#11-0-why-lexical) — beside pgvector RAG.
+ 11.4 [Six-way snapshot (100k+ tickets)](#11-4-six-way) — PG FTS vs Tantivy vs bm25x vs ParadeDB vs OpenSearch vs Qdrant; [§11.4.2](#11-4-2-tantivy) term glossary, inverted map, `eval-0001` walkthrough.
 12. [Eval design and metrics](#12-eval) — gold, strata, what “win” means.
 13. [Results ledger](#13-results) — operator numbers; update after each run.
 14. [Config reference](#14-config) — env modes and code paths.
@@ -110,12 +111,23 @@ graph TD
 <tr style="background:#1565c0;color:white"><th>Leg</th><th>Engine</th><th>Indexed / queried text</th><th>Strength</th><th>Weakness</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd"><strong>Vector</strong></td><td style="background:#fff3e0">pgvector + cosine on Gemini embeddings</td><td style="background:#fff3e0">Document: customer prose (tech line stripped at embed). Query: full live intake.</td><td style="background:#e8f5e9">Paraphrase, semantic neighborhood</td><td style="background:#ffebee">Twin with similar wording; codes diluted in long symptom text</td></tr>
-<tr><td style="background:#e3f2fd"><strong>Lexical</strong></td><td style="background:#fff8e1">Postgres FTS — <code>tsvector</code>, <code>websearch_to_tsquery</code>, <code>ts_rank_cd</code></td><td style="background:#fff8e1"><code>search_text</code> — prefix stripped, <strong>tech line kept</strong></td><td style="background:#e8f5e9">Exact tokens (code, SKU fragments, city)</td><td style="background:#ffebee">Brittle if query is over-normalized or all-or-nothing AND queries</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Vector (semantic)</strong></td><td style="background:#fff3e0">pgvector + cosine on Gemini embeddings — classic <strong>RAG retrieval</strong> on Postgres SoR</td><td style="background:#fff3e0">Document: customer prose (tech line stripped at embed). Query: full live intake.</td><td style="background:#e8f5e9">Paraphrase, “same story” even when wording differs</td><td style="background:#ffebee">Wrong <strong>twin</strong> with near-identical symptoms; short codes drowned in long text</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Lexical (text similarity)</strong></td><td style="background:#fff8e1"><strong>Shipped:</strong> Tantivy BM25 sidecar (<code>RETAIL_LEXICAL_BACKEND</code>). <strong>Retired for hybrid:</strong> Postgres FTS (<code>ts_rank_cd</code>) — see [§11.4.1](#11-4-1-pg).</td><td style="background:#fff8e1"><code>search_text_for_fts</code> — prefix stripped, <strong>tech line kept</strong> (same normalize hooks for index + query)</td><td style="background:#e8f5e9">Exact tokens — <code>SAM-E###</code>, model strings, city, SKU fragments; graded overlap</td><td style="background:#ffebee">Misses meaning if used alone; engine must rank partial overlap (PG FTS often did not)</td></tr>
 </tbody>
 </table>
 
-**Important:** Our operator path uses **`ts_rank_cd`**, not a Python BM25 library. It is **sparse, word-based ranking in Postgres** — BM25-*like* in spirit, not identical (see [§11](#11-lexical)).
+<table>
+<thead>
+<tr style="background:#2e7d32;color:white"><th colspan="2">Why we keep a lexical leg when pgvector already “does RAG”</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e8f5e9;width:28%"><strong>Semantic leg answers</strong></td><td style="background:#f1f8e9">“Which past ticket is <em>about the same issue</em> when the customer uses different words?” — embeddings excel here.</td></tr>
+<tr><td style="background:#fff3e0;width:28%"><strong>Lexical leg answers</strong></td><td style="background:#fff8e1">“Which ticket <em>actually contains these identifiers and symptom tokens</em>?” — codes, model names, and rare phrases are not reliably separated by cosine alone.</td></tr>
+<tr><td style="background:#e3f2fd;width:28%"><strong>Together (RRF)</strong></td><td style="background:#e1f5fe">Neither leg has to be perfect; we merge ranked lists so paraphrase wins most days and <strong>token evidence</strong> breaks twin ties when the agent pastes a code or device token.</td></tr>
+</tbody>
+</table>
+
+**Important:** Hybrid search in this repo is **pgvector + BM25 sidecar**, not “second embedding model.” Postgres may still store <code>query_tsv</code> for history or ad-hoc SQL, but <code>lexical_ids()</code> no longer uses it for RRF (see [§11.4](#11-4-six-way)).
 
 ---
 
@@ -405,7 +417,29 @@ Twin **fails** `@@`; gold **matches** → lexical top-1 = gold.
 
 <h2 id="11-lexical" style="color:#0277bd;font-size:1.22em;font-weight:650;border-left:5px solid #0288d1;padding-left:10px;margin-top:1.1em;background:#e1f5fe">11. Lexical leg deep dive</h2>
 
-<h3 id="11-1-pipeline" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.1 Pipeline</h3>
+<h3 id="11-0-why-lexical" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.0 Why lexical similarity search, not vector-only?</h3>
+
+A solid **pgvector + Postgres** stack already gives you **semantic retrieval** (dense nearest neighbors for RAG). That is necessary but **not sufficient** for repair-desk tickets:
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Signal type</th><th>Semantic (vector) tendency</th><th>Lexical (BM25) tendency</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Customer paraphrase vs CRM wording</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">strong</span></td><td style="background:#fff3e0">Weaker unless tokens overlap</td></tr>
+<tr><td style="background:#e3f2fd"><code>SAM-E###</code> in screenshot / app</td><td style="background:#ffebee">Often weak — short span in long intake</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">strong</span> — exact token + IDF</td></tr>
+<tr><td style="background:#e3f2fd">Twin tickets (same symptoms, different code)</td><td style="background:#ffebee">Can rank wrong twin #1</td><td style="background:#e8f5e9">Can rank gold when query names the right code</td></tr>
+<tr><td style="background:#e3f2fd">Model / city / SKU fragments</td><td style="background:#fff3e0">Helpful but fuzzy</td><td style="background:#e8f5e9">Graded **text-focused similarity** (shared terms, rare-term bump)</td></tr>
+</tbody>
+</table>
+
+<div style="background:#fff8e1;border-left:5px solid #ff8f00;padding:14px 18px;margin:1em 0;color:#e65100">
+<strong>Takeaway:</strong> Treat **semantic search** as “find stories like this” and **lexical search** as “find documents that <em>contain the evidence</em>.” RRF combines two ranked lists without forcing one score scale — see [§9](#9-math). Default lexical engine: **Tantivy BM25** ([§11.4.2](#11-4-2-tantivy)).
+</div>
+
+<h3 id="11-1-pipeline" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.1 Legacy pipeline — Postgres FTS <span style="background:#ffcdd2;padding:2px 6px;font-size:0.88em;color:#b71c1c">retired from hybrid path</span></h3>
+
+<p style="background:#ffebee;border:1px solid #ef9a9a;padding:10px 14px;border-radius:4px;margin:0.75em 0"><strong>Lesson only.</strong> This diagram is what we used when the lexical leg lived in SQL. It is <strong>not</strong> the shipped hybrid path after the lexical-backend migration. Keep it to understand <em>why</em> we moved off Postgres for text similarity — see [§11.4.1](#11-4-1-pg).</p>
 
 ```mermaid
 graph LR
@@ -422,21 +456,23 @@ graph LR
   style R fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
 ```
 
-<h3 id="11-2-bm25" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.2 Is this BM25?</h3>
+<h3 id="11-2-bm25" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.2 Is the lexical leg BM25 now?</h3>
 
-**No** — operator path uses **`ts_rank_cd`**. BM25 is a specific formula (Lucene / Elasticsearch / `rank_bm25` in Python). **`ts_rank_cd`** is Postgres **coverage-density** ranking — correlated with TF‑IDF-style sparse scoring, **not bit-identical**.
+**Yes for hybrid search (shipped):** default **`RETAIL_LEXICAL_BACKEND=tantivy`** uses Lucene-family **BM25** scoring. Alternates: **bm25x**, **ParadeDB**, **OpenSearch** ([§11.4](#11-4-six-way)).
 
-**Practical stance:** Stay on **`ts_rank_cd`** for V1.1–V1.3 unless A/B shows ordering failures that tuning cannot fix; then consider a BM25 extension or external search engine as **V1.x**, not a blocker for the evolution story.
+**Postgres `ts_rank_cd` (legacy):** coverage-density ranking in SQL — BM25-*like* in spirit, **not** the same formula. Our A/B showed it **failed as a general text-similarity leg** (empty lists on paraphrase, AND-heavy `websearch_to_tsquery`) — so we **do not** rely on it for RRF anymore; see [§11.4.1](#11-4-1-pg).
 
-<h3 id="11-3-target" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.3 Target lexical similarity (V1.1+)</h3>
+<h3 id="11-3-target" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.3 Target lexical similarity (V1.1+ / BM25 backends)</h3>
 
-1. **Drop fluff** — prefixes, case refs; keep content tokens.
-2. **Score partial overlap** — `ts_rank_cd` rewards matching terms without requiring the demo’s single-line code rewrite.
-3. **Layer code boost (V1.3)** — treat `SAM-E###` like a high-value entity, not the entire query.
+1. **Drop fluff** — prefixes, case refs; keep content tokens (`fts_query_text`, `search_text_for_fts`).
+2. **Score partial overlap** — BM25 + inverted index: any shared query term can surface a ticket; rank by weighted term overlap (not SQL all-or-nothing AND).
+3. **Layer code boost (V1.3)** — treat `SAM-E###` like a high-value entity in Python fusion, not the entire query rewrite.
 
 <h3 id="11-4-six-way" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.4 Six-way snapshot (100k+ tickets)</h3>
 
 **Scope:** Samsung retail ticket plane — **Postgres stays SoR**; dense leg stays **pgvector** unless you explicitly migrate vectors. Lexical leg must return **ordered `ticket_id` lists** for **RRF** in `retail_brain`. **V1.3 λ** stays in Python (`code_boost_scores`) regardless of engine.
+
+**Shipped switch:** `lexical_ids()` no longer runs Postgres full-text search. `RETAIL_LEXICAL_BACKEND` is `tantivy` (default), `bm25x`, `parade_db`, or `open_search`. Code lives in `scripts/retail/retail_brain/lexical_search/`. ParadeDB and OpenSearch are optional services; default verify uses Tantivy only.
 
 **Legend:** **Ops** = moving parts beyond retail PG · **BM25** = Lucene-family BM25 (not `ts_rank_cd`).
 
@@ -445,30 +481,26 @@ graph LR
 <tr style="background:#1565c0;color:white"><th>#</th><th>Option</th><th>Shape</th><th>Ops</th><th>True BM25</th><th>PG SoR</th><th>RRF fit</th><th>100k retail fit</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd">①</td><td><strong>PG FTS</strong> (today)</td><td>In Postgres</td><td style="background:#e8f5e9">Lowest</td><td style="background:#ffebee">No</td><td style="background:#e8f5e9">Native</td><td style="background:#e8f5e9">✓ SQL → ids</td><td style="background:#fff9c4">Paraphrase leg often empty (`websearch` AND)</td></tr>
-<tr><td style="background:#e3f2fd">②</td><td><strong>bm25x</strong> (own bridge)</td><td>Embedded lib + mmap dir</td><td style="background:#e8f5e9">Low</td><td style="background:#e8f5e9">Yes (Lucene default)</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">✓ `LexicalIndex.search` → ids</td><td style="background:#e8f5e9"><span style="background:#2e7d32;color:white;padding:1px 4px">recommended</span> small owned bridge</td></tr>
-<tr><td style="background:#e3f2fd">③</td><td><strong>Tantivy</strong></td><td>Embedded Rust index</td><td style="background:#e8f5e9">Low</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">✓</td><td style="background:#fff3e0">If phrases + schema filters dominate</td></tr>
+<tr><td style="background:#e3f2fd">①</td><td><strong>PG FTS</strong> <span style="background:#ffcdd2;padding:1px 4px">retired</span></td><td>In Postgres</td><td style="background:#e8f5e9">Lowest</td><td style="background:#ffebee">No</td><td style="background:#e8f5e9">Native</td><td style="background:#ffebee">✗ removed from <code>lexical_ids()</code></td><td style="background:#ffebee"><span style="background:#ffcdd2;padding:2px 4px">⚠</span> Poor text-similarity leg — see [§11.4.1](#11-4-1-pg)</td></tr>
+<tr><td style="background:#e3f2fd">②</td><td><strong>Tantivy</strong> (embedded Rust)</td><td>On-disk index + Python bindings</td><td style="background:#e8f5e9">Low</td><td style="background:#e8f5e9">Yes (default scorer)</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">✓ `LexicalIndex.search` → ids</td><td style="background:#e8f5e9"><span style="background:#2e7d32;color:white;padding:1px 4px">shipped default</span> BM25 + filters; see [§11.4.2](#11-4-2-tantivy)</td></tr>
+<tr><td style="background:#e3f2fd">③</td><td><strong>bm25x</strong> (own bridge)</td><td>Embedded lib + mmap dir</td><td style="background:#e8f5e9">Low</td><td style="background:#e8f5e9">Yes (Lucene default)</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">✓</td><td style="background:#fff3e0"><span style="background:#fff9c4;padding:1px 4px">P5 candidate</span> smaller Python surface if Tantivy ops bite</td></tr>
 <tr><td style="background:#e3f2fd">④</td><td><strong>ParadeDB</strong> `pg_search`</td><td>PG extension</td><td style="background:#fff3e0">Medium</td><td style="background:#e8f5e9">Yes</td><td style="background:#e8f5e9">Same DB</td><td style="background:#e8f5e9">✓ SQL BM25 → ids</td><td style="background:#fff3e0">When ops allow extensions, not custom code</td></tr>
 <tr><td style="background:#e3f2fd">⑤</td><td><strong>OpenSearch</strong></td><td>Separate JVM service</td><td style="background:#ffebee">High</td><td style="background:#e8f5e9">Yes (Lucene)</td><td style="background:#e8f5e9">Yes (hydrate)</td><td style="background:#e8f5e9">✓</td><td style="background:#ffebee">Overkill unless ES/OS already mandated</td></tr>
 <tr><td style="background:#e3f2fd">⑥</td><td><strong>Qdrant hybrid</strong></td><td>Separate vector service</td><td style="background:#ffebee">High</td><td style="background:#fff9c4">Sparse vectors (BM25-like ingest)</td><td style="background:#e8f5e9">Yes (hydrate)</td><td style="background:#fff3e0">Native fusion or app RRF</td><td style="background:#ffebee">Poor fit while vectors live in pgvector</td></tr>
 </tbody>
 </table>
 
-**Sync pattern (②③):** after `reload_postgres_corpus.py` / embed — rebuild or upsert from `(ticket_id, search_text, model)`; env e.g. `RETAIL_LEXICAL_INDEX_PATH`.
+**Sync pattern (② Tantivy / ③ bm25x):** after `reload_postgres_corpus.py` / embed — rebuild from `(ticket_id, search_text, model)` via `scripts/retail/rebuild_lexical_index.py`; env e.g. `RETAIL_LEXICAL_INDEX_PATH`, `RETAIL_LEXICAL_BACKEND`.
 
 ---
 
-<h4 id="11-4-1-pg" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.1 ① Postgres FTS (status quo + interim soften)</h4>
+<h4 id="11-4-1-pg" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.1 ① Postgres FTS — <span style="background:#ffcdd2;padding:2px 6px;color:#b71c1c">lesson learned (do not ship for hybrid lexical)</span></h4>
 
-**Install / run:** already in `cursor_gen/retail_v11_prep/03_pg_up_and_load.sh` (retail PG on **5433**).
+<div style="background:#ffebee;border-left:5px solid #c62828;padding:14px 18px;margin:1em 0;color:#b71c1c">
+<strong>Status:</strong> Postgres full-text search is <strong>no longer</strong> the lexical leg for RRF. <code>lexical_ids()</code> delegates to <code>RETAIL_LEXICAL_BACKEND</code> (default Tantivy). PG still holds tickets, vectors, and may retain <code>query_tsv</code> — but relying on SQL FTS for <strong>text-focused similarity</strong> in hybrid search is a mistake we measured and moved away from.
+</div>
 
-```bash
-bash cursor_gen/retail_v11_prep/03_pg_up_and_load.sh
-export RETAIL_TICKET_SEARCH_MODE=rrf_normal
-bash cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh
-```
-
-**Lexical leg (production shape today):**
+**What we tried (historical shape):**
 
 ```sql
 SELECT ticket_id
@@ -479,11 +511,241 @@ ORDER BY ts_rank_cd(query_tsv, websearch_to_tsquery('english', $fts_query_text))
 LIMIT 20;
 ```
 
-**Interim soften (still not BM25):** try `plainto_tsquery` or OR-expanded tokens in app code before paying for ②–⑥.
+**Why it did not function well as lexical / text similarity** (even after “production-shaped” normalize):
+
+<table>
+<thead>
+<tr style="background:#c62828;color:white"><th>Shortcoming</th><th>What operators saw</th><th>Why it breaks “similar ticket text”</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong><code>websearch_to_tsquery</code> AND semantics</strong></td><td style="background:#ffebee">Lexical leg <strong>empty</strong> on many paraphrase eval rows (<code>lexical_nonempty</code> 0/10 on LLM v2 corpus — [§13.3](#13-3-llm-v2))</td><td style="background:#f5f5f5">Query tokens must <em>all</em> match in too strict a sense; live intake ≠ stored CRM wording → no @@ match, no ranked list for RRF.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Not true BM25</strong></td><td style="background:#fff3e0">Demo wins often needed <strong>query rewrite hacks</strong> (collapse to tech-line only — [§6.2](#6-2-demo))</td><td style="background:#f5f5f5"><code>ts_rank_cd</code> is coverage-density, not Lucene BM25; weak IDF story for rare codes vs common city/model tokens.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Hybrid needs a graded leg</strong></td><td style="background:#fff3e0">Production-shaped FTS + equal/70-30 RRF <strong>did not lift</strong> <code>error_code</code> until V1.3 λ in SQL era ([§13.2](#13-2-v1x))</td><td style="background:#f5f5f5">RRF requires a <strong>non-empty, sensibly ordered</strong> lexical list; empty leg = vector-only in practice.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Wrong tool for the job</strong></td><td style="background:#e8f5e9">Same normalize text worked once moved to <strong>BM25 inverted index</strong> (Tantivy matrix — [§11.4.2](#11-4-2-tantivy))</td><td style="background:#f5f5f5">Text similarity at scale wants <strong>posting lists + BM25</strong>, not one SQL filter that drops candidates before rank.</td></tr>
+</tbody>
+</table>
+
+**What to do instead:** load corpus with `cursor_gen/retail_v11_prep/03_pg_up_and_load.sh`, rebuild lexical index, run hybrid A/B with sidecar backend:
+
+```bash
+bash cursor_gen/retail_v11_prep/03_pg_up_and_load.sh
+export RETAIL_LEXICAL_BACKEND=tantivy
+python scripts/retail/rebuild_lexical_index.py
+export RETAIL_TICKET_SEARCH_MODE=rrf_normal
+bash cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh
+```
+
+**Do not “interim soften” PG FTS for hybrid promotion** (`plainto_tsquery`, OR hacks) — that keeps a foot in a leg that already failed A/B. Use ②–⑥ for lexical similarity; keep Postgres for **SoR + pgvector**.
 
 ---
 
-<h4 id="11-4-2-bm25x" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.2 ② bm25x — embedded own bridge <span style="background:#2e7d32;color:white;padding:1px 4px;font-size:0.85em">P5 candidate</span></h4>
+<h4 id="11-4-2-tantivy" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.2 ② Tantivy — embedded BM25 leg <span style="background:#2e7d32;color:white;padding:1px 4px;font-size:0.85em">shipped default</span></h4>
+
+**Why Tantivy here:** Same contract as Postgres FTS — **ordered `ticket_id` lists** for RRF — but with **true BM25** (Lucene-family scoring inside the engine), **on-disk rebuild** after PG load, and **model filter** in schema. Implementation: `scripts/retail/retail_brain/lexical_search/tantivy_index.py`; default `RETAIL_LEXICAL_BACKEND=tantivy`.
+
+**Install:**
+
+```bash
+pip install tantivy
+```
+
+**Spike:**
+
+```python
+import tantivy
+
+schema_builder = tantivy.SchemaBuilder()
+schema_builder.add_text_field("body", stored=True)
+schema_builder.add_text_field("ticket_id", stored=True, tokenizer_name="raw")
+schema_builder.add_text_field("model", stored=True, tokenizer_name="raw")
+schema = schema_builder.build()
+
+index = tantivy.Index(schema, path="tmp/retail_tantivy_spike")
+writer = index.writer(50_000_000)
+writer.add_document(tantivy.Document(
+    body="Galaxy A15 battery drains by noon SAM-E176",
+    ticket_id="T-1001",
+    model="Galaxy A15 5G",
+))
+writer.commit()
+index.reload()
+
+searcher = index.searcher()
+q = index.parse_query('battery "SAM-E176"', ["body"])
+for score, doc_addr in searcher.search(q, 5).hits:
+    doc = searcher.doc(doc_addr)
+    print(doc["ticket_id"][0], score)
+```
+
+**Production vs eval query normalize (`fts_query_text`):** Do **not** assume every live intake matches the synthetic **`Need help: …`** template. In `text_normalize.py`, template rewriting runs **only when** the query matches eval regexes; otherwise the path is **light strip** (`RETAIL_MARKET` prefixes, `RETAIL_EMBED_STRIP_PHRASES`) and the same **`search_text_for_fts`** shape as indexed tickets. Template alignment is for **eval parity** with sim intakes; real CRM wording should mostly hit the strip fallback. Per-locale analyzers beyond market prefixes are a future knob — Tantivy tokenization today follows the default English pipeline in our schema.
+
+**Where “Sydney = small bump, SAM-E100 = big bump” lives:** **Not in application Python.** We never label terms common vs rare. Tantivy’s BM25 uses **IDF (inverse document frequency)** — index terms that appear in many tickets contribute less; rare codes and symptom terms contribute more. Our code only (1) builds query string via `fts_query_text`, (2) builds document `body` via `search_text_for_fts` at rebuild, (3) calls `searcher.search` and returns ids + scores.
+
+<h5 id="11-4-2-terms" style="color:#00695c;font-size:0.98em;font-weight:600;margin-top:0.85em">Terminology (dictionary / mapping)</h5>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Say this</th><th>Meaning in Tantivy</th><th>Do not confuse with</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>Running text</strong></td><td style="background:#f5f5f5">Characters in live intake or ticket <code>body</code> <em>before</em> search analysis (e.g. “SAM-E100”, “Galaxy A15 5G”).</td><td style="background:#fff3e0">Not a dictionary key until tokenized.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Token</strong></td><td style="background:#f5f5f5">One piece emitted by the <strong>tokenizer</strong> on running text (lowercasing/stemming may apply).</td><td style="background:#fff3e0">Informal step — the index stores the analyzed form.</td></tr>
+<tr><td style="background:#fff8e1"><strong>Index term</strong></td><td style="background:#fff3e0"><strong>Dictionary key</strong> → posting list of ticket ids. Example: <code>sydney</code>, <code>sam-e100</code>.</td><td style="background:#f5f5f5">Same key type for query and document side after the same analyzer on <code>body</code>.</td></tr>
+<tr><td style="background:#e8f5e9"><strong>Query term</strong></td><td style="background:#e8f5e9">One <strong>index term</strong> from the query after normalize + <strong>tokenize</strong> (analyzer splits/normalizes running text into tokens; each token maps to at most one dictionary key). Usually ≈ one token — e.g. <code>sydney</code>, <code>sam-e100</code> — not a random substring (“half word”). Two everyday words become one query term only if the analyzer keeps them as one token (codes, hyphens) or the query uses a phrase.</td><td style="background:#f5f5f5">Same dictionary as index build; “query term” only marks the query side.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Document term</strong></td><td style="background:#f5f5f5">An index term produced from a ticket <code>body</code> at index time.</td><td style="background:#fff3e0">BM25 scores overlap between <strong>query terms</strong> and <strong>document terms</strong> in each candidate ticket.</td></tr>
+</tbody>
+</table>
+
+<p style="background:#e3f2fd;border-left:4px solid #1976d2;padding:10px 14px;margin:0.75em 0"><strong>Rule for this section:</strong> the inverted map is <strong>index term → posting lists</strong>. We use <strong>query term</strong> only on the query path. Avoid saying “word” for dictionary keys — everyday “words” in text may become one or several tokens/terms after analysis.</p>
+
+<h5 id="11-4-2-inverted-map" style="color:#00695c;font-size:0.98em;font-weight:600;margin-top:0.85em">Inverted index map (index term → posting lists)</h5>
+
+At rebuild time Tantivy tokenizes each ticket **`body`**; each resulting **index term** gets a **posting list** of ticket ids. At search time the engine tokenizes the query into **query terms**, looks up those keys in the **same dictionary**, and never scans full ticket text ticket-by-ticket. Below is a **tiny slice** of the real index shape (lists truncated with `…`).
+
+```mermaid
+flowchart LR
+  DICT(("Term\ndictionary"))
+  DICT -->|sydney| PL1["T-0042-000000\nT-0042-000042\nT-0042-000012\n…"]
+  DICT -->|sam-e100| PL2["T-0042-000000"]
+  DICT -->|black| PL3["T-0042-000000\nT-0042-000012\n…"]
+  DICT -->|screen| PL4["T-0042-000000\nT-0042-000048\n…"]
+  DICT -->|galaxy| PL5["T-0042-000000\nT-0042-000006\n… many …"]
+
+  style DICT fill:#fff3e0,stroke:#e65100,stroke-width:2px,font-size:9px
+  style PL1 fill:#ffe0b2,stroke:#ef6c00,stroke-width:1px,font-size:9px
+  style PL2 fill:#ffcc80,stroke:#e65100,stroke-width:2px,font-size:9px
+  style PL3 fill:#ffe0b2,stroke:#ef6c00,stroke-width:1px,font-size:9px
+  style PL4 fill:#ffe0b2,stroke:#ef6c00,stroke-width:1px,font-size:9px
+  style PL5 fill:#fff8e1,stroke:#ff8f00,stroke-width:1px,font-size:9px
+```
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Index term (one dictionary row)</th><th>Posting list (ticket ids with that document term)</th><th>IDF intuition</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>sam-e100</code></td><td style="background:#fff3e0"><code>T-0042-000000</code> only (in this corpus slice)</td><td style="background:#e8f5e9"><span style="background:#c8e6c9;padding:2px 4px">rare</span> — strong BM25 bump when query mentions it</td></tr>
+<tr><td style="background:#e3f2fd"><code>sydney</code></td><td style="background:#fff3e0"><code>T-0042-000000</code>, <code>T-0042-000042</code>, <code>T-0042-000012</code>, …</td><td style="background:#fff3e0"><span style="background:#fff9c4;padding:2px 4px">common</span> — helps, but many tickets share it</td></tr>
+<tr><td style="background:#e3f2fd"><code>galaxy</code></td><td style="background:#fff3e0">Most tickets for this product line</td><td style="background:#ffebee">Very common — small contribution per hit</td></tr>
+</tbody>
+</table>
+
+**Not indexed as n² term pairs:** the index stores **one index term → ids** per key, not “black + screen” as a single dictionary entry unless you add phrase fields. Multi-token intent is recovered at **score time** when several **query terms** match **document terms** in the **same** ticket.
+
+<h5 id="11-4-2-eval-0001" style="color:#00695c;font-size:0.98em;font-weight:600;margin-top:0.85em">Concrete setup (`eval-0001`)</h5>
+
+**Query (after `fts_query_text`):**
+
+```text
+screen stays black when answering calls on Galaxy A15 5G in Sydney.
+Also seeing reference SAM-E100 in the support app.
+```
+
+**Gold ticket `T-0042-000000` (indexed `body`, shortened):**
+
+```text
+Need help with Galaxy A15 5G: black screen after calls (visited Sydney store).
+… Phone displayed SAM-E100 on the service menu.
+```
+
+**Tantivy also requires:** `model:"Galaxy A15 5G"` (eval **model filter** — raw keyword field, not part of the inverted `body` map).
+
+**Measured lexical top-1 (Tantivy matrix trace, `rrf_data_llm_gen`):** gold **15.67** BM25 vs next ticket **7.23** — artifact `tmp/simulated_data/reports/lexical_matrix/tantivy_trace/pg_ab_v1_1_normal_trace.json`.
+
+<h5 id="11-4-2-eval-0001-steps" style="color:#00695c;font-size:0.98em;font-weight:600;margin-top:0.85em">Step-by-step on this example</h5>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Step</th><th>What happens</th><th>This query</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>1 — Index build</strong></td><td style="background:#f5f5f5">For each resolved ticket, `search_text_for_fts` → write `body`, `ticket_id`, `model`. Tokenize `body`; each <strong>index term</strong> appends this ticket id to its posting list.</td><td style="background:#fff3e0">Index term <code>sam-e100</code> → list includes <code>T-0042-000000</code>; <code>sydney</code> → gold plus others.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>2 — Query normalize</strong></td><td style="background:#f5f5f5"><code>fts_query_text(live intake)</code> → search string (eval template path or strip fallback).</td><td style="background:#e8f5e9">Symptom + model + city + <code>SAM-E100</code> kept in running text — not collapsed to code-only.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>3 — Query terms → lookup</strong></td><td style="background:#f5f5f5">Tokenize query string → <strong>query terms</strong>; for each, fetch posting list from the term dictionary.</td><td style="background:#fff3e0">Union of lists for query terms <code>screen</code>, <code>black</code>, <code>calls</code>, <code>sydney</code>, <code>sam-e100</code>, … → candidate ticket set (includes gold and neighbors).</td></tr>
+<tr><td style="background:#e3f2fd"><strong>4 — Model filter</strong></td><td style="background:#f5f5f5">Restrict to documents where stored <code>model</code> equals filter (parallel to SQL <code>WHERE model = …</code>).</td><td style="background:#e8f5e9">Only <strong>Galaxy A15 5G</strong> tickets remain in the candidate pool.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>5 — BM25 score</strong></td><td style="background:#f5f5f5">For each candidate, sum scores for each <strong>query term</strong> that appears as a <strong>document term</strong> in that ticket (term frequency × IDF). Cost ~ **O(# query terms × matches)** — not O(all document terms²).</td><td style="background:#ede7f6">Gold matches <strong>many</strong> query terms including rare index term <code>sam-e100</code> → **~15.67**. <code>T-0042-000042</code> shares city/symptom terms but not the code term → **~7.23**.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>6 — Top-k out</strong></td><td style="background:#f5f5f5">Return ordered <code>ticket_id</code> list to Python; RRF merges with vector leg.</td><td style="background:#e8f5e9">Lexical #1 = gold; vector leg also #1 → fusion keeps gold on top for this row.</td></tr>
+</tbody>
+</table>
+
+**End-to-end paths (same example):** **query terms** (dictionary keys from the query) hit the inverted map, candidates are filtered and BM25-scored, then ids feed RRF.
+
+```mermaid
+graph TD
+  subgraph Q["Query path — blue"]
+    Q0["Running text: live intake"]
+    Q1["fts_query_text normalize"]
+    Q1b["Tokenizer"]
+    Q2["Query terms: screen, black, sydney, sam-e100, …"]
+    Q0 --> Q1 --> Q1b --> Q2
+  end
+  subgraph I["Inverted index — amber"]
+    D["Term dictionary index term keys"]
+    P1["sydney → …000000, …000042, …"]
+    P2["sam-e100 → …000000"]
+    P3["handover → …000042"]
+    D --> P1
+    D --> P2
+    D --> P3
+  end
+  subgraph S["Score path — green"]
+    U["Candidates = union of lists for query terms"]
+    F["Model filter: Galaxy A15 5G"]
+    B["BM25 sum per ticket e.g. gold ≈ 15.67"]
+    R["Top-k ticket_id for RRF"]
+    U --> F --> B --> R
+  end
+  Q2 --> D
+  P1 --> U
+  P2 --> U
+  P3 --> U
+
+  style Q0 fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style Q1 fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style Q1b fill:#bbdefb,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style Q2 fill:#bbdefb,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style D fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
+  style P1 fill:#ffe0b2,stroke:#ef6c00,stroke-width:1px,font-size:9px
+  style P2 fill:#ffe0b2,stroke:#ef6c00,stroke-width:1px,font-size:9px
+  style P3 fill:#ffe0b2,stroke:#ef6c00,stroke-width:1px,font-size:9px
+  style U fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style F fill:#c8e6c9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style B fill:#a5d6a7,stroke:#1b5e20,stroke-width:1px,font-size:9px
+  style R fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,font-size:9px
+```
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Concept</th><th>Plain language</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>Sparse bag-of-terms</strong></td><td style="background:#f5f5f5">Each ticket activates only a few <strong>index terms</strong> out of the whole vocabulary. The inverted index stores <strong>only those keys</strong> (index term → ticket ids), not a giant dense grid. (Classic IR papers say “bag-of-words”; here we mean bag of <strong>index terms</strong>.)</td></tr>
+<tr><td style="background:#e3f2fd"><strong>“Sparse vectorization”</strong></td><td style="background:#fff3e0">Related idea to embeddings: a sparse vector has almost all zeros and a few 1s at <strong>term</strong> dimensions. We use an <strong>inverted index</strong> instead of materializing that vector matrix.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Space ↔ time</strong></td><td style="background:#e8f5e9">Like a hash table or index: pay <strong>extra disk/RAM</strong> up front so search avoids scanning every ticket’s running text end-to-end.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>BM25 name</strong></td><td style="background:#ede7f6"><strong>B</strong>est <strong>M</strong>atching — <strong>Okapi BM25</strong> from the Okapi IR system; <strong>25</strong> names the tuned formula family (industry default for keyword search in Lucene, Tantivy, Elasticsearch).</td></tr>
+</tbody>
+</table>
+
+**Index size intuition (1M tickets × ~200 tokens in running text each):** Size is **not** a dense `200 × 1M` matrix of full text × ids. Each **posting** is roughly “this **index term** → this ticket id” (term string stored once in the dictionary). Total postings ≈ sum over index terms of (documents containing that term).
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Extreme</th><th>Vocabulary</th><th>Postings (order of magnitude)</th><th>Scoring note</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">No overlap — every doc unique index terms</td><td style="background:#fff3e0">Huge (~200M distinct terms)</td><td style="background:#f5f5f5">~**200M** (each index term in ~1 doc)</td><td style="background:#e8f5e9">Lists are short; lookup is cheap per query term.</td></tr>
+<tr><td style="background:#e3f2fd">Identical — same ~200 index terms in every doc</td><td style="background:#fff3e0">~**200** terms</td><td style="background:#f5f5f5">~**200 × 1M = 200M**</td><td style="background:#fff3e0">Very long lists for common index terms; engines prune + top-k; high document frequency → low IDF.</td></tr>
+<tr><td style="background:#e3f2fd">Real corpus</td><td style="background:#e8f5e9">Between the two</td><td style="background:#f5f5f5">Often ~total document-term instances (~200M here)</td><td style="background:#f5f5f5">Trade vocabulary size vs list length — not one formula for all cases.</td></tr>
+</tbody>
+</table>
+
+**Wire:** `pg_search.lexical_ids()` delegates to `TantivyLexicalIndex.search_ids` when `RETAIL_LEXICAL_BACKEND=tantivy` (default). Rebuild: `scripts/retail/rebuild_lexical_index.py` after corpus reload.
+
+---
+
+<h4 id="11-4-3-bm25x" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.3 ③ bm25x — embedded own bridge <span style="background:#fff9c4;padding:1px 4px;font-size:0.85em">P5 candidate</span></h4>
+
+**Role:** Alternate **embedded** BM25 with a smaller Python-owned bridge — same normalize hooks (`fts_query_text`, `search_text_for_fts`) and RRF contract. Use when you want Lucene-style BM25 without the Tantivy/Rust dependency story.
 
 **Install:**
 
@@ -543,45 +805,7 @@ class Bm25xLexicalIndex:
         return [self._ticket_by_doc[d] for d, _ in hits]
 ```
 
-**Wire:** replace SQL body of `lexical_ids()` in `pg_search.py` with `Bm25xLexicalIndex.search_ids` when `RETAIL_LEXICAL_BACKEND=bm25x`.
-
----
-
-<h4 id="11-4-3-tantivy" style="color:#00695c;font-size:1em;font-weight:600;margin-top:0.75em">11.4.3 ③ Tantivy (embedded)</h4>
-
-**Install:**
-
-```bash
-pip install tantivy
-```
-
-**Spike:**
-
-```python
-import tantivy
-
-schema_builder = tantivy.SchemaBuilder()
-schema_builder.add_text_field("body", stored=True)
-schema_builder.add_text_field("ticket_id", stored=True, tokenizer_name="raw")
-schema_builder.add_text_field("model", stored=True, tokenizer_name="raw")
-schema = schema_builder.build()
-
-index = tantivy.Index(schema, path="tmp/retail_tantivy_spike")
-writer = index.writer(50_000_000)
-writer.add_document(tantivy.Document(
-    body="Galaxy A15 battery drains by noon SAM-E176",
-    ticket_id="T-1001",
-    model="Galaxy A15 5G",
-))
-writer.commit()
-index.reload()
-
-searcher = index.searcher()
-q = index.parse_query('battery "SAM-E176"', ["body"])
-for score, doc_addr in searcher.search(q, 5).hits:
-    doc = searcher.doc(doc_addr)
-    print(doc["ticket_id"][0], score)
-```
+**Wire:** `pg_search.lexical_ids()` uses `Bm25xLexicalIndex.search_ids` when `RETAIL_LEXICAL_BACKEND=bm25x`. IDF / common-vs-rare term weighting is likewise **inside the BM25 library**, not custom retail code.
 
 ---
 
@@ -771,7 +995,27 @@ Profile `tmp/simulated_data/` — **60** tickets, **10** eval, **no twin clones*
 </tbody>
 </table>
 
-**Read:** Small **N=10** gold set + **distinct** ticket bodies + **SAM-E in document embed** → **vector-only already perfect**; Postgres FTS leg still **empty** on paraphrase queries (`websearch` AND). **Do not** treat 1.00 as proof that V1.1–V1.3 add value on this slice—only that the v2 corpus is easy for dense retrieval. Compare separately to **prag_gen** (§13.2) and plan **BM25/Qdrant** before promotion.
+**Read:** Small **N=10** gold set + **distinct** ticket bodies + **SAM-E in document embed** → **vector-only already perfect** on the *original* eval wording; Postgres FTS leg still **empty** on paraphrase queries (`websearch` AND). **Do not** treat 1.00 as proof that V1.1–V1.3 add value on that slice—only that the v2 corpus is easy for dense retrieval. Compare separately to **prag_gen** (§13.2) and **§13.4** (demo eval after Tantivy).
+
+<h3 id="13-4-demo-abcd" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.4 Demo eval for A/B/C/D ladder (`rrf_data_llm_gen`, 2026-10-14)</h3>
+
+**Eval-only:** ten rows from `scripts/retail/seed/abcd_demo_eval_spec.py` (neighbor bait + SAM-E in intake). **Lexical:** `RETAIL_LEXICAL_BACKEND=tantivy`; rebuild after PG load. **Not** a D6 promotion gate—teaching narrative only.
+
+<table>
+<thead>
+<tr style="background:#0277bd;color:white"><th>Mode</th><th>recall@1</th><th>lexical_nonempty</th><th>Reports</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>vector_only</code> (A / V1)</td><td style="background:#fff3e0"><strong>0.80</strong> (8/10)</td><td style="background:#f5f5f5">—</td><td style="background:#f5f5f5"><code>pg_baseline_v1.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_normal</code> (B / V1.1)</td><td style="background:#fff3e0"><strong>0.80</strong></td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_1_normal.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_weighted</code> (C / V1.2)</td><td style="background:#fff3e0"><strong>0.80</strong></td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_2_weighted.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_weighted_boosted</code> (D / V1.3)</td><td style="background:#e8f5e9"><strong>1.00</strong> (10/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_3_boosted.json</code></td></tr>
+</tbody>
+</table>
+
+**Read:** Soft-monotonic **A ≤ B ≤ C ≤ D** holds, but **B and C do not lift** on this snapshot—the two vector misses (`eval-0001`, `eval-0005`) flip only under **V1.3 code boost (λ)** when SAM-E appears in the intake. Equal and 70/30 RRF reorder rank-2/3 but not top-1 when the bait ticket dominates both legs. For a fuller ladder demo, add rows where gold is **lexical rank 1** with **no** query-side SAM-E, or widen corpus neighbors so fusion beats dense-only before λ.
+
+Run: `apply_abcd_demo_eval.py` then `cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh`.
 
 ---
 
@@ -783,34 +1027,32 @@ export RETAIL_TICKET_SEARCH_MODE=rrf_normal           # V1.1
 export RETAIL_TICKET_SEARCH_MODE=rrf_weighted         # V1.2
 export RETAIL_TICKET_SEARCH_MODE=rrf_weighted_boosted # V1.3
 export RETAIL_LEXICAL_CODE_BOOST=10                   # V1.3 λ
+export RETAIL_LEXICAL_BACKEND=tantivy                 # tantivy | bm25x | parade_db | open_search
 
 # Legacy until migration:
 # RETAIL_TICKET_HYBRID_SEARCH=0 → vector_only
 # RETAIL_TICKET_HYBRID_SEARCH=1 → rrf_normal
 ```
 
-**SQL lexical leg (shape):**
+**Lexical leg (shipped):** `pg_search.lexical_ids()` → `retail_brain.lexical_search.*` (BM25 sidecar). Rebuild after PG load: `scripts/retail/rebuild_lexical_index.py`.
+
+**SQL FTS (historical only — not used for RRF):**
 
 ```sql
-SELECT ticket_id
-FROM service_queries
-WHERE status = 'resolved'
-  AND model = $model_filter
-  AND query_tsv @@ websearch_to_tsquery('english', $fts_query_text)
-ORDER BY ts_rank_cd(
-  query_tsv,
-  websearch_to_tsquery('english', $fts_query_text)
-) DESC
+-- Do not wire this back into lexical_ids(); documented as anti-pattern for hybrid text similarity.
+SELECT ticket_id FROM service_queries
+WHERE query_tsv @@ websearch_to_tsquery('english', $fts_query_text)
+ORDER BY ts_rank_cd(query_tsv, websearch_to_tsquery('english', $fts_query_text)) DESC
 LIMIT $limit;
 ```
 
-**Code:** `scripts/retail/retail_brain/pg_search.py`, `rrf.py`, `text_normalize.py`, `embed_service_queries.py`.
+**Code:** `scripts/retail/retail_brain/pg_search.py`, `lexical_search/`, `rrf.py`, `text_normalize.py`, `embed_service_queries.py`.
 
 ---
 
 <h2 id="15-future" style="color:#455a64;font-size:1.22em;font-weight:650;border-left:5px solid #78909c;padding-left:10px;margin-top:1.1em;background:#eceff1">15. What comes after V1.3</h2>
 
-Reserve **V1.4, V1.5, …** for ticket-plane tweaks (tunable w<sub>v</sub>/w<sub>l</sub>, phrase rules, **production BM25 via [§11.4](#11-4-six-way)** — especially **② bm25x**, cross-encoder rerank experiments) — each with the same article pattern: **hypothesis → change → measured stratum table**.
+Reserve **V1.4, V1.5, …** for ticket-plane tweaks (tunable w<sub>v</sub>/w<sub>l</sub>, phrase rules, **lexical backend tuning via [§11.4](#11-4-six-way)** — default **② Tantivy**, alternate **③ bm25x**, cross-encoder rerank experiments) — each with the same article pattern: **hypothesis → change → measured stratum table**.
 
 **Samsung wiki automation** remains a **separate program version** in the parent refactor (exports, themes, cron) — not numbered as V1.x.
 

@@ -5,6 +5,6 @@ set -euo pipefail
 HERMES_AD="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERMES_AD/../../../.." && pwd)"
 
-python3 "$HERMES_AD/merge-hermes-skills-config.py"
+"$ROOT/scripts/py" "$HERMES_AD/merge-hermes-skills-config.py"
 
 echo "setup-hermes-skills: OK (see merge-hermes-skills-config output)"

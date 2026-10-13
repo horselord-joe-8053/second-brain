@@ -7,7 +7,7 @@ ROOT="$(cd "$HERMES_AD/../../../.." && pwd)"
 # shellcheck source=scripts/brain/adapters/hermes/hermes-env.sh
 source "$HERMES_AD/hermes-env.sh"
 
-BRAIN="$(python3 -c "
+BRAIN="$("$ROOT/scripts/py" -c "
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path('$ROOT') / 'scripts' / 'brain'))

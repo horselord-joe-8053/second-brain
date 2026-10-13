@@ -11,7 +11,7 @@ set +a
 BASE="${LLM_WIKI_API_BASE_URL:-http://127.0.0.1:19828/api/v1}"
 curl -fsS -H "Authorization: Bearer ${LLM_WIKI_API_TOKEN}" -H "Content-Type: application/json" \
   -d '{"query":"james conjugation verb table","topK":8,"includeContent":false}' \
-  "${BASE}/projects/current/search" | python3 -c "
+  "${BASE}/projects/current/search" | "$ROOT/scripts/py" -c "
 import json, sys
 d = json.load(sys.stdin)
 paths = [r.get('path', '') for r in d.get('results', [])]

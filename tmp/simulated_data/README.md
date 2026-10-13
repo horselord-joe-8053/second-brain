@@ -34,4 +34,4 @@ Embed policy (P3): **`SAM-E###` kept** in vectors; strip only `RETAIL_EMBED_STRI
 
 - ~50% historical rows include SAM-E; no duplicate bodies; no twin cloning.
 - Eval: natural mix — when gold has SAM-E, ~half of queries mention it.
-- Plan: [`docs_manual_gen/REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md`](../../docs_manual_gen/REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md)
+- Plan: [`REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md`](../../docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md) · hybrid eval stress: [`REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md`](../../docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md)

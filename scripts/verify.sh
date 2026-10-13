@@ -7,14 +7,14 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 python_can_run() {
-  python3 -c "pass" >/dev/null 2>&1
+  "$ROOT/scripts/py" -c "pass" >/dev/null 2>&1
 }
 
 echo "== ac-test mapping =="
 if [[ -f "$ROOT/scripts/check-ac-tests.py" ]] && python_can_run; then
-  python3 "$ROOT/scripts/check-ac-tests.py"
+  "$ROOT/scripts/py" "$ROOT/scripts/check-ac-tests.py"
 elif [[ -f "$ROOT/scripts/check-ac-tests.py" ]]; then
-  echo "verify: skip check-ac-tests (python3 unavailable — install Xcode CLT or Python)"
+  echo "verify: skip check-ac-tests (Python 3.12 unavailable — install it so scripts/py can find it)"
 else
   echo "verify: skip check-ac-tests (not seeded)"
 fi
@@ -28,7 +28,7 @@ if [[ -d "$ROOT/backend" ]] && [[ -f "$ROOT/backend/pyproject.toml" || -f "$ROOT
   echo "== backend: ruff + pytest (optional stack) =="
   cd "$ROOT/backend"
   if [[ ! -d .venv ]]; then
-    python3 -m venv .venv
+    "$ROOT/scripts/py" -m venv .venv
   fi
   # shellcheck source=/dev/null
   source .venv/bin/activate
@@ -55,9 +55,9 @@ fi
 if [[ -d "$ROOT/tests" ]] && [[ ! -d "$ROOT/backend" ]] && python_can_run; then
   echo "== repo tests/ pytest =="
   export PYTHONPATH="${ROOT}${PYTHONPATH:+:$PYTHONPATH}"
-  python3 -m pytest -q tests
+  "$ROOT/scripts/py" -m pytest -q tests
 elif [[ -d "$ROOT/tests" ]] && [[ ! -d "$ROOT/backend" ]]; then
-  echo "verify: skip pytest (python3 unavailable)"
+  echo "verify: skip pytest (Python 3.12 unavailable)"
 fi
 
 if [[ -x "$ROOT/scripts/verify-local.sh" ]]; then

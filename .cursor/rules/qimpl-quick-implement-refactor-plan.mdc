@@ -63,7 +63,7 @@ Before plan or code work:
 |------|-------------|
 | **Context** | Read applicable existing refactor plans, READMEs, and domain docs; cross-link sources; avoid duplicating completed work. |
 | **Phases** | Sensible numbered stages; each phase ends with **verifiable** deliverables. |
-| **Quality bar** | Per phase: code changes, **tests**, **comments** (file headers where touched), **doc updates**; keep **DRY** (extract shared helpers/components before a third copy). |
+| **Quality bar** | Per phase: code changes, **tests**, and the **implref** comments-and-docs gate (**cdcm**: file headers; **≥1 doc line per class and per function/method** in touched files; non-obvious inline notes; README / spec / `.env.example` — implref step 2 and §3.2b). Keep **DRY** (extract shared helpers/components before a third copy). |
 | **Tests per stage** | Name **concrete** test files/commands at phase end: unit, integration, Vitest, Playwright **mocked `test:e2e`**, and **real/mock LLM e2e** when behavior crosses LM or live tiers (see **`.cursor/rules/project_specific/eellm-e2e-real-llm-runner.mdc`** when applicable). |
 | **Location** | New plans: **`cursor_gen/refactor_plans/new/REFACTOR_*.md`** only (**onlyref** folder rule). |
 
@@ -136,6 +136,6 @@ Resume: **`qimpl <same-plan-path>`** or **`aciub`** / **`resumimpl`** on the pla
 
 - [ ] User invoked **`qimpl`** (not **`qimpltdd`**).
 - [ ] Step 1: MC questions **or** “No blocking ambiguities” + proceeded.
-- [ ] Step 2: **onlyref** plan(s) with phased tests, DRY, docs bar.
+- [ ] Step 2: **onlyref** plan(s) with phased tests, DRY, and the **implref** comments-and-docs gate (executed in step 3, not only written into the plan).
 - [ ] Step 3: **aciub** ran all phases without handoff spam.
 - [ ] Step 4: layman closing table delivered.

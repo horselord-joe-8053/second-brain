@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Repo interpreter for product scripts. Exec CPython 3.12.
+# Does not replace Apple's /usr/bin/python3 (3.9). bm25x wheels exist only for 3.12.
+
+set -euo pipefail
+
+_sb_python312() {
+  local candidate
+  if command -v python3.12 >/dev/null 2>&1; then
+    command -v python3.12
+    return 0
+  fi
+  for candidate in \
+    "${HOME}/.local/bin/python3.12" \
+    "/usr/local/bin/python3.12" \
+    "/opt/homebrew/bin/python3.12"
+  do
+    if [[ -x "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+bin="$(_sb_python312)" || {
+  echo "scripts/py: CPython 3.12 is not installed. Put python3.12 on PATH (or ~/.local/bin/python3.12)." >&2
+  exit 1
+}
+exec "$bin" "$@"

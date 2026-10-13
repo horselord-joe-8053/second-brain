@@ -71,6 +71,7 @@ def test_lexical_leg_uses_fts_normalized_text() -> None:
         TicketRow("t1", "Galaxy A16 5G", "resolved", stored, "fix"),
         TicketRow("t2", "Galaxy A16 5G", "resolved", "Customer reports: unrelated issue on device.", "x"),
     ]
+    os.environ.pop("RETAIL_TICKET_SEARCH_MODE", None)
     os.environ["RETAIL_TICKET_HYBRID_SEARCH"] = "1"
     ranked = search_ticket_ids(q, rows, model_filter="Galaxy A16 5G", limit=1)
     assert ranked[0] == "t1"

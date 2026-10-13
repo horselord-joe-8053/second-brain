@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Patch ~/.hermes/config.yaml skills.disabled + external_dirs for Second Brain."""
 from __future__ import annotations
 

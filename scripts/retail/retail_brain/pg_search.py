@@ -1,12 +1,21 @@
-"""Ticket search against PostgreSQL (pgvector + optional tsvector RRF)."""
+"""Production ticket search: pgvector dense leg + pluggable keyword index + Python RRF.
+
+Flow for hybrid modes (``rrf_*``):
+  1. ``vector_ids`` — embed query, ORDER BY ``query_embedding <-> query`` on ``service_queries``.
+  2. ``lexical_ids`` — ordered ticket ids from ``RETAIL_LEXICAL_BACKEND`` (default Tantivy on disk).
+  3. ``_fuse_pg`` — reciprocal rank fusion; optional V1.3 diag-code boost uses ``search_text`` from PG.
+
+Postgres full-text search is intentionally **not** used for the keyword leg; see ``lexical_search/``.
+``lexical_ids`` keeps a ``cur`` parameter so callers (eval, reload scripts) need not change signatures.
+"""
 
 from __future__ import annotations
 
 import os
+import sys
 from typing import Any, Dict, List, Optional, Set
 
 from retail_brain.embeddings import embed_text
-from retail_brain.market import pg_ts_config
 from retail_brain.rrf import code_boost_scores, reciprocal_rank_fusion
 from retail_brain.search_mode import (
     code_boost_enabled,
@@ -15,10 +24,10 @@ from retail_brain.search_mode import (
     resolve_ticket_search_mode,
     rrf_list_weights,
 )
-from retail_brain.text_normalize import fts_query_text
 
 
 def _connect(dsn: str):
+    """Open a psycopg2 connection to the retail Postgres DSN."""
     import psycopg2  # type: ignore
 
     return psycopg2.connect(dsn)
@@ -31,6 +40,7 @@ def vector_ids(
     model_filter: Optional[str],
     limit: int,
 ) -> List[str]:
+    """Dense retrieval leg: nearest neighbors in ``service_queries.query_embedding``."""
     emb = embed_text(query, task_type="RETRIEVAL_QUERY")
     emb_literal = "[" + ",".join(str(x) for x in emb) + "]"
     if model_filter:
@@ -56,6 +66,23 @@ def vector_ids(
     return [r[0] for r in cur.fetchall()]
 
 
+def lexical_scored(
+    query: str,
+    *,
+    model_filter: Optional[str],
+    limit: int,
+) -> List[tuple[str, float]]:
+    """Keyword leg with BM25-style scores when the backend exposes ``search_scored`` (Tantivy)."""
+    from retail_brain.lexical_search import open_lexical_index
+
+    index = open_lexical_index()
+    scored = getattr(index, "search_scored", None)
+    if scored is not None:
+        return scored(query, k=limit, model_filter=model_filter)
+    ids = index.search_ids(query, k=limit, model_filter=model_filter)
+    return [(tid, 0.0) for tid in ids]
+
+
 def lexical_ids(
     cur,
     query: str,
@@ -63,34 +90,22 @@ def lexical_ids(
     model_filter: Optional[str],
     limit: int,
 ) -> List[str]:
-    cfg = pg_ts_config()
-    q = fts_query_text(query)
-    if model_filter:
-        cur.execute(
-            f"""
-            SELECT ticket_id FROM service_queries
-            WHERE status = 'resolved' AND model = %s
-              AND query_tsv @@ websearch_to_tsquery(%s, %s)
-            ORDER BY ts_rank_cd(query_tsv, websearch_to_tsquery(%s, %s)) DESC
-            LIMIT %s
-            """,
-            (model_filter, cfg, q, cfg, q, limit),
-        )
-    else:
-        cur.execute(
-            f"""
-            SELECT ticket_id FROM service_queries
-            WHERE status = 'resolved'
-              AND query_tsv @@ websearch_to_tsquery(%s, %s)
-            ORDER BY ts_rank_cd(query_tsv, websearch_to_tsquery(%s, %s)) DESC
-            LIMIT %s
-            """,
-            (cfg, q, cfg, q, limit),
-        )
-    return [r[0] for r in cur.fetchall()]
+    """Keyword ids from the selected lexical backend. Does not run Postgres full-text search.
+
+    `cur` stays in the signature so callers do not change. Ranking no longer uses it.
+    """
+    del cur
+    ids = [tid for tid, _ in lexical_scored(query, model_filter=model_filter, limit=limit)]
+    if os.environ.get("RETAIL_LEXICAL_TRACE", "").strip().lower() in ("1", "true", "yes"):
+        scored = lexical_scored(query, model_filter=model_filter, limit=min(limit, 5))
+        backend = os.environ.get("RETAIL_LEXICAL_BACKEND", "tantivy")
+        top = ", ".join(f"{tid}:{score:.4f}" for tid, score in scored[:5])
+        print(f"[lexical_trace backend={backend}] top={top}", file=sys.stderr)
+    return ids
 
 
 def _search_text_map(cur, ticket_ids: Set[str]) -> Dict[str, str]:
+    """Hydrate ``search_text`` for fusion candidates (code-boost compares SAM-E tokens)."""
     if not ticket_ids:
         return {}
     cur.execute(
@@ -109,6 +124,7 @@ def _fuse_pg(
     mode: str,
     limit: int,
 ) -> List[str]:
+    """Merge vector and lexical rank lists; weights and code boost depend on ``mode``."""
     w_v, w_l = rrf_list_weights(mode)
     extra: Dict[str, float] = {}
     if code_boost_enabled(mode):
@@ -136,17 +152,43 @@ def search_ticket_ids_pg(
     model_filter: Optional[str] = None,
     limit: int = 10,
 ) -> List[str]:
+    """Top ticket ids from PG: vector-only or hybrid RRF per ``RETAIL_TICKET_SEARCH_MODE``."""
     mode = resolve_ticket_search_mode()
     conn = _connect(dsn)
     try:
         with conn.cursor() as cur:
             if mode == "vector_only":
                 return vector_ids(cur, query, model_filter=model_filter, limit=limit)
+            # Prefetch 2× final k so RRF has depth before truncation (matches offline hybrid_search).
             v = vector_ids(cur, query, model_filter=model_filter, limit=limit * 2)
             l = lexical_ids(cur, query, model_filter=model_filter, limit=limit * 2)
             return _fuse_pg(cur, query, v, l, mode=mode, limit=limit)
     finally:
         conn.close()
+
+
+def trace_search_legs(
+    cur,
+    query: str,
+    *,
+    model_filter: Optional[str],
+    gold_ticket_id: Optional[str] = None,
+    limit: int = 5,
+) -> Dict[str, Any]:
+    """Debug snapshot: vector order, lexical BM25 scores (Tantivy), and gold rank in each leg."""
+    v = vector_ids(cur, query, model_filter=model_filter, limit=limit)
+    lex_scored = lexical_scored(query, model_filter=model_filter, limit=limit)
+    l = [tid for tid, _ in lex_scored]
+    out: Dict[str, Any] = {
+        "vector_top": v,
+        "lexical_top": l,
+        "lexical_scored": [{"ticket_id": tid, "score": score} for tid, score in lex_scored],
+        "lexical_backend": os.environ.get("RETAIL_LEXICAL_BACKEND", "tantivy"),
+    }
+    if gold_ticket_id:
+        out["gold_rank_vector"] = v.index(gold_ticket_id) + 1 if gold_ticket_id in v else None
+        out["gold_rank_lexical"] = l.index(gold_ticket_id) + 1 if gold_ticket_id in l else None
+    return out
 
 
 def run_eval_pg(
@@ -155,12 +197,15 @@ def run_eval_pg(
     *,
     top_k: int = 5,
 ) -> Dict[str, Any]:
+    """Run retrieval eval against live PG; reports ``lexical_leg_nonempty`` when hybrid is on."""
     from retail_brain.eval_harness import EvalCaseResult
     from retail_brain.eval_scoring import aggregate_recall, score_top1
 
     mode = resolve_ticket_search_mode()
     hybrid_on = is_hybrid_mode(mode)
+    trace_legs = os.environ.get("RETAIL_EVAL_TRACE_LEGS", "").strip().lower() in ("1", "true", "yes")
     results: List[EvalCaseResult] = []
+    case_dicts: List[Dict[str, Any]] = []
     lexical_nonempty = 0
     conn = _connect(dsn)
     try:
@@ -170,6 +215,7 @@ def run_eval_pg(
             query = case["query"]
             model_filter = case.get("model_filter")
             if hybrid_on:
+                # Separate probe: did the keyword index return anything? (A/B health signal.)
                 with conn.cursor() as cur:
                     lex = lexical_ids(
                         cur,
@@ -187,19 +233,29 @@ def run_eval_pg(
             )
             top = ranked[0] if ranked else None
             hit_strict, hit_acceptable = score_top1(case, top)
-            results.append(
-                EvalCaseResult(
-                    eval_id=case["eval_id"],
-                    stratum=case["stratum"],
-                    hit=hit_strict,
-                    top_ticket_id=top,
-                    hit_strict=hit_strict,
-                    hit_acceptable=hit_acceptable,
-                )
+            row = EvalCaseResult(
+                eval_id=case["eval_id"],
+                stratum=case["stratum"],
+                hit=hit_strict,
+                top_ticket_id=top,
+                hit_strict=hit_strict,
+                hit_acceptable=hit_acceptable,
             )
+            results.append(row)
+            row_dict: Dict[str, Any] = dict(row.__dict__)
+            if trace_legs:
+                gold = (case.get("expected_ticket_ids") or [None])[0]
+                with conn.cursor() as cur:
+                    row_dict["leg_trace"] = trace_search_legs(
+                        cur,
+                        query,
+                        model_filter=model_filter,
+                        gold_ticket_id=gold,
+                        limit=top_k,
+                    )
+            case_dicts.append(row_dict)
     finally:
         conn.close()
-    case_dicts = [r.__dict__ for r in results]
     by_stratum: Dict[str, List[bool]] = {}
     for r in results:
         by_stratum.setdefault(r.stratum, []).append(r.hit_strict)

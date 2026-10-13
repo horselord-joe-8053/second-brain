@@ -1,4 +1,4 @@
-"""Domain enums and constants for synthetic retail data."""
+"""Domain enums and constants for synthetic retail tickets and eval strata."""
 
 from __future__ import annotations
 

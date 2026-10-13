@@ -1,7 +1,8 @@
 <h1 id="rrf-strip-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: retail hybrid RRF with FTS normalize + realistic deterministic seed</h1>
 
 **Status:** **completed** — Phase 6–7 diagnostic-code eval + operator A/B  
-**Parent plan:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](./REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md)  
+**Parent plan:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md)  
+**Note:** Older copy from `cursor_gen/refactor_plans/wip/`; canonical plan is [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md).
 **Execution:** **`qimpltdd`** / [`implreftdd`](../.cursor/rules/tdd/implreftdd-resumimpl-refactor-plan-followthrough.mdc)
 
 ## Document outline

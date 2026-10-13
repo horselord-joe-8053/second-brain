@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Offline LLM pass: add acceptable_ticket_ids to eval JSONL (not runtime eval).
 
 Run after generate_eval_from_manifest.py. Does not change expected_ticket_ids (strict source).

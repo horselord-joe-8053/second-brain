@@ -14,7 +14,7 @@ if [[ ! -f "$APP_STATE" ]]; then
 fi
 
 export APP_STATE
-TOKEN="$(python3 - <<'PY'
+TOKEN="$("$ROOT/scripts/py" - <<'PY'
 import json, os, sys
 path = os.environ["APP_STATE"]
 with open(path, encoding="utf-8") as f:
@@ -33,7 +33,7 @@ upsert_env() {
   mkdir -p "$(dirname "$file")"
   touch "$file"
   if grep -q "^${key}=" "$file" 2>/dev/null; then
-    TOKEN="$TOKEN" KEY="$key" FILE="$file" python3 - <<'PY'
+    TOKEN="$TOKEN" KEY="$key" FILE="$file" "$ROOT/scripts/py" - <<'PY'
 import os
 from pathlib import Path
 p = Path(os.environ["FILE"])

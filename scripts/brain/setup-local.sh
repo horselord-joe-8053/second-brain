@@ -9,7 +9,7 @@ echo "== second-brain setup-local (idempotent) =="
 
 bash "$ROOT/scripts/brain/apply-stack-config.sh" || echo "setup-local: apply-stack-config skipped or partial"
 
-HARNESS="$(python3 -c "
+HARNESS="$("$ROOT/scripts/py" -c "
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path('$ROOT') / 'scripts' / 'brain'))

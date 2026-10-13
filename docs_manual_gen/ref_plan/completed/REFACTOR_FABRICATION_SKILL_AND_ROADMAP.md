@@ -2,11 +2,11 @@
 
 **Status:** **Part I–II + Phase 14 completed** — phases **1–14** **`[X]`**. **TDD mode:** Part I smoke-after-delete; Part II strict-TDD; **Phase 14** smoke-after-delete (wrapper removal) + doc grep. **Verify:** `./scripts/verify.sh`.
 
-**After (Part I):** [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](./REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md) — all boxes **`[X]`**. **After (Part II):** [`REFACTOR_BRAIN_STACK_CONFIG.md`](../cursor_gen/refactor_plans/new/REFACTOR_BRAIN_STACK_CONFIG.md) P1–P3 **completed**.
+**After (Part I):** [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](./REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md) — all boxes **`[X]`**. **After (Part II):** [`REFACTOR_BRAIN_STACK_CONFIG.md`](./REFACTOR_BRAIN_STACK_CONFIG.md) P1–P3 **completed**.
 
 **Execute with:** [`implref`](../.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc) on **this file**. Resume Part II from the first **`[ ]`** in §9. Do not run `EXECUTE_GEN.md implementing` this plan.
 
-**Canonical path:** `docs_manual_gen/REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md`. On `implref` closeout, leave the file here. Do not `git mv` it to `cursor_gen/refactor_plans/`.
+**Canonical path:** `docs_manual_gen/ref_plan/completed/REFACTOR_FABRICATION_SKILL_AND_ROADMAP.md`.
 
 **Part I — format:** [Agent Skills](https://agentskills.io/specification). `SKILL.md` plus `scripts/`, `references/`, `assets/`. **Ship:** `.cursor/skills/fabrication/` (+ optional `~/.cursor/skills/fabrication/` copy).
 

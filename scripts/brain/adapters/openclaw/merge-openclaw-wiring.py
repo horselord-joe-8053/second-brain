@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """OpenClaw wiring stub: load shared MCP catalog; channel merge blocked until schema is known."""
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Retail embeddings — delegates to utils.retail_fru (Gemini only)."""
+"""Retail embeddings facade — re-exports ``utils.retail_fru.embeddings`` (Gemini, no mock in prod)."""
 
 from utils.retail_fru.embeddings import (  # noqa: F401
     EMBEDDING_DIMENSION,

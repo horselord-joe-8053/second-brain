@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Populate query_embedding and query_tsv for loaded service_queries rows (Gemini, once per row)."""
 
 from __future__ import annotations

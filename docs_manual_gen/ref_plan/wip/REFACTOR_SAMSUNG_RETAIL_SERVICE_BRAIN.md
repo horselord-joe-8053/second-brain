@@ -1,11 +1,11 @@
 <h1 id="refactor-samsung-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: Samsung Australia retail service Second Brain (extend <code>second_brain</code>)</h1>
 
 **Status:** **wip** — Phases **0–6** complete; **Phase 7 (ticket search V1.1–V1.3)** in progress; deferred **Samsung V2** (wiki) → platform → V3 → V4; **Samsung V5** FRU loop **last**  
-**Source spec:** [`todos/TODO_SAMSUNG_RETAIL_STRUCTURED_DATA_AND_WIKI.md`](./todos/TODO_SAMSUNG_RETAIL_STRUCTURED_DATA_AND_WIKI.md) (aligned 2026-10-10)  
+**Source spec:** [`todos/TODO_SAMSUNG_RETAIL_STRUCTURED_DATA_AND_WIKI.md`](../../todos/TODO_SAMSUNG_RETAIL_STRUCTURED_DATA_AND_WIKI.md) (aligned 2026-10-10)  
 **Domain:** Nationwide **Australia** retail (default **`RETAIL_MARKET=AU`**, en-AU synthetic copy) — sales + after-sales for **Galaxy A15 5G**, **Galaxy A16 5G**, **Galaxy A25 5G** only. Optional **`RETAIL_MARKET=BR`** profile preserves pt-BR + `portuguese` FTS for future operator runs.  
-**Execute with:** [`implreftdd`](../.cursor/rules/tdd/implreftdd-resumimpl-refactor-plan-followthrough.mdc) / **`aciubtdd`** on **this file** (TDD chain). Do not create a separate git repo; extend this product tree.
+**Execute with:** [`implreftdd`](../../../.cursor/rules/tdd/implreftdd-resumimpl-refactor-plan-followthrough.mdc) / **`aciubtdd`** on **this file** (TDD chain). Do not create a separate git repo; extend this product tree.
 
-**Canonical path:** `docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md` (same pattern as [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](./REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md)).
+**Canonical path:** `docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md` (same pattern as [`REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`](../completed/REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md)).
 
 <h2 id="refactor-samsung-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -44,9 +44,9 @@
 - [X] Phase 3 complete
 - [X] Phase 4 complete
 - [X] Phase 5 complete (**required** — V1.1 hybrid + A/B gate per D6)
-- [X] **Phase 5.1** — hybrid lexical normalize + seed uniqueness ([`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md); war story [4](../war_stories/WAR_STORIES.md#war-story-4))
+- [X] **Phase 5.1** — hybrid lexical normalize + seed uniqueness ([`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](../completed/REFACTOR_RETAIL_RRF_STRIP_FLUFF.md); war story [4](../../../war_stories/WAR_STORIES.md#war-story-4))
 - [X] **Phase 6** — operator prep + Postgres A/B shakedown ([section 15](#15-phase-6); operator log `scripts/retail/eval/reports/phase6_operator_log.md`)
-- [X] **Phase 7** — ticket search **V1.1–V1.3** ([section 16](#16-phase-7); child [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md))
+- [X] **Phase 7** — ticket search **V1.1–V1.3** ([section 16](#16-phase-7); child [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../completed/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md))
 - [ ] **Samsung V2** — themes/exports/automation ([section 17](#17-deferred-v2))
 - [ ] **Platform** — `brain/personal` migration ([section 18](#18-deferred-platform))
 - [ ] **Samsung V3** — operator harness / prep split ([section 19](#19-deferred-v3))
@@ -397,7 +397,7 @@ Lesson and caveats: [war story 2](../war_stories/WAR_STORIES.md#war-story-2).
 
 Educational / publishable write-up: [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md) (update **§7 Results** after each operator run).
 
-**Implementation plan (Phase 7):** [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md).
+**Implementation plan (Phase 7):** [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../completed/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md).
 
 | Label | Mode | Fusion |
 |-------|------|--------|
@@ -475,7 +475,7 @@ Future ticket-plane tweaks reserve **V1.4, V1.5, …** without reusing **Samsung
 
 <h3 id="14-1-rrf-strip-fluff" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">14.1 Phase 5.1 — FTS normalize + richer seed (follow-up)</h3>
 
-Phase 6 shakedown showed **V1.1 ≡ V1** because the lexical leg never matched paraphrase queries. **Child refactor plan (canonical):** [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) — finite **`search_text`** strip at embed time, `websearch_to_tsquery` on normalized queries, richer seeded ticket bodies, regen fixtures. **War story:** [4](../war_stories/WAR_STORIES.md#war-story-4). Operator: re-run [`03_pg_up_and_load.sh`](../cursor_gen/retail_v11_prep/03_pg_up_and_load.sh) + [`04_run_ab_postgres.sh`](../cursor_gen/retail_v11_prep/04_run_ab_postgres.sh) after merge to measure lexical contribution.
+Phase 6 shakedown showed **V1.1 ≡ V1** because the lexical leg never matched paraphrase queries. **Child refactor plan (canonical):** [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](../completed/REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) — finite **`search_text`** strip at embed time, `websearch_to_tsquery` on normalized queries, richer seeded ticket bodies, regen fixtures. **War story:** [4](../../../war_stories/WAR_STORIES.md#war-story-4). Operator: re-run [`03_pg_up_and_load.sh`](../../../cursor_gen/retail_v11_prep/03_pg_up_and_load.sh) + [`04_run_ab_postgres.sh`](../../../cursor_gen/retail_v11_prep/04_run_ab_postgres.sh) after merge to measure lexical contribution.
 
 ---
 
@@ -575,7 +575,7 @@ Stop with a short checklist: project path set, rescan done, N wiki pages visible
 
 **Goal:** Production-shaped lexical leg + four **D14** modes; A/B/C/D on same frozen gold; publishable narrative in [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md).
 
-**Child plan (execute with `qimpltdd`):** [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md)
+**Child plan (execute with `qimpltdd`):** [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../completed/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md)
 
 - [X] **7.A** — V1.1 `fts_query_text` / rich FTS ([D15](#2-decisions)); pytest green.
 - [X] **7.B** — `RETAIL_TICKET_SEARCH_MODE` + legacy alias ([D14](#2-decisions)).
@@ -747,8 +747,11 @@ Replace the single [`HERMES_PREP_PROMPT.md`](../cursor_gen/retail_v11_prep/HERME
 | pgvector production | [Jacar](https://jacar.es/en/rag-with-postgres-and-pgvector-in-production-from-poc-to-slo/) |
 | V1.1 prep (interim) | [`cursor_gen/retail_v11_prep/`](../cursor_gen/retail_v11_prep/) |
 | War stories (planes + embed-once A/B + hybrid RRF) | [`war_stories/WAR_STORIES.md`](../war_stories/WAR_STORIES.md) — [1](../war_stories/WAR_STORIES.md#war-story-1), [2](../war_stories/WAR_STORIES.md#war-story-2), [4](../war_stories/WAR_STORIES.md#war-story-4) |
-| Phase 5.1 child plan (FTS normalize) | [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](./REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) |
-| Phase 7 V1.x search evolution | [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md) |
+| Phase 5.1 child plan (FTS normalize) | [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](../completed/REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) |
+| Phase 7 V1.x search evolution | [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../completed/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md) |
+| Lexical backends (Tantivy default) | [`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](../completed/REFACTOR_RETAIL_LEXICAL_BACKENDS.md) |
+| LLM natural corpus v2 | [`REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md`](../completed/REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md) |
+| Hybrid eval stress (done) | [`REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md`](../completed/REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md) |
 | V1.x article / results ledger | [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md) |
 | Hermes MCP runbook | [`RUNBOOK_HARNESS_HERMES.md`](./RUNBOOK_HARNESS_HERMES.md) |
 | OpenClaw harness (future) | [`RUNBOOK_HARNESS_OPENCLAW.md`](./RUNBOOK_HARNESS_OPENCLAW.md) |
@@ -770,7 +773,7 @@ Replace the single [`HERMES_PREP_PROMPT.md`](../cursor_gen/retail_v11_prep/HERME
 </tbody>
 </table>
 
-**Start command (recommended):** `qimpltdd cursor_gen/refactor_plans/wip/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md` then **`aciubtdd`** same path.
+**Start command (recommended):** `qimpltdd docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md` (done) · eval stress: [`REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md`](../completed/REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md) (done)
 
 **Parent file:** update Phase 7 checkboxes here after child plan completes; **Samsung V2+** remain deferred — do **not** mix wiki automation into Phase 7.
 

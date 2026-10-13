@@ -1,7 +1,7 @@
 <h1 id="spec-samsung-retail-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Spec: Samsung Australia retail synthetic data and eval</h1>
 
 **Status:** draft for implementation  
-**Plan:** [`docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md)
+**Plan:** [`docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md)
 
 <h2 id="spec-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -58,7 +58,7 @@ eval_id, query, model_filter, expected_ticket_ids, stratum, source_ticket_id
 - **`error_code`:** eval query includes model + symptoms + `SAM-E###` (screenshot-style). **Paired tickets** `(2k, 2k+1)` share the same underlying issue/symptom slots; **even index** uses CRM stored prose, **odd index** uses **intake-shaped** stored prose (twin distractor). **FTS** indexes full stored text (tech line + code); **vector document embed** uses `text_for_embedding` (tech line stripped). Stratum is assigned on **gold pair tickets** where `(index // 2) % 3 == 0` and `index % 2 == 0`.
 - **Anti-leakage:** `query` must not equal manifest `customer_query_text` for `source_ticket_id`. Eval queries use **`eval_query_template`** (caller + city + model + issue + one detail) — **no** copying full stored body and **no** operational ID tokens in `query`.
 
-**Gold authorship (D8):** The **data author** sets `query`, `expected_ticket_ids`, and `stratum` from manifest provenance (generators or human holdout). The **implementor** only runs the harness that compares ranker output to that preset gold — never copies top‑k ids back into JSONL. See refactor plan [§8.2](../docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md#8-2-gold-roles).
+**Gold authorship (D8):** The **data author** sets `query`, `expected_ticket_ids`, and `stratum` from manifest provenance (generators or human holdout). The **implementor** only runs the harness that compares ranker output to that preset gold — never copies top‑k ids back into JSONL. See refactor plan [§8.2](../docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md#8-2-gold-roles).
 
 ---
 
@@ -75,7 +75,7 @@ eval_id, query, model_filter, expected_ticket_ids, stratum, source_ticket_id
 - **Operator A/B (D10):** repo `.env` `GEMINI_API_KEY` + `EMBEDDING_MODEL` (e.g. `gemini-embedding-2`); `utils/retail_fru/embeddings.py` — **no mock fallback**. Embed each ticket **once** in PG (`vector(768)`); caveats: [war story 2](../../war_stories/WAR_STORIES.md#war-story-2).
 - **Tests:** pytest stubs `embed_text` only; production always calls Gemini or fails fast.
 - **`RETAIL_TICKET_SEARCH_MODE`:** `vector_only` (V1), `rrf_normal` (V1.1), `rrf_weighted` (V1.2, 70/30 fusion weights), `rrf_weighted_boosted` (V1.3, + λ on parsed `SAM-E###` in query). Legacy **`RETAIL_TICKET_HYBRID_SEARCH=1`** maps to `rrf_normal`.
-- **V1.1 lexical:** screenshot and narrative queries use **rich FTS** (`fts_query_text` = symptoms + code in body), not tech-line-only collapse — see child plan `REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`.
+- **V1.1 lexical:** screenshot and narrative queries use **rich FTS** (`fts_query_text` = symptoms + code in body), not tech-line-only collapse — see [`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md).
 - Promotion to default hybrid only per plan D6 after A/B on that frozen cabinet; **`error_code`** stratum may stay flat until V1.3 (D18).
 - **Until Samsung V4:** one agent may author gold and implement search; do not set `expected_ticket_ids` from neighbor lists.
 

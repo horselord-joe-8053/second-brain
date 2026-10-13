@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Load config/brain-stack.yaml and apply env/path helpers (no PyYAML required)."""
 from __future__ import annotations
 

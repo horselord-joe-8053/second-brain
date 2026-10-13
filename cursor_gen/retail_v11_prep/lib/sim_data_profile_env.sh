@@ -4,7 +4,7 @@ retail_sim_data_profile_exports() {
   local root="$1"
   export PYTHONPATH="${root}/scripts/retail${PYTHONPATH:+:$PYTHONPATH}"
   # shellcheck disable=SC2046
-  eval "$(python3 "${root}/scripts/retail/retail_brain/sim_data_profile.py" --shell)"
+  eval "$("${root}/scripts/py" "${root}/scripts/retail/retail_brain/sim_data_profile.py" --shell)"
 }
 
 retail_sim_data_profile_banner() {

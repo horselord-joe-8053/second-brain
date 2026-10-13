@@ -17,7 +17,7 @@ set -a
 [[ -f "$ROOT/.env" ]] && source "$ROOT/.env"
 set +a
 
-python3 "$HERMES_AD/merge-hermes-wiring.py"
+"$ROOT/scripts/py" "$HERMES_AD/merge-hermes-wiring.py"
 
 has_tg=0
 has_wa=0

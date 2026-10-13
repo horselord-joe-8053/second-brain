@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Backward-compatible entry: delegates to merge-hermes-wiring.py (MCP + platforms)."""
 from __future__ import annotations
 

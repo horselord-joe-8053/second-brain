@@ -4,7 +4,7 @@
 
 **Execute with:** [`implref`](../.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc) on **this file**. Do not run `bootstrap_seed/EXECUTE_GEN.md implementing` this plan. That command uses the kit this plan replaces and would write into `bootstrap/specific/`.
 
-**Canonical path:** `docs_manual_gen/REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`. On `implref` closeout, leave the file here. Do not `git mv` it to `cursor_gen/refactor_plans/`.
+**Canonical path:** `docs_manual_gen/ref_plan/completed/REFACTOR_BOOTSTRAP_SEED_THREE_ZONES.md`.
 
 <h2 id="document-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 

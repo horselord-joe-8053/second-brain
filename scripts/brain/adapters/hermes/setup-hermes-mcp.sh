@@ -25,7 +25,7 @@ if [[ ! -f "$MCP_JS" ]]; then
   exit 1
 fi
 
-python3 "$HERMES_AD/merge-hermes-wiring.py"
+"$ROOT/scripts/py" "$HERMES_AD/merge-hermes-wiring.py"
 
 echo "--- LLM Wiki API health ---"
 if curl -fsS -H "Authorization: Bearer ${LLM_WIKI_API_TOKEN}" \

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Verify enforced feature specs have matching test_ac_* tests (general project layout)."""
 
 from __future__ import annotations

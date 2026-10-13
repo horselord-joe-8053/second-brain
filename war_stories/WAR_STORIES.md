@@ -1,6 +1,6 @@
 <h1 id="war-stories-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">War stories — portable collection</h1>
 
-Lessons that travel across projects (RAG, eval, agent UX). Project-specific Samsung wiring also references **`docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`**.
+Lessons that travel across projects (RAG, eval, agent UX). Project-specific Samsung wiring also references **`docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`**.
 
 <h2 id="war-stories-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -9,6 +9,8 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 3. [Story 2 — Embed once, share vectors for A/B](#war-story-2)
 4. [Story 3 — Operator load: empty CSV timestamps and eval `.env` parity](#war-story-3)
 5. [Story 4 — Hybrid RRF beside RAG: BM25-class lexical + dense + fuse, not overlap hacks](#war-story-4)
+6. [Story 5 — Pin python3.12; do not call python3](#war-story-5)
+7. [Story 6 — One keyword switch, external engines stay optional](#war-story-6)
 
 ---
 
@@ -23,6 +25,8 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 <tr><td style="background:#e3f2fd">2</td><td><a href="#war-story-2">Embed the cabinet once; both A and B read the same stored vectors</a></td><td>Live models jitter; freeze docs and queries. Hash mock is for CI only.</td></tr>
 <tr><td style="background:#e3f2fd">3</td><td><a href="#war-story-3">Operator PG load: CSV null timestamps and eval `.env` parity</a></td><td>Empty CSV cells ≠ SQL NULL; embed script and eval must load the same `.env`.</td></tr>
 <tr><td style="background:#e3f2fd">4</td><td><a href="#war-story-4">Hybrid RRF beside RAG: inverted lexical + dense + fuse</a></td><td>Normalize index text once; vectors for paraphrase; reject O(n) overlap on condensed strings.</td></tr>
+<tr><td style="background:#e3f2fd">5</td><td><a href="#war-story-5">Pin python3.12; do not call python3</a></td><td>System python3 stays 3.9. A word-boundary match also hits python3.12.</td></tr>
+<tr><td style="background:#e3f2fd">6</td><td><a href="#war-story-6">One keyword switch, external engines stay optional</a></td><td>Default verify runs the embedded index. ParadeDB and OpenSearch are faked unless their URL is set.</td></tr>
 </tbody>
 </table>
 
@@ -171,7 +175,7 @@ def hash_embed(text: str, dims: int = 32) -> List[float]:
 5. Re-run is deterministic until model id, text prep, or stored vectors change.
 ```
 
-Today’s loader (`scripts/retail/embed_service_queries.py`) still calls `hash_embed` so local smoke tests need no API. **Promotion A/B** switches that step to a pinned live model with the store-once rule above; the hash path stays for tests that only prove wiring. Plan: `docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md` (decision on shared embeddings; role split of exam author vs search coder deferred to a later slice).
+Today’s loader (`scripts/retail/embed_service_queries.py`) still calls `hash_embed` so local smoke tests need no API. **Promotion A/B** switches that step to a pinned live model with the store-once rule above; the hash path stays for tests that only prove wiring. Plan: `docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md` (decision on shared embeddings; role split of exam author vs search coder deferred to a later slice).
 
 <h3 id="war-story-2-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">2.5 Takeaway</h3>
 
@@ -352,7 +356,7 @@ graph LR
   style TOP fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
 ```
 
-**Plan + parent link:** [`docs_manual_gen/REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](../docs_manual_gen/REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) under [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../docs_manual_gen/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) Phase 5.1.
+**Plan + parent link:** [`REFACTOR_RETAIL_RRF_STRIP_FLUFF.md`](../docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_RRF_STRIP_FLUFF.md) under [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) Phase 5.1.
 
 <h3 id="war-story-4-sec-6" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.6 Promotion rule (D6) unchanged</h3>
 
@@ -361,3 +365,80 @@ Turning hybrid on by default still requires **D6 (promotion rule: don’t enable
 <h3 id="war-story-4-sec-7" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">4.7 Takeaway</h3>
 
 **RAG over tickets is hybrid by default in mature systems:** dense for language variation, inverted lexical for tokens that actually appear, **RRF** to combine ranks without score calibration. Control **index text once** (finite strip + optional offline LLM enrich); let **vectors** carry live paraphrase. That is the course we ship on `feature/rrf-strip-fluff`—not query-time LLM fluff stripping and not O(n) overlap scans.
+
+---
+
+<h2 id="war-story-5" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">5. Pin python3.12; do not call python3</h2>
+
+**creation:** 261012-192500  
+**last_updated:** 261012-192500  
+**keywords:** python, cpython, abi, wheels, macos, path, scripts  
+**difficulty:** 4  
+**significance:** 7  
+
+<h3 id="war-story-5-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">5.1 Context</h3>
+
+A native search library published wheels for CPython 3.12 only. The Mac's `python3` was Apple's 3.9.6. Homebrew could not install 3.12: it saw an ancient Xcode and no longer ships Intel bottles.
+
+<h3 id="war-story-5-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">5.2 Root Cause</h3>
+
+`python3` is not a version pin. It is whatever is first on `PATH`, often the OS interpreter. A scanner that looks for the token `python3` with a word boundary also matches the start of `python3.12`, so a rename to the longer name still looks like the old command.
+
+<h3 id="war-story-5-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">5.3 Key Insight</h3>
+
+Call the minor version by name (`python3.12`) through one wrapper, and leave the system `python3` untouched. Install a relocatable CPython build when the package manager cannot bottle that ABI.
+
+<h3 id="war-story-5-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">5.4 Resolution</h3>
+
+`scripts/py` execs `python3.12` from `PATH` or `~/.local/bin`. Product shell scripts and shebangs use that wrapper or `python3.12`. The 3.12 tree is a python-build-standalone install under `~/.local/share/cpython-3.12`, not a replacement of `/usr/bin/python3`.
+
+```bash
+# second-brain · scripts/py
+exec python3.12 "$@"
+```
+
+Verified with `python3.12 -m pytest -q tests/` (64 passed before the keyword-index tests, then the full suite including them).
+
+<h3 id="war-story-5-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">5.5 Takeaway</h3>
+
+When a wheel exists for one ABI only, pin that interpreter by its full name and do not treat `python3` as “the Python we installed.”
+
+---
+
+<h2 id="war-story-6" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">6. One keyword switch, external engines stay optional</h2>
+
+**creation:** 261012-193000  
+**last_updated:** 261012-193000  
+**keywords:** design, system design, search, bm25, tantivy, opensearch, postgres  
+**difficulty:** 5  
+**significance:** 7  
+
+<h3 id="war-story-6-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">6.1 Context</h3>
+
+Ticket search needed several keyword engines (embedded Tantivy and bm25x, plus ParadeDB and OpenSearch) so production can change later and the repo can teach the differences. Postgres had to remain the ticket store.
+
+<h3 id="war-story-6-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">6.2 Root Cause</h3>
+
+An environment variable feels like a pure code switch, but ParadeDB is a different database image and OpenSearch is a separate Java process. Pointing the retail Postgres container at them would drop pgvector or add an always-on JVM. A doc sketch of a native library is also not a stable API until the installed wheel is inspected.
+
+<h3 id="war-story-6-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">6.3 Key Insight</h3>
+
+One protocol (`rebuild` + `search_ids`) can hide four clients. Default tests run only the in-process engine. External clients are real code paths with a fake cursor or fake HTTP transport. Missing index or URL raises; it does not fall back to full-text search and pretend the leg worked.
+
+<h3 id="war-story-6-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">6.4 Resolution</h3>
+
+`RETAIL_LEXICAL_BACKEND` defaults to `tantivy`. `lexical_ids()` delegates and no longer sends a tsquery. bm25x 0.3.1 accepts `BM25(index=..., method="lucene")` and `search(..., k=, subset=)`; ticket ids are stored beside the index in `tickets.json` because the extension's `load` does not return them. ParadeDB uses `RETAIL_PARADEDB_URL`. OpenSearch uses `RETAIL_OPENSEARCH_URL`.
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Backend</th><th>Unit test</th><th>Live service in verify</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">tantivy, bm25x</td><td style="background:#e8f5e9">Temp directory</td><td style="background:#e8f5e9">No</td></tr>
+<tr><td style="background:#e3f2fd">parade_db, open_search</td><td style="background:#fff3e0">Fake cursor / fake HTTP</td><td style="background:#ffebee">No, unless the URL is set outside verify</td></tr>
+</tbody>
+</table>
+
+<h3 id="war-story-6-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">6.5 Takeaway</h3>
+
+A config switch is honest only when the default path runs without the optional daemons, and a missing daemon fails loudly instead of silently searching the system of record with a different algorithm.

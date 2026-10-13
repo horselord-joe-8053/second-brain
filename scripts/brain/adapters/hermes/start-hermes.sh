@@ -54,7 +54,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 read_defaults() {
-  python3 - <<'PY' "$ROOT" "$PROVIDER" "$MODEL"
+  "$ROOT/scripts/py" - <<'PY' "$ROOT" "$PROVIDER" "$MODEL"
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(sys.argv[1]) / "scripts" / "brain"))

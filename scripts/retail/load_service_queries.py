@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Load service_queries.csv into retail Postgres (requires RETAIL_DATABASE_URL)."""
 
 from __future__ import annotations

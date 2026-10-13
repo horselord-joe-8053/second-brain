@@ -1,4 +1,4 @@
-"""Deterministic synthetic ticket and sales generation."""
+"""Deterministic synthetic ticket CSV generation (programmatic corpus for sim profile ``prag_gen``)."""
 
 from __future__ import annotations
 
@@ -14,6 +14,8 @@ from retail_brain.seed_narrative import format_stored_customer_query, narrative_
 
 @dataclass
 class TicketRecord:
+    """One synthetic service ticket row matching ``SERVICE_FIELDNAMES`` CSV shape."""
+
     ticket_id: str
     item_number: str
     store_id: str
@@ -45,6 +47,7 @@ SERVICE_FIELDNAMES = [
 
 
 def generate_tickets(*, count: int, seed: int = 42, market: str | None = None) -> List[TicketRecord]:
+    """Deterministically fabricate ``count`` tickets from ``narrative_parts``."""
     rows: List[TicketRecord] = []
     for i in range(count):
         parts = narrative_parts(seed=seed, index=i, market=market)
@@ -74,6 +77,7 @@ def generate_tickets(*, count: int, seed: int = 42, market: str | None = None) -
 
 
 def write_service_csv(path: Path, rows: List[TicketRecord]) -> None:
+    """Write ``service_queries``-shaped CSV for load scripts."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=SERVICE_FIELDNAMES)
@@ -83,6 +87,7 @@ def write_service_csv(path: Path, rows: List[TicketRecord]) -> None:
 
 
 def write_manifest(path: Path, rows: List[TicketRecord], *, seed: int) -> None:
+    """Write JSONL manifest (one object per line) for eval generation."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         for r in rows:
@@ -97,6 +102,7 @@ def write_manifest(path: Path, rows: List[TicketRecord], *, seed: int) -> None:
 
 
 def iter_manifest(path: Path) -> Iterator[dict]:
+    """Stream manifest JSONL records as dicts."""
     with path.open(encoding="utf-8") as f:
         for line in f:
             line = line.strip()

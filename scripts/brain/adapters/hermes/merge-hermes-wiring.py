@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Merge Second Brain MCP + optional messaging platforms into ~/.hermes/config.yaml."""
 from __future__ import annotations
 

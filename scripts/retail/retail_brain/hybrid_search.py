@@ -1,4 +1,11 @@
-"""Ticket search: vector leg, lexical leg, optional RRF (V1 / V1.x)."""
+"""Offline ticket search over in-memory ``TicketRow`` lists (CSV-backed tests).
+
+Mirrors ``pg_search`` fusion semantics but:
+  - Vectors: re-embed each candidate row per query (no pgvector index).
+  - Lexical: token overlap score, not Tantivy/bm25x — fast, deterministic in pytest.
+
+Use ``pg_search`` for Postgres-backed eval and production reload paths.
+"""
 
 from __future__ import annotations
 
@@ -21,6 +28,8 @@ from retail_brain.text_normalize import fts_query_text, search_text_for_fts, tex
 
 @dataclass
 class TicketRow:
+    """One resolved-ticket row for offline search (subset of PG ``service_queries`` columns)."""
+
     ticket_id: str
     model: str
     status: str
@@ -29,11 +38,12 @@ class TicketRow:
 
 
 def _tokenize(text: str) -> set[str]:
+    """Lowercase alphanumeric tokens for overlap scoring."""
     return set(re.findall(r"[a-z0-9]+", text.lower()))
 
 
 def lexical_score(query: str, document: str) -> float:
-    """Simple overlap score for tsvector-style leg (offline tests)."""
+    """Fraction of query tokens present in document — stand-in for BM25 in offline tests."""
     q = _tokenize(query)
     d = _tokenize(document)
     if not q:
@@ -48,6 +58,7 @@ def vector_rank(
     model_filter: Optional[str] = None,
     limit: int = 25,
 ) -> List[str]:
+    """Rank resolved tickets by embedding distance to the query (dense leg, in-memory)."""
     q_emb = embed_text(query, task_type="RETRIEVAL_QUERY")
     candidates = [
         r
@@ -74,6 +85,7 @@ def lexical_rank(
     model_filter: Optional[str] = None,
     limit: int = 25,
 ) -> List[str]:
+    """Rank resolved tickets by token overlap after ``fts_query_text`` normalization."""
     candidates = [
         r
         for r in rows
@@ -110,6 +122,7 @@ def _fuse(
     mode: str,
     limit: int,
 ) -> List[str]:
+    """RRF-merge vector and lexical lists with optional V1.3 diagnostic-code boost."""
     w_v, w_l = rrf_list_weights(mode)
     extra: Dict[str, float] = {}
     if code_boost_enabled(mode):
@@ -147,4 +160,5 @@ def search_ticket_ids(
 
 
 def row_by_id(rows: Sequence[TicketRow]) -> Dict[str, TicketRow]:
+    """Index ticket rows by ``ticket_id`` for sidecar hydration."""
     return {r.ticket_id: r for r in rows}

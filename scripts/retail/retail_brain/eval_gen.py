@@ -1,4 +1,8 @@
-"""Build eval JSONL from manifest with paraphrase queries (anti-leakage)."""
+"""Build eval JSONL from ticket manifest with paraphrase queries (anti-leakage).
+
+Eval ``query`` fields intentionally differ from stored ``customer_query_text`` so recall
+measures retrieval under wording shift, not exact string match.
+"""
 
 from __future__ import annotations
 
@@ -81,6 +85,7 @@ def build_eval_rows(manifest_path: Path, *, max_rows: int = 50) -> List[dict]:
 
 
 def write_eval_jsonl(path: Path, rows: List[dict]) -> None:
+    """Persist eval cases as UTF-8 JSONL."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         for row in rows:

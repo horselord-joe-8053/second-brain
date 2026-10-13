@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 """Generate synthetic service CSV + ticket manifest (deterministic seed)."""
 
 from __future__ import annotations

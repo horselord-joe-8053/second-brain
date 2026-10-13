@@ -27,11 +27,13 @@ def reciprocal_rank_fusion(
             scores[doc_id] = scores.get(doc_id, 0.0) + w * (1.0 / (k + rank))
     for doc_id, bump in (extra_score_by_id or {}).items():
         scores[doc_id] = scores.get(doc_id, 0.0) + float(bump)
+    # Tie-break: prefer higher lexical rank when RRF scores tie (stable, deterministic ids last).
     lex_rank: Dict[str, int] = {
         doc_id: rank for rank, doc_id in enumerate(lexical_rank_order or (), start=1)
     }
 
     def sort_key(item: Tuple[str, float]) -> Tuple[float, int, str]:
+        """Sort by descending RRF score, then lexical rank, then ticket id."""
         doc_id, score = item
         return (-score, lex_rank.get(doc_id, 10_000), doc_id)
 

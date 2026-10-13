@@ -1,4 +1,8 @@
-"""Deterministic customer-facing ticket prose (no operational IDs in text)."""
+"""Deterministic customer-facing ticket prose for seed and eval paraphrase templates.
+
+Stored tickets include market prefix + case ref; eval queries use separate templates so
+retrieval is tested on wording shift, not copy-paste of indexed text.
+"""
 
 from __future__ import annotations
 
@@ -50,6 +54,8 @@ _FIRST_NAMES: Tuple[str, ...] = (
 
 @dataclass(frozen=True)
 class NarrativeParts:
+    """Structured fields before formatting stored vs eval customer wording."""
+
     issue: str
     fix: str
     model: str
@@ -62,6 +68,7 @@ class NarrativeParts:
 
 
 def _rng(seed: int, index: int) -> random.Random:
+    """Stable RNG for a (seed, ticket index) pair."""
     return random.Random(f"{seed}:{index}")
 
 
@@ -118,6 +125,7 @@ def format_stored_customer_query(
 
 
 def format_eval_query(parts: NarrativeParts, *, market: str | None = None) -> str:
+    """Market exam-style query string (paraphrase stratum)."""
     tpl = market_profile(market)["eval_query_template"]
     return tpl.format(
         caller=parts.caller_name,
@@ -137,6 +145,7 @@ def format_eval_query_with_code(parts: NarrativeParts, *, market: str | None = N
 
 
 def ticket_index_from_id(ticket_id: str) -> int:
+    """Parse numeric suffix from ids like ``T-0042-000123``."""
     m = _TICKET_INDEX.search(ticket_id.strip())
     if not m:
         raise ValueError(f"cannot parse ticket index from {ticket_id!r}")
@@ -144,4 +153,5 @@ def ticket_index_from_id(ticket_id: str) -> int:
 
 
 def parts_for_ticket_id(ticket_id: str, *, seed: int, market: str | None = None) -> NarrativeParts:
+    """Reconstruct narrative parts for an existing ticket id."""
     return narrative_parts(seed=seed, index=ticket_index_from_id(ticket_id), market=market)
