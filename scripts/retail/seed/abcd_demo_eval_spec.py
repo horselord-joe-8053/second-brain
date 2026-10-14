@@ -1,4 +1,4 @@
-"""Frozen spec for ten eval rows that demo the A/B/C (V1→V1.2) hybrid ladder on llm_gen."""
+"""Frozen spec for ten eval rows that demo the A/B/C hybrid ladder on phone ``data_60_10`` (archive)."""
 
 from __future__ import annotations
 

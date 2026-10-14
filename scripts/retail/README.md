@@ -1,14 +1,18 @@
-# Samsung retail scripts
+# Fridges R Us (US) retail scripts
 
-- **`utils/retail_fru/`** (repo root) — **Gemini embeddings** + FRU sidecar contract; **no mock fallback**.
-- **`retail_brain/`** — seed, hybrid search, eval (import with `PYTHONPATH=scripts/retail` + repo root for `utils`).
-- **`seed/generate_tickets.py`** — synthetic CSV + manifest (**`rrf_data_prag_gen`** profile).
-- **`seed/generate_eval_from_manifest.py`** — strict eval JSONL (`expected_ticket_ids = [source]`).
-- **`retail_brain/sim_data_profile.py`** — **`RETAIL_SIM_DATA_PROFILE`**: `rrf_data_llm_gen_1k` (default, `sim_data/profiles/data_1000_100/`), `rrf_data_llm_gen_60_10` (alias `rrf_data_llm_gen`), vs `rrf_data_prag_gen` (`seed/generated/`). One profile active in Postgres at a time; **`reload_postgres_corpus.py`** TRUNCATE → load → embed.
-- **`seed/generate_llm_corpus_v2.py`** + **`seed/validate_llm_corpus.py`** — natural llm_gen corpus (60+10); validator runs in `verify-local.sh` when CSV present.
-- **`seed/llm_author_gold.py`** — **offline only** optional `acceptable_ticket_ids` (not runtime eval).
-- **`eval/eval_ticket_search.py`** — V1/V1.1 metrics (`RETAIL_TICKET_HYBRID_SEARCH`).
-- **`retail_brain/lexical_search/`** — keyword leg. `RETAIL_LEXICAL_BACKEND=tantivy` (default), `bm25x`, `parade_db`, or `open_search`. Postgres stays the ticket store. See that folder's README.
-- **`docker-compose.yml`** — optional Postgres + pgvector on port 5433.
+- **`utils/retail_fru/`** (repo root) — **Gemini embeddings** + sidecar contract; **no mock fallback** (→ `utils/pg_rag/` in product plan V5).
+- **`retail_brain/`** — hybrid search, eval, market profiles, **`fru_us_service.yaml`** loader.
+- **`config/fru_us_service.yaml`** — FRU models, issues, eval phrasing templates.
+- **`sim_data/profiles/fru_us_1000_100/`** — default **1000 + 100** corpus (`fru_us_1k`).
+- **`sim_data/profiles/data_*`** — **phone archive** (Samsung AU); profile ids `rrf_data_llm_gen_1k`, `rrf_data_llm_gen_60_10`.
+- **`retail_brain/sim_data_profile.py`** — **`RETAIL_SIM_DATA_PROFILE`** (default **`fru_us_1k`**). One profile active in Postgres at a time; **`reload_postgres_corpus.py`** TRUNCATE → load → embed.
+- **`seed/validate_llm_corpus.py`** — corpus validator (FRU + phone dirs).
+- **`eval/eval_ticket_search.py`** — A/B/C metrics; **`eval/check_abc_ladder.py`** — F15 gate.
+- **`retail_brain/lexical_search/`** — keyword leg. **`RETAIL_LEXICAL_BACKEND=tantivy`** (default for FRU ABC).
+- **`docker-compose.yml`** — Postgres + pgvector on port **5433**.
 
-Env (repo `.env`): `GEMINI_API_KEY`, `EMBEDDING_MODEL` (e.g. `gemini-embedding-2`); **`RETAIL_MARKET=AU|BR`** (default **AU** — drives synthetic copy, eval paraphrases, and Postgres `to_tsvector` / `plainto_tsquery` config); **`RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen|rrf_data_prag_gen`** (which CSV/eval/reports tree to use); `RETAIL_DATABASE_URL`, `RETAIL_TICKET_SEARCH_MODE` / `RETAIL_TICKET_HYBRID_SEARCH`, `RETAIL_SIDECAR_URL` (when HTTP sidecar is deployed).
+**Phone-era only (not default prep path):** `seed/generate_tickets.py`, `seed_narrative.py`, `abcd_demo_eval_spec.py`.
+
+Env (repo `.env`): `GEMINI_API_KEY`, `EMBEDDING_MODEL`; **`RETAIL_SIM_DATA_PROFILE=fru_us_1k`**; **`RETAIL_MARKET=US`**; **`RETAIL_FAULT_CODE_PREFIX=FRU-E`**; `RETAIL_DATABASE_URL`; `RETAIL_TICKET_SEARCH_MODE` (`vector_only` | `rrf_normal` | `rrf_term_boosted`); `RETAIL_LEXICAL_BACKEND=tantivy`.
+
+Operator prep: `cursor_gen/retail_v11_prep/03_pg_up_and_load.sh`, `05_run_abc_postgres.sh`. Spec: [`docs/specs/fru-us-service-synthetic-data.md`](../../docs/specs/fru-us-service-synthetic-data.md).

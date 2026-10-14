@@ -65,6 +65,7 @@ def main() -> None:
     else:
         report = run_eval(tickets_csv=tickets_csv, eval_jsonl=eval_jsonl)
     report.update(prof.as_report_fields())
+    report["lexical_backend"] = os.environ.get("RETAIL_LEXICAL_BACKEND") or "unknown"
     write_report(args.report, report)
     extra = ""
     if "acceptable_recall_at_1" in report:

@@ -1,7 +1,7 @@
 <h1 id="v1x-plan" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: retail ticket search V1.1 → V1.3 (RRF modes + production lexical)</h1>
 
 **Status:** **completed (historical)** — four-mode implementation; **superseded** by [`REFACTOR_RETAIL_SEARCH_THREE_MODES.md`](REFACTOR_RETAIL_SEARCH_THREE_MODES.md) (2026-10-14).  
-**Parent:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) · **Article:** [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md)  
+**Parent:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) · **Article:** [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md)  
 **Execute with:** [`implreftdd`](../../../.cursor/rules/tdd/implreftdd-resumimpl-refactor-plan-followthrough.mdc)
 
 <h2 id="v1x-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
@@ -77,7 +77,7 @@
 <h2 id="6-phase-e" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Phase E — operator + docs</h2>
 
 - [ ] Regen if needed: `02` → `03` → new **`05_run_abcd_postgres.sh`** (or extend `04`).
-- [ ] Update `phase6_operator_log.md`, [`ABOUT_SEARCH_RRF.md`](../../../docs_manual_gen/artifacts/ABOUT_SEARCH_RRF.md) §7.2.
+- [ ] Update `phase6_operator_log.md`, [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../../docs_manual_gen/artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md) §7.2.
 - [ ] **`docs/specs/samsung-retail-synthetic-data.md`:** V1.1 lexical policy one paragraph.
 
 ---

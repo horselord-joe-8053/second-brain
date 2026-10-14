@@ -10,7 +10,7 @@ from sim_data.generation.catalog import CITIES, DETAIL_SLOTS, ISSUES, MODELS
 
 @dataclass
 class TicketRow:
-    """One historical service_queries row plus SAM-E metadata."""
+    """One historical service_queries row plus diagnostic-code metadata."""
 
     ticket_id: str
     item_number: str
@@ -27,6 +27,9 @@ class TicketRow:
     has_sam_e: bool
     sam_e: str | None
     issue_index: int
+    customer_id: str | None = None
+    issue_key: str | None = None
+    fault_code: str | None = None
 
 
 def sam_code(n: int) -> str:

@@ -16,6 +16,7 @@ class ProfileGenSpec:
     eval_code: int
     seed: int
     skip_regen: bool = False
+    fru: bool = False
 
 
 PROFILE_SPECS: dict[str, ProfileGenSpec] = {
@@ -35,5 +36,14 @@ PROFILE_SPECS: dict[str, ProfileGenSpec] = {
         eval_hybrid=30,
         eval_code=20,
         seed=20261014,
+    ),
+    "fru_us_1000_100": ProfileGenSpec(
+        dir_name="fru_us_1000_100",
+        historical_count=1000,
+        eval_paraphrase=50,
+        eval_hybrid=30,
+        eval_code=20,
+        seed=20261015,
+        fru=True,
     ),
 }

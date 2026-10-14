@@ -1,6 +1,8 @@
-<h1 id="hermes-prep-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Hermes prompt — retail PDFs → LLM Wiki</h1>
+<h1 id="hermes-prep-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Hermes prompt — retail PDFs → LLM Wiki (legacy monolith)</h1>
 
-Copy everything inside the fenced block below into **Hermes Desktop** (after running `01_copy_manuals.sh`).
+<p><strong>Superseded:</strong> use <a href="./HERMES_WIKI_OPERATOR.md">HERMES_WIKI_OPERATOR.md</a> (FRU fridge paths) and <a href="./CURSOR_PREP_RUNBOOK.md">CURSOR_PREP_RUNBOOK.md</a> (Postgres ABC).</p>
+
+Copy everything inside the fenced block below into **Hermes Desktop** (after running `01_copy_manuals.sh`) — **Samsung phone paths only (archive)**.
 
 ```text
 You are on my Mac helping finish Samsung retail Second Brain prep. Repo: /Users/jjw8053/projects/second_brain.

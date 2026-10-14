@@ -1,5 +1,6 @@
 """Deterministic customer-facing ticket prose for seed and eval paraphrase templates.
 
+Phone-era (AU Galaxy) path for ``rrf_data_prag_gen`` — not used by default ``fru_us_1k`` corpus.
 Stored tickets include market prefix + case ref; eval queries use separate templates so
 retrieval is tested on wording shift, not copy-paste of indexed text.
 """

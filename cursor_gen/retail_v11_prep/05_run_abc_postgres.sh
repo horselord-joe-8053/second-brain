@@ -3,6 +3,7 @@ set -euo pipefail
 PREP_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$PREP_DIR/../.." && pwd)"
 export RETAIL_DATABASE_URL="${RETAIL_DATABASE_URL:-postgresql://retail:retail@127.0.0.1:5433/retail}"
+export RETAIL_LEXICAL_BACKEND="${RETAIL_LEXICAL_BACKEND:-tantivy}"
 export PYTHONPATH="$ROOT/scripts/retail${PYTHONPATH:+:$PYTHONPATH}"
 
 # shellcheck source=cursor_gen/retail_v11_prep/lib/sim_data_profile_env.sh
@@ -24,3 +25,4 @@ run_mode rrf_normal "$RETAIL_SIM_REPORTS_DIR/pg_ab_v1_1_normal.json"
 run_mode rrf_term_boosted "$RETAIL_SIM_REPORTS_DIR/pg_ab_v1_2_term_boosted.json"
 
 echo "A/B/C reports [sim_data_profile=${RETAIL_SIM_DATA_PROFILE}] under $RETAIL_SIM_REPORTS_DIR"
+"$ROOT/scripts/py" "$ROOT/scripts/retail/eval/check_abc_ladder.py" --reports-dir "$RETAIL_SIM_REPORTS_DIR"

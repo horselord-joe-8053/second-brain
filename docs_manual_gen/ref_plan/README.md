@@ -12,6 +12,13 @@ Retail and Samsung service-brain plans live here instead of scattered under `doc
 
 **Execute:** `qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_….md` (or **`wip/`** path when resuming).
 
-**Article (not a plan):** [`../artifacts/ABOUT_SEARCH_RRF.md`](../artifacts/ABOUT_SEARCH_RRF.md).
+| Active plan | Folder | Role |
+|-------------|--------|------|
+| [`REFACTOR_FRU_US_SERVICE_BRAIN.md`](./completed/REFACTOR_FRU_US_SERVICE_BRAIN.md) | **completed** | FRU corpus + ABC (1k / Tantivy ladder) |
+| [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](./wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md) | **wip** | Product path: wiki + operator + agent loop (V2–V5) |
+| [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](./completed/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) | **completed** | Phone-era master (phases 0–7); reference for V2–V5 |
+| [`REFACTOR_RETAIL_SIM_DATA_SCALE_1K.md`](./completed/REFACTOR_RETAIL_SIM_DATA_SCALE_1K.md) | **completed** | Phone 60/10 → 1000/100 archive |
+
+**Article (not a plan):** [`../artifacts/ABOUT_SEARCH_RRF_FRU.md`](../artifacts/ABOUT_SEARCH_RRF_FRU.md).
 
 **Legacy pointer:** `cursor_gen/refactor_plans/` may hold stubs; canonical retail plans are under this tree.

@@ -1,0 +1,150 @@
+{"customer_id": "CUST001", "fridge_model": "RF28K9070SG", "store_name": "New York Store", "city": "New York", "state": "NY", "sales_date": "2024-01-15"}
+{"customer_id": "CUST005", "fridge_model": "RF28K9070SG", "store_name": "Miami Store", "city": "Miami", "state": "FL", "sales_date": "2024-01-19"}
+{"customer_id": "CUST009", "fridge_model": "RF28K9070SG", "store_name": "Phoenix Store", "city": "Phoenix", "state": "AZ", "sales_date": "2024-01-23"}
+{"customer_id": "CUST013", "fridge_model": "RF28K9070SG", "store_name": "San Francisco Store", "city": "San Francisco", "state": "CA", "sales_date": "2024-01-27"}
+{"customer_id": "CUST017", "fridge_model": "RF28K9070SG", "store_name": "Las Vegas Store", "city": "Las Vegas", "state": "NV", "sales_date": "2024-01-31"}
+{"customer_id": "CUST021", "fridge_model": "RF28K9070SG", "store_name": "Cleveland Store", "city": "Cleveland", "state": "OH", "sales_date": "2024-02-04"}
+{"customer_id": "CUST025", "fridge_model": "RF28K9070SG", "store_name": "Columbus Store", "city": "Columbus", "state": "OH", "sales_date": "2024-02-08"}
+{"customer_id": "CUST029", "fridge_model": "RF28K9070SG", "store_name": "Tucson Store", "city": "Tucson", "state": "AZ", "sales_date": "2024-02-12"}
+{"customer_id": "CUST033", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-02-16"}
+{"customer_id": "CUST037", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-02-20"}
+{"customer_id": "CUST041", "fridge_model": "RF28K9070SG", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-02-24"}
+{"customer_id": "CUST045", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-02-28"}
+{"customer_id": "CUST049", "fridge_model": "RF28K9070SG", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-03-03"}
+{"customer_id": "CUST053", "fridge_model": "RF28K9070SG", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-03-07"}
+{"customer_id": "CUST057", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-03-11"}
+{"customer_id": "CUST061", "fridge_model": "RF28K9070SG", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-03-15"}
+{"customer_id": "CUST065", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-03-19"}
+{"customer_id": "CUST069", "fridge_model": "RF28K9070SG", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-03-23"}
+{"customer_id": "CUST073", "fridge_model": "RF28K9070SG", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-03-27"}
+{"customer_id": "CUST077", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-03-31"}
+{"customer_id": "CUST081", "fridge_model": "RF28K9070SG", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-04-04"}
+{"customer_id": "CUST085", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-04-08"}
+{"customer_id": "CUST089", "fridge_model": "RF28K9070SG", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-04-12"}
+{"customer_id": "CUST093", "fridge_model": "RF28K9070SG", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-04-16"}
+{"customer_id": "CUST097", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-04-20"}
+{"customer_id": "CUST101", "fridge_model": "RF28K9070SG", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-04-24"}
+{"customer_id": "CUST105", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-04-28"}
+{"customer_id": "CUST109", "fridge_model": "RF28K9070SG", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-05-02"}
+{"customer_id": "CUST113", "fridge_model": "RF28K9070SG", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-05-06"}
+{"customer_id": "CUST117", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-05-10"}
+{"customer_id": "CUST121", "fridge_model": "RF28K9070SG", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-05-14"}
+{"customer_id": "CUST125", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-05-18"}
+{"customer_id": "CUST129", "fridge_model": "RF28K9070SG", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-05-22"}
+{"customer_id": "CUST133", "fridge_model": "RF28K9070SG", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-05-26"}
+{"customer_id": "CUST137", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-05-30"}
+{"customer_id": "CUST141", "fridge_model": "RF28K9070SG", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-06-03"}
+{"customer_id": "CUST145", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-06-07"}
+{"customer_id": "CUST149", "fridge_model": "RF28K9070SG", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-06-11"}
+{"customer_id": "CUST153", "fridge_model": "RF28K9070SG", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-06-15"}
+{"customer_id": "CUST157", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-06-19"}
+{"customer_id": "CUST161", "fridge_model": "RF28K9070SG", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-06-23"}
+{"customer_id": "CUST165", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-06-27"}
+{"customer_id": "CUST169", "fridge_model": "RF28K9070SG", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-07-01"}
+{"customer_id": "CUST173", "fridge_model": "RF28K9070SG", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-07-05"}
+{"customer_id": "CUST177", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-07-09"}
+{"customer_id": "CUST181", "fridge_model": "RF28K9070SG", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-07-13"}
+{"customer_id": "CUST185", "fridge_model": "RF28K9070SG", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-07-17"}
+{"customer_id": "CUST189", "fridge_model": "RF28K9070SG", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-07-21"}
+{"customer_id": "CUST193", "fridge_model": "RF28K9070SG", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-07-25"}
+{"customer_id": "CUST197", "fridge_model": "RF28K9070SG", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-07-29"}
+{"customer_id": "CUST002", "fridge_model": "GNE27JYMFS", "store_name": "Chicago Store", "city": "Chicago", "state": "IL", "sales_date": "2024-01-16"}
+{"customer_id": "CUST006", "fridge_model": "GNE27JYMFS", "store_name": "Seattle Store", "city": "Seattle", "state": "WA", "sales_date": "2024-01-20"}
+{"customer_id": "CUST010", "fridge_model": "GNE27JYMFS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-01-24"}
+{"customer_id": "CUST014", "fridge_model": "GNE27JYMFS", "store_name": "Dallas Store", "city": "Dallas", "state": "TX", "sales_date": "2024-01-28"}
+{"customer_id": "CUST018", "fridge_model": "GNE27JYMFS", "store_name": "Minneapolis Store", "city": "Minneapolis", "state": "MN", "sales_date": "2024-02-01"}
+{"customer_id": "CUST022", "fridge_model": "GNE27JYMFS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-02-05"}
+{"customer_id": "CUST026", "fridge_model": "GNE27JYMFS", "store_name": "Charlotte Store", "city": "Charlotte", "state": "NC", "sales_date": "2024-02-09"}
+{"customer_id": "CUST030", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-02-13"}
+{"customer_id": "CUST034", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-02-17"}
+{"customer_id": "CUST038", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-02-21"}
+{"customer_id": "CUST042", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-02-25"}
+{"customer_id": "CUST046", "fridge_model": "GNE27JYMFS", "store_name": "Long Beach Store", "city": "Long Beach", "state": "CA", "sales_date": "2024-02-29"}
+{"customer_id": "CUST050", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-03-04"}
+{"customer_id": "CUST054", "fridge_model": "GNE27JYMFS", "store_name": "Oakland Store", "city": "Oakland", "state": "CA", "sales_date": "2024-03-08"}
+{"customer_id": "CUST058", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-03-12"}
+{"customer_id": "CUST062", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-03-16"}
+{"customer_id": "CUST066", "fridge_model": "GNE27JYMFS", "store_name": "Long Beach Store", "city": "Long Beach", "state": "CA", "sales_date": "2024-03-20"}
+{"customer_id": "CUST070", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-03-24"}
+{"customer_id": "CUST074", "fridge_model": "GNE27JYMFS", "store_name": "Oakland Store", "city": "Oakland", "state": "CA", "sales_date": "2024-03-28"}
+{"customer_id": "CUST078", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-04-01"}
+{"customer_id": "CUST082", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-04-05"}
+{"customer_id": "CUST086", "fridge_model": "GNE27JYMFS", "store_name": "Long Beach Store", "city": "Long Beach", "state": "CA", "sales_date": "2024-04-09"}
+{"customer_id": "CUST090", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-04-13"}
+{"customer_id": "CUST094", "fridge_model": "GNE27JYMFS", "store_name": "Oakland Store", "city": "Oakland", "state": "CA", "sales_date": "2024-04-17"}
+{"customer_id": "CUST098", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-04-21"}
+{"customer_id": "CUST102", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-04-25"}
+{"customer_id": "CUST106", "fridge_model": "GNE27JYMFS", "store_name": "Long Beach Store", "city": "Long Beach", "state": "CA", "sales_date": "2024-04-29"}
+{"customer_id": "CUST110", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-05-03"}
+{"customer_id": "CUST114", "fridge_model": "GNE27JYMFS", "store_name": "Oakland Store", "city": "Oakland", "state": "CA", "sales_date": "2024-05-07"}
+{"customer_id": "CUST118", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-05-11"}
+{"customer_id": "CUST122", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-05-15"}
+{"customer_id": "CUST126", "fridge_model": "GNE27JYMFS", "store_name": "Long Beach Store", "city": "Long Beach", "state": "CA", "sales_date": "2024-05-19"}
+{"customer_id": "CUST130", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-05-23"}
+{"customer_id": "CUST134", "fridge_model": "GNE27JYMFS", "store_name": "Oakland Store", "city": "Oakland", "state": "CA", "sales_date": "2024-05-27"}
+{"customer_id": "CUST138", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-05-31"}
+{"customer_id": "CUST142", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-06-04"}
+{"customer_id": "CUST146", "fridge_model": "GNE27JYMFS", "store_name": "Long Beach Store", "city": "Long Beach", "state": "CA", "sales_date": "2024-06-08"}
+{"customer_id": "CUST150", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-06-12"}
+{"customer_id": "CUST154", "fridge_model": "GNE27JYMFS", "store_name": "Oakland Store", "city": "Oakland", "state": "CA", "sales_date": "2024-06-16"}
+{"customer_id": "CUST158", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-06-20"}
+{"customer_id": "CUST162", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-06-24"}
+{"customer_id": "CUST166", "fridge_model": "GNE27JYMFS", "store_name": "Long Beach Store", "city": "Long Beach", "state": "CA", "sales_date": "2024-06-28"}
+{"customer_id": "CUST170", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-07-02"}
+{"customer_id": "CUST174", "fridge_model": "GNE27JYMFS", "store_name": "Oakland Store", "city": "Oakland", "state": "CA", "sales_date": "2024-07-06"}
+{"customer_id": "CUST178", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-07-10"}
+{"customer_id": "CUST182", "fridge_model": "GNE27JYMFS", "store_name": "Omaha Store", "city": "Omaha", "state": "NE", "sales_date": "2024-07-14"}
+{"customer_id": "CUST186", "fridge_model": "GNE27JYMFS", "store_name": "Long Beach Store", "city": "Long Beach", "state": "CA", "sales_date": "2024-07-18"}
+{"customer_id": "CUST190", "fridge_model": "GNE27JYMFS", "store_name": "Mesa Store", "city": "Mesa", "state": "AZ", "sales_date": "2024-07-22"}
+{"customer_id": "CUST194", "fridge_model": "GNE27JYMFS", "store_name": "Oakland Store", "city": "Oakland", "state": "CA", "sales_date": "2024-07-26"}
+{"customer_id": "CUST198", "fridge_model": "GNE27JYMFS", "store_name": "Sacramento Store", "city": "Sacramento", "state": "CA", "sales_date": "2024-07-30"}
+{"customer_id": "CUST003", "fridge_model": "KRFF507HPS", "store_name": "Los Angeles Store", "city": "Los Angeles", "state": "CA", "sales_date": "2024-01-17"}
+{"customer_id": "CUST007", "fridge_model": "KRFF507HPS", "store_name": "Boston Store", "city": "Boston", "state": "MA", "sales_date": "2024-01-21"}
+{"customer_id": "CUST011", "fridge_model": "KRFF507HPS", "store_name": "Detroit Store", "city": "Detroit", "state": "MI", "sales_date": "2024-01-25"}
+{"customer_id": "CUST015", "fridge_model": "KRFF507HPS", "store_name": "Philadelphia Store", "city": "Philadelphia", "state": "PA", "sales_date": "2024-01-29"}
+{"customer_id": "CUST019", "fridge_model": "KRFF507HPS", "store_name": "Tampa Store", "city": "Tampa", "state": "FL", "sales_date": "2024-02-02"}
+{"customer_id": "CUST023", "fridge_model": "KRFF507HPS", "store_name": "Nashville Store", "city": "Nashville", "state": "TN", "sales_date": "2024-02-06"}
+{"customer_id": "CUST027", "fridge_model": "KRFF507HPS", "store_name": "Milwaukee Store", "city": "Milwaukee", "state": "WI", "sales_date": "2024-02-10"}
+{"customer_id": "CUST031", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-02-14"}
+{"customer_id": "CUST035", "fridge_model": "KRFF507HPS", "store_name": "Miami Store", "city": "Miami", "state": "FL", "sales_date": "2024-02-18"}
+{"customer_id": "CUST039", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-02-22"}
+{"customer_id": "CUST043", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-02-26"}
+{"customer_id": "CUST047", "fridge_model": "KRFF507HPS", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-03-01"}
+{"customer_id": "CUST051", "fridge_model": "KRFF507HPS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-03-05"}
+{"customer_id": "CUST055", "fridge_model": "KRFF507HPS", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-03-09"}
+{"customer_id": "CUST059", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-03-13"}
+{"customer_id": "CUST063", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-03-17"}
+{"customer_id": "CUST067", "fridge_model": "KRFF507HPS", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-03-21"}
+{"customer_id": "CUST071", "fridge_model": "KRFF507HPS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-03-25"}
+{"customer_id": "CUST075", "fridge_model": "KRFF507HPS", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-03-29"}
+{"customer_id": "CUST079", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-04-02"}
+{"customer_id": "CUST083", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-04-06"}
+{"customer_id": "CUST087", "fridge_model": "KRFF507HPS", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-04-10"}
+{"customer_id": "CUST091", "fridge_model": "KRFF507HPS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-04-14"}
+{"customer_id": "CUST095", "fridge_model": "KRFF507HPS", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-04-18"}
+{"customer_id": "CUST099", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-04-22"}
+{"customer_id": "CUST103", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-04-26"}
+{"customer_id": "CUST107", "fridge_model": "KRFF507HPS", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-04-30"}
+{"customer_id": "CUST111", "fridge_model": "KRFF507HPS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-05-04"}
+{"customer_id": "CUST115", "fridge_model": "KRFF507HPS", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-05-08"}
+{"customer_id": "CUST119", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-05-12"}
+{"customer_id": "CUST123", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-05-16"}
+{"customer_id": "CUST127", "fridge_model": "KRFF507HPS", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-05-20"}
+{"customer_id": "CUST131", "fridge_model": "KRFF507HPS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-05-24"}
+{"customer_id": "CUST135", "fridge_model": "KRFF507HPS", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-05-28"}
+{"customer_id": "CUST139", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-06-01"}
+{"customer_id": "CUST143", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-06-05"}
+{"customer_id": "CUST147", "fridge_model": "KRFF507HPS", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-06-09"}
+{"customer_id": "CUST151", "fridge_model": "KRFF507HPS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-06-13"}
+{"customer_id": "CUST155", "fridge_model": "KRFF507HPS", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-06-17"}
+{"customer_id": "CUST159", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-06-21"}
+{"customer_id": "CUST163", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-06-25"}
+{"customer_id": "CUST167", "fridge_model": "KRFF507HPS", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-06-29"}
+{"customer_id": "CUST171", "fridge_model": "KRFF507HPS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-07-03"}
+{"customer_id": "CUST175", "fridge_model": "KRFF507HPS", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-07-07"}
+{"customer_id": "CUST179", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-07-11"}
+{"customer_id": "CUST183", "fridge_model": "KRFF507HPS", "store_name": "Virginia Beach Store", "city": "Virginia Beach", "state": "VA", "sales_date": "2024-07-15"}
+{"customer_id": "CUST187", "fridge_model": "KRFF507HPS", "store_name": "Colorado Springs Store", "city": "Colorado Springs", "state": "CO", "sales_date": "2024-07-19"}
+{"customer_id": "CUST191", "fridge_model": "KRFF507HPS", "store_name": "Atlanta Store", "city": "Atlanta", "state": "GA", "sales_date": "2024-07-23"}
+{"customer_id": "CUST195", "fridge_model": "KRFF507HPS", "store_name": "Raleigh Store", "city": "Raleigh", "state": "NC", "sales_date": "2024-07-27"}
+{"customer_id": "CUST199", "fridge_model": "KRFF507HPS", "store_name": "Kansas City Store", "city": "Kansas City", "state": "MO", "sales_date": "2024-07-31"}

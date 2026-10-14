@@ -353,6 +353,20 @@ Also runs at the start of **`./scripts/brain/setup-local.sh`**. **Does not** wri
 
 Checklist mirror: [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](../docs/ACCEPTANCE-second-brain-hermes-v1.md). Plan exit: [`seed_grow/plans/second-brain-hermes-v1-plan.md`](../seed_grow/plans/second-brain-hermes-v1-plan.md) **P8**.
 
+<h2 id="retail-fru" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">16. FRU US retail ticket brain (Postgres + Tantivy)</h2>
+
+Default sim corpus **`fru_us_1k`** (`scripts/retail/sim_data/profiles/fru_us_1000_100/`). LLM Wiki project for manuals: **`…/second_brain/brain/retail`** (PDFs under `raw/sources/fridge-docs/`).
+
+```bash
+cd /Users/jjw8053/projects/second_brain
+export RETAIL_SIM_DATA_PROFILE=fru_us_1k RETAIL_MARKET=US RETAIL_FAULT_CODE_PREFIX=FRU-E RETAIL_LEXICAL_BACKEND=tantivy
+bash cursor_gen/retail_v11_prep/00_docker_ensure.sh
+bash cursor_gen/retail_v11_prep/03_pg_up_and_load.sh
+bash cursor_gen/retail_v11_prep/05_run_abc_postgres.sh
+```
+
+Spec: [`docs/specs/fru-us-service-synthetic-data.md`](../docs/specs/fru-us-service-synthetic-data.md). Prep split: [`cursor_gen/retail_v11_prep/CURSOR_PREP_RUNBOOK.md`](../cursor_gen/retail_v11_prep/CURSOR_PREP_RUNBOOK.md) · [`HERMES_WIKI_OPERATOR.md`](../cursor_gen/retail_v11_prep/HERMES_WIKI_OPERATOR.md).
+
 <h2 id="future-script" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Idempotent driver</h2>
 
 **In repo:** [`scripts/brain/setup-local.sh`](../scripts/brain/setup-local.sh) — shared stack + **`adapters/<active_harness>/setup-harness.sh`**, Obsidian hint, optional **`RUN_BRAIN_ACCEPTANCE=1`** (Hermes: [`acceptance-automated.sh`](../scripts/brain/adapters/hermes/acceptance-automated.sh)).

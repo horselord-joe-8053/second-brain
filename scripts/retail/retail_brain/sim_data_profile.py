@@ -16,14 +16,16 @@ RRF_DATA_PRAG_GEN = "rrf_data_prag_gen"
 RRF_DATA_LLM_GEN = "rrf_data_llm_gen"
 RRF_DATA_LLM_GEN_60_10 = "rrf_data_llm_gen_60_10"
 RRF_DATA_LLM_GEN_1K = "rrf_data_llm_gen_1k"
+FRU_US_1K = "fru_us_1k"
 
-DEFAULT_PROFILE = RRF_DATA_LLM_GEN_1K
+DEFAULT_PROFILE = FRU_US_1K
 
 VALID_PROFILES = (
     RRF_DATA_PRAG_GEN,
     RRF_DATA_LLM_GEN,
     RRF_DATA_LLM_GEN_60_10,
     RRF_DATA_LLM_GEN_1K,
+    FRU_US_1K,
 )
 
 
@@ -83,6 +85,7 @@ def _profiles(root: Path) -> Mapping[str, SimDataProfile]:
     """Static registry of prag vs LLM corpus path bundles."""
     p60 = _sim_profiles_root(root) / "data_60_10"
     p1k = _sim_profiles_root(root) / "data_1000_100"
+    pfru = _sim_profiles_root(root) / "fru_us_1000_100"
     mini = SimDataProfile(
         profile_id=RRF_DATA_LLM_GEN_60_10,
         label="LLM corpus 60 historical + 10 ABC eval (data_60_10)",
@@ -99,6 +102,14 @@ def _profiles(root: Path) -> Mapping[str, SimDataProfile]:
         reports_dir=p1k / "reports",
         ticket_manifest_jsonl=p1k / "ticket_manifest.jsonl",
     )
+    fru = SimDataProfile(
+        profile_id=FRU_US_1K,
+        label="FRU US corpus 1000 historical + 100 ABC eval (fru_us_1000_100)",
+        service_queries_csv=pfru / "service_queries.csv",
+        eval_jsonl=pfru / "ticket_retrieval.jsonl",
+        reports_dir=pfru / "reports",
+        ticket_manifest_jsonl=pfru / "ticket_manifest.jsonl",
+    )
     return {
         RRF_DATA_PRAG_GEN: SimDataProfile(
             profile_id=RRF_DATA_PRAG_GEN,
@@ -111,11 +122,12 @@ def _profiles(root: Path) -> Mapping[str, SimDataProfile]:
         RRF_DATA_LLM_GEN_60_10: mini,
         RRF_DATA_LLM_GEN: mini,
         RRF_DATA_LLM_GEN_1K: large,
+        FRU_US_1K: fru,
     }
 
 
 def resolve_sim_data_profile(name: str | None = None) -> SimDataProfile:
-    """RETAIL_SIM_DATA_PROFILE env; default rrf_data_llm_gen_1k."""
+    """RETAIL_SIM_DATA_PROFILE env; default fru_us_1k."""
     raw = (name or os.environ.get("RETAIL_SIM_DATA_PROFILE") or DEFAULT_PROFILE).strip()
     if raw not in VALID_PROFILES:
         raise ValueError(

@@ -103,7 +103,7 @@ Run **V1 / V1.1 / V1.2 / V1.3** A/B/C/D on **`rrf_data_llm_gen`** while treating
 
 - `RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen` → load + `05_run_abcd_postgres.sh`.
 - Write reports under `tmp/simulated_data/reports/`; append summary to `phase6_operator_log.md` (profile + lexical_nonempty + by-stratum).
-- Update [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) §13 with **honest** narrative (no “demo twin” assumption for llm profile).
+- Update [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md) §13 with **honest** narrative (no “demo twin” assumption for llm profile).
 
 **Exit:** four JSON reports; stratum table recorded; no gold edits after run.
 
@@ -112,7 +112,7 @@ Run **V1 / V1.1 / V1.2 / V1.3** A/B/C/D on **`rrf_data_llm_gen`** while treating
 **Superseded by:** [`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](./REFACTOR_RETAIL_LEXICAL_BACKENDS.md) (P1–P8 complete — same folder).
 
 - **Shipped:** `RETAIL_LEXICAL_BACKEND` default **`tantivy`**; alternates **bm25x**, **parade_db**, **open_search**; Postgres FTS **removed** from `lexical_ids()`.
-- **Not chosen:** Qdrant hybrid (dense stays pgvector); “softened FTS only” (failed honest A/B — see [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) §11.4.1).
+- **Not chosen:** Qdrant hybrid (dense stays pgvector); “softened FTS only” (failed honest A/B — see [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md) §11.4.1).
 - **Follow-on eval (separate plan):** [`REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md`](REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md) — natural stress rows so hybrid A/B is meaningful on llm_gen.
 
 ---

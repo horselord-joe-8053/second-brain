@@ -34,9 +34,11 @@ test -f "$RETAIL_SIM_CSV" || {
   exit 1
 }
 
-export RETAIL_MARKET="${RETAIL_MARKET:-AU}"
+export RETAIL_MARKET="${RETAIL_MARKET:-US}"
+export RETAIL_FAULT_CODE_PREFIX="${RETAIL_FAULT_CODE_PREFIX:-FRU-E}"
 echo "03: apply schema migrations (idempotent)..."
 docker compose exec -T retail_pg psql -U retail -d retail -f - < "$ROOT/scripts/retail/schema/002_search_text.sql"
+docker compose exec -T retail_pg psql -U retail -d retail -f - < "$ROOT/scripts/retail/schema/004_customer_id.sql"
 
 export PYTHONPATH="$ROOT:$ROOT/scripts/retail${PYTHONPATH:+:$PYTHONPATH}"
 "$ROOT/scripts/py" "$ROOT/scripts/retail/reload_postgres_corpus.py"

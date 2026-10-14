@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS retail_sales (
 
 CREATE TABLE IF NOT EXISTS service_queries (
   ticket_id TEXT PRIMARY KEY,
+  customer_id TEXT,
   item_number TEXT NOT NULL,
   store_id TEXT NOT NULL,
   city TEXT NOT NULL,
@@ -28,6 +29,8 @@ CREATE TABLE IF NOT EXISTS service_queries (
   query_embedding vector(768),
   query_tsv tsvector
 );
+
+ALTER TABLE service_queries ADD COLUMN IF NOT EXISTS customer_id TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_service_queries_status ON service_queries (status);
 CREATE INDEX IF NOT EXISTS idx_service_queries_model ON service_queries (model);

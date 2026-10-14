@@ -69,6 +69,35 @@ _PROFILES: Dict[MarketCode, Dict[str, Any]] = {
             ),
         ],
     },
+    "US": {
+        "label": "United States",
+        "bcp47": "en-US",
+        "pg_ts_config": "english",
+        "customer_query_prefix": "Customer reports: ",
+        "paraphrase_template": "Need help: caller says {core} (ref {ref})",
+        "eval_query_template": (
+            "Need help: {caller} in {city} with a {model} — {issue}. {detail}"
+        ),
+        "cities": [
+            ("New York", "NY"),
+            ("Chicago", "IL"),
+            ("Los Angeles", "CA"),
+        ],
+        "issues": [
+            (
+                "ice maker stopped producing cubes",
+                "Cleared jammed auger and reset ice maker module.",
+            ),
+            (
+                "refrigerator water dispenser runs very slowly",
+                "Replaced clogged inline filter and flushed water line.",
+            ),
+            (
+                "freezer section not staying cold enough",
+                "Replaced evaporator fan and verified sealed system pressures.",
+            ),
+        ],
+    },
     "BR": {
         "label": "Brazil",
         "bcp47": "pt-BR",

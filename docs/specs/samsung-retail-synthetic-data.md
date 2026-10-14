@@ -1,7 +1,7 @@
 <h1 id="spec-samsung-retail-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Spec: Samsung Australia retail synthetic data and eval</h1>
 
-**Status:** draft for implementation  
-**Plan:** [`docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md)
+**Status:** **phone-era archive** — default corpus is FRU US; see [`fru-us-service-synthetic-data.md`](./fru-us-service-synthetic-data.md).  
+**Plan:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../docs_manual_gen/ref_plan/completed/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md).
 
 <h2 id="spec-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -58,7 +58,7 @@ eval_id, query, model_filter, expected_ticket_ids, stratum, source_ticket_id
 - **`error_code`:** eval query includes model + symptoms + `SAM-E###` (screenshot-style). **Paired tickets** `(2k, 2k+1)` share the same underlying issue/symptom slots; **even index** uses CRM stored prose, **odd index** uses **intake-shaped** stored prose (twin distractor). **FTS** indexes full stored text (tech line + code); **vector document embed** uses `text_for_embedding` (tech line stripped). Stratum is assigned on **gold pair tickets** where `(index // 2) % 3 == 0` and `index % 2 == 0`.
 - **Anti-leakage:** `query` must not equal manifest `customer_query_text` for `source_ticket_id`. Eval queries use **`eval_query_template`** (caller + city + model + issue + one detail) — **no** copying full stored body and **no** operational ID tokens in `query`.
 
-**Gold authorship (D8):** The **data author** sets `query`, `expected_ticket_ids`, and `stratum` from manifest provenance (generators or human holdout). The **implementor** only runs the harness that compares ranker output to that preset gold — never copies top‑k ids back into JSONL. See refactor plan [§8.2](../docs_manual_gen/ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md#8-2-gold-roles).
+**Gold authorship (D8):** The **data author** sets `query`, `expected_ticket_ids`, and `stratum` from manifest provenance (generators or human holdout). The **implementor** only runs the harness that compares ranker output to that preset gold — never copies top‑k ids back into JSONL. See refactor plan [§8.2](../docs_manual_gen/ref_plan/completed/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md#8-2-gold-roles).
 
 ---
 

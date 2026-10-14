@@ -4,6 +4,7 @@ import pytest
 
 from retail_brain.sim_data_profile import (
     DEFAULT_PROFILE,
+    FRU_US_1K,
     RRF_DATA_LLM_GEN,
     RRF_DATA_LLM_GEN_1K,
     RRF_DATA_LLM_GEN_60_10,
@@ -13,10 +14,10 @@ from retail_brain.sim_data_profile import (
 )
 
 
-def test_default_profile_is_1k(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Scale branch defaults to the 1000/100 profile."""
+def test_default_profile_is_fru_1k(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Default sim corpus is FRU US 1000/100."""
     monkeypatch.delenv("RETAIL_SIM_DATA_PROFILE", raising=False)
-    assert resolve_sim_data_profile().profile_id == DEFAULT_PROFILE == RRF_DATA_LLM_GEN_1K
+    assert resolve_sim_data_profile().profile_id == DEFAULT_PROFILE == FRU_US_1K
 
 
 def test_prag_gen_paths(monkeypatch: pytest.MonkeyPatch) -> None:

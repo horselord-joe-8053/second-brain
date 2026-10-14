@@ -5,7 +5,7 @@
 **Parent:** [`REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md`](../completed/REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md)  
 **Depends on:** [`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](../completed/REFACTOR_RETAIL_LEXICAL_BACKENDS.md) (`RETAIL_LEXICAL_BACKEND=tantivy` default)  
 **Execute with:** `qimpltdd docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_LLM_GEN_HYBRID_EVAL_STRESS.md` (P4 done)  
-**Article:** [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) §13
+**Article:** [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md) §13
 
 <h2 id="hybrid-eval-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -23,7 +23,7 @@
 
 <h2 id="1-problem" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Problem</h2>
 
-On the current ten eval intakes, **vector-only** often scores **recall@1 = 1.0** while **hybrid** arms add little ([§13.3](../../artifacts/ABOUT_SEARCH_RRF.md#13-3-llm-v2)). That under-teaches the **A/B/C/D** ladder operators run via `05_run_abcd_postgres.sh`.
+On the current ten eval intakes, **vector-only** often scores **recall@1 = 1.0** while **hybrid** arms add little ([§13.3](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md#13-3-llm-v2)). That under-teaches the **A/B/C/D** ladder operators run via `05_run_abcd_postgres.sh`.
 
 ---
 

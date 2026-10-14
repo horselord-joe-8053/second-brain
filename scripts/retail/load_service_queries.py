@@ -40,21 +40,25 @@ def main() -> None:
     try:
         with conn.cursor() as cur:
             for r in rows:
+                state = (r.get("state") or "").strip()
+                if not state:
+                    raise ValueError(f"missing state for ticket {r['ticket_id']}")
                 cur.execute(
                     """
                     INSERT INTO service_queries (
-                      ticket_id, item_number, store_id, city, state, model,
+                      ticket_id, customer_id, item_number, store_id, city, state, model,
                       status, customer_query_text, resolution_text,
                       opened_at, updated_at, closed_at
-                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (ticket_id) DO NOTHING
                     """,
                     (
                         r["ticket_id"],
+                        (r.get("customer_id") or None) or None,
                         r["item_number"],
                         r["store_id"],
                         r["city"],
-                        r.get("state", "SP"),
+                        state,
                         r["model"],
                         r["status"],
                         r["customer_query_text"],

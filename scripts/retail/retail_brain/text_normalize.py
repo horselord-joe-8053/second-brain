@@ -36,8 +36,25 @@ _EVAL_QUERY_PT = re.compile(
     r"^Preciso de ajuda:\s+\S+\s+em\s+(?P<city>.+?)\s+com\s+(?P<model>.+?)\s+—\s+(?P<issue>.+?)\.\s*(?P<detail>.*)$",
     re.DOTALL,
 )
-_CODE_IN_QUERY = re.compile(r"\bcode\s+(SAM-E\d{3})\b", re.IGNORECASE)
-_DIAG_CODE = re.compile(r"SAM-E\d{3}", re.IGNORECASE)
+def active_fault_code_prefix() -> str:
+    """Diagnostic prefix from ``RETAIL_FAULT_CODE_PREFIX`` (default ``SAM-E`` for phone corpora)."""
+    raw = (os.environ.get("RETAIL_FAULT_CODE_PREFIX") or "SAM-E").strip().upper()
+    return raw.rstrip("-")
+
+
+def diag_code_pattern(prefix: str | None = None) -> re.Pattern[str]:
+    """Build a regex for ``PREFIX###`` diagnostic tokens."""
+    pfx = (prefix or active_fault_code_prefix()).upper()
+    return re.compile(rf"{re.escape(pfx)}\d{{3}}", re.IGNORECASE)
+
+
+def _code_in_query_pattern(prefix: str | None = None) -> re.Pattern[str]:
+    pfx = (prefix or active_fault_code_prefix()).upper()
+    return re.compile(rf"\bcode\s+({re.escape(pfx)}\d{{3}})\b", re.IGNORECASE)
+
+
+_DIAG_CODE = diag_code_pattern()
+_CODE_IN_QUERY = _code_in_query_pattern()
 _NEED_HELP_PREFIX = re.compile(r"^Need help:\s*", re.IGNORECASE)
 
 
@@ -87,8 +104,8 @@ def search_text_for_fts(raw: str, *, market: str | None = None) -> str:
 
 
 def extract_diag_code(text: str | None) -> str | None:
-    """Parse Samsung-style diagnostic code from query or stored ticket text."""
-    m = _DIAG_CODE.search(text or "")
+    """Parse active diagnostic code (SAM-E or FRU-E) from query or stored ticket text."""
+    m = diag_code_pattern().search(text or "")
     return m.group(0).upper() if m else None
 
 
@@ -112,7 +129,7 @@ def fts_query_text(live_query: str, *, market: str | None = None) -> str:
     aligned = _align_eval_query_to_index_shape(q)
     if aligned:
         return aligned
-    code = _CODE_IN_QUERY.search(q)
+    code = _code_in_query_pattern().search(q)
     if code and not _EVAL_QUERY_EN.match(q):
         # V1.1: screenshot intake — keep symptom/model tokens; append tech-line code for FTS.
         body = _NEED_HELP_PREFIX.sub("", q).strip()

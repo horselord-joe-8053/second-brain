@@ -1,3 +1,5 @@
-# Retail domain — Samsung Australia service brain
+# Retail domain — Fridges R Us (US) service brain
 
-Synthetic nationwide **Australia** service tickets and Galaxy A15/A16/A25 manuals under `brain/retail/`. Default language and full-text search follow **`RETAIL_MARKET=AU`** (see `scripts/retail/retail_brain/market.py`). Optional **`RETAIL_MARKET=BR`** for pt-BR operator experiments.
+Synthetic **United States** aftersales tickets for three fridge SKUs and manuals under `brain/retail/raw/sources/fridge-docs/`. Default market is **`RETAIL_MARKET=US`** (see `scripts/retail/retail_brain/market.py`). Default sim corpus is **`RETAIL_SIM_DATA_PROFILE=fru_us_1k`**.
+
+Phone-era Samsung AU corpora remain under `scripts/retail/sim_data/profiles/data_*` for archive and regression.

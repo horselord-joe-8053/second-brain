@@ -48,7 +48,7 @@ This is both a production seam (ops can change the keyword engine without rewrit
 | **D6** | ParadeDB and OpenSearch are real client modules with **fake** unit tests. Live Docker is documented in the package README. `./scripts/verify-local.sh` does **not** start those services. A live test **skips** unless `RETAIL_PARADEDB_URL` or `RETAIL_OPENSEARCH_URL` is set. |
 | **D7** | Rebuild **only the selected** backend after corpus reload. Search reads that index. If the selected index or service is missing, **fail with a clear error** (do not return an empty list and do not fall back to full-text search). |
 | **D8** | Retail Postgres image stays `pgvector/pgvector:pg16` on port **5433**. ParadeDB is not swapped into that container. |
-| **D9** | Qdrant hybrid (option 6 in [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) section 11.4) is out of scope. |
+| **D9** | Qdrant hybrid (option 6 in [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md) section 11.4) is out of scope. |
 | **D10** | **Plan complete** requires **four** lexical backends × **A/B/C/D** (16 eval JSON files) on **`rrf_data_llm_gen`**. One Postgres load + embed; then **`rebuild_lexical_index.py`** per backend (same vectors). Reports under `tmp/simulated_data/reports/lexical_matrix/<backend>/`. ParadeDB and OpenSearch sidecars run **one at a time** (low RAM). |
 
 ---
@@ -149,7 +149,7 @@ Index files go under `tmp/retail_lexical/` (add that path to `.gitignore`). Env 
 <h3 id="4-p7" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.7 Phase 7 — Docs match the switch</h3>
 
 - Package `README.md` is the operator map: directory layout, the four values, default, rebuild-on-reload, fail-loud, which two need Docker.
-- [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) section 11.4: default lexical leg is Tantivy; Postgres full-text search is no longer what `lexical_ids()` runs; bm25x stays an alternate value, not the default.
+- [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md) section 11.4: default lexical leg is Tantivy; Postgres full-text search is no longer what `lexical_ids()` runs; bm25x stays an alternate value, not the default.
 - `scripts/retail/README.md` and `.env.example` name `RETAIL_LEXICAL_BACKEND`.
 
 **Exit:** docs updated; `./scripts/verify-local.sh` still green. No new search behavior in this phase.
@@ -165,7 +165,7 @@ Index files go under `tmp/retail_lexical/` (add that path to `.gitignore`). Env 
 3. **Docker (RAM):** `cursor_gen/retail_v11_prep/lexical_docker/stop_sidecars.sh` before embedded backends; `parade_up.sh` / `opensearch_up.sh` start **one** sidecar at a time (not with the other sidecar up).
 4. **Orchestrator:** `bash cursor_gen/retail_v11_prep/06_run_abcd_lexical_matrix.sh`  
    Optional: `RETAIL_LEXICAL_MATRIX_SKIP_PG_LOAD=1` (reuse PG); `RETAIL_LEXICAL_MATRIX_ONLY=tantivy,bm25x` (partial backends).
-5. **Summary:** `tmp/simulated_data/reports/lexical_matrix/lexical_matrix_summary.md`; append highlights to `scripts/retail/eval/reports/phase6_operator_log.md` and [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) §13 as needed.
+5. **Summary:** `tmp/simulated_data/reports/lexical_matrix/lexical_matrix_summary.md`; append highlights to `scripts/retail/eval/reports/phase6_operator_log.md` and [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md) §13 as needed.
 
 **Exit:** 16 JSON reports (4 backends × 4 modes); summary file lists report dirs; `./scripts/verify-local.sh` still green (matrix is **not** in default verify).
 
@@ -236,7 +236,7 @@ Index files go under `tmp/retail_lexical/` (add that path to `.gitignore`). Env 
 
 | Path | Why |
 |------|-----|
-| [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md) section 11.4 | Six-way comparison and the bm25x / Tantivy sketches |
+| [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](../../artifacts/ABOUT_SEARCH_RRF_LEGACY_PHONE.md) section 11.4 | Six-way comparison and the bm25x / Tantivy sketches |
 | [`scripts/retail/retail_brain/pg_search.py`](../scripts/retail/retail_brain/pg_search.py) | `lexical_ids()` today (Postgres full-text search) |
 | [`scripts/retail/reload_postgres_corpus.py`](../scripts/retail/reload_postgres_corpus.py) | Hook for rebuilding the active index |
 | [`scripts/retail/docker-compose.yml`](../scripts/retail/docker-compose.yml) | Retail Postgres stays pgvector on 5433 |

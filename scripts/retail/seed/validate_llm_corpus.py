@@ -17,9 +17,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts" / "retail"))
 
-from retail_brain.text_normalize import extract_diag_code  # noqa: E402
+from retail_brain.text_normalize import diag_code_pattern, extract_diag_code  # noqa: E402
 
-_SAM = re.compile(r"SAM-E\d{3}", re.I)
+_CODE_TOKEN = diag_code_pattern()
 _DEMO_LIFT = frozenset(
     {"vector_only", "rrf_normal", "rrf_term_boosted"},
 )
@@ -34,14 +34,14 @@ _REQUIRED_EVAL_KEYS = (
 
 
 def _normalize_body(text: str) -> str:
-    t = _SAM.sub("<CODE>", text.lower())
+    t = _CODE_TOKEN.sub("<CODE>", text.lower())
     t = re.sub(r"\s+", " ", t).strip()
     return t
 
 
 def _expected_counts(corpus_dir: Path) -> tuple[int, int, tuple[int, int]]:
     """(historical_rows, eval_rows, sam_e_inclusive_range) for profile folder name."""
-    if corpus_dir.name == "data_1000_100":
+    if corpus_dir.name in ("data_1000_100", "fru_us_1000_100"):
         return 1000, 100, (450, 550)
     return 60, 10, (25, 35)
 
@@ -69,7 +69,15 @@ def validate(corpus_dir: Path) -> list[str]:
     sam_rows = sum(1 for r in rows if extract_diag_code(r["customer_query_text"]))
     lo, hi = sam_band
     if not (lo <= sam_rows <= hi):
-        errors.append(f"SAM-E row count {sam_rows} outside ~50% band ({lo}–{hi})")
+        errors.append(f"diag-code row count {sam_rows} outside ~50% band ({lo}–{hi})")
+
+    if corpus_dir.name == "fru_us_1000_100":
+        for r in rows:
+            q = r["customer_query_text"]
+            if "CUST" in q or "Galaxy" in q or "SAM-E" in q:
+                errors.append(f"FRU corpus banned token in {r['ticket_id']}")
+            if r.get("customer_id") and r["customer_id"] in q:
+                errors.append(f"customer_id leaked into query for {r['ticket_id']}")
 
     by_id = {r["ticket_id"]: r for r in rows}
     eval_lines = [ln for ln in eval_path.read_text(encoding="utf-8").splitlines() if ln.strip()]

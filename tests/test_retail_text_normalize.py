@@ -1,6 +1,9 @@
 """FTS normalize: finite strip of ticket boilerplate."""
 
+import pytest
+
 from retail_brain.text_normalize import (
+    extract_diag_code,
     fts_query_text,
     search_text_for_fts,
     strip_case_ref_suffix,
@@ -60,3 +63,11 @@ def test_fts_query_aligns_eval_template_to_index_shape() -> None:
     norm = fts_query_text(q, market="AU")
     assert norm.startswith("battery drains quickly on Galaxy A16 5G in Melbourne.")
     assert "Bluetooth pairing" in norm
+
+
+def test_extract_fru_diag_code(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("RETAIL_FAULT_CODE_PREFIX", "FRU-E")
+    from retail_brain import text_normalize
+
+    text_normalize._DIAG_CODE = text_normalize.diag_code_pattern()
+    assert extract_diag_code("Panel showed FRU-E142 on the door.") == "FRU-E142"

@@ -5,12 +5,22 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 RETAIL = REPO / "brain" / "retail"
 
+FRIDGE_SKUS = (
+    "samsung_RF28K9070SG",
+    "ge_GNE27JYMFS",
+    "kitchenaid_KRFF507HPS",
+)
+
 
 def test_retail_brain_layout() -> None:
+    """FRU corpus expects purpose, wiki stub, and three fridge PDF folders."""
     assert (RETAIL / "purpose.md").is_file()
     assert (RETAIL / "wiki" / "index.md").is_file()
-    for model in ("a15", "a16", "a25"):
-        assert (RETAIL / "raw" / "sources" / "samsung-docs" / model).is_dir()
+    for folder in FRIDGE_SKUS:
+        base = RETAIL / "raw" / "sources" / "fridge-docs" / folder
+        assert base.is_dir()
+        assert (base / "user-guide.pdf").is_file()
+        assert (base / "repair-guide.pdf").is_file()
 
 
 def test_legacy_personal_brain_unchanged() -> None:
