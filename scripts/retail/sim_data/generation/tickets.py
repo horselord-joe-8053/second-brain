@@ -35,8 +35,9 @@ def sam_code(n: int) -> str:
 
 
 def issue_index_for_ticket_id(ticket_id: str) -> int:
-    """Map T-0042-NNNNNN to issue theme index."""
-    return int(ticket_id.rsplit("-", 1)[-1]) % len(ISSUES)
+    """Map T-0042-NNNNNN to issue theme index (same rule as ``generate_historical``)."""
+    i = int(ticket_id.rsplit("-", 1)[-1])
+    return (i * 3 + i // 11) % len(ISSUES)
 
 
 def build_stored_text(

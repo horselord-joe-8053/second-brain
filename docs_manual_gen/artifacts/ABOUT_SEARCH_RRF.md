@@ -26,12 +26,14 @@
 7. [Historical — 70/30 weighted arm (removed)](#7-v12) — archive only.
 8. [Version 2 — V1.2 term boost (`rrf_term_boosted`)](#8-v12-term) — equal RRF + SAM-E λ.
 9. [Mathematics of fusion](#9-math) — RRF, weights, boost, tie-break.
-10. [Worked example: `eval-0006`](#10-example) — full query, tickets, scores.
+10. [Worked example: `eval-0006`](#10-example) — code twin; full query, tickets, scores.
+ 10b [Worked example: scale paraphrase twin](#10b-scale-twin) — why RRF when vectors tie (self-contained).
 11. [Lexical leg deep dive](#11-lexical) — why lexical + semantic; legacy PG FTS lesson; BM25 backends.
  11.0 [Why lexical similarity still matters](#11-0-why-lexical) — beside pgvector RAG.
  11.4 [Six-way snapshot (100k+ tickets)](#11-4-six-way) — PG FTS vs Tantivy vs bm25x vs ParadeDB vs OpenSearch vs Qdrant; [§11.4.2](#11-4-2-tantivy) term glossary, inverted map, `eval-0001` walkthrough.
 12. [Eval design and metrics](#12-eval) — gold, strata, what “win” means.
 13. [Results ledger](#13-results) — operator numbers; update after each run.
+ 13.5 [Scale ABC — 1000/100 + Tantivy](#13-5-scale-abc) — current promotion-shaped smoke (2026-10-14).
 14. [Config reference](#14-config) — env modes and code paths.
 15. [What comes after V1.2](#15-future) — reserved V1.x, not wiki “V2”.
 
@@ -414,6 +416,83 @@ Twin **fails** `@@`; gold **matches** → lexical top-1 = gold.
 | V1.1 hybrid (demo FTS) | Gold …006 | **Hit** — lexical code path + fusion |
 
 **Lesson for readers:** Hybrid value appeared only because **fused #1 = gold**, not because lexical “saw” gold at some lower rank while vector stayed on twin.
+
+---
+
+<h2 id="10b-scale-twin" style="color:#e65100;font-size:1.22em;font-weight:650;border-left:5px solid #fb8c00;padding-left:10px;margin-top:1.1em;background:#fff3e0">10b. Worked example: near-duplicate tickets at scale (paraphrase twin)</h2>
+
+**Use this block when publishing:** everything below is **self-contained** — no repo paths or companion files required.
+
+**Setting:** ~1,000 resolved tickets in one model line (`Galaxy A25 5G`), realistic retail intake diversity. **Search:** Gemini embeddings + pgvector (vector leg) + Tantivy BM25 (lexical leg) + equal RRF (`rrf_normal`). **Measured:** operator run **2026-10-14**, Postgres + sidecar index loaded from the same corpus.
+
+<h3 id="10b-1-why" style="color:#ef6c00;font-size:1.05em;font-weight:600;margin-top:0.85em">10b.1 Why this example (industry pattern, not a special rule)</h3>
+
+Teams rarely ship **vector-only** as the only ranker when:
+
+- The catalog has **many tickets with the same issue family** (same model, city, symptom theme).
+- Live intake is **paraphrased** while stored tickets use **CRM wording**.
+- A **short distinguishing phrase** in the query (timeline, detail) should match **one** historical row.
+
+**RRF** does not “fix” embeddings; it **merges two ranked lists** so a strong lexical rank can outweigh a weak vector rank. This row shows **vector-only wrong #1** while **hybrid hits gold** — the usual reason to add a lexical leg alongside dense retrieval.
+
+<h3 id="10b-2-query" style="color:#ef6c00;font-size:1.05em;font-weight:600;margin-top:0.85em">10b.2 Live query (evaluation row)</h3>
+
+```text
+Perth customer: Galaxy A25 5G car Bluetooth keeps failing during pairing. Started after a weekend road trip.
+```
+
+**Model filter:** `Galaxy A25 5G` · **Intended gold ticket id:** `T-0042-000099`
+
+**Eval honesty (one sentence):** The query is authored for retrieval teaching — it includes the **same detail sentence** as the gold ticket’s stored intake (“Started after a weekend road trip.”). That is **test design**, not a runtime boost to search. The search stack only sees the query string above.
+
+<h3 id="10b-3-corpus" style="color:#ef6c00;font-size:1.05em;font-weight:600;margin-top:0.85em">10b.3 Two competing historical tickets (full stored intake)</h3>
+
+**Vector-only top hit — `T-0042-000015` (wrong for this eval):**
+
+```text
+Intake: Galaxy A25 5G owner in Perth, WA — Bluetooth car pairing loop. No physical damage reported. Ticket context #15: original charger.
+```
+
+**Gold — `T-0042-000099`:**
+
+```text
+Shop note: shopper describes Bluetooth car pairing loop on their Galaxy A25 5G (Perth). Started after a weekend road trip. Ticket context #99: dual SIM.
+```
+
+Both are **Perth + A25 + Bluetooth pairing loop** — embeddings treat them as neighbors. The live query **paraphrases** the issue (“car Bluetooth keeps failing during pairing”) and adds the **road-trip** detail that appears only on **099**.
+
+<h3 id="10b-4-legs" style="color:#ef6c00;font-size:1.05em;font-weight:600;margin-top:0.85em">10b.4 Measured leg behavior (same query, same index)</h3>
+
+<table>
+<thead>
+<tr style="background:#e65100;color:white"><th>Mode</th><th>Top-1 ticket</th><th>Hit gold?</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>V1 vector only</strong></td><td style="background:#ffebee"><code>T-0042-000015</code></td><td style="background:#ffebee"><strong>No</strong></td></tr>
+<tr><td style="background:#e3f2fd"><strong>V1.1 equal RRF</strong></td><td style="background:#e8f5e9"><code>T-0042-000099</code></td><td style="background:#e8f5e9"><strong>Yes</strong></td></tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr style="background:#e65100;color:white"><th>Ticket</th><th>Vector rank (top 10)</th><th>pgvector L2 distance</th><th>Lexical rank (top 5)</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#ffebee"><code>T-0042-000015</code></td><td style="background:#ffebee"><strong>1</strong></td><td style="background:#ffebee"><strong>0.458</strong> (closer)</td><td style="background:#fff3e0">not in top 5</td></tr>
+<tr><td style="background:#e8f5e9"><code>T-0042-000099</code> (gold)</td><td style="background:#fff3e0">3</td><td style="background:#fff3e0">0.465</td><td style="background:#e8f5e9"><strong>1</strong></td></tr>
+</tbody>
+</table>
+
+**Plain read:** The embedder places **015** a hair closer than **099** (~**0.007** L2 gap) — normal **near-duplicate** noise, not a forced rank. BM25 puts **099** first because **road trip + Perth + pairing** tokens align with the gold intake. Equal RRF combines vector rank **3** and lexical rank **1** → fused **#1 = gold**.
+
+<h3 id="10b-5-lesson" style="color:#ef6c00;font-size:1.05em;font-weight:600;margin-top:0.85em">10b.5 Lesson paired with [§10](#10-example)</h3>
+
+| Example | Failure mode | What breaks the tie |
+|---------|----------------|---------------------|
+| [§10 `eval-0006`](#10-example) | Vector favors **intake-shaped twin**; codes differ | Lexical path on **SAM-E###** + fusion |
+| [§10b (this row)](#10b-scale-twin) | Vector favors **wrong sibling** in a large catalog | Lexical path on **detail + geography + issue tokens** + fusion |
+
+**Publishable one-liner:** *When embeddings cannot separate lookalike tickets, merging with a keyword rank is standard practice — RRF is a simple, scale-free way to do it without training a reranker.*
 
 ---
 
@@ -924,7 +1003,7 @@ Each eval row: **`expected_ticket_ids = [source_ticket_id]`** — generators set
 
 **recall@1 (strict):** fraction of rows where **rank #1** equals gold.
 
-<h3 id="12-2-strata" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">12.2 Strata (current 67-row fixture)</h3>
+<h3 id="12-2-strata" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">12.2 Strata (legacy 67-row fixture)</h3>
 
 <table>
 <thead>
@@ -936,6 +1015,21 @@ Each eval row: **`expected_ticket_ids = [source_ticket_id]`** — generators set
 <tr><td style="background:#e3f2fd"><code>error_code</code></td><td style="background:#ede7f6">Screenshot intake with explicit SAM-E###</td><td style="background:#ede7f6">7</td></tr>
 </tbody>
 </table>
+
+<h3 id="12-2-scale" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">12.2b Strata (scale profile — 100 eval rows, [§13.5](#13-5-scale-abc))</h3>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Stratum</th><th>Teaching intent (<code>demo_lift</code>)</th><th>Count</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>paraphrase</code></td><td style="background:#fff3e0"><code>vector_only</code> — dense leg should carry most hits</td><td style="background:#fff3e0">50</td></tr>
+<tr><td style="background:#e3f2fd"><code>hybrid_stress</code></td><td style="background:#e8f5e9"><code>rrf_normal</code> — bait + open issue; fusion lifts gold</td><td style="background:#e8f5e9">30</td></tr>
+<tr><td style="background:#e3f2fd"><code>code_in_query</code></td><td style="background:#ede7f6"><code>rrf_term_boosted</code> — SAM-E### in query; λ lifts gold</td><td style="background:#ede7f6">20</td></tr>
+</tbody>
+</table>
+
+**Corpus shape:** **1000** committed historical tickets + **100** eval rows (scale teaching profile). Lexical leg: **Tantivy BM25** sidecar (default <code>RETAIL_LEXICAL_BACKEND=tantivy</code>).
 
 <h3 id="12-3-abc" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">12.3 A/B/C protocol (operator)</h3>
 
@@ -951,7 +1045,9 @@ Report **overall** and **by stratum**; promotion rule **D6** still cares about *
 
 <h2 id="13-results" style="color:#0277bd;font-size:1.22em;font-weight:650;border-left:5px solid #0288d1;padding-left:10px;margin-top:1.1em;background:#e1f5fe">13. Results ledger</h2>
 
-**Corpus:** `COUNT=90`, `SEED=42` → **67** eval rows · **Gemini** embed · **AU** market FTS (`english`).
+Multiple operator snapshots live below — **newest scale run:** [§13.5](#13-5-scale-abc) (**1000/100**, Tantivy). Older rows are **historical** (67-row seed, PG FTS era, 60/10 teaching).
+
+**Legacy headline corpus (§13.1–§13.2):** `COUNT=90`, `SEED=42` → **67** eval rows · **Gemini** embed · **AU** market FTS (`english`).
 
 <h3 id="13-1-demo" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.1 Shipped — demo-era equal hybrid (2026-10-11)</h3>
 
@@ -989,9 +1085,9 @@ Artifacts: `scripts/retail/eval/reports/pg_baseline_v1.json`, `pg_ab_v1_v11.json
 
 **Maintenance:** After each operator run, update this table and add **“what surprised us”** under the matching version section above.
 
-<h3 id="13-3-llm-v2" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.3 Natural LLM corpus v2 (`rrf_data_llm_gen`, 2026-10-12)</h3>
+<h3 id="13-3-llm-v2" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.3 Natural LLM corpus v2 — 60/10 archive (`rrf_data_llm_gen_60_10`, 2026-10-12)</h3>
 
-Profile `tmp/simulated_data/` — **60** tickets, **10** eval, **no twin clones**; **~50%** historical rows with SAM-E; embed index **keeps SAM-E** (`RETAIL_EMBED_STRIP_PHRASES` only).
+Profile **`sim_data/profiles/data_60_10/`** — **60** tickets, **10** eval, **no twin clones**; **~50%** historical rows with SAM-E; embed index **keeps SAM-E** (`RETAIL_EMBED_STRIP_PHRASES` only). Superseded for scale smoke by [§13.5](#13-5-scale-abc); teaching ABC numbers in [§13.4](#13-4-demo-abc).
 
 <table>
 <thead>
@@ -1025,6 +1121,42 @@ Profile `tmp/simulated_data/` — **60** tickets, **10** eval, **no twin clones*
 **Read:** Strict ladder **A &lt; B &lt; C** on recall@1. **B** adds equal RRF when the **dense (embedding) leg** picks a lookalike neighbor but the **lexical leg** ranks the gold ticket first (return-call / mis-routed intake on `eval-0001`, `eval-0005`, `eval-0007`). **C** adds **SAM-E###** term λ on equal RRF—wins when both legs tie on the wrong twin (`eval-0003`, `eval-0010`). Removed legacy **70/30** `rrf_weighted` arm (see [§14](#14-config)).
 
 Run: `apply_abcd_demo_eval.py` then `cursor_gen/retail_v11_prep/05_run_abc_postgres.sh`.
+
+<h3 id="13-5-scale-abc" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.5 Scale ABC — 1000 historical + 100 eval (`rrf_data_llm_gen_1k`, 2026-10-14)</h3>
+
+**Profile:** **1000** resolved historical tickets + **100** eval rows (ABC teaching mix — [§12.2b](#12-2-scale)). **Dense leg:** pgvector + **Gemini** embeddings (768-d). **Lexical leg:** **Tantivy BM25** sidecar (rebuilt after Postgres load). **Protocol:** same snapshot, three passes — `vector_only` → `rrf_normal` → `rrf_term_boosted` ([§12.3](#12-3-abc)).
+
+<table>
+<thead>
+<tr style="background:#0277bd;color:white"><th>Mode</th><th>Product</th><th>recall@1</th><th>Hits</th><th>lexical_nonempty</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>vector_only</code></td><td style="background:#fff3e0">A / V1</td><td style="background:#fff3e0"><strong>0.27</strong></td><td style="background:#fff3e0">27/100</td><td style="background:#f5f5f5">—</td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_normal</code></td><td style="background:#fff3e0">B / V1.1</td><td style="background:#e8f5e9"><strong>0.39</strong></td><td style="background:#e8f5e9">39/100</td><td style="background:#e8f5e9">100/100</td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_term_boosted</code></td><td style="background:#e8f5e9">C / V1.2</td><td style="background:#e8f5e9"><strong>0.58</strong></td><td style="background:#e8f5e9">58/100</td><td style="background:#e8f5e9">100/100</td></tr>
+</tbody>
+</table>
+
+**Strict ladder:** **A &lt; B &lt; C** on overall recall@1 (**0.27 → 0.39 → 0.58**).
+
+<table>
+<thead>
+<tr style="background:#0277bd;color:white"><th>Mode</th><th>paraphrase (50)</th><th>hybrid_stress (30)</th><th>code_in_query (20)</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>vector_only</code></td><td style="background:#fff3e0">0.44</td><td style="background:#fff3e0">0.17</td><td style="background:#ffebee">0.00</td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_normal</code></td><td style="background:#e8f5e9">0.64</td><td style="background:#fff3e0">0.23</td><td style="background:#ffebee">0.00</td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_term_boosted</code></td><td style="background:#e8f5e9">0.64</td><td style="background:#fff3e0">0.23</td><td style="background:#e8f5e9"><strong>0.95</strong></td></tr>
+</tbody>
+</table>
+
+**Read:**
+
+- **B over A (+12 pp overall):** equal RRF adds **+12** strict hits vs vector-only — mostly **paraphrase** (+10 pp on that slice) and **hybrid_stress** (+6 pp). At 1k ticket density, the dense leg alone often ranks a **sibling** ticket #1; BM25 + fusion breaks many of those ties ([§10b](#10b-scale-twin)).
+- **C over B (+19 pp overall):** **SAM-E λ** on <code>rrf_term_boosted</code> lifts almost all **code_in_query** rows (**19/20** at recall@1) while paraphrase/hybrid stay tied with B on this run — the V1.2 story shows up on the **code** stratum, not by re-weighting the vector leg.
+- **Not a promotion gate:** absolute recall is lower than the **10-row** teaching fixture ([§13.4](#13-4-demo-abc)) because the catalog is **100×** larger and eval gold is programmatically chosen — use this table for **mechanism at scale**, not “ship hybrid because 0.58.”
+
+**Operator artifacts (repo):** `scripts/retail/sim_data/profiles/data_1000_100/reports/pg_baseline_v1.json`, `pg_ab_v1_1_normal.json`, `pg_ab_v1_2_term_boosted.json` · env <code>RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen_1k</code> · reload + ABC via <code>cursor_gen/retail_v11_prep/03_pg_up_and_load.sh</code> and <code>05_run_abc_postgres.sh</code>.
 
 ---
 
@@ -1068,6 +1200,6 @@ Reserve **V1.3, V1.4, …** for ticket-plane tweaks (phrase rules, λ tuning, **
 
 <h2 id="linkedin-blurb" style="color:#c62828;font-size:1.22em;font-weight:650;border-left:5px solid #e53935;padding-left:10px;margin-top:1.1em;background:#ffebee">Optional LinkedIn pull-quote</h2>
 
-> We staged hybrid search for repair tickets: **vector-only → equal RRF → SAM-E term boost λ** on the same fusion weights — measuring each step on frozen gold. Demo hybrid beat vector **0.67 vs 0.57** on **error-code** rows where embeddings picked the wrong twin; production BM25 + term boost is the shipped V1.2 story ([§13.4](#13-4-demo-abc)).
+> We staged hybrid search for repair tickets: **vector-only → equal RRF → SAM-E term boost λ** on the same fusion weights — measuring each step on frozen gold. At **1k tickets + 100 eval rows** (Tantivy BM25), recall@1 stepped **0.27 → 0.39 → 0.58** ([§13.5](#13-5-scale-abc)); the **10-row** teaching fixture still shows a clean demo ladder **0.50 → 0.80 → 1.00** ([§13.4](#13-4-demo-abc)).
 
-*Update this blurb when §13.2 fills in.*
+*Update this blurb when §13.5 changes.*

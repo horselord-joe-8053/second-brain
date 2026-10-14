@@ -8,6 +8,9 @@
 # Regenerate a profile (deterministic seed from profiles.py)
 PYTHONPATH=scripts/retail python3 -m sim_data.generation.cli --profile data_1000_100
 
+# Eval JSONL only — leaves service_queries.csv unchanged
+PYTHONPATH=scripts/retail python3 -m sim_data.generation.cli --profile data_1000_100 --eval-only
+
 # Validate
 python3 scripts/retail/seed/validate_llm_corpus.py \
   --corpus-dir scripts/retail/sim_data/profiles/data_1000_100

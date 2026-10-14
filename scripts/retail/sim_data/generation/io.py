@@ -7,7 +7,39 @@ import json
 from pathlib import Path
 from typing import Any
 
-from sim_data.generation.tickets import TicketRow
+from sim_data.generation.tickets import TicketRow, issue_index_for_ticket_id, sam_code
+
+
+def read_csv(path: Path) -> list[TicketRow]:
+    """Load committed ``service_queries.csv`` into ``TicketRow`` (for eval-only regen)."""
+    rows: list[TicketRow] = []
+    with path.open(encoding="utf-8", newline="") as f:
+        for rec in csv.DictReader(f):
+            tid = rec["ticket_id"]
+            idx = int(tid.rsplit("-", 1)[-1])
+            with_code = idx % 2 == 0
+            text = rec["customer_query_text"]
+            code = sam_code(idx // 2) if with_code else None
+            rows.append(
+                TicketRow(
+                    ticket_id=tid,
+                    item_number=rec["item_number"],
+                    store_id=rec["store_id"],
+                    city=rec["city"],
+                    state=rec["state"],
+                    model=rec["model"],
+                    status=rec["status"],
+                    customer_query_text=text,
+                    resolution_text=rec["resolution_text"],
+                    opened_at=rec["opened_at"],
+                    updated_at=rec["updated_at"],
+                    closed_at=rec["closed_at"],
+                    has_sam_e=bool(code),
+                    sam_e=code,
+                    issue_index=issue_index_for_ticket_id(tid),
+                )
+            )
+    return rows
 
 
 def write_csv(path: Path, rows: list[TicketRow]) -> None:
