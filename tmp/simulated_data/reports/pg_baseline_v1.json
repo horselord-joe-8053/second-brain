@@ -4,11 +4,11 @@
   "search_mode": "vector_only",
   "hybrid_flag": "0",
   "total": 10,
-  "recall_at_1": 0.8,
+  "recall_at_1": 0.5,
   "by_stratum": {
     "hybrid_stress": 0.0,
     "paraphrase": 1.0,
-    "code_in_query": 1.0
+    "code_in_query": 0.0
   },
   "cases": [
     {
@@ -23,16 +23,16 @@
       "eval_id": "eval-0002",
       "stratum": "paraphrase",
       "hit": true,
-      "top_ticket_id": "T-0042-000005",
+      "top_ticket_id": "T-0042-000002",
       "hit_strict": true,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0003",
       "stratum": "code_in_query",
-      "hit": true,
-      "top_ticket_id": "T-0042-000020",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000002",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -61,10 +61,10 @@
     },
     {
       "eval_id": "eval-0007",
-      "stratum": "code_in_query",
-      "hit": true,
-      "top_ticket_id": "T-0042-000010",
-      "hit_strict": true,
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-000025",
+      "hit_strict": false,
       "hit_acceptable": null
     },
     {
@@ -79,16 +79,16 @@
       "eval_id": "eval-0009",
       "stratum": "paraphrase",
       "hit": true,
-      "top_ticket_id": "T-0042-000002",
+      "top_ticket_id": "T-0042-000005",
       "hit_strict": true,
       "hit_acceptable": null
     },
     {
       "eval_id": "eval-0010",
       "stratum": "code_in_query",
-      "hit": true,
-      "top_ticket_id": "T-0042-000040",
-      "hit_strict": true,
+      "hit": false,
+      "top_ticket_id": "T-0042-000031",
+      "hit_strict": false,
       "hit_acceptable": null
     }
   ],

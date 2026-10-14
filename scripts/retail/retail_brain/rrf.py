@@ -15,8 +15,8 @@ def reciprocal_rank_fusion(
 ) -> List[Tuple[str, float]]:
     """Merge ranked id lists; higher score is better.
 
-    list_weights: per-leg multiplier on each 1/(k+rank) term (V1.1 equal, V1.2 0.7/0.3).
-    extra_score_by_id: V1.3 code boost (λ · 1/(k+1)) added after leg fusion.
+    list_weights: per-leg multiplier on each 1/(k+rank) term (shipped hybrid: equal 0.5/0.5).
+    extra_score_by_id: V1.2 ``rrf_term_boosted`` SAM-E bump (λ · 1/(k+1)) after leg fusion.
     """
     scores: Dict[str, float] = {}
     for li, ranked in enumerate(ranked_lists):

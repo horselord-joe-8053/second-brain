@@ -21,15 +21,6 @@ def test_rrf_tie_prefers_lexical_rank_one() -> None:
     assert fused[0][0] == "gold"
 
 
-def test_rrf_weighted_favors_vector_leg() -> None:
-    v = ["vec-first", "lex-first"]
-    lex = ["lex-first", "vec-first"]
-    equal = reciprocal_rank_fusion([v, lex], list_weights=[0.5, 0.5])
-    weighted = reciprocal_rank_fusion([v, lex], list_weights=[0.7, 0.3])
-    assert equal[0][0] != weighted[0][0] or equal[0][1] != weighted[0][1]
-    assert weighted[0][0] == "vec-first"
-
-
 def test_code_boost_can_flip_top1() -> None:
     from retail_brain.rrf import code_boost_scores
 
@@ -46,7 +37,7 @@ def test_code_boost_can_flip_top1() -> None:
     )
     fused = reciprocal_rank_fusion(
         [v, lex],
-        list_weights=[0.7, 0.3],
+        list_weights=[0.5, 0.5],
         extra_score_by_id=boost,
     )
     assert fused[0][0] == "gold"

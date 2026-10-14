@@ -122,7 +122,7 @@ def _fuse(
     mode: str,
     limit: int,
 ) -> List[str]:
-    """RRF-merge vector and lexical lists with optional V1.3 diagnostic-code boost."""
+    """RRF-merge vector and lexical lists with optional V1.2 SAM-E term boost."""
     w_v, w_l = rrf_list_weights(mode)
     extra: Dict[str, float] = {}
     if code_boost_enabled(mode):

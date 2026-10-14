@@ -9,7 +9,8 @@ Long-form Second Brain material authored or extracted outside the bootstrap **`d
 | [`SECOND_BRAIN_RUNBOOK.md`](./SECOND_BRAIN_RUNBOOK.md) | Setup runbook (commands + HG steps) |
 | [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md) | Query / read path + Hermes MCP |
 | [`ref_plan/README.md`](./ref_plan/README.md) | **Refactor plans** (`new/` · `wip/` · `completed/`) — retail, Samsung, fabrication |
-| [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md) | Hybrid search narrative (V1 → V1.3 + lexical backends) |
+| [`artifacts/ABOUT_SEARCH_RRF.md`](./artifacts/ABOUT_SEARCH_RRF.md) | Hybrid search narrative (V1 → V1.2 + lexical backends) |
+| [`ref_plan/completed/REFACTOR_RETAIL_SEARCH_THREE_MODES.md`](./ref_plan/completed/REFACTOR_RETAIL_SEARCH_THREE_MODES.md) | Shipped A/B/C modes + P4 demo eval product story |
 | [`RUNBOOK_HARNESS_HERMES.md`](./RUNBOOK_HARNESS_HERMES.md) | Hermes install, MCP, smoke, messaging |
 | [`RUNBOOK_HARNESS_OPENCLAW.md`](./RUNBOOK_HARNESS_OPENCLAW.md) | OpenClaw harness (skeleton) |
 | [`ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](./ref_plan/wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) | Samsung retail service brain — master plan (**wip**) |

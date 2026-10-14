@@ -1,5 +1,9 @@
 #!/usr/bin/env python3.12
-"""Write A/B/C/D demo eval JSONL for rrf_data_llm_gen (eval-only; keeps 60-row CSV)."""
+"""Write A/B/C demo eval JSONL for rrf_data_llm_gen (eval-only; keeps 60-row CSV).
+
+Source: ``abcd_demo_eval_spec.py`` (V1 vector → V1.1 equal RRF → V1.2 term boost).
+Operator: ``apply`` then ``cursor_gen/retail_v11_prep/05_run_abc_postgres.sh``.
+"""
 
 from __future__ import annotations
 

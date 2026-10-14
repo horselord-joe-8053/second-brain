@@ -1,4 +1,4 @@
-"""Contract tests for A/B/C/D demo eval spec and apply script."""
+"""Contract tests for A/B/C (V1→V1.2) demo eval spec and apply script."""
 
 from __future__ import annotations
 
@@ -24,8 +24,10 @@ def test_abcd_demo_spec_has_ten_unique_golds():
         assert r["demo_lift"] in DEMO_LIFT_MODES
         assert r["expected_ticket_ids"] == [r["source_ticket_id"]]
     lifts = [r["demo_lift"] for r in ABCD_DEMO_EVAL_ROWS]
+    strata = [r["stratum"] for r in ABCD_DEMO_EVAL_ROWS]
     assert lifts.count("rrf_normal") >= 2
-    assert lifts.count("rrf_weighted_boosted") >= 3
+    assert lifts.count("rrf_term_boosted") >= 2
+    assert strata.count("hybrid_stress") >= 3
 
 
 def test_apply_abcd_demo_eval_writes_valid_jsonl(tmp_path):

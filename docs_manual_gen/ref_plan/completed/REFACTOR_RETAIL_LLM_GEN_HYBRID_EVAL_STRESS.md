@@ -1,6 +1,6 @@
 <h1 id="hybrid-eval-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: A/B/C/D demo eval for `rrf_data_llm_gen` (Tantivy hybrid ladder)</h1>
 
-**Status:** **completed** (P4 2026-10-14) — fusion + λ ladder on demo eval  
+**Status:** **completed (historical)** — four-mode A/B/C/D era. **Current operator + eval story:** [`REFACTOR_RETAIL_SEARCH_THREE_MODES.md`](REFACTOR_RETAIL_SEARCH_THREE_MODES.md) (A/B/C, P4 product-story `hybrid_stress`). Eval spec: `abcd_demo_eval_spec.py`.  
 **Profile:** `RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen` → `tmp/simulated_data/`  
 **Parent:** [`REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md`](../completed/REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md)  
 **Depends on:** [`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](../completed/REFACTOR_RETAIL_LEXICAL_BACKENDS.md) (`RETAIL_LEXICAL_BACKEND=tantivy` default)  
@@ -174,4 +174,8 @@ Implemented in `scripts/retail/seed/abcd_demo_eval_spec.py`. Pattern: **neighbor
 - **Lexical health:** `lexical_nonempty ≥ 7/10` on **B** (unchanged).
 - **Data:** `validate_llm_corpus.py` OK; `./scripts/verify.sh` green.
 
-**Execute:** P4 completed 2026-10-14.
+**Execute:** P4 completed 2026-10-14 (four-mode era).
+
+<h2 id="10-superseded" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Superseded — three-mode ABC + P4 eval story</h2>
+
+**Authoritative (2026-10-14):** [`REFACTOR_RETAIL_SEARCH_THREE_MODES.md`](REFACTOR_RETAIL_SEARCH_THREE_MODES.md) — modes `vector_only` | `rrf_normal` | `rrf_term_boosted`; operator `05_run_abc_postgres.sh`; demo recall@1 **0.50 → 0.80 → 1.00**; P4 **hybrid_stress** intakes (open issue + closed/mis-route bait). This document remains the **historical** four-mode (`rrf_weighted` / D arm) record.

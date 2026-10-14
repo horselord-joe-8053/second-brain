@@ -1,6 +1,6 @@
 <h1 id="v1x-plan" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: retail ticket search V1.1 → V1.3 (RRF modes + production lexical)</h1>
 
-**Status:** **wip** — ready for **`qimpltdd`** / **`aciubtdd`**  
+**Status:** **completed (historical)** — four-mode implementation; **superseded** by [`REFACTOR_RETAIL_SEARCH_THREE_MODES.md`](REFACTOR_RETAIL_SEARCH_THREE_MODES.md) (2026-10-14).  
 **Parent:** [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](../wip/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) · **Article:** [`ABOUT_SEARCH_RRF.md`](../../artifacts/ABOUT_SEARCH_RRF.md)  
 **Execute with:** [`implreftdd`](../../../.cursor/rules/tdd/implreftdd-resumimpl-refactor-plan-followthrough.mdc)
 

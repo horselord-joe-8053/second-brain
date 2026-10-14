@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Four lexical backends × A/B/C/D (V1…V1.3) on rrf_data_llm_gen. One PG embed load; rebuild keyword index per backend.
+# Four lexical backends × A/B/C (V1…V1.2) on rrf_data_llm_gen. One PG embed load; rebuild keyword index per backend.
 set -euo pipefail
 PREP_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$PREP_DIR/../.." && pwd)"
@@ -44,8 +44,7 @@ run_abcd_for_backend() {
 
   run_mode vector_only "$out_dir/pg_baseline_v1.json"
   run_mode rrf_normal "$out_dir/pg_ab_v1_1_normal.json"
-  run_mode rrf_weighted "$out_dir/pg_ab_v1_2_weighted.json"
-  run_mode rrf_weighted_boosted "$out_dir/pg_ab_v1_3_boosted.json"
+  run_mode rrf_term_boosted "$out_dir/pg_ab_v1_2_term_boosted.json"
 }
 
 prepare_backend_env() {
@@ -82,7 +81,7 @@ else
 fi
 
 {
-  echo "# Lexical backend × A/B/C/D matrix (rrf_data_llm_gen)"
+  echo "# Lexical backend × A/B/C matrix (rrf_data_llm_gen)"
   echo ""
   echo "Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
   echo ""

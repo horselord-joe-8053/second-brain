@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.12
-"""Run ticket retrieval eval; set RETAIL_TICKET_HYBRID_SEARCH for V1 vs V1.1."""
+"""Run ticket retrieval eval against CSV or Postgres (`RETAIL_TICKET_SEARCH_MODE` A/B/C arms)."""
 
 from __future__ import annotations
 

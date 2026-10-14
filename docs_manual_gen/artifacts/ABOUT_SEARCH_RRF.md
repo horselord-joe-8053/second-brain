@@ -1,9 +1,9 @@
-<h1 id="about-search-rrf" style="color:#0d47a1;font-size:1.55em;font-weight:700;border-bottom:3px solid #1976d2;padding-bottom:0.3em;margin-top:0;background:linear-gradient(90deg,#e3f2fd 0%,transparent 55%)">Hybrid ticket search: from vector-only to weighted RRF (a V1 → V1.3 evolution)</h1>
+<h1 id="about-search-rrf" style="color:#0d47a1;font-size:1.55em;font-weight:700;border-bottom:3px solid #1976d2;padding-bottom:0.3em;margin-top:0;background:linear-gradient(90deg,#e3f2fd 0%,transparent 55%)">Hybrid ticket search: vector-only → equal RRF → term boost (V1 → V1.2)</h1>
 
 **Audience:** Engineers and product leaders building **repair-desk / retail** retrieval on **Postgres + pgvector**.  
-**Purpose:** Publishable narrative — *why* each ticket-search version exists, *what* we measured, and *what* we implement next.  
-**Status:** **living document** — V1.x search plan complete ([`REFACTOR_RETAIL_TICKET_SEARCH_V1X.md`](../ref_plan/completed/REFACTOR_RETAIL_TICKET_SEARCH_V1X.md)); lexical backends complete ([`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](../ref_plan/completed/REFACTOR_RETAIL_LEXICAL_BACKENDS.md)).  
-**Last updated:** 2026-10-13  
+**Purpose:** Publishable narrative — *why* each ticket-search version exists, *what* we measured, and *what* we ship.  
+**Status:** **living document** — **shipped modes:** `vector_only` | `rrf_normal` | `rrf_term_boosted` ([`REFACTOR_RETAIL_SEARCH_THREE_MODES.md`](../ref_plan/completed/REFACTOR_RETAIL_SEARCH_THREE_MODES.md)); lexical backends ([`REFACTOR_RETAIL_LEXICAL_BACKENDS.md`](../ref_plan/completed/REFACTOR_RETAIL_LEXICAL_BACKENDS.md)).  
+**Last updated:** 2026-10-14  
 **Context:** Samsung Australia retail **Second Brain** prototype (`second_brain` repo) — synthetic tickets, real **Gemini** embeddings, operator A/B on Postgres.
 
 <!-- Formulas use HTML (not $LaTeX$) so tables and Cursor preview render correctly. -->
@@ -20,11 +20,11 @@
 1. [Executive summary](#1-exec) — one-screen takeaway for LinkedIn readers.
 2. [The business problem](#2-problem) — paraphrase, twins, error codes.
 3. [Two retrieval legs](#3-legs) — semantic (pgvector) vs lexical (BM25 sidecar); why both matter.
-4. [Evolution timeline](#4-timeline) — visual journey V1 → V1.3.
+4. [Evolution timeline](#4-timeline) — visual journey V1 → V1.2 (three modes).
 5. [Version 0 — baseline V1 (vector only)](#5-v1) — FRU pattern; when it is enough.
 6. [Version 1 — V1.1 equal hybrid (`rrf_normal`)](#6-v11) — why add FTS + RRF; demo-era lesson.
-7. [Version 2 — V1.2 weighted fusion (`rrf_weighted`)](#7-v12) — 70/30 semantics-first.
-8. [Version 3 — V1.3 code boost (`rrf_weighted_boosted`)](#8-v13) — λ on parsed codes.
+7. [Historical — 70/30 weighted arm (removed)](#7-v12) — archive only.
+8. [Version 2 — V1.2 term boost (`rrf_term_boosted`)](#8-v12-term) — equal RRF + SAM-E λ.
 9. [Mathematics of fusion](#9-math) — RRF, weights, boost, tie-break.
 10. [Worked example: `eval-0006`](#10-example) — full query, tickets, scores.
 11. [Lexical leg deep dive](#11-lexical) — why lexical + semantic; legacy PG FTS lesson; BM25 backends.
@@ -33,7 +33,7 @@
 12. [Eval design and metrics](#12-eval) — gold, strata, what “win” means.
 13. [Results ledger](#13-results) — operator numbers; update after each run.
 14. [Config reference](#14-config) — env modes and code paths.
-15. [What comes after V1.3](#15-future) — reserved V1.x, not wiki “V2”.
+15. [What comes after V1.2](#15-future) — reserved V1.x, not wiki “V2”.
 
 <table>
 <thead>
@@ -41,7 +41,7 @@
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd;color:#0d47a1"><strong>Blue</strong></td><td style="background:#f5f5f5">§1–4 — problem, legs, timeline</td></tr>
-<tr><td style="background:#e0f2f1;color:#00695c"><strong>Teal</strong></td><td style="background:#f5f5f5">§5–8 — V1, V1.1, V1.2, V1.3 evolution</td></tr>
+<tr><td style="background:#e0f2f1;color:#00695c"><strong>Teal</strong></td><td style="background:#f5f5f5">§5–8 — V1, V1.1, V1.2 (+ §7 historical 70/30)</td></tr>
 <tr><td style="background:#ede7f6;color:#4527a0"><strong>Purple</strong></td><td style="background:#f5f5f5">§9 — formulas (HTML boxes + stacked fractions)</td></tr>
 <tr><td style="background:#fff3e0;color:#e65100"><strong>Orange</strong></td><td style="background:#f5f5f5">§10 — worked <code>eval-0006</code> example</td></tr>
 <tr><td style="background:#e1f5fe;color:#0277bd"><strong>Light blue</strong></td><td style="background:#f5f5f5">§11–13 — lexical, eval, results</td></tr>
@@ -61,12 +61,12 @@ We are building **prior-case lookup** for agents: given a live intake (symptoms,
 <tbody>
 <tr><td style="background:#e3f2fd"><strong>One leg is not enough</strong></td><td style="background:#fff3e0">Embeddings catch paraphrase; they can pick a <strong>wrong twin</strong> with the same symptoms. Keywords catch exact tokens (e.g. codes) but miss meaning if used naively.</td></tr>
 <tr><td style="background:#e3f2fd"><strong>Fusion ≠ rerank</strong></td><td style="background:#e8f5e9">We <strong>merge two ranked lists</strong> (RRF). We do not run a second neural reranker on top (that would be a different, costlier stage).</td></tr>
-<tr><td style="background:#e3f2fd"><strong>Stage the story</strong></td><td style="background:#ede7f6"><strong>V1.1</strong> = honest hybrid + rich FTS · <strong>V1.2</strong> = trust semantics more (70/30) · <strong>V1.3</strong> = strong code signal (λ) without requiring a filled DB column.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Stage the story</strong></td><td style="background:#ede7f6"><strong>V1.1</strong> = equal hybrid + BM25 leg · <strong>V1.2</strong> = same fusion + <strong>SAM-E###</strong> term λ when the intake names a code (no extra 70/30 leg).</td></tr>
 <tr><td style="background:#e3f2fd"><strong>Measure honestly</strong></td><td style="background:#ffebee">Hybrid “wins” only when <strong>fused rank #1 = gold</strong>, not when lexical merely saw gold somewhere in the list.</td></tr>
 </tbody>
 </table>
 
-**Demo-era headline (2026-10-11, synthetic 67-case eval):** vector **0.567** → equal hybrid **0.672**, entirely from **`error_code`** stratum (7 hybrid-only wins). That proved the *mechanism*; **V1.1 refactor** moves lexical search toward **production-shaped** token overlap, accepting short-term **`error_code`** regression until **V1.3** λ ships.
+**Demo-era headline (2026-10-11, synthetic 67-case eval):** vector **0.567** → equal hybrid **0.672**, entirely from **`error_code`** stratum (7 hybrid-only wins). That proved the *mechanism*; **production-shaped BM25** + **`rrf_term_boosted`** (V1.2) carries the code signal forward ([§13.2](#13-2-v1x) historical four-mode run → [§13.4](#13-4-demo-abc) current ABC demo).
 
 ---
 
@@ -136,17 +136,14 @@ graph TD
 ```mermaid
 graph TD
   V1[V1 vector_only\npgvector baseline]
-  V11[V1.1 rrf_normal\nEqual RRF + rich FTS]
-  V12[V1.2 rrf_weighted\n70% vector / 30% lexical]
-  V13[V1.3 rrf_weighted_boosted\n70/30 + code λ=10]
+  V11[V1.1 rrf_normal\nEqual RRF + BM25 leg]
+  V12[V1.2 rrf_term_boosted\nEqual RRF + SAM-E λ]
   V1 -->|lexical leg empty on paraphrase| V11
-  V11 -->|product: semantics usually wins| V12
-  V12 -->|codes must break twin ties| V13
+  V11 -->|codes must break twin ties| V12
 
   style V1 fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
   style V11 fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
-  style V12 fill:#fff8e1,stroke:#ff8f00,stroke-width:1px,font-size:9px
-  style V13 fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
+  style V12 fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
 ```
 
 <table>
@@ -156,8 +153,7 @@ graph TD
 <tbody>
 <tr><td style="background:#e3f2fd"><strong>V1</strong></td><td style="background:#e8f5e9"><code>vector_only</code></td><td style="background:#fff3e0">Establish FRU-style semantic baseline; simplest ops story.</td></tr>
 <tr><td style="background:#e3f2fd"><strong>V1.1</strong></td><td style="background:#e8f5e9"><code>rrf_normal</code></td><td style="background:#fff3e0">Lexical leg was empty on real paraphrase queries — hybrid must earn its keep with <strong>production FTS</strong>, not query hacks.</td></tr>
-<tr><td style="background:#e3f2fd"><strong>V1.2</strong></td><td style="background:#fff3e0"><code>rrf_weighted</code></td><td style="background:#fff3e0">In repair intake, <strong>meaning</strong> usually beats keyword overlap; down-weight lexical noise on paraphrase-heavy traffic.</td></tr>
-<tr><td style="background:#e3f2fd"><strong>V1.3</strong></td><td style="background:#ede7f6"><code>rrf_weighted_boosted</code></td><td style="background:#ede7f6">When a code is present, it is <strong>high value</strong> — add λ on parsed code only, without mandating a structured column in every ticket.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>V1.2</strong></td><td style="background:#ede7f6"><code>rrf_term_boosted</code></td><td style="background:#ede7f6">When a code is present, it is <strong>high value</strong> — add λ on parsed <strong>SAM-E###</strong> on top of the same equal RRF as V1.1 (no structured DB column required).</td></tr>
 </tbody>
 </table>
 
@@ -218,7 +214,7 @@ Postgres then required documents to match that **AND** query — twins with **SA
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd">Query tokens</td><td style="background:#ffebee">Tech line only</td><td style="background:#e8f5e9">Symptoms + model + code (light normalize)</td></tr>
-<tr><td style="background:#e3f2fd">Twin disambiguation</td><td style="background:#e8f5e9">Hard filter via code AND</td><td style="background:#fff3e0">Partial overlap + **V1.3** code boost</td></tr>
+<tr><td style="background:#e3f2fd">Twin disambiguation</td><td style="background:#e8f5e9">Hard filter via code AND</td><td style="background:#fff3e0">Partial overlap + **V1.2** term boost (λ)</td></tr>
 <tr><td style="background:#e3f2fd">LinkedIn honesty</td><td style="background:#fff3e0">Great for proving RRF mechanism</td><td style="background:#e8f5e9">What we deploy to real intakes</td></tr>
 </tbody>
 </table>
@@ -240,13 +236,15 @@ Postgres then required documents to match that **AND** query — twins with **SA
 
 <h3 id="6-5-why-next-v12" style="color:#00796b;font-size:1.05em;font-weight:600;margin-top:0.85em">6.5 Why we still want V1.2 after V1.1</h3>
 
-Equal RRF treats **keyword leg** as loud as **semantic leg**. In our product judgment, most intakes are **story-first** (symptoms, context); keywords should **break ties**, not **dominate** when vector is confident. Hence **70/30** — implemented as V1.2, not a breaking change to V1.1’s role as the “fair hybrid baseline.”
+Equal RRF fixes many **neighbor-bait** cases when the keyword leg ranks gold first ([§13.4](#13-4-demo-abc)). When **both** legs still agree on the wrong twin, a pasted **SAM-E###** must behave like a **strong term match** — that is **`rrf_term_boosted`**: same **50/50** fusion as V1.1, plus λ on parsed code ([§8](#8-v12-term)).
 
-**Expected tradeoff:** After rich FTS lands, **`error_code`** recall may **dip vs demo** until V1.3 — **accepted** (parent plan **D18**).
+**Note:** A brief **70/30 weighted** experiment lived in repo history; it was **removed 2026-10-14** ([§7](#7-v12)) as unnecessary complexity.
 
 ---
 
-<h2 id="7-v12" style="color:#00695c;font-size:1.22em;font-weight:650;border-left:5px solid #00897b;padding-left:10px;margin-top:1.1em;background:#e0f2f1">7. Version 2 — V1.2 weighted fusion (`rrf_weighted`)</h2>
+<h2 id="7-v12" style="color:#00695c;font-size:1.22em;font-weight:650;border-left:5px solid #00897b;padding-left:10px;margin-top:1.1em;background:#e0f2f1">7. Version 2 — V1.2 weighted fusion (`rrf_weighted`) — superseded</h2>
+
+<span style="background:#fff9c4;padding:2px 6px">**Historical:** 70/30 arm removed 2026-10-14. Shipped V1.2 is **`rrf_term_boosted`** (equal RRF + SAM-E λ) — [§13.4](#13-4-demo-abc), [§14](#14-config).</span>
 
 <h3 id="7-1-belief" style="color:#00796b;font-size:1.05em;font-weight:600;margin-top:0.85em">7.1 Product belief</h3>
 
@@ -272,27 +270,29 @@ So we scale each leg’s RRF contributions:
 </tbody>
 </table>
 
-<h3 id="7-3-why-next-v13" style="color:#00796b;font-size:1.05em;font-weight:600;margin-top:0.85em">7.3 Why V1.3 follows V1.2</h3>
+<h3 id="7-3-archive-note" style="color:#00796b;font-size:1.05em;font-weight:600;margin-top:0.85em">7.3 Archive note</h3>
 
-Down-weighting lexical mass **helps paraphrase** but **hurts** the case where **only the code** separates twins. V1.3 adds a **surgical** boost on **`SAM-E###`** — not on the whole lexical leg — so codes can **punch above** 30% weight when present.
+Down-weighting lexical mass was the **stated rationale** for 70/30; we later **dropped that arm** and moved the code story to **`rrf_term_boosted`** ([§8](#8-v12-term)) with **equal** leg weights plus λ.
 
 ---
 
-<h2 id="8-v13" style="color:#00695c;font-size:1.22em;font-weight:650;border-left:5px solid #00897b;padding-left:10px;margin-top:1.1em;background:#e0f2f1">8. Version 3 — V1.3 code boost (`rrf_weighted_boosted`)</h2>
+<h2 id="8-v12-term" style="color:#00695c;font-size:1.22em;font-weight:650;border-left:5px solid #00897b;padding-left:10px;margin-top:1.1em;background:#e0f2f1">8. Version 2 — V1.2 term boost (`rrf_term_boosted`)</h2>
+
+**Shipped config mode:** `RETAIL_TICKET_SEARCH_MODE=rrf_term_boosted` (operator arm **C** / product **V1.2**).
 
 <h3 id="8-1-policy" style="color:#00796b;font-size:1.05em;font-weight:600;margin-top:0.85em">8.1 Policy (locked for this iteration)</h3>
 
 - **Parse** `\bSAM-E\d{3}\b` from query and from stored text — **no mandatory** `diagnostic_code` column (real tickets often omit structured fields).
 - **λ = 10** default (`RETAIL_LEXICAL_CODE_BOOST`) — **prefer strong over weak** code influence; fixed default, no holdout sweep this iteration.
-- Apply λ **only** to the **code-specific** signal, on top of **V1.2** 70/30 fusion.
+- **Fusion weights:** **same 50/50 RRF as V1.1** — λ is added **after** leg fusion (`code_boost_scores` in `rrf.py`), not via a heavier vector leg.
 
 <h3 id="8-2-stack" style="color:#00796b;font-size:1.05em;font-weight:600;margin-top:0.85em">8.2 Three-layer lexical story (article framing)</h3>
 
 ```mermaid
 graph TD
   L1[Layer 1 — Light normalize\nstrip fluff, align prefixes]
-  L2[Layer 2 — Sparse rank\nts_rank_cd partial match]
-  L3[Layer 3 — Code boost V1.3\nλ on SAM-E### only]
+  L2[Layer 2 — BM25 rank\nTantivy sidecar]
+  L3[Layer 3 — Term boost V1.2\nλ on SAM-E### only]
   L1 --> L2 --> L3
 
   style L1 fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
@@ -300,11 +300,11 @@ graph TD
   style L3 fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
 ```
 
-This matches industry pattern: **rich text BM25/FTS** + **entity boost** (here, regex-parsed code instead of a facet column).
+This matches industry pattern: **rich text BM25** + **entity boost** (regex-parsed code instead of a facet column).
 
 <h3 id="8-3-limits" style="color:#00796b;font-size:1.05em;font-weight:600;margin-top:0.85em">8.3 Known limitations (explicit)</h3>
 
-- **Negation** (“not caused by SAM-E176”) — low priority for templated intakes; not solved in V1.3.
+- **Negation** (“not caused by SAM-E176”) — low priority for templated intakes; not solved in V1.2.
 - **λ too high** — could overweight a mistyped code; we start at 10 and tune in a future **V1.x** if prod telemetry demands it.
 
 ---
@@ -330,11 +330,13 @@ If <strong>d</strong> is **absent** from a leg’s list, that leg contributes **
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd">V1.1 <code>rrf_normal</code></td><td style="background:#e8f5e9"><strong>0.5</strong></td><td style="background:#e8f5e9"><strong>0.5</strong></td></tr>
-<tr><td style="background:#e3f2fd">V1.2 / V1.3</td><td style="background:#fff3e0"><strong>0.7</strong></td><td style="background:#fff3e0"><strong>0.3</strong></td></tr>
+<tr><td style="background:#e3f2fd">V1.2 <code>rrf_term_boosted</code></td><td style="background:#e8f5e9"><strong>0.5</strong></td><td style="background:#e8f5e9"><strong>0.5</strong></td></tr>
 </tbody>
 </table>
 
-<h3 id="9-3-boost" style="color:#5e35b1;font-size:1.05em;font-weight:600;margin-top:0.85em">9.3 V1.3 code boost term</h3>
+*(Removed 2026-10-14: 70/30 `rrf_weighted` — see [§7](#7-v12).)*
+
+<h3 id="9-3-boost" style="color:#5e35b1;font-size:1.05em;font-weight:600;margin-top:0.85em">9.3 V1.2 term boost (additive)</h3>
 
 Let <strong>c(q)</strong> be the parsed code from query <strong>q</strong> (or empty). Let <strong>match(d, c)</strong> be 1 if ticket <strong>d</strong>’s indexed text contains the same code, else 0.
 
@@ -466,11 +468,11 @@ graph LR
 
 1. **Drop fluff** — prefixes, case refs; keep content tokens (`fts_query_text`, `search_text_for_fts`).
 2. **Score partial overlap** — BM25 + inverted index: any shared query term can surface a ticket; rank by weighted term overlap (not SQL all-or-nothing AND).
-3. **Layer code boost (V1.3)** — treat `SAM-E###` like a high-value entity in Python fusion, not the entire query rewrite.
+3. **Layer term boost (V1.2)** — treat `SAM-E###` like a high-value entity in Python fusion, not the entire query rewrite.
 
 <h3 id="11-4-six-way" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">11.4 Six-way snapshot (100k+ tickets)</h3>
 
-**Scope:** Samsung retail ticket plane — **Postgres stays SoR**; dense leg stays **pgvector** unless you explicitly migrate vectors. Lexical leg must return **ordered `ticket_id` lists** for **RRF** in `retail_brain`. **V1.3 λ** stays in Python (`code_boost_scores`) regardless of engine.
+**Scope:** Samsung retail ticket plane — **Postgres stays SoR**; dense leg stays **pgvector** unless you explicitly migrate vectors. Lexical leg must return **ordered `ticket_id` lists** for **RRF** in `retail_brain`. **V1.2 term λ** stays in Python (`code_boost_scores`) regardless of engine.
 
 **Shipped switch:** `lexical_ids()` no longer runs Postgres full-text search. `RETAIL_LEXICAL_BACKEND` is `tantivy` (default), `bm25x`, `parade_db`, or `open_search`. Code lives in `scripts/retail/retail_brain/lexical_search/`. ParadeDB and OpenSearch are optional services; default verify uses Tantivy only.
 
@@ -520,7 +522,7 @@ LIMIT 20;
 <tbody>
 <tr><td style="background:#e3f2fd"><strong><code>websearch_to_tsquery</code> AND semantics</strong></td><td style="background:#ffebee">Lexical leg <strong>empty</strong> on many paraphrase eval rows (<code>lexical_nonempty</code> 0/10 on LLM v2 corpus — [§13.3](#13-3-llm-v2))</td><td style="background:#f5f5f5">Query tokens must <em>all</em> match in too strict a sense; live intake ≠ stored CRM wording → no @@ match, no ranked list for RRF.</td></tr>
 <tr><td style="background:#e3f2fd"><strong>Not true BM25</strong></td><td style="background:#fff3e0">Demo wins often needed <strong>query rewrite hacks</strong> (collapse to tech-line only — [§6.2](#6-2-demo))</td><td style="background:#f5f5f5"><code>ts_rank_cd</code> is coverage-density, not Lucene BM25; weak IDF story for rare codes vs common city/model tokens.</td></tr>
-<tr><td style="background:#e3f2fd"><strong>Hybrid needs a graded leg</strong></td><td style="background:#fff3e0">Production-shaped FTS + equal/70-30 RRF <strong>did not lift</strong> <code>error_code</code> until V1.3 λ in SQL era ([§13.2](#13-2-v1x))</td><td style="background:#f5f5f5">RRF requires a <strong>non-empty, sensibly ordered</strong> lexical list; empty leg = vector-only in practice.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Hybrid needs a graded leg</strong></td><td style="background:#fff3e0">Production-shaped FTS + equal RRF <strong>did not lift</strong> <code>error_code</code> until term λ in SQL era ([§13.2](#13-2-v1x))</td><td style="background:#f5f5f5">RRF requires a <strong>non-empty, sensibly ordered</strong> lexical list; empty leg = vector-only in practice.</td></tr>
 <tr><td style="background:#e3f2fd"><strong>Wrong tool for the job</strong></td><td style="background:#e8f5e9">Same normalize text worked once moved to <strong>BM25 inverted index</strong> (Tantivy matrix — [§11.4.2](#11-4-2-tantivy))</td><td style="background:#f5f5f5">Text similarity at scale wants <strong>posting lists + BM25</strong>, not one SQL filter that drops candidates before rank.</td></tr>
 </tbody>
 </table>
@@ -532,7 +534,7 @@ bash cursor_gen/retail_v11_prep/03_pg_up_and_load.sh
 export RETAIL_LEXICAL_BACKEND=tantivy
 python scripts/retail/rebuild_lexical_index.py
 export RETAIL_TICKET_SEARCH_MODE=rrf_normal
-bash cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh
+bash cursor_gen/retail_v11_prep/05_run_abc_postgres.sh
 ```
 
 **Do not “interim soften” PG FTS for hybrid promotion** (`plainto_tsquery`, OR hacks) — that keeps a foot in a leg that already failed A/B. Use ②–⑥ for lexical similarity; keep Postgres for **SoR + pgvector**.
@@ -632,25 +634,33 @@ flowchart LR
 
 **Not indexed as n² term pairs:** the index stores **one index term → ids** per key, not “black + screen” as a single dictionary entry unless you add phrase fields. Multi-token intent is recovered at **score time** when several **query terms** match **document terms** in the **same** ticket.
 
-<h5 id="11-4-2-eval-0001" style="color:#00695c;font-size:0.98em;font-weight:600;margin-top:0.85em">Concrete setup (`eval-0001`)</h5>
+<h5 id="11-4-2-eval-0001" style="color:#00695c;font-size:0.98em;font-weight:600;margin-top:0.85em">Concrete setup (`eval-0001`, P4 product-story B-lift)</h5>
 
-**Query (after `fts_query_text`):**
+**Query (demo eval intake — closed-ticket bait + open issue):**
 
 ```text
-screen stays black when answering calls on Galaxy A15 5G in Sydney.
-Also seeing reference SAM-E100 in the support app.
+5G handover drops in Sydney on Galaxy A15 5G when battery low
+(customer repeating phrasing from an older closed ticket).
+Open problem: black screen after calls after weekend road trip.
 ```
 
 **Gold ticket `T-0042-000000` (indexed `body`, shortened):**
 
 ```text
 Need help with Galaxy A15 5G: black screen after calls (visited Sydney store).
-… Phone displayed SAM-E100 on the service menu.
+Started after a weekend road trip. … Phone displayed SAM-E100 on the service menu.
+```
+
+**Lookalike neighbor `T-0042-000042` (vector leg often #1 under `vector_only`):**
+
+```text
+Customer reports: 5G handover drops data on Galaxy A15 5G in Sydney, NSW.
+Worse when battery is below twenty percent. …
 ```
 
 **Tantivy also requires:** `model:"Galaxy A15 5G"` (eval **model filter** — raw keyword field, not part of the inverted `body` map).
 
-**Measured lexical top-1 (Tantivy matrix trace, `rrf_data_llm_gen`):** gold **15.67** BM25 vs next ticket **7.23** — artifact `tmp/simulated_data/reports/lexical_matrix/tantivy_trace/pg_ab_v1_1_normal_trace.json`.
+**Measured legs (Postgres + Tantivy, `rrf_data_llm_gen`):** dense **#1** ≈ neighbor **042**; lexical **#1** = gold **000**; **`rrf_normal`** fused **#1** = gold — `tmp/simulated_data/reports/pg_ab_v1_1_normal.json`.
 
 <h5 id="11-4-2-eval-0001-steps" style="color:#00695c;font-size:0.98em;font-weight:600;margin-top:0.85em">Step-by-step on this example</h5>
 
@@ -660,11 +670,11 @@ Need help with Galaxy A15 5G: black screen after calls (visited Sydney store).
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd"><strong>1 — Index build</strong></td><td style="background:#f5f5f5">For each resolved ticket, `search_text_for_fts` → write `body`, `ticket_id`, `model`. Tokenize `body`; each <strong>index term</strong> appends this ticket id to its posting list.</td><td style="background:#fff3e0">Index term <code>sam-e100</code> → list includes <code>T-0042-000000</code>; <code>sydney</code> → gold plus others.</td></tr>
-<tr><td style="background:#e3f2fd"><strong>2 — Query normalize</strong></td><td style="background:#f5f5f5"><code>fts_query_text(live intake)</code> → search string (eval template path or strip fallback).</td><td style="background:#e8f5e9">Symptom + model + city + <code>SAM-E100</code> kept in running text — not collapsed to code-only.</td></tr>
-<tr><td style="background:#e3f2fd"><strong>3 — Query terms → lookup</strong></td><td style="background:#f5f5f5">Tokenize query string → <strong>query terms</strong>; for each, fetch posting list from the term dictionary.</td><td style="background:#fff3e0">Union of lists for query terms <code>screen</code>, <code>black</code>, <code>calls</code>, <code>sydney</code>, <code>sam-e100</code>, … → candidate ticket set (includes gold and neighbors).</td></tr>
+<tr><td style="background:#e3f2fd"><strong>2 — Query normalize</strong></td><td style="background:#f5f5f5"><code>fts_query_text(live intake)</code> → search string (eval template path or strip fallback).</td><td style="background:#e8f5e9">Open-issue phrases (<code>black</code>, <code>screen</code>, <code>calls</code>, <code>road</code>, <code>trip</code>) plus bait handover tokens.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>3 — Query terms → lookup</strong></td><td style="background:#f5f5f5">Tokenize query string → <strong>query terms</strong>; for each, fetch posting list from the term dictionary.</td><td style="background:#fff3e0">Union for <code>black</code>, <code>screen</code>, <code>calls</code>, <code>sydney</code>, <code>handover</code>, … → gold and neighbor **042** both candidates.</td></tr>
 <tr><td style="background:#e3f2fd"><strong>4 — Model filter</strong></td><td style="background:#f5f5f5">Restrict to documents where stored <code>model</code> equals filter (parallel to SQL <code>WHERE model = …</code>).</td><td style="background:#e8f5e9">Only <strong>Galaxy A15 5G</strong> tickets remain in the candidate pool.</td></tr>
-<tr><td style="background:#e3f2fd"><strong>5 — BM25 score</strong></td><td style="background:#f5f5f5">For each candidate, sum scores for each <strong>query term</strong> that appears as a <strong>document term</strong> in that ticket (term frequency × IDF). Cost ~ **O(# query terms × matches)** — not O(all document terms²).</td><td style="background:#ede7f6">Gold matches <strong>many</strong> query terms including rare index term <code>sam-e100</code> → **~15.67**. <code>T-0042-000042</code> shares city/symptom terms but not the code term → **~7.23**.</td></tr>
-<tr><td style="background:#e3f2fd"><strong>6 — Top-k out</strong></td><td style="background:#f5f5f5">Return ordered <code>ticket_id</code> list to Python; RRF merges with vector leg.</td><td style="background:#e8f5e9">Lexical #1 = gold; vector leg also #1 → fusion keeps gold on top for this row.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>5 — BM25 score</strong></td><td style="background:#f5f5f5">For each candidate, sum scores for each <strong>query term</strong> that appears as a <strong>document term</strong> in that ticket (term frequency × IDF). Cost ~ **O(# query terms × matches)** — not O(all document terms²).</td><td style="background:#ede7f6">Gold matches <strong>open-issue</strong> terms (<code>black</code>, <code>screen</code>, <code>calls</code>, <code>road</code>, <code>trip</code>) strongly; **042** wins on handover/battery overlap only.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>6 — Top-k out</strong></td><td style="background:#f5f5f5">Return ordered <code>ticket_id</code> list to Python; RRF merges with vector leg.</td><td style="background:#e8f5e9">Lexical **#1** = gold; dense **#1** = **042** → equal RRF (**B**) promotes gold to fused **#1**; dense-only (**A**) stays on **042**.</td></tr>
 </tbody>
 </table>
 
@@ -927,12 +937,12 @@ Each eval row: **`expected_ticket_ids = [source_ticket_id]`** — generators set
 </tbody>
 </table>
 
-<h3 id="12-3-abcd" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">12.3 A/B/C/D protocol (Phase 7 target)</h3>
+<h3 id="12-3-abc" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">12.3 A/B/C protocol (operator)</h3>
 
 Same Postgres snapshot, same embeddings — only **`RETAIL_TICKET_SEARCH_MODE`** changes:
 
 ```text
-vector_only → rrf_normal → rrf_weighted → rrf_weighted_boosted
+vector_only → rrf_normal → rrf_term_boosted
 ```
 
 Report **overall** and **by stratum**; promotion rule **D6** still cares about **paraphrase false reuse**, not headline alone.
@@ -959,7 +969,9 @@ Report **overall** and **by stratum**; promotion rule **D6** still cares about *
 
 Artifacts: `scripts/retail/eval/reports/pg_baseline_v1.json`, `pg_ab_v1_v11.json`, `phase6_operator_log.md`.
 
-<h3 id="13-2-v1x" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.2 Production-shaped V1.1 / V1.2 / V1.3 (2026-10-12)</h3>
+<h3 id="13-2-v1x" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.2 Historical — four-mode PG-FTS era (2026-10-12, pre–three-mode collapse)</h3>
+
+<span style="background:#fff9c4;padding:2px 6px">**Archive:** includes removed `rrf_weighted` (70/30) and old `rrf_weighted_boosted` name. Current shipped ladder: [§13.4](#13-4-demo-abc).</span>
 
 <table>
 <thead>
@@ -973,9 +985,7 @@ Artifacts: `scripts/retail/eval/reports/pg_baseline_v1.json`, `pg_ab_v1_v11.json
 </tbody>
 </table>
 
-**Read:** Rich FTS + equal or 70/30 fusion **does not lift** `error_code` until **V1.3 λ** — as expected (**D18**). **V1.3** recovers **7/7** `error_code` and overall **0.672**, matching demo-era hybrid headline with production-shaped lexical on other strata.
-
-Run: `cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh`.
+**Read:** Rich FTS + equal fusion **did not lift** `error_code` until **term λ** on the old boosted mode — as expected (**D18**). That boosted arm is now **`rrf_term_boosted`** (V1.2 product label) with equal RRF weights.
 
 **Maintenance:** After each operator run, update this table and add **“what surprised us”** under the matching version section above.
 
@@ -995,27 +1005,26 @@ Profile `tmp/simulated_data/` — **60** tickets, **10** eval, **no twin clones*
 </tbody>
 </table>
 
-**Read:** Small **N=10** gold set + **distinct** ticket bodies + **SAM-E in document embed** → **vector-only already perfect** on the *original* eval wording; Postgres FTS leg still **empty** on paraphrase queries (`websearch` AND). **Do not** treat 1.00 as proof that V1.1–V1.3 add value on that slice—only that the v2 corpus is easy for dense retrieval. Compare separately to **prag_gen** (§13.2) and **§13.4** (demo eval after Tantivy).
+**Read (historical snapshot):** Original eval wording + PG FTS leg **empty** on paraphrase (`websearch` AND). **Do not** treat 1.00 as proof hybrid added value on that slice. See **§13.4** for Tantivy + teaching eval after three-mode collapse.
 
-<h3 id="13-4-demo-abcd" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.4 Demo eval for A/B/C/D ladder (`rrf_data_llm_gen`, 2026-10-14)</h3>
+<h3 id="13-4-demo-abc" style="color:#0288d1;font-size:1.05em;font-weight:600;margin-top:0.85em">13.4 Demo eval — three-mode A/B/C (`rrf_data_llm_gen`, 2026-10-14)</h3>
 
-**Eval-only:** ten rows from `scripts/retail/seed/abcd_demo_eval_spec.py` (neighbor bait + SAM-E in intake). **Lexical:** `RETAIL_LEXICAL_BACKEND=tantivy`; rebuild after PG load. **Not** a D6 promotion gate—teaching narrative only.
+**Eval-only:** ten rows from `abcd_demo_eval_spec.py` (5 paraphrase-easy, 3 **hybrid_stress** B-lift rows with **open issue + closed/mis-route bait**, 2 SAM-E C-lift). **60-row CSV unchanged.** **Lexical:** Tantivy. Teaching only—not a promotion gate.
 
 <table>
 <thead>
 <tr style="background:#0277bd;color:white"><th>Mode</th><th>recall@1</th><th>lexical_nonempty</th><th>Reports</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd"><code>vector_only</code> (A / V1)</td><td style="background:#fff3e0"><strong>0.80</strong> (8/10)</td><td style="background:#f5f5f5">—</td><td style="background:#f5f5f5"><code>pg_baseline_v1.json</code></td></tr>
-<tr><td style="background:#e3f2fd"><code>rrf_normal</code> (B / V1.1)</td><td style="background:#e8f5e9"><strong>1.00</strong> (10/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_1_normal.json</code></td></tr>
-<tr><td style="background:#e3f2fd"><code>rrf_weighted</code> (C / V1.2)</td><td style="background:#fff3e0"><strong>0.80</strong> (8/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_2_weighted.json</code></td></tr>
-<tr><td style="background:#e3f2fd"><code>rrf_weighted_boosted</code> (D / V1.3)</td><td style="background:#e8f5e9"><strong>1.00</strong> (10/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_3_boosted.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>vector_only</code> (A / V1)</td><td style="background:#fff3e0"><strong>0.50</strong> (5/10)</td><td style="background:#f5f5f5">—</td><td style="background:#f5f5f5"><code>pg_baseline_v1.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_normal</code> (B / V1.1)</td><td style="background:#fff3e0"><strong>0.80</strong> (8/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_1_normal.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_term_boosted</code> (C / V1.2)</td><td style="background:#e8f5e9"><strong>1.00</strong> (10/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_2_term_boosted.json</code></td></tr>
 </tbody>
 </table>
 
-**Read (P4 retune, 2026-10-14):** **B** now lifts **+2** on `eval-0001` / `eval-0005` (gold **lexical rank 1**, neighbor wins dense). **C** drops back to **0.80** on those rows—**70/30 vector-first** re-picks the bait when dense rank-1 is wrong (documented **H10** tradeoff). **D** still hits **1.00** via SAM-E λ on the same two rows plus existing code-stratum rows.
+**Read:** Strict ladder **A &lt; B &lt; C** on recall@1. **B** adds equal RRF when the **dense (embedding) leg** picks a lookalike neighbor but the **lexical leg** ranks the gold ticket first (return-call / mis-routed intake on `eval-0001`, `eval-0005`, `eval-0007`). **C** adds **SAM-E###** term λ on equal RRF—wins when both legs tie on the wrong twin (`eval-0003`, `eval-0010`). Removed legacy **70/30** `rrf_weighted` arm (see [§14](#14-config)).
 
-Run: `apply_abcd_demo_eval.py` then `cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh`.
+Run: `apply_abcd_demo_eval.py` then `cursor_gen/retail_v11_prep/05_run_abc_postgres.sh`.
 
 ---
 
@@ -1023,10 +1032,9 @@ Run: `apply_abcd_demo_eval.py` then `cursor_gen/retail_v11_prep/05_run_abcd_post
 
 ```bash
 export RETAIL_TICKET_SEARCH_MODE=vector_only          # V1
-export RETAIL_TICKET_SEARCH_MODE=rrf_normal           # V1.1
-export RETAIL_TICKET_SEARCH_MODE=rrf_weighted         # V1.2
-export RETAIL_TICKET_SEARCH_MODE=rrf_weighted_boosted # V1.3
-export RETAIL_LEXICAL_CODE_BOOST=10                   # V1.3 λ
+export RETAIL_TICKET_SEARCH_MODE=rrf_normal           # V1.1 equal RRF
+export RETAIL_TICKET_SEARCH_MODE=rrf_term_boosted     # V1.2 equal RRF + SAM-E λ
+export RETAIL_LEXICAL_CODE_BOOST=10                   # V1.2 term boost λ
 export RETAIL_LEXICAL_BACKEND=tantivy                 # tantivy | bm25x | parade_db | open_search
 
 # Legacy until migration:
@@ -1050,9 +1058,9 @@ LIMIT $limit;
 
 ---
 
-<h2 id="15-future" style="color:#455a64;font-size:1.22em;font-weight:650;border-left:5px solid #78909c;padding-left:10px;margin-top:1.1em;background:#eceff1">15. What comes after V1.3</h2>
+<h2 id="15-future" style="color:#455a64;font-size:1.22em;font-weight:650;border-left:5px solid #78909c;padding-left:10px;margin-top:1.1em;background:#eceff1">15. What comes after V1.2</h2>
 
-Reserve **V1.4, V1.5, …** for ticket-plane tweaks (tunable w<sub>v</sub>/w<sub>l</sub>, phrase rules, **lexical backend tuning via [§11.4](#11-4-six-way)** — default **② Tantivy**, alternate **③ bm25x**, cross-encoder rerank experiments) — each with the same article pattern: **hypothesis → change → measured stratum table**.
+Reserve **V1.3, V1.4, …** for ticket-plane tweaks (phrase rules, λ tuning, **lexical backend tuning via [§11.4](#11-4-six-way)** — default **② Tantivy**, alternate **③ bm25x**, cross-encoder rerank experiments) — each with the same article pattern: **hypothesis → change → measured stratum table**. **Not** revisiting 70/30 leg weights unless a new spec reopens that experiment.
 
 **Samsung wiki automation** remains a **separate program version** in the parent refactor (exports, themes, cron) — not numbered as V1.x.
 
@@ -1060,6 +1068,6 @@ Reserve **V1.4, V1.5, …** for ticket-plane tweaks (tunable w<sub>v</sub>/w<sub
 
 <h2 id="linkedin-blurb" style="color:#c62828;font-size:1.22em;font-weight:650;border-left:5px solid #e53935;padding-left:10px;margin-top:1.1em;background:#ffebee">Optional LinkedIn pull-quote</h2>
 
-> We staged hybrid search for repair tickets: **vector-only baseline → equal RRF → 70/30 semantics-first → code boost λ** — measuring each step on frozen gold, not tuning eval to match top-k. Demo hybrid beat vector **0.67 vs 0.57** entirely on **error-code** rows where embeddings picked the wrong twin; production-shaped FTS and weighted fusion are the next honest chapters.
+> We staged hybrid search for repair tickets: **vector-only → equal RRF → SAM-E term boost λ** on the same fusion weights — measuring each step on frozen gold. Demo hybrid beat vector **0.67 vs 0.57** on **error-code** rows where embeddings picked the wrong twin; production BM25 + term boost is the shipped V1.2 story ([§13.4](#13-4-demo-abc)).
 
 *Update this blurb when §13.2 fills in.*

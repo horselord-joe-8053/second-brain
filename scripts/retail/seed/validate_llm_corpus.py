@@ -1,5 +1,8 @@
 #!/usr/bin/env python3.12
-"""Validate tmp/simulated_data llm_gen corpus (REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL)."""
+"""Validate tmp/simulated_data llm_gen corpus (CSV + 10-row eval JSONL).
+
+Checks ``demo_lift`` ∈ {vector_only, rrf_normal, rrf_term_boosted} when present.
+"""
 
 from __future__ import annotations
 
@@ -17,7 +20,7 @@ from retail_brain.text_normalize import extract_diag_code  # noqa: E402
 
 _SAM = re.compile(r"SAM-E\d{3}", re.I)
 _DEMO_LIFT = frozenset(
-    {"vector_only", "rrf_normal", "rrf_weighted", "rrf_weighted_boosted"},
+    {"vector_only", "rrf_normal", "rrf_term_boosted"},
 )
 _REQUIRED_EVAL_KEYS = (
     "eval_id",

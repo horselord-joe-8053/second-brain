@@ -3,7 +3,7 @@
 Flow for hybrid modes (``rrf_*``):
   1. ``vector_ids`` — embed query, ORDER BY ``query_embedding <-> query`` on ``service_queries``.
   2. ``lexical_ids`` — ordered ticket ids from ``RETAIL_LEXICAL_BACKEND`` (default Tantivy on disk).
-  3. ``_fuse_pg`` — reciprocal rank fusion; optional V1.3 diag-code boost uses ``search_text`` from PG.
+  3. ``_fuse_pg`` — reciprocal rank fusion; optional V1.2 term boost uses ``search_text`` from PG.
 
 Postgres full-text search is intentionally **not** used for the keyword leg; see ``lexical_search/``.
 ``lexical_ids`` keeps a ``cur`` parameter so callers (eval, reload scripts) need not change signatures.

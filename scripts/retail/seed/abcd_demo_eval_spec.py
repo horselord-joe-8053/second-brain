@@ -1,4 +1,4 @@
-"""Frozen spec for ten eval rows that demo the A/B/C/D (V1→V1.3) hybrid ladder on llm_gen."""
+"""Frozen spec for ten eval rows that demo the A/B/C (V1→V1.2) hybrid ladder on llm_gen."""
 
 from __future__ import annotations
 
@@ -8,14 +8,13 @@ DEMO_LIFT_MODES = frozenset(
     {
         "vector_only",
         "rrf_normal",
-        "rrf_weighted",
-        "rrf_weighted_boosted",
+        "rrf_term_boosted",
     }
 )
 
 
 class AbcdDemoEvalRow(TypedDict):
-    """One eval JSONL row plus authoring metadata for the hybrid demo ladder."""
+    """One eval JSONL row plus ``demo_lift`` (first mode expected to hit gold for authoring QA)."""
 
     eval_id: str
     query: str
@@ -26,14 +25,14 @@ class AbcdDemoEvalRow(TypedDict):
     demo_lift: str
 
 
-# Authoring intent: neighbor-bait wording + gold evidence (SAM-E / tokens). Tune with operator A/B/C/D.
+# Mix: 5 vector-easy, 3 hybrid_stress (B lift: open issue + closed/misroute bait), 2 SAM-E (C lift).
 ABCD_DEMO_EVAL_ROWS: list[AbcdDemoEvalRow] = [
     {
         "eval_id": "eval-0001",
         "query": (
-            "5G handover drops in Sydney on Galaxy A15 5G when battery low. "
-            "Customer also sees black screen after calls after weekend road trip. "
-            "Samsung Members shows SAM-E100."
+            "5G handover drops in Sydney on Galaxy A15 5G when battery low "
+            "(customer repeating phrasing from an older closed ticket). "
+            "Open problem: black screen after calls after weekend road trip."
         ),
         "model_filter": "Galaxy A15 5G",
         "expected_ticket_ids": ["T-0042-000000"],
@@ -44,26 +43,26 @@ ABCD_DEMO_EVAL_ROWS: list[AbcdDemoEvalRow] = [
     {
         "eval_id": "eval-0002",
         "query": (
-            "Customer in Canberra with Galaxy A25 5G: tap-to-pay at the terminal does nothing, "
-            "no damage to the phone."
+            "Brisbane Galaxy A25 5G: mobile data drops during 5G handover when battery "
+            "below twenty percent."
         ),
         "model_filter": "Galaxy A25 5G",
-        "expected_ticket_ids": ["T-0042-000005"],
-        "source_ticket_id": "T-0042-000005",
+        "expected_ticket_ids": ["T-0042-000002"],
+        "source_ticket_id": "T-0042-000002",
         "stratum": "paraphrase",
         "demo_lift": "vector_only",
     },
     {
         "eval_id": "eval-0003",
         "query": (
-            "Galaxy A25 5G in Brisbane: after phone calls the display stays black until reboot. "
-            "Error reference SAM-E110 in the support app."
+            "Customer reports: 5G handover drops data on Galaxy A25 5G in Brisbane, QLD. "
+            "Worse when battery is below twenty percent. Samsung Members shows SAM-E110."
         ),
         "model_filter": "Galaxy A25 5G",
         "expected_ticket_ids": ["T-0042-000020"],
         "source_ticket_id": "T-0042-000020",
         "stratum": "code_in_query",
-        "demo_lift": "rrf_weighted_boosted",
+        "demo_lift": "rrf_term_boosted",
     },
     {
         "eval_id": "eval-0004",
@@ -79,9 +78,9 @@ ABCD_DEMO_EVAL_ROWS: list[AbcdDemoEvalRow] = [
     {
         "eval_id": "eval-0005",
         "query": (
-            "Galaxy A15 5G Sydney: ghost touches near edges when battery low. "
-            "Separate symptom: fingerprint reader slow since weekend road trip. "
-            "App lists SAM-E115."
+            "Ghost touches near edges on Galaxy A15 5G in Sydney when battery low "
+            "(customer repeating a closed-ticket script). "
+            "Open problem: fingerprint reader slow since weekend road trip."
         ),
         "model_filter": "Galaxy A15 5G",
         "expected_ticket_ids": ["T-0042-000030"],
@@ -103,14 +102,14 @@ ABCD_DEMO_EVAL_ROWS: list[AbcdDemoEvalRow] = [
     {
         "eval_id": "eval-0007",
         "query": (
-            "Adelaide intake: Galaxy A16 5G fingerprint reader became slow after a road trip. "
-            "Technician note mentions SAM-E105."
+            "Melbourne customer reports NFC wallet fails at checkout on Galaxy A16 5G. "
+            "Open problem on the Adelaide dual-SIM handset: fingerprint reader slow after weekend road trip."
         ),
         "model_filter": "Galaxy A16 5G",
         "expected_ticket_ids": ["T-0042-000010"],
         "source_ticket_id": "T-0042-000010",
-        "stratum": "code_in_query",
-        "demo_lift": "rrf_weighted_boosted",
+        "stratum": "hybrid_stress",
+        "demo_lift": "rrf_normal",
     },
     {
         "eval_id": "eval-0008",
@@ -121,30 +120,31 @@ ABCD_DEMO_EVAL_ROWS: list[AbcdDemoEvalRow] = [
         "expected_ticket_ids": ["T-0042-000035"],
         "source_ticket_id": "T-0042-000035",
         "stratum": "paraphrase",
-        "demo_lift": "rrf_normal",
+        "demo_lift": "vector_only",
     },
     {
         "eval_id": "eval-0009",
         "query": (
-            "Brisbane Galaxy A25 5G: mobile data drops during 5G handover when battery "
-            "below twenty percent."
+            "Customer in Canberra with Galaxy A25 5G: tap-to-pay at the terminal does nothing, "
+            "no damage to the phone."
         ),
         "model_filter": "Galaxy A25 5G",
-        "expected_ticket_ids": ["T-0042-000002"],
-        "source_ticket_id": "T-0042-000002",
+        "expected_ticket_ids": ["T-0042-000005"],
+        "source_ticket_id": "T-0042-000005",
         "stratum": "paraphrase",
         "demo_lift": "vector_only",
     },
     {
         "eval_id": "eval-0010",
         "query": (
-            "Adelaide Galaxy A16 5G: screen goes black after incoming calls. Diagnostic SAM-E120 on device."
+            "Canberra shopper: Galaxy A16 5G overheating during video calls. "
+            "Diagnostic SAM-E120 on device."
         ),
         "model_filter": "Galaxy A16 5G",
         "expected_ticket_ids": ["T-0042-000040"],
         "source_ticket_id": "T-0042-000040",
         "stratum": "code_in_query",
-        "demo_lift": "rrf_weighted_boosted",
+        "demo_lift": "rrf_term_boosted",
     },
 ]
 

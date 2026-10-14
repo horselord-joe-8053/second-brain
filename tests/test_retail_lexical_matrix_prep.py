@@ -1,4 +1,4 @@
-"""Prep scripts for Phase 8 lexical × A/B/C/D matrix (layout contract)."""
+"""Prep scripts for Phase 8 lexical × A/B/C matrix (layout contract)."""
 
 from pathlib import Path
 
@@ -8,7 +8,7 @@ LEX = PREP / "lexical_docker"
 
 
 def test_lexical_matrix_orchestrator_exists() -> None:
-    """06_run_abcd_lexical_matrix.sh is the operator entry for four backends × four search modes."""
+    """06_run_abcd_lexical_matrix.sh is the operator entry for four backends × three search modes."""
     script = PREP / "06_run_abcd_lexical_matrix.sh"
     assert script.is_file()
     text = script.read_text(encoding="utf-8")

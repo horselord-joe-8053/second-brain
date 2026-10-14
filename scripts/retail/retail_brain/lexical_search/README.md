@@ -8,7 +8,7 @@ Postgres holds the ticket rows and the vector embeddings. This folder is only th
 2. [Layout](#lex-readme-layout) — which file does what.
 3. [Rebuild](#lex-readme-rebuild) — when the index is filled.
 4. [External services](#lex-readme-external) — ParadeDB and OpenSearch.
-5. [A/B/C/D matrix](#lex-readme-matrix) — compare all four backends on llm_gen.
+5. [A/B/C matrix](#lex-readme-matrix) — three search modes × four backends on llm_gen.
 
 ---
 
@@ -79,13 +79,14 @@ Set `RETAIL_OPENSEARCH_URL=http://127.0.0.1:9200`. On Linux the host may need a 
 
 ---
 
-<h2 id="lex-readme-matrix" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. A/B/C/D matrix</h2>
+<h2 id="lex-readme-matrix" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. A/B/C matrix (× four lexical backends)</h2>
 
 Compare all four backends on **`rrf_data_llm_gen`** (one Postgres embed load, rebuild per backend):
 
 ```bash
 export RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen
-bash cursor_gen/retail_v11_prep/06_run_abcd_lexical_matrix.sh
+bash cursor_gen/retail_v11_prep/06_run_abcd_lexical_matrix.sh   # three search modes × four backends
+bash cursor_gen/retail_v11_prep/05_run_abc_postgres.sh          # llm_gen A/B/C on Tantivy
 ```
 
 Reports: `tmp/simulated_data/reports/lexical_matrix/<backend>/`. Sidecar scripts under `cursor_gen/retail_v11_prep/lexical_docker/` stop ParadeDB before OpenSearch (and vice versa) so only one RAM-heavy lexical container runs at a time.
