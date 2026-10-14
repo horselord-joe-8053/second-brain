@@ -45,7 +45,7 @@
     },
     {
       "eval_id": "eval-0005",
-      "stratum": "code_in_query",
+      "stratum": "hybrid_stress",
       "hit": true,
       "top_ticket_id": "T-0042-000030",
       "hit_strict": true,
@@ -77,7 +77,7 @@
     },
     {
       "eval_id": "eval-0009",
-      "stratum": "hybrid_stress",
+      "stratum": "paraphrase",
       "hit": true,
       "top_ticket_id": "T-0042-000002",
       "hit_strict": true,

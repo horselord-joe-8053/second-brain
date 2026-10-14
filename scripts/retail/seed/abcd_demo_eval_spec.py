@@ -31,15 +31,15 @@ ABCD_DEMO_EVAL_ROWS: list[AbcdDemoEvalRow] = [
     {
         "eval_id": "eval-0001",
         "query": (
-            "Customer reports: 5G handover drops data on Galaxy A15 5G in Sydney, NSW. "
-            "Worse when battery is below twenty percent. "
+            "5G handover drops in Sydney on Galaxy A15 5G when battery low. "
+            "Customer also sees black screen after calls after weekend road trip. "
             "Samsung Members shows SAM-E100."
         ),
         "model_filter": "Galaxy A15 5G",
         "expected_ticket_ids": ["T-0042-000000"],
         "source_ticket_id": "T-0042-000000",
         "stratum": "hybrid_stress",
-        "demo_lift": "rrf_weighted_boosted",
+        "demo_lift": "rrf_normal",
     },
     {
         "eval_id": "eval-0002",
@@ -79,14 +79,15 @@ ABCD_DEMO_EVAL_ROWS: list[AbcdDemoEvalRow] = [
     {
         "eval_id": "eval-0005",
         "query": (
-            "Intake: Galaxy A15 5G owner in Sydney, NSW — ghost touches near edges. "
-            "Worse when battery is below twenty percent. App lists SAM-E115."
+            "Galaxy A15 5G Sydney: ghost touches near edges when battery low. "
+            "Separate symptom: fingerprint reader slow since weekend road trip. "
+            "App lists SAM-E115."
         ),
         "model_filter": "Galaxy A15 5G",
         "expected_ticket_ids": ["T-0042-000030"],
         "source_ticket_id": "T-0042-000030",
-        "stratum": "code_in_query",
-        "demo_lift": "rrf_weighted_boosted",
+        "stratum": "hybrid_stress",
+        "demo_lift": "rrf_normal",
     },
     {
         "eval_id": "eval-0006",
@@ -125,14 +126,14 @@ ABCD_DEMO_EVAL_ROWS: list[AbcdDemoEvalRow] = [
     {
         "eval_id": "eval-0009",
         "query": (
-            "Customer reports: 5G handover drops data on Galaxy A25 5G in Brisbane, QLD. "
-            "Worse when battery is below twenty percent. Diagnostic SAM-E101 in Samsung Members."
+            "Brisbane Galaxy A25 5G: mobile data drops during 5G handover when battery "
+            "below twenty percent."
         ),
         "model_filter": "Galaxy A25 5G",
         "expected_ticket_ids": ["T-0042-000002"],
         "source_ticket_id": "T-0042-000002",
-        "stratum": "hybrid_stress",
-        "demo_lift": "rrf_normal",
+        "stratum": "paraphrase",
+        "demo_lift": "vector_only",
     },
     {
         "eval_id": "eval-0010",

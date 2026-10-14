@@ -1007,13 +1007,13 @@ Profile `tmp/simulated_data/` — **60** tickets, **10** eval, **no twin clones*
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd"><code>vector_only</code> (A / V1)</td><td style="background:#fff3e0"><strong>0.80</strong> (8/10)</td><td style="background:#f5f5f5">—</td><td style="background:#f5f5f5"><code>pg_baseline_v1.json</code></td></tr>
-<tr><td style="background:#e3f2fd"><code>rrf_normal</code> (B / V1.1)</td><td style="background:#fff3e0"><strong>0.80</strong></td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_1_normal.json</code></td></tr>
-<tr><td style="background:#e3f2fd"><code>rrf_weighted</code> (C / V1.2)</td><td style="background:#fff3e0"><strong>0.80</strong></td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_2_weighted.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_normal</code> (B / V1.1)</td><td style="background:#e8f5e9"><strong>1.00</strong> (10/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_1_normal.json</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>rrf_weighted</code> (C / V1.2)</td><td style="background:#fff3e0"><strong>0.80</strong> (8/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_2_weighted.json</code></td></tr>
 <tr><td style="background:#e3f2fd"><code>rrf_weighted_boosted</code> (D / V1.3)</td><td style="background:#e8f5e9"><strong>1.00</strong> (10/10)</td><td style="background:#e8f5e9">10/10</td><td style="background:#f5f5f5"><code>pg_ab_v1_3_boosted.json</code></td></tr>
 </tbody>
 </table>
 
-**Read:** Soft-monotonic **A ≤ B ≤ C ≤ D** holds, but **B and C do not lift** on this snapshot—the two vector misses (`eval-0001`, `eval-0005`) flip only under **V1.3 code boost (λ)** when SAM-E appears in the intake. Equal and 70/30 RRF reorder rank-2/3 but not top-1 when the bait ticket dominates both legs. For a fuller ladder demo, add rows where gold is **lexical rank 1** with **no** query-side SAM-E, or widen corpus neighbors so fusion beats dense-only before λ.
+**Read (P4 retune, 2026-10-14):** **B** now lifts **+2** on `eval-0001` / `eval-0005` (gold **lexical rank 1**, neighbor wins dense). **C** drops back to **0.80** on those rows—**70/30 vector-first** re-picks the bait when dense rank-1 is wrong (documented **H10** tradeoff). **D** still hits **1.00** via SAM-E λ on the same two rows plus existing code-stratum rows.
 
 Run: `apply_abcd_demo_eval.py` then `cursor_gen/retail_v11_prep/05_run_abcd_postgres.sh`.
 

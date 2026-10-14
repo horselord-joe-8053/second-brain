@@ -91,3 +91,14 @@ Reports: `tmp/simulated_data/reports/pg_*.json`
 **Vector-only misses:** `eval-0001` (gold `T-0042-000000`, dense top `T-0042-000042`), `eval-0005` (gold `T-0042-000030`, dense top `T-0042-000012`). **D-only recovery:** SAM-E in query + V1.3 λ; B/C keep bait at rank 1.
 
 **Recommendation:** To show **B** (equal RRF) and **C** (70/30) lifting before λ, author intakes where gold is **lexical top-1** but **vector rank ≥ 3** and **no SAM-E** in the query (pure fusion story), or inject additional historical neighbors so bait no longer wins the lexical leg.
+
+<h3 id="p6-demo-abcd-p4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">P4 re-run (fusion ladder retune, 2026-10-14)</h3>
+
+| Arm | recall@1 | Notes |
+|-----|----------|-------|
+| A | **0.80** | Miss `eval-0001`, `eval-0005` (dense neighbor #1) |
+| B | **1.00** | Equal RRF + lexical #1 on gold fixes both |
+| C | **0.80** | **H10:** 70/30 reverts same two rows (vector bait wins dense) |
+| D | **1.00** | SAM-E λ on `eval-0001` / `eval-0005` + code-stratum rows |
+
+**C &lt; B regression (2 rows):** `eval-0001` vector top `T-0042-000042` vs gold `T-0042-000000`; `eval-0005` vector top `T-0042-000012` vs gold `T-0042-000030`. Lexical leg ranks gold first on both after P4 wording.
