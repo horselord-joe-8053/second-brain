@@ -14,7 +14,7 @@ Write new sources to **`brain/raw/sources/<channel>/`** and optional **`brain/ma
 1. Choose channel: `uploads`, `personal`, `web`, `github`, `gmail`, `drive`, or `chat`.
 2. Copy or fetch artifact into `brain/raw/sources/<channel>/` with stable filename.
 3. Optional manifest under `brain/manifests/` with `source_id`, `channel`, `sha256`, `captured_at`, `uri`.
-4. Trigger Nashsu ingest (Source Watch auto-ingest when desktop app open on project **brain**), or operator runs rescan in LLM Wiki UI.
+4. If the desktop app is down, **`local-llm-wiki`** `start` first. Then Nashsu ingest (Source Watch auto-ingest when the app is open on project **brain**), or the operator runs rescan in the LLM Wiki window.
 5. **Do not** use bundled Hermes `llm-wiki` skill or write under `brain/wiki/` except via Nashsu.
 
 ## Prohibited

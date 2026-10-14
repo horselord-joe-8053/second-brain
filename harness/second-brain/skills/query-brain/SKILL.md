@@ -7,8 +7,9 @@ description: Query compiled brain via Nashsu MCP (wiki-first, L2 escalation, cit
 
 ## Preflight
 
-1. LLM Wiki desktop app running; project **`…/second_brain/brain`** current or `llm_wiki_set_project`.
-2. MCP: `llm_wiki_status`, then `llm_wiki_set_project` with absolute brain path if needed.
+1. **`local-llm-wiki`**: `./scripts/brain/llm-wiki.sh status`. If it prints `llm-wiki: down`, run `start`. If it prints `token refreshed`, ask for a new Hermes session before searching.
+2. Project **`…/second_brain/brain`** current, or `llm_wiki_set_project`.
+3. MCP: `llm_wiki_status`, then `llm_wiki_set_project` with the absolute brain path if needed.
 
 ## Pattern A (default — auditable)
 

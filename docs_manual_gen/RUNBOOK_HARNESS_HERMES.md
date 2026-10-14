@@ -63,7 +63,7 @@ RUN_BRAIN_ACCEPTANCE=1 ./scripts/brain/setup-local.sh
 ./scripts/brain/adapters/hermes/acceptance-automated.sh
 ```
 
-Manual Desktop prompts: LLM Wiki on **`brain/`** project; Gateway ready; MCP **`llm_wiki`** + **`second_brain_fs`**. Skill: **`harness/second-brain/skills/query-brain/SKILL.md`**.
+Manual Desktop prompts: LLM Wiki on **`brain/`** project; Gateway ready; MCP **`llm_wiki`** + **`second_brain_fs`**. Bring the desktop app up with **`./scripts/brain/llm-wiki.sh start`** (skill **`local-llm-wiki`**). Query skill: **`harness/second-brain/skills/query-brain/SKILL.md`**.
 
 ---
 

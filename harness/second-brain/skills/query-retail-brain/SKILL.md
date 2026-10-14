@@ -7,7 +7,7 @@ description: Query Samsung Australia retail brain (RETAIL_MARKET=AU) — FRU sid
 
 ## Preconditions
 
-1. LLM Wiki running; **`llm_wiki_set_project`** → absolute path `…/second_brain/brain/retail`.
+1. **`local-llm-wiki`** `status`, then `start` if down. **`llm_wiki_set_project`** → absolute path `…/second_brain/brain/retail`.
 2. Retail FRU sidecar or Postgres tools configured (`RETAIL_SIDECAR_URL` / `retail_pg` MCP for dev).
 
 ## Routing

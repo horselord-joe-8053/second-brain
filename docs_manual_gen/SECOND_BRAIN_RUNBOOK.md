@@ -94,6 +94,17 @@ npm run tauri dev
 
 **Dev server:** API **`http://127.0.0.1:19828/api/v1`**, clip **`127.0.0.1:19827`**. Leave the terminal open while using the app.
 
+**Day to day** (from `second_brain`; does not reinstall, and does not touch UI settings):
+
+```bash
+./scripts/brain/llm-wiki.sh start      # leaves the app alone if the API is already up
+./scripts/brain/llm-wiki.sh status
+./scripts/brain/llm-wiki.sh stop
+./scripts/brain/llm-wiki.sh restart
+```
+
+That calls `../nu_llm_wiki/scripts/restart-dev.sh`. Hermes uses the skill **`local-llm-wiki`** (not the disabled compiler skill **`llm-wiki`**). Each status/start copies the token already saved in the UI into `.env`. It does not generate a new token.
+
 **MCP entry (after build):**  
 `/Users/jjw8053/projects/nu_llm_wiki/mcp-server/dist/src/index.js`
 
@@ -103,7 +114,7 @@ npm run tauri dev
 
 <span style="background:#fff9c4;padding:2px 4px">GUI required</span> — no supported repo config file for LLM provider keys yet. Order matters:
 
-1. **Start app** — `npm run tauri dev` (§4).
+1. **Start app** — first time: `npm run tauri dev` (§4). Later: `./scripts/brain/llm-wiki.sh start` from `second_brain`.
 2. **Open or create project first** — **File → Open project** (or equivalent) → select  
    `/Users/jjw8053/projects/second_brain/brain`  
    Many settings (Source Watch, per-project LLM overrides, `{id}` in API calls as `current`) assume a project is active. Do this **before** relying on API + MCP.
@@ -332,7 +343,7 @@ Also runs at the start of **`./scripts/brain/setup-local.sh`**. **Does not** wri
 
 **Stack order (Mac):**
 
-1. **LLM Wiki** desktop app — open project **`…/second_brain/brain`**, API/MCP on.
+1. **LLM Wiki** — `./scripts/brain/llm-wiki.sh start` (no-op if already up). Project **`…/second_brain/brain`**, API/MCP on. UI settings stay in macOS app data.
 2. **Obsidian** — vault **`…/second_brain/brain/wiki`** (already registered as **wiki**).
 3. **Harness wiring** — `./scripts/brain/setup-local.sh` (uses **`active_harness`**). Hermes P8 automated: `RUN_BRAIN_ACCEPTANCE=1 ./scripts/brain/setup-local.sh` or [`adapters/hermes/acceptance-automated.sh`](../scripts/brain/adapters/hermes/acceptance-automated.sh).
 
@@ -346,4 +357,4 @@ Checklist mirror: [`docs/ACCEPTANCE-second-brain-hermes-v1.md`](../docs/ACCEPTAN
 
 **In repo:** [`scripts/brain/setup-local.sh`](../scripts/brain/setup-local.sh) — shared stack + **`adapters/<active_harness>/setup-harness.sh`**, Obsidian hint, optional **`RUN_BRAIN_ACCEPTANCE=1`** (Hermes: [`acceptance-automated.sh`](../scripts/brain/adapters/hermes/acceptance-automated.sh)).
 
-**Still human-gated:** LLM Wiki GUI (§5–§8), harness-specific chat smoke (per harness runbook), NB-SB1 cited table lookup in agent UI.
+**Process up/down:** `./scripts/brain/llm-wiki.sh` and Hermes skill **`local-llm-wiki`**. **Still human-gated:** first-time LLM Wiki GUI (§5–§8: provider keys, enabling API), harness-specific chat smoke (per harness runbook), NB-SB1 cited table lookup in agent UI.

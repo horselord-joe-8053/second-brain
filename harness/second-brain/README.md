@@ -4,7 +4,8 @@ Thin skills and docs for **capture → `brain/raw/sources/` → Nashsu compiles 
 
 - **P3 (HG-3):** `./scripts/brain/setup-local.sh` (or `./scripts/brain/adapters/hermes/setup-hermes.sh`) — idempotent official install + `hermes doctor`. See runbook §10.
 - **P4 (HG-4):** `./scripts/brain/adapters/hermes/setup-hermes-mcp.sh` — shared MCP catalog + token sync + `skills.disabled: [llm-wiki]` + `external_dirs` → this folder.
-- **Skills here:** `ingest-to-brain/`, `query-brain/`, `nashsu-mcp-read/`; manifest example in `manifests/example-ingest.yaml`.
+- **Skills here:** `ingest-to-brain/`, `query-brain/`, `query-retail-brain/`, `nashsu-mcp-read/`, `local-llm-wiki/` (desktop app up/down; not the disabled `llm-wiki` compiler). Manifest example in `manifests/example-ingest.yaml`.
+- **LLM Wiki process:** `./scripts/brain/llm-wiki.sh status|start|stop|restart` — keeps UI settings in macOS app data.
 - **P5 (HG-5):** `./scripts/brain/setup-obsidian.sh` (brew cask; in `setup-local.sh`); vault **`brain/wiki/`**.
 - **P7:** `./scripts/brain/backup.sh`.
 
