@@ -1,40 +1,8 @@
-<h1 id="sim-data-readme" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">LLM simulated retail corpus (`rrf_data_llm_gen`) v2</h1>
+<h1 id="sim-legacy" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Legacy path (`tmp/simulated_data`)</h1>
 
-**Profile:** `RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen` (default in `.env.example`)
+**Corpus moved** to [`scripts/retail/sim_data/profiles/`](../scripts/retail/sim_data/README.md):
 
-| File | Role |
-|------|------|
-| `service_queries.csv` | 60 historical tickets → Postgres |
-| `ticket_manifest.jsonl` | Provenance sidecar |
-| `ticket_retrieval.jsonl` | 10 eval intakes + gold ids |
-| `prompt_v2.txt` | Author instructions (external LLM or reference) |
-| `prompt_v1_archived.txt` | Previous prompt (artificial twin / tech-line rules) |
-| `reports/` | A/B/C JSON for this profile (`pg_baseline_v1.json`, `pg_ab_v1_1_normal.json`, `pg_ab_v1_2_term_boosted.json`) |
+- **`data_60_10`** — 60 + 10 (teaching ABC mini corpus)
+- **`data_1000_100`** — 1000 + 100 (default on scale branch)
 
-<h2 id="sim-gen" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Regenerate</h2>
-
-```bash
-python3 scripts/retail/seed/generate_llm_corpus_v2.py
-python3 scripts/retail/seed/validate_llm_corpus.py
-```
-
-Or paste `prompt_v2.txt` into ChatGPT and replace the three data files manually, then validate.
-
-<h2 id="sim-op" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Operator (Postgres A/B/C)</h2>
-
-```bash
-export RETAIL_SIM_DATA_PROFILE=rrf_data_llm_gen
-python3 scripts/retail/seed/apply_abcd_demo_eval.py   # refresh 10-row teaching eval from spec
-bash cursor_gen/retail_v11_prep/03_pg_up_and_load.sh   # TRUNCATE → load → embed
-bash cursor_gen/retail_v11_prep/05_run_abc_postgres.sh
-```
-
-(`05_run_abcd_postgres.sh` is a legacy wrapper → same ABC script.)
-
-Embed policy (P3): **`SAM-E###` kept** in vectors; strip only `RETAIL_EMBED_STRIP_PHRASES` (default `Case ref ITM-`). Re-run **03** after changing embed policy or corpus.
-
-<h2 id="sim-v2-rules" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">v2 data rules</h2>
-
-- ~50% historical rows include SAM-E; no duplicate bodies; no twin cloning.
-- Eval: natural mix — when gold has SAM-E, ~half of queries mention it.
-- Plans: [`REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md`](../../docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_LLM_CORPUS_V2_NATURAL.md) · [`REFACTOR_RETAIL_SEARCH_THREE_MODES.md`](../../docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_SEARCH_THREE_MODES.md) (A/B/C + P4 product-story eval)
+This directory may still hold **operator reports** from local ABC runs (`reports/`). Point `RETAIL_SIM_DATA_PROFILE` at a profile id — reports write to that profile’s `reports/` dir.

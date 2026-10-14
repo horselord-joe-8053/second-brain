@@ -37,7 +37,7 @@ def main() -> None:
     p.add_argument(
         "--corpus-dir",
         type=Path,
-        default=ROOT / "tmp" / "simulated_data",
+        default=ROOT / "scripts" / "retail" / "sim_data" / "profiles" / "data_60_10",
     )
     p.add_argument("--no-archive", action="store_true")
     args = p.parse_args()

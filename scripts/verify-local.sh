@@ -20,10 +20,15 @@ test -f "$ROOT/brain/purpose.md"
 echo "== second-brain: harness stub =="
 test -f "$ROOT/harness/second-brain/README.md"
 
-if [[ -f "$ROOT/tmp/simulated_data/service_queries.csv" ]] && "$ROOT/scripts/py" -c "pass" >/dev/null 2>&1; then
-  echo "== retail: validate llm_gen corpus =="
+if "$ROOT/scripts/py" -c "pass" >/dev/null 2>&1; then
   export PYTHONPATH="${ROOT}/scripts/retail${PYTHONPATH:+:$PYTHONPATH}"
-  "$ROOT/scripts/py" "$ROOT/scripts/retail/seed/validate_llm_corpus.py"
+  for _prof in data_60_10 data_1000_100; do
+    _dir="$ROOT/scripts/retail/sim_data/profiles/$_prof"
+    if [[ -f "$_dir/service_queries.csv" ]]; then
+      echo "== retail: validate llm_gen corpus ($_prof) =="
+      "$ROOT/scripts/py" "$ROOT/scripts/retail/seed/validate_llm_corpus.py" --corpus-dir "$_dir"
+    fi
+  done
 fi
 
 if [[ -d "$ROOT/tests" ]] && "$ROOT/scripts/py" -c "pass" >/dev/null 2>&1; then

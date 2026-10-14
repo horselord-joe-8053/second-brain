@@ -12,18 +12,28 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Mapping
 
-# Profile ids (env RETAIL_SIM_DATA_PROFILE)
 RRF_DATA_PRAG_GEN = "rrf_data_prag_gen"
 RRF_DATA_LLM_GEN = "rrf_data_llm_gen"
+RRF_DATA_LLM_GEN_60_10 = "rrf_data_llm_gen_60_10"
+RRF_DATA_LLM_GEN_1K = "rrf_data_llm_gen_1k"
 
-DEFAULT_PROFILE = RRF_DATA_LLM_GEN
+DEFAULT_PROFILE = RRF_DATA_LLM_GEN_1K
 
-VALID_PROFILES = (RRF_DATA_PRAG_GEN, RRF_DATA_LLM_GEN)
+VALID_PROFILES = (
+    RRF_DATA_PRAG_GEN,
+    RRF_DATA_LLM_GEN,
+    RRF_DATA_LLM_GEN_60_10,
+    RRF_DATA_LLM_GEN_1K,
+)
 
 
 def repo_root() -> Path:
     """Absolute path to second_brain repo root (parent of ``scripts/``)."""
     return Path(__file__).resolve().parents[3]
+
+
+def _sim_profiles_root(root: Path) -> Path:
+    return root / "scripts" / "retail" / "sim_data" / "profiles"
 
 
 @dataclass(frozen=True)
@@ -71,6 +81,24 @@ class SimDataProfile:
 
 def _profiles(root: Path) -> Mapping[str, SimDataProfile]:
     """Static registry of prag vs LLM corpus path bundles."""
+    p60 = _sim_profiles_root(root) / "data_60_10"
+    p1k = _sim_profiles_root(root) / "data_1000_100"
+    mini = SimDataProfile(
+        profile_id=RRF_DATA_LLM_GEN_60_10,
+        label="LLM corpus 60 historical + 10 ABC eval (data_60_10)",
+        service_queries_csv=p60 / "service_queries.csv",
+        eval_jsonl=p60 / "ticket_retrieval.jsonl",
+        reports_dir=p60 / "reports",
+        ticket_manifest_jsonl=p60 / "ticket_manifest.jsonl",
+    )
+    large = SimDataProfile(
+        profile_id=RRF_DATA_LLM_GEN_1K,
+        label="LLM corpus 1000 historical + 100 ABC eval (data_1000_100)",
+        service_queries_csv=p1k / "service_queries.csv",
+        eval_jsonl=p1k / "ticket_retrieval.jsonl",
+        reports_dir=p1k / "reports",
+        ticket_manifest_jsonl=p1k / "ticket_manifest.jsonl",
+    )
     return {
         RRF_DATA_PRAG_GEN: SimDataProfile(
             profile_id=RRF_DATA_PRAG_GEN,
@@ -80,19 +108,14 @@ def _profiles(root: Path) -> Mapping[str, SimDataProfile]:
             reports_dir=root / "scripts/retail/eval/reports/prag_gen",
             ticket_manifest_jsonl=root / "scripts/retail/seed/generated/ticket_manifest.jsonl",
         ),
-        RRF_DATA_LLM_GEN: SimDataProfile(
-            profile_id=RRF_DATA_LLM_GEN,
-            label="LLM-authored corpus (tmp/simulated_data)",
-            service_queries_csv=root / "tmp/simulated_data/service_queries.csv",
-            eval_jsonl=root / "tmp/simulated_data/ticket_retrieval.jsonl",
-            reports_dir=root / "tmp/simulated_data/reports",
-            ticket_manifest_jsonl=root / "tmp/simulated_data/ticket_manifest.jsonl",
-        ),
+        RRF_DATA_LLM_GEN_60_10: mini,
+        RRF_DATA_LLM_GEN: mini,
+        RRF_DATA_LLM_GEN_1K: large,
     }
 
 
 def resolve_sim_data_profile(name: str | None = None) -> SimDataProfile:
-    """RETAIL_SIM_DATA_PROFILE env; default rrf_data_llm_gen."""
+    """RETAIL_SIM_DATA_PROFILE env; default rrf_data_llm_gen_1k."""
     raw = (name or os.environ.get("RETAIL_SIM_DATA_PROFILE") or DEFAULT_PROFILE).strip()
     if raw not in VALID_PROFILES:
         raise ValueError(

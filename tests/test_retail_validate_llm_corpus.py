@@ -14,10 +14,11 @@ def _load_validator():
     return mod
 
 
-def test_validate_llm_corpus_passes_on_repo_profile() -> None:
+def test_validate_llm_corpus_passes_on_repo_profiles() -> None:
     root = Path(__file__).resolve().parents[1]
-    src = root / "tmp" / "simulated_data"
-    if not (src / "service_queries.csv").is_file():
-        return
     vlc = _load_validator()
-    assert vlc.validate(src) == []
+    for name in ("data_60_10", "data_1000_100"):
+        src = root / "scripts" / "retail" / "sim_data" / "profiles" / name
+        if not (src / "service_queries.csv").is_file():
+            continue
+        assert vlc.validate(src) == []

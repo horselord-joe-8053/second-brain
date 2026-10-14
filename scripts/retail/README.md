@@ -4,7 +4,7 @@
 - **`retail_brain/`** — seed, hybrid search, eval (import with `PYTHONPATH=scripts/retail` + repo root for `utils`).
 - **`seed/generate_tickets.py`** — synthetic CSV + manifest (**`rrf_data_prag_gen`** profile).
 - **`seed/generate_eval_from_manifest.py`** — strict eval JSONL (`expected_ticket_ids = [source]`).
-- **`retail_brain/sim_data_profile.py`** — **`RETAIL_SIM_DATA_PROFILE`**: `rrf_data_llm_gen` (default, `tmp/simulated_data/`) vs `rrf_data_prag_gen` (`seed/generated/`). One profile active in Postgres at a time; **`reload_postgres_corpus.py`** TRUNCATE → load → embed.
+- **`retail_brain/sim_data_profile.py`** — **`RETAIL_SIM_DATA_PROFILE`**: `rrf_data_llm_gen_1k` (default, `sim_data/profiles/data_1000_100/`), `rrf_data_llm_gen_60_10` (alias `rrf_data_llm_gen`), vs `rrf_data_prag_gen` (`seed/generated/`). One profile active in Postgres at a time; **`reload_postgres_corpus.py`** TRUNCATE → load → embed.
 - **`seed/generate_llm_corpus_v2.py`** + **`seed/validate_llm_corpus.py`** — natural llm_gen corpus (60+10); validator runs in `verify-local.sh` when CSV present.
 - **`seed/llm_author_gold.py`** — **offline only** optional `acceptable_ticket_ids` (not runtime eval).
 - **`eval/eval_ticket_search.py`** — V1/V1.1 metrics (`RETAIL_TICKET_HYBRID_SEARCH`).

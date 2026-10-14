@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CORPUS = ROOT / "tmp" / "simulated_data"
+CORPUS = ROOT / "scripts" / "retail" / "sim_data" / "profiles" / "data_60_10"
 SPEC = ROOT / "scripts" / "retail/seed/abcd_demo_eval_spec.py"
 
 
