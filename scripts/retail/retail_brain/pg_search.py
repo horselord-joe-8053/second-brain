@@ -33,16 +33,25 @@ def _connect(dsn: str):
     return psycopg2.connect(dsn)
 
 
+def _vector_literal(emb: List[float]) -> str:
+    """pgvector text literal for a query embedding."""
+    return "[" + ",".join(str(x) for x in emb) + "]"
+
+
 def vector_ids(
     cur,
     query: str,
     *,
     model_filter: Optional[str],
     limit: int,
+    query_embedding: Optional[List[float]] = None,
 ) -> List[str]:
-    """Dense retrieval leg: nearest neighbors in ``service_queries.query_embedding``."""
-    emb = embed_text(query, task_type="RETRIEVAL_QUERY")
-    emb_literal = "[" + ",".join(str(x) for x in emb) + "]"
+    """Dense retrieval leg: nearest neighbors in ``service_queries.query_embedding``.
+
+    Pass ``query_embedding`` to reuse one Gemini call across legs (answer bundle path).
+    """
+    emb = query_embedding or embed_text(query, task_type="RETRIEVAL_QUERY")
+    emb_literal = _vector_literal(emb)
     if model_filter:
         cur.execute(
             """
@@ -143,6 +152,69 @@ def _fuse_pg(
         extra_score_by_id=extra,
     )
     return [tid for tid, _ in fused[:limit]]
+
+
+def _fuse_pg_scored(
+    cur, query: str, v: List[str], l: List[str], *, mode: str, limit: int
+) -> List[tuple[str, float]]:
+    """Same fusion as ``_fuse_pg`` but keeps the fused score per id."""
+    w_v, w_l = rrf_list_weights(mode)
+    extra: Dict[str, float] = {}
+    if code_boost_enabled(mode):
+        ids = set(v) | set(l)
+        extra = code_boost_scores(
+            query,
+            list(ids),
+            id_to_search_text=_search_text_map(cur, ids),
+            lambda_boost=lexical_code_boost_lambda(),
+        )
+    fused = reciprocal_rank_fusion([v, l], list_weights=[w_v, w_l], lexical_rank_order=l, extra_score_by_id=extra)
+    return fused[:limit]
+
+
+def hydrate_with_cosine(cur, query_embedding: List[float], ticket_ids: List[str]) -> Dict[str, Dict[str, Any]]:
+    """Ticket fields + ``1 - cosine distance`` to the query for each id (pgvector ``<=>``)."""
+    if not ticket_ids:
+        return {}
+    cur.execute(
+        """
+        SELECT ticket_id, model, customer_query_text, coalesce(resolution_text, ''),
+               1 - (query_embedding <=> %s::vector) AS cosine
+        FROM service_queries WHERE ticket_id = ANY(%s)
+        """,
+        (_vector_literal(query_embedding), list(ticket_ids)),
+    )
+    return {
+        r[0]: {"model": r[1], "customer_query_text": r[2], "resolution_text": r[3], "cosine_similarity": float(r[4])}
+        for r in cur.fetchall()
+    }
+
+
+def search_ticket_hits_pg(
+    dsn: str,
+    query: str,
+    *,
+    model_filter: Optional[str] = None,
+    limit: int = 2,
+) -> tuple[str, List[Dict[str, Any]]]:
+    """Ranked hits for the answer bundle: ``(mode, [{ticket_id, fused_score, cosine_similarity, …}])``."""
+    mode = resolve_ticket_search_mode()
+    q_emb = embed_text(query, task_type="RETRIEVAL_QUERY")
+    conn = _connect(dsn)
+    try:
+        with conn.cursor() as cur:
+            if mode == "vector_only":
+                ids = vector_ids(cur, query, model_filter=model_filter, limit=limit, query_embedding=q_emb)
+                scored: List[tuple[str, Optional[float]]] = [(tid, None) for tid in ids]
+            else:
+                v = vector_ids(cur, query, model_filter=model_filter, limit=limit * 2, query_embedding=q_emb)
+                l = lexical_ids(cur, query, model_filter=model_filter, limit=limit * 2)
+                scored = list(_fuse_pg_scored(cur, query, v, l, mode=mode, limit=limit))
+            fields = hydrate_with_cosine(cur, q_emb, [tid for tid, _ in scored])
+    finally:
+        conn.close()
+    hits = [{"ticket_id": tid, "fused_score": fs, **fields[tid]} for tid, fs in scored if tid in fields]
+    return mode, hits
 
 
 def search_ticket_ids_pg(

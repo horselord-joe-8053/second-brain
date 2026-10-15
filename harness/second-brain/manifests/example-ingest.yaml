@@ -1,8 +1,8 @@
 # Example manifest for ingest-to-brain (copy and rename).
 source_id: example-2026-001
 channel: uploads
-original_path: brain/raw/sources/uploads/example.pdf
+original_path: brain/personal/raw/sources/uploads/example.pdf
 sha256: "<run shasum -a 256>"
 captured_at: "2026-10-05T00:00:00Z"
-uri: "file://brain/raw/sources/uploads/example.pdf"
+uri: "file://brain/personal/raw/sources/uploads/example.pdf"
 notes: "Optional provenance for Hermes capture workflows."

@@ -11,6 +11,10 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 5. [Story 4 — Hybrid RRF beside RAG: BM25-class lexical + dense + fuse, not overlap hacks](#war-story-4)
 6. [Story 5 — Pin python3.12; do not call python3](#war-story-5)
 7. [Story 6 — One keyword switch, external engines stay optional](#war-story-6)
+8. [Story 7 — Split a corpus into profiles: derive paths from one switch](#war-story-7)
+9. [Story 8 — Long ticket text found no manual page: score only matchable words](#war-story-8)
+10. [Story 9 — "Garbage" PDF text was a shifted font, not noise](#war-story-9)
+11. [Story 10 — An inherited env default silently disabled the fault-code boost](#war-story-10)
 
 ---
 
@@ -27,6 +31,10 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 <tr><td style="background:#e3f2fd">4</td><td><a href="#war-story-4">Hybrid RRF beside RAG: inverted lexical + dense + fuse</a></td><td>Normalize index text once; vectors for paraphrase; reject O(n) overlap on condensed strings.</td></tr>
 <tr><td style="background:#e3f2fd">5</td><td><a href="#war-story-5">Pin python3.12; do not call python3</a></td><td>System python3 stays 3.9. A word-boundary match also hits python3.12.</td></tr>
 <tr><td style="background:#e3f2fd">6</td><td><a href="#war-story-6">One keyword switch, external engines stay optional</a></td><td>Default verify runs the embedded index. ParadeDB and OpenSearch are faked unless their URL is set.</td></tr>
+<tr><td style="background:#e3f2fd">7</td><td><a href="#war-story-7">Split a corpus into profiles: derive paths from one switch</a></td><td>Local config kept old paths; anchored gitignore patterns changed meaning after the move.</td></tr>
+<tr><td style="background:#e3f2fd">8</td><td><a href="#war-story-8">Long ticket text found no manual page: score only words the pages can match</a></td><td>Unseen words got max IDF and zeroed every page; gold from author anchors, not the scorer.</td></tr>
+<tr><td style="background:#e3f2fd">9</td><td><a href="#war-story-9">"Garbage" PDF text was a shifted font, not noise</a></td><td>GE glyphs sit 29 code points low; decode before collapsing whitespace.</td></tr>
+<tr><td style="background:#e3f2fd">10</td><td><a href="#war-story-10">An inherited env default silently disabled the fault-code boost</a></td><td>Phone-era SAM-E prefix default; new entry points read the domain config.</td></tr>
 </tbody>
 </table>
 
@@ -442,3 +450,115 @@ One protocol (`rebuild` + `search_ids`) can hide four clients. Default tests run
 <h3 id="war-story-6-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">6.5 Takeaway</h3>
 
 A config switch is honest only when the default path runs without the optional daemons, and a missing daemon fails loudly instead of silently searching the system of record with a different algorithm.
+
+---
+
+<h2 id="war-story-7" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">7. Split a corpus into profiles: derive paths from one switch</h2>
+
+**creation:** 261015-050000  
+**last_updated:** 261015-050000  
+**keywords:** design, config, migration, gitignore, multi-tenant, llm wiki  
+**difficulty:** 4  
+**significance:** 6  
+
+<h3 id="war-story-7-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">7.1 Context</h3>
+
+`brain/` held the personal LLM Wiki project at its root, with a retail project nested at `brain/retail/`. The goal was two sibling brain-profiles (`brain/personal`, `brain/retail`), one active at a time via `BRAIN_PROFILE`, default retail.
+
+<h3 id="war-story-7-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">7.2 Root Cause</h3>
+
+Two silent traps. (1) The gitignored machine config `config/brain-stack.yaml` still set `wiki_vault: "brain/wiki"` and `obsidian.vault_path: "brain/wiki"`; a loader that merges local over example would keep pointing tools at a folder that no longer exists. (2) In `.gitignore`, a pattern with a slash in the middle is **anchored** to the file's directory: `raw/sources/**/*.pdf` in `brain/.gitignore` only ever matched `brain/raw/…`. That is why nested retail PDFs were committable — moving the personal tree would have silently started committing personal binaries.
+
+<h3 id="war-story-7-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">7.3 Key Insight</h3>
+
+Make the profile the **only** input: `brains_dir` + profile → `brain_root` → `wiki_vault` → Obsidian vault, all derived and never read from local overrides. Treat the legacy `brain_root: "brain"` as the parent dir. Rewrite ignore rules per profile (`personal/raw/sources/**/*.pdf`) and check `git status` shows only renames after the move.
+
+<h3 id="war-story-7-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">7.4 Resolution</h3>
+
+`scripts/brain/brain_stack.py` gained `resolve_brain_profile()` (env → yaml `active_brain_profile` → `retail`; unknown names raise) and a side-effect-free `profile-env` CLI; shell scripts `source scripts/brain/brain-profile-env.sh`. Hermes pid/log moved to repo `.cache/hermes/` so switching profiles between start and stop cannot lose the pid. Desktop app state (LLM Wiki `app-state.json`, Obsidian `obsidian.json`) is re-pointed by hand after the move.
+
+<h3 id="war-story-7-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">7.5 Takeaway</h3>
+
+When one folder becomes several, every dependent path must be computed from the single switch, and every ignore pattern must be re-read with its anchor in mind.
+
+---
+
+<h2 id="war-story-8" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">8. Long ticket text found no manual page: score only words the pages can match</h2>
+
+**creation:** 261015-053000  
+**last_updated:** 261015-053000  
+**keywords:** retrieval, scoring, idf, pdf, eval, gold  
+**difficulty:** 5  
+**significance:** 7  
+
+<h3 id="war-story-8-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">8.1 Context</h3>
+
+The answer bundle's manual leg searches a page index of the fridge PDFs with the new ticket's text. Unit tests on short synthetic queries passed; the first run over 32 real FRU tickets returned **no manual hit at all** for 21 rows.
+
+<h3 id="war-story-8-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">8.2 Root Cause</h3>
+
+Page score = IDF-weighted share of query words present on the page. Words on **no** page (city names, `FRU-E406`, "Ticket context") received the *highest* IDF, so every page's share fell under the 0.2 floor. Secondary noise: fault-code sentences ("Display showed … on the service menu") pulled ranking toward display pages, and "drips" never matched "dripping".
+
+<h3 id="war-story-8-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">8.3 Key Insight</h3>
+
+A word that appears on no page cannot tell pages apart — drop it from the denominator instead of treating it as maximally important. Gold must be independent of the scorer: author-owned `manual_anchors` per issue (phrases a correct page contains), not pages the search itself returned.
+
+<h3 id="war-story-8-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">8.4 Resolution</h3>
+
+`pdf_pages._score` counts only indexed tokens; `tokenize` applies a light suffix stemmer; ties break on query bigrams then term density (TOC pages contain every word). `answer_bundle.manual_query` drops fault-code sentences; `manual_leg` drops the model code. Manual gold@±1 page went 9/30 → 27/30 with the fixture wiki.
+
+<h3 id="war-story-8-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">8.5 Takeaway</h3>
+
+Test retrieval on the real query shape early; synthetic short queries hide denominator effects that long, noisy inputs expose immediately.
+
+---
+
+<h2 id="war-story-9" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">9. "Garbage" PDF text was a shifted font, not noise</h2>
+
+**creation:** 261015-053000  
+**last_updated:** 261015-053000  
+**keywords:** pdf, extraction, encoding, data quality  
+**difficulty:** 4  
+**significance:** 5  
+
+<h3 id="war-story-9-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">9.1 Context</h3>
+
+`pypdf` extracted the GE manual with runs like `$XWRPDWLF,FHPDNHU` — exactly the troubleshooting headings ("Interior light does not work", "Door not closing properly") the answer bundle needs.
+
+<h3 id="war-story-9-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">9.2 Root Cause</h3>
+
+An embedded font maps glyphs 29 code points below their characters (`$`+29 = `A`; space → `\x03`). The bytes were intact; 19,190 `\x03` "spaces" survived extraction. Collapsing whitespace first would have destroyed `\x1c`–`\x1f` (the digit 9, `:`, `;`).
+
+<h3 id="war-story-9-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">9.3 Resolution</h3>
+
+`build_pdf_page_index.repair_shifted_glyphs` decodes before cleaning: runs containing a shifted control char always decode; bare one-word runs decode only if the result is a manual word and the original is not (keeps `TROUBLESHOOTING`, part numbers). Test pins both cases; the committed index asserts no `\x03` remains.
+
+<h3 id="war-story-9-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">9.4 Takeaway</h3>
+
+Before discarding unreadable extraction, count the control characters — a constant offset is a cipher you can undo, and the clean step must run after the repair.
+
+---
+
+<h2 id="war-story-10" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">10. An inherited env default silently disabled the fault-code boost</h2>
+
+**creation:** 261015-053000  
+**last_updated:** 261015-053000  
+**keywords:** config, defaults, hybrid search, live test  
+**difficulty:** 3  
+**significance:** 6  
+
+<h3 id="war-story-10-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">10.1 Context</h3>
+
+The first live answer run (Postgres + Gemini) showed `code_in_query` rows no better in `rrf_term_boosted` than in `vector_only`, although the ABC ladder had shown mode C lifting them from 0.15 to 0.65.
+
+<h3 id="war-story-10-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">10.2 Root Cause</h3>
+
+`RETAIL_FAULT_CODE_PREFIX` defaults to the phone-era `SAM-E`. The ops scripts export `FRU-E`; the new CLI and live test did not, and `.env` had no entry — so no FRU code was ever recognised and the boost never fired, with no error.
+
+<h3 id="war-story-10-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">10.3 Resolution</h3>
+
+The answer CLI and live test default the prefix from the company profile (`fault_code_prefix: FRU-E`); the bundle's own `fault_code` field reads the profile directly. Same-issue@2 on `code_in_query` went 3/9 → 5/9.
+
+<h3 id="war-story-10-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">10.4 Takeaway</h3>
+
+When a domain moves (phones → fridges), grep every env default for the old domain; a new entry point must take domain constants from the domain config, not from whatever the shell happened to export.

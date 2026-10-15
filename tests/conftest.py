@@ -18,6 +18,11 @@ from retail_brain.eval_gen import build_eval_rows, write_eval_jsonl  # noqa: E40
 from retail_brain.seed import generate_tickets, write_manifest, write_service_csv  # noqa: E402
 
 
+def pytest_configure(config: pytest.Config) -> None:
+    """Register repo markers (avoids PytestUnknownMarkWarning)."""
+    config.addinivalue_line("markers", "no_embed_stub: use real Gemini embeddings (live tiers only)")
+
+
 @pytest.fixture(autouse=True)
 def _retail_test_embed_stub(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None:
     """Pytest-only deterministic vectors — production code always calls Gemini (no mock fallback)."""

@@ -16,6 +16,7 @@ Retail and Samsung service-brain plans live here instead of scattered under `doc
 |-------------|--------|------|
 | [`REFACTOR_FRU_US_SERVICE_BRAIN.md`](./completed/REFACTOR_FRU_US_SERVICE_BRAIN.md) | **completed** | FRU corpus + ABC (1k / Tantivy ladder) |
 | [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](./wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md) | **wip** | Product path: wiki + operator + agent loop (V2–V5) |
+| [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) | **wip** | `brain/personal` + `brain/retail` profiles; `retail_answer.v1` JSON + E2E tests |
 | [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](./completed/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) | **completed** | Phone-era master (phases 0–7); reference for V2–V5 |
 | [`REFACTOR_RETAIL_SIM_DATA_SCALE_1K.md`](./completed/REFACTOR_RETAIL_SIM_DATA_SCALE_1K.md) | **completed** | Phone 60/10 → 1000/100 archive |
 

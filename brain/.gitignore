@@ -1,24 +1,30 @@
-# Large binaries under sources (plan §5)
-raw/sources/**/*.pdf
-raw/sources/**/*.docx
-raw/sources/**/*.epub
-raw/sources/**/*.zip
-raw/sources/**/*.png
-raw/sources/**/*.jpg
-raw/sources/**/*.jpeg
-raw/sources/**/*.gif
-raw/sources/**/*.mp4
-raw/sources/**/*.mov
+# Shared ignore rules for all brain-profiles (brain/personal, brain/retail).
+# Patterns with a middle slash are anchored to this directory, so prefix them per profile.
+
+# Personal large binaries under sources (plan §5). Retail fridge PDFs ARE committed.
+personal/raw/sources/**/*.pdf
+personal/raw/sources/**/*.docx
+personal/raw/sources/**/*.epub
+personal/raw/sources/**/*.zip
+personal/raw/sources/**/*.png
+personal/raw/sources/**/*.jpg
+personal/raw/sources/**/*.jpeg
+personal/raw/sources/**/*.gif
+personal/raw/sources/**/*.mp4
+personal/raw/sources/**/*.mov
+
+# LLM Wiki parse cache next to raw sources (any profile)
+**/raw/sources/**/.cache/
 
 # LLM Wiki Agent scratch output (not ingest corpus)
 agent-workspace/
 
-# LLM Wiki local state if mirrored into tree
+# LLM Wiki local project state (per profile)
 .llm-wiki/
 
-# Hermes detach pid/log (start-hermes.sh --detach)
-.cache/hermes-chat.pid
-.cache/hermes-chat.log
+# Hermes detach pid/log (start-hermes.sh --detach), per profile
+**/.cache/hermes-chat.pid
+**/.cache/hermes-chat.log
 
 # Secrets
 .env

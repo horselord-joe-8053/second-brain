@@ -1,15 +1,27 @@
 #!/usr/bin/env python3.12
-"""Load config/brain-stack.yaml and apply env/path helpers (no PyYAML required)."""
+"""Load config/brain-stack.yaml and apply env/path helpers (no PyYAML required).
+
+Brain-profiles: ``brain/<profile>/`` (``personal`` | ``retail``) is the active Nashsu project root.
+Resolution order: ``BRAIN_PROFILE`` env → ``active_brain_profile`` in yaml → ``retail``.
+
+CLI:
+  brain_stack.py              apply Hermes secrets + print MCP / vault exports (legacy behavior)
+  brain_stack.py profile-env  print BRAIN_PROFILE / BRAIN_ROOT / SECOND_BRAIN_WIKI_VAULT exports only
+"""
 from __future__ import annotations
 
 import os
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
 _ENV_REF = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
+
+BRAIN_PROFILES: tuple[str, ...] = ("personal", "retail")
+DEFAULT_BRAIN_PROFILE = "retail"
 
 
 def _parse_simple_yaml(text: str) -> dict[str, Any]:
@@ -200,7 +212,25 @@ def hermes_core_sync_env_keys(stack: dict[str, Any]) -> list[str]:
     return [k for k in keys if k not in msg_keys]
 
 
+def resolve_brain_profile(stack: dict[str, Any] | None = None) -> str:
+    """Return the active profile name: env BRAIN_PROFILE, then yaml, then retail; raise on unknown."""
+    raw = os.environ.get("BRAIN_PROFILE", "").strip()
+    if not raw and stack:
+        raw = str(stack.get("active_brain_profile") or "").strip()
+    profile = (raw or DEFAULT_BRAIN_PROFILE).lower()
+    if profile not in BRAIN_PROFILES:
+        raise ValueError(f"unknown brain profile {profile!r}; valid: {', '.join(BRAIN_PROFILES)}")
+    return profile
+
+
+def _abs(repo: Path, value: str) -> Path:
+    """Resolve a yaml path value relative to the repo root."""
+    p = Path(value)
+    return (p if p.is_absolute() else repo / p).resolve()
+
+
 def load_brain_stack(repo: Path | None = None) -> dict[str, Any]:
+    """Merge example + local brain-stack yaml and derive absolute, profile-scoped paths."""
     repo = repo or Path(__file__).resolve().parents[2]
     example = repo / "config" / "brain-stack.example.yaml"
     if not example.is_file():
@@ -210,23 +240,31 @@ def load_brain_stack(repo: Path | None = None) -> dict[str, Any]:
     if local:
         data = _deep_merge(data, _parse_simple_yaml(local.read_text(encoding="utf-8")))
     paths = data.setdefault("paths", {})
-    repo_s = str(repo.resolve())
-    paths.setdefault("repo_root", repo_s)
-    if "brain_root" in paths and not Path(paths["brain_root"]).is_absolute():
-        paths["brain_root"] = str((repo / paths["brain_root"]).resolve())
-    if "wiki_vault" in paths and not Path(paths["wiki_vault"]).is_absolute():
-        paths["wiki_vault"] = str((repo / paths["wiki_vault"]).resolve())
+    paths.setdefault("repo_root", str(repo.resolve()))
+    # Legacy configs set brain_root to the parent dir ("brain"); treat it as brains_dir.
+    brains_dir = _abs(repo, paths.get("brains_dir") or paths.get("brain_root") or "brain")
+    profile = resolve_brain_profile(data)
+    data["active_brain_profile"] = profile
+    brain_root = brains_dir / profile
+    paths["brains_dir"] = str(brains_dir)
+    paths["brain_root"] = str(brain_root)
+    # Vaults always follow the profile so stale "brain/wiki" values cannot leak through.
+    paths["wiki_vault"] = str(brain_root / "wiki")
     hermes = data.setdefault("hermes", {})
     mcp_js = hermes.get("mcp_server_js", "../nu_llm_wiki/mcp-server/dist/src/index.js")
-    if not Path(mcp_js).is_absolute():
-        hermes["mcp_server_js"] = str((repo / mcp_js).resolve())
-    obs = data.setdefault("obsidian", {})
-    vault = obs.get("vault_path") or paths.get("wiki_vault")
-    if vault and not Path(vault).is_absolute():
-        obs["vault_path"] = str((repo / vault).resolve())
-    elif vault:
-        obs["vault_path"] = str(Path(vault).resolve())
+    hermes["mcp_server_js"] = str(_abs(repo, mcp_js))
+    data.setdefault("obsidian", {})["vault_path"] = paths["wiki_vault"]
     return expand_env_refs(data)
+
+
+def profile_env_lines(stack: dict[str, Any]) -> list[str]:
+    """Shell export lines for the active profile (safe to eval; no secrets)."""
+    paths = stack["paths"]
+    return [
+        f"export BRAIN_PROFILE={stack['active_brain_profile']}",
+        f"export BRAIN_ROOT={paths['brain_root']}",
+        f"export SECOND_BRAIN_WIKI_VAULT={paths['wiki_vault']}",
+    ]
 
 
 def _read_env_map(path: Path) -> dict[str, str]:
@@ -394,15 +432,20 @@ def apply_hermes_env(stack: dict[str, Any], repo: Path) -> int:
     return len(secrets)
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    """CLI entry: default applies Hermes env; ``profile-env`` only prints profile exports."""
+    argv = sys.argv[1:] if argv is None else argv
     repo = Path(__file__).resolve().parents[2]
     stack = load_brain_stack(repo)
+    if argv[:1] == ["profile-env"]:
+        print("\n".join(profile_env_lines(stack)))
+        return 0
     n = apply_hermes_env(stack, repo)
     if n:
         print(f"brain_stack: applied {n} secret(s) from stack → {Path.home() / '.hermes' / '.env'} (not printed)")
     mcp = stack["hermes"]["mcp_server_js"]
     print(f"export NU_LLM_WIKI_MCP={mcp}")
-    print(f"export SECOND_BRAIN_WIKI_VAULT={stack.get('obsidian', {}).get('vault_path', '')}")
+    print("\n".join(profile_env_lines(stack)))
     return 0
 
 

@@ -26,6 +26,10 @@ Run `01_copy_manuals.sh` first. Expect **6 PDFs** under:
 4. **`llm_wiki_search`:** e.g. `RF28K9070SG ice maker not making ice`
 5. **`llm_wiki_read_file`** on one hit under `brain/retail/wiki/`.
 6. Install **`query-retail-brain`** skill on Hermes if missing.
+7. Check one compiled source page keeps frontmatter **`sources: ["fridge-docs/<sku>/<guide>.pdf"]`** — the answer bundle uses it to cite the raw PDF + page. Then smoke from the repo:
+   `scripts/py scripts/retail/answer/answer_ticket.py --query "RF28K9070SG ice maker not making ice" --md` → expect a manual hit `(via wiki …)`.
+
+**Profiles:** `brain/retail` is the default brain-profile; the personal brain is a separate LLM Wiki project at `brain/personal` (see runbook §2.1). **Duplicates:** GE and KitchenAid `repair-guide.pdf` are byte-identical copies of their `user-guide.pdf` (the page index flags them `duplicate_of`); compiling them twice only duplicates wiki pages.
 
 **Do not** load Postgres from Hermes.
 

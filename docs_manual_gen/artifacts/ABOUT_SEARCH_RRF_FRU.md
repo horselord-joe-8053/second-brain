@@ -17,7 +17,8 @@
 9. [Results](#fru-results) — FRU 1k table (round 0).
 10. [Config](#fru-config) — env + YAML.
 11. [How we got here](#fru-history) — link legacy phone doc.
-12. [Next](#fru-next) — sales join on `customer_id`.
+12. [Answer bundle](#fru-answer) — tickets + manual pages, live pre-run numbers.
+13. [Next](#fru-next) — sales join on `customer_id`.
 
 ---
 
@@ -122,6 +123,30 @@ YAML: `scripts/retail/config/fru_us_service.yaml`.
 
 The Samsung AU phone corpus proved hybrid search and the ABC ladder; see [`ABOUT_SEARCH_RRF_LEGACY_PHONE.md`](./ABOUT_SEARCH_RRF_LEGACY_PHONE.md).
 
-<h2 id="fru-next" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. What comes next</h2>
+<h2 id="fru-answer" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. From search to an answer bundle</h2>
+
+Ticket search is one leg of answering a **new** ticket. `scripts/retail/answer/answer_ticket.py` builds a deterministic **`retail_answer.v1`** JSON bundle with **both** legs, always:
+
+- **`tickets.hits`** — top-2 resolved tickets for the same fridge model, each with `cosine_similarity` (query vs ticket embedding; comparable across queries) and `fused_score` (RRF score in modes B/C, `null` in A).
+- **`manuals.hits`** — up to 3 passages, each citing `raw_origin.pdf_path` + `pages`. Source is the compiled LLM Wiki page when one is relevant for that model (`source: wiki`, frontmatter `sources:` → PDF, excerpt → page via the committed page index), else the PDF page text itself (`source: raw_pdf`).
+
+No verdict field: a parser or an LLM summarizer reads the bundle and must keep every `ticket_id` and `pdf_path p.N`. Manual gold comes from author-owned `manual_anchors` per issue in the YAML (pages containing those phrases), not from the search's own output.
+
+**Live pre-run (2026-10-15, 32 gold rows, wiki not yet compiled → raw PDF pages only):**
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Metric</th><th>paraphrase</th><th>hybrid_stress</th><th>code_in_query</th><th>no prior ticket</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Same-issue ticket in top-2 (C)</td><td>9/9</td><td>8/9</td><td>5/9</td><td>0 false claims / 5</td></tr>
+<tr><td style="background:#e3f2fd">Exact gold ticket in top-2 (C)</td><td>5/9</td><td>5/9</td><td>5/9</td><td>—</td></tr>
+<tr><td style="background:#e3f2fd">Manual page within ±1 of gold</td><td>9/9</td><td>7/9</td><td>6/7</td><td>4/5</td></tr>
+</tbody>
+</table>
+
+"Same-issue" matters more than the exact source ticket: the corpus holds dozens of near-identical tickets per issue, and any of them carries the same fix.
+
+<h2 id="fru-next" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">13. What comes next</h2>
 
 Product path: wiki ingest + agent sidecar — [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](../ref_plan/wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md). Join sales analytics on **`customer_id`**.

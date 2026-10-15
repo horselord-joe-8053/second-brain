@@ -1,9 +1,9 @@
 <h1 id="fru-product-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: FRU US retail service Second Brain (product path)</h1>
 
 **Status:** **wip** — V3 prep docs **`[X]`**; V2 / platform / V4 / V5 **`[ ]`**  
-**Execute:** `qimpltdd docs_manual_gen/ref_plan/wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`
+**Execute order:** (1) `qimpltdd docs_manual_gen/ref_plan/wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md` (Platform phase); (2) manual HG-P2 + HG-2; (3) `qimpltdd docs_manual_gen/ref_plan/wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md` for V2 → V4 → V5.
 
-**Goal:** When a **new aftersales ticket** arrives, the agent finds the right **historical resolved ticket** (Postgres + hybrid search) and, when reuse is weak, the right **user/repair manual** passages (LLM Wiki over fridge PDFs) — same architecture as the Samsung phone prototype, **US market + three fridge SKUs**.
+**Goal:** When a **new aftersales ticket** arrives, the agent finds the right **historical resolved ticket** (Postgres + hybrid search) and, **always alongside** (brain-profiles **E2**), the right **user/repair manual** passages cited to PDF path + page (LLM Wiki over fridge PDFs) — same architecture as the Samsung phone prototype, **US market + three fridge SKUs**.
 
 **Prerequisites (done elsewhere):**
 
@@ -56,7 +56,7 @@
 | **G3** | Samsung master → **`completed/`**; V2–V5 continue here. | Avoid two “master” wips. |
 | **G4** | **Full stack** order: **V2 → platform (optional) → V3 → V4 → V5**. | Matches phone plan dependency order. |
 | **P1** | **Market US**; manuals + tickets use FRU SKUs and **`RETAIL_FAULT_CODE_PREFIX=FRU-E`**. | Aligns with committed corpus. |
-| **P2** | **D2 routing:** `semantic_search` on **resolved** tickets above threshold → else **`llm_wiki_search`** on scoped wiki; no theme/playbook fallback until **V2** exports exist. | Same as Samsung D2. |
+| **P2** | ~~**D2 routing:** `semantic_search` on **resolved** tickets above threshold → else **`llm_wiki_search`**.~~ **Superseded 2026-10-15** by [brain-profiles plan **E2**](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-2-decisions): always run both legs; return `retail_answer.v1` JSON (top-2 tickets + manual hits with raw PDF page). | User: always both, deterministic JSON. |
 | **P3** | **D12 model scope:** resolve **`model`** (fridge SKU) from open ticket via SQL before search; eval already uses **`model_filter`**. | Prevents cross-SKU reuse mistakes. |
 | **P4** | **D9 / D11:** Cursor runs repo scripts + PG A/B; Hermes runs **`llm_wiki_*`** for product manual path. | Copy PDFs ≠ ingest. |
 | **P5** | **D13:** migrate **`utils/retail_fru/`** → **`utils/pg_rag/`** during **V5** (domain-agnostic loop). | Samsung plan D13, FRU naming. |
@@ -98,16 +98,16 @@ graph TD
 
 **Exit:** one playbook MD compiled into wiki; `./scripts/verify.sh` green.
 
-<h3 id="4-platform" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.2 Platform — `brain/personal` migration (non-blocking)</h3>
+<h3 id="4-platform" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.2 Platform — brain-profiles (required)</h3>
 
-- [ ] Same checklist as [Samsung section 18](../completed/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md#18-deferred-platform) — may run in parallel with V3 if owner approves.
+- [X] Delivered by [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) P1–P3 (`brain/personal` + `brain/retail`, `BRAIN_PROFILE` default retail); its P4–P8 deliver the answer bundle + E2E tests that **V5** consumes.
 
 **Exit:** dual-domain layout documented; retail paths unchanged under `brain/retail/`.
 
 <h3 id="4-v3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.3 V3 — Operator harness (Cursor vs Hermes)</h3>
 
 - [X] Split prep into **`CURSOR_PREP_RUNBOOK.md`** + **`HERMES_WIKI_OPERATOR.md`** (FRU PDF paths, **`fru_us_1k`** env block).
-- [ ] Hermes smoke: `llm_wiki_set_project` → `brain/retail`; rescan **`fridge-docs`**; one ice-maker search + read (**HG-2**, human).
+- [ ] Hermes smoke: `llm_wiki_set_project` → `brain/retail`; rescan **`fridge-docs`**; one ice-maker search + read (**HG-2**, **manual**, scheduled **after** brain-profiles plan P1–P9 + HG-P2 — see its [section 7](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-7-gates)).
 - [X] Runbooks cite embed-once protocol and FRU ABC path (`SECOND_BRAIN_RUNBOOK.md` §16).
 
 **Exit:** operator checklist recorded; ticket A/B remains on **`03`/`05`** scripts, not Hermes.
@@ -126,7 +126,7 @@ graph TD
 - [ ] FastAPI sidecar: **`semantic_search`**, **`generate_sql`**, **`execute_sql`** (read-only DB role).
 - [ ] ReAct loop: customer path (ticket → wiki); manager path (SQL aggregates) per Samsung [section 7](../completed/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md#7-routing).
 - [ ] **D12:** ticket id → SQL → **`model`** → **`model_filter`** on search; wiki queries scoped by SKU folder.
-- [ ] E2E eval JSONL: `query → ticket_hit | wiki_paths[]`; expand **`sql_routed`** stratum tests.
+- [ ] Sidecar returns the brain-profiles **`retail_answer.v1`** bundle (`build_answer_bundle`); reuse its `answer_e2e.jsonl` instead of the old `query → ticket_hit | wiki_paths[]` shape; expand **`sql_routed`** stratum tests.
 - [ ] Update **`query-retail-brain`** skill + MCP catalog for sidecar URL.
 
 **Exit:** local sidecar demo on FRU corpus; skill routes customer flow end-to-end; verify green.
@@ -149,7 +149,7 @@ graph TD
 <h2 id="6-checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Execution checklist</h2>
 
 - [ ] **V2** — themes / exports / cron
-- [ ] **Platform** — `brain/personal` (optional parallel)
+- [X] **Platform** — brain-profiles + answer bundle ([plan](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md); code P1–P9 done 2026-10-15, HG-P2 / HG-2 pending)
 - [X] **V3** — Cursor + Hermes runbooks (wiki smoke HG-2 open)
 - [ ] **V4** — eval governance CI / held-out seed
 - [ ] **V5** — sidecar + skill + E2E eval JSONL
@@ -159,7 +159,7 @@ graph TD
 <h2 id="7-acceptance" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Acceptance</h2>
 
 1. **Incoming ticket demo:** paraphrase intake on a known FRU eval row retrieves gold ticket at rank 1 in mode **B** or **C** via sidecar (not CSV harness only).
-2. **Manual fallback:** query with no good ticket hit returns at least one wiki path under the correct SKU folder.
+2. **Manual evidence:** every query's bundle carries manual hits cited to the correct SKU PDF path + page (wiki excerpt or raw-PDF fallback), per brain-profiles **E2/E4**.
 3. **Hermes path:** documented rescan + search smoke on fridge PDFs.
 4. **`./scripts/verify.sh`** green after **V5** merge.
 5. Corpus pivot plan P10–P12 complete (article numbers, runbooks, specs).

@@ -7,6 +7,7 @@
 
 1. [Prerequisites](#prereq) — tools and versions.
 2. [Repo layout](#layout) — paths on this host.
+    2.1 [Brain profiles](#layout-profiles) — `personal` / `retail`, `BRAIN_PROFILE` switch.
 3. [second_brain harness](#harness) — seed and verify.
 4. [nu_llm_wiki from source](#nu-llm-wiki) — dev app and MCP build.
 5. [Manual in-app steps (HG-2)](#manual-app) — project first, then settings.
@@ -43,8 +44,26 @@
 └── nu_llm_wiki/           # git@github.com:horselord-joe-8053/llm-wiki.git
 ```
 
-**LLM Wiki project folder (open in app):**  
-`/Users/jjw8053/projects/second_brain/brain`
+**LLM Wiki project folders (open in app, one per brain-profile):**  
+`/Users/jjw8053/projects/second_brain/brain/personal` · `/Users/jjw8053/projects/second_brain/brain/retail`
+
+<h3 id="layout-profiles" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.1 Brain profiles (personal / retail)</h3>
+
+`brain/` holds exactly two **brain-profiles** (each a full LLM Wiki project: `purpose.md`, `schema.md`, `raw/`, `wiki/`, `manifests/`). Exactly one is **active**; shared scripts derive every path from it.
+
+| Profile | Root | Content |
+|---------|------|---------|
+| `retail` (default) | `brain/retail` | Fridges R Us manuals (`raw/sources/fridge-docs/`), PDF page index, answer-bundle contract |
+| `personal` | `brain/personal` | Personal notes / proposals (previous single-brain tree) |
+
+**Switch:** `BRAIN_PROFILE` env → `active_brain_profile` in `config/brain-stack.yaml` → `retail`. Scripts source `scripts/brain/brain-profile-env.sh`, which exports `BRAIN_PROFILE`, `BRAIN_ROOT`, `SECOND_BRAIN_WIKI_VAULT` (= `$BRAIN_ROOT/wiki`, also the Obsidian vault).
+
+```bash
+scripts/py scripts/brain/brain_stack.py profile-env          # show the active profile exports
+BRAIN_PROFILE=personal ./scripts/brain/setup-obsidian.sh     # one-off run against the personal brain
+```
+
+The desktop apps keep their own state: switching profile in the repo does **not** re-point LLM Wiki or Obsidian — open the matching folder there by hand (HG-P2 in the brain-profiles plan).
 
 ---
 
@@ -115,12 +134,12 @@ That calls `../nu_llm_wiki/scripts/restart-dev.sh`. Hermes uses the skill **`loc
 <span style="background:#fff9c4;padding:2px 4px">GUI required</span> — no supported repo config file for LLM provider keys yet. Order matters:
 
 1. **Start app** — first time: `npm run tauri dev` (§4). Later: `./scripts/brain/llm-wiki.sh start` from `second_brain`.
-2. **Open or create project first** — **File → Open project** (or equivalent) → select  
-   `/Users/jjw8053/projects/second_brain/brain`  
+2. **Open or create project first** — **File → Open project** (or equivalent) → select the profile root,  
+   `/Users/jjw8053/projects/second_brain/brain/personal` or `…/brain/retail` ([§2.1](#layout-profiles))  
    Many settings (Source Watch, per-project LLM overrides, `{id}` in API calls as `current`) assume a project is active. Do this **before** relying on API + MCP.
 3. **Settings → LLM** — ingest + chat models and **provider API keys** (OpenAI, Gemini, Ollama, etc.). Stored in macOS app data (`app-state.json`), **not** in `second_brain/.env`.
 4. **Settings → API + MCP** — enable **local HTTP API**, **Generate new token**, enable **MCP access**, **Save**. Copy token into local `.env` as `LLM_WIKI_API_TOKEN` (see §6) or a password manager — **never commit**.
-5. **Smoke ingest (HG-2 exit)** — drop `brain/raw/sources/uploads/smoke-test.md` (committed in repo). In the **native LLM Wiki window**, **Open project** → `…/second_brain/brain` (required: ingest workers run in the UI, not via API alone). Ensure **Settings → Source Watch** has **auto-ingest** on for that project. Wait until activity finishes; expect new/updated pages under `brain/wiki/` (not only `index.md`). Optional API assist after the project is open: `POST …/projects/current/sources/rescan` with bearer token.
+5. **Smoke ingest (HG-2 exit)** — drop `brain/personal/raw/sources/uploads/smoke-test.md` (committed in repo). In the **native LLM Wiki window**, **Open project** → `…/second_brain/brain/personal` (required: ingest workers run in the UI, not via API alone). Ensure **Settings → Source Watch** has **auto-ingest** on for that project. Wait until activity finishes; expect new/updated pages under `brain/personal/wiki/` (not only `index.md`). Retail: open `…/brain/retail` and ingest `raw/sources/fridge-docs/**` the same way. Optional API assist after the project is open: `POST …/projects/current/sources/rescan` with bearer token.
 
 **Ingest tip:** Source Watch queues **new or modified** files. If a file was already in the project snapshot before auto-ingest was enabled, use **Refresh folder** (Sources tab), the **book** icon on the row, or edit-and-save the source file to trigger a change.
 
@@ -256,7 +275,7 @@ Replace `{id}` with project UUID, project path, or `current`.
 
 <h2 id="query-path" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Query path (MCP)</h2>
 
-**Read path** (HERMES-3 / `query-brain`): compiled knowledge lives in **`brain/wiki/`**; agents should query via LLM Wiki API/MCP, not by scanning the whole tree in prompt context.
+**Read path** (HERMES-3 / `query-brain`): compiled knowledge lives in **`brain/<profile>/wiki/`** ([§2.1](#layout-profiles)); agents should query via LLM Wiki API/MCP, not by scanning the whole tree in prompt context.
 
 - **In app:** Chat / Agent tab on project **brain** (full UI retrieval loop).
 - **For any MCP host (Hermes, Cursor, …):** tools `llm_wiki_set_project`, `llm_wiki_search`, `llm_wiki_read_file`, optional `llm_wiki_chat` — see [`MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md`](./MORE_SECOND_BRAIN_QUERY_HERMES_MCP.md).
@@ -287,7 +306,7 @@ From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs **`setup-local.s
 
 <h2 id="obsidian" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. Obsidian (HG-5)</h2>
 
-**Recommended vault root:** `…/second_brain/brain/wiki` (compiled Markdown only). Alternative: project root `brain/` if `.obsidian/` was generated there by LLM Wiki.
+**Recommended vault root:** `…/second_brain/brain/<profile>/wiki` (compiled Markdown only; `setup-obsidian.sh` uses the active profile). Alternative: the profile root `brain/<profile>/` if `.obsidian/` was generated there by LLM Wiki.
 
 **Automated install (macOS + Homebrew):**
 
@@ -364,6 +383,15 @@ bash cursor_gen/retail_v11_prep/00_docker_ensure.sh
 bash cursor_gen/retail_v11_prep/03_pg_up_and_load.sh
 bash cursor_gen/retail_v11_prep/05_run_abc_postgres.sh
 ```
+
+**Answer a new ticket** (`retail_answer.v1` JSON: top-2 similar resolved tickets with cosine + fused scores, plus manual hits cited as `raw/sources/fridge-docs/<sku>/<guide>.pdf p.N`):
+
+```bash
+scripts/py scripts/retail/answer/answer_ticket.py --query "RF28K9070SG ice maker not making ice" --postgres --md
+scripts/py scripts/retail/answer/answer_ticket.py --query "…" --no-wiki --json   # CSV corpus, raw PDF pages only
+```
+
+The manual leg needs the committed page index `brain/retail/manifests/pdf_page_index.jsonl` (rebuild after PDF changes: `scripts/py scripts/retail/manuals/build_pdf_page_index.py`, ~5 min). Tests: CI tier `tests/test_retail_answer_e2e.py` (in `verify.sh`); live tier `RUN_RETAIL_E2E=1 scripts/py -m pytest -q tests/test_retail_answer_live.py -s` (Postgres + Gemini + LLM Wiki on `brain/retail`).
 
 Spec: [`docs/specs/fru-us-service-synthetic-data.md`](../docs/specs/fru-us-service-synthetic-data.md). Prep split: [`cursor_gen/retail_v11_prep/CURSOR_PREP_RUNBOOK.md`](../cursor_gen/retail_v11_prep/CURSOR_PREP_RUNBOOK.md) · [`HERMES_WIKI_OPERATOR.md`](../cursor_gen/retail_v11_prep/HERMES_WIKI_OPERATOR.md).
 

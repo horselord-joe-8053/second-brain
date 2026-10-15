@@ -4,10 +4,14 @@ version: 1
 
 active_harness: hermes
 
+# Brain-profiles: brain/personal (personal second brain) | brain/retail (FRU aftersales).
+# Env BRAIN_PROFILE wins over this key; default retail. One profile is active at a time.
+active_brain_profile: retail
+
 paths:
   repo_root: "."
-  brain_root: "brain"
-  wiki_vault: "brain/wiki"
+  # Parent of the profile dirs. Active root = <brains_dir>/<profile>; wiki vault = <root>/wiki (derived).
+  brains_dir: "brain"
 
 llm_wiki:
   api_base_url: "http://127.0.0.1:19828/api/v1"
@@ -54,5 +58,4 @@ hermes:
     - WHATSAPP_HOME_CHANNEL_THREAD_ID
   mcp_server_js: "../nu_llm_wiki/mcp-server/dist/src/index.js"
 
-obsidian:
-  vault_path: "brain/wiki"
+# Obsidian vault is derived from the active profile (<brains_dir>/<profile>/wiki); no obsidian.vault_path key.

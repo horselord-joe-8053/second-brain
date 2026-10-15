@@ -7,9 +7,11 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 
 
-def test_mcp_catalog_resolves_repo_paths_not_home() -> None:
+def test_mcp_catalog_resolves_repo_paths_not_home(monkeypatch) -> None:
+    """Filesystem MCP root is the active brain-profile dir (default retail), never a home path."""
     import sys
 
+    monkeypatch.delenv("BRAIN_PROFILE", raising=False)
     sys.path.insert(0, str(REPO / "scripts" / "brain"))
     from brain_stack import load_mcp_servers_catalog
 
@@ -23,8 +25,7 @@ def test_mcp_catalog_resolves_repo_paths_not_home() -> None:
 
     assert Path(mcp_js).is_absolute()
     assert Path(brain_root).is_absolute()
-    assert brain_root == str((REPO / "brain").resolve())
-    assert "second_brain/brain" in brain_root or brain_root.endswith("/brain")
+    assert brain_root == str((REPO / "brain" / "retail").resolve())
 
     catalog_text = (REPO / "config" / "second-brain.mcp-servers.yaml").read_text(encoding="utf-8")
     assert "/Users/" not in catalog_text

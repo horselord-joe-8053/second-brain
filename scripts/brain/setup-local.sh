@@ -23,11 +23,13 @@ else
   echo "setup-local: no adapter at scripts/brain/adapters/$HARNESS/setup-harness.sh — skip harness steps"
 fi
 
-echo "== second-brain: corpus layout =="
-test -d "$ROOT/brain/raw/sources"
-test -d "$ROOT/brain/wiki"
-test -d "$ROOT/brain/manifests"
-test -f "$ROOT/brain/purpose.md"
+# shellcheck source=scripts/brain/brain-profile-env.sh
+source "$ROOT/scripts/brain/brain-profile-env.sh"
+echo "== second-brain: corpus layout (profile ${BRAIN_PROFILE} → ${BRAIN_ROOT}) =="
+test -d "$BRAIN_ROOT/raw/sources"
+test -d "$BRAIN_ROOT/wiki"
+test -d "$BRAIN_ROOT/manifests"
+test -f "$BRAIN_ROOT/purpose.md"
 test -f "$ROOT/harness/second-brain/README.md"
 
 bash "$ROOT/scripts/brain/setup-obsidian.sh"

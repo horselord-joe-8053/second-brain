@@ -23,6 +23,7 @@ def test_retail_brain_layout() -> None:
         assert (base / "repair-guide.pdf").is_file()
 
 
-def test_legacy_personal_brain_unchanged() -> None:
-    assert (REPO / "brain" / "purpose.md").is_file()
-    assert (REPO / "brain" / "wiki").is_dir()
+def test_personal_profile_sibling_present() -> None:
+    """Personal corpus lives beside retail under brain/personal/."""
+    assert (REPO / "brain" / "personal" / "purpose.md").is_file()
+    assert (REPO / "brain" / "personal" / "wiki").is_dir()

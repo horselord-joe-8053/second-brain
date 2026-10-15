@@ -37,7 +37,7 @@ Trust only the lines that start with `llm-wiki:`. The token copy step also print
 
 ## After the API is up
 
-1. `llm_wiki_set_project` to `/Users/jjw8053/projects/second_brain/brain` (retail questions: `…/second_brain/brain/retail`).
+1. `llm_wiki_set_project` to `…/second_brain/brain/<profile>` — `brain/retail` (default, FRU) or `brain/personal`.
 2. Then **`query-brain`** or **`ingest-to-brain`**.
 
 ## Do not

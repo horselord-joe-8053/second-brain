@@ -7,7 +7,7 @@ source "$HERMES_AD/hermes-env.sh"
 ROOT="$SECOND_BRAIN_ROOT"
 
 DESKTOP_PAGE="${HERMES_DESKTOP_URL:-https://hermes-agent.nousresearch.com/desktop}"
-CACHE_DIR="$ROOT/brain/.cache"
+CACHE_DIR="$ROOT/.cache/hermes"
 DMG_PATH="$CACHE_DIR/Hermes-Setup.dmg"
 
 find_hermes_app() {

@@ -11,13 +11,15 @@ fail() {
   exit 1
 }
 
-echo "== acceptance-automated (HG-8 automated items) =="
+# shellcheck source=scripts/brain/brain-profile-env.sh
+source "$ROOT/scripts/brain/brain-profile-env.sh"
+echo "== acceptance-automated (HG-8 automated items; profile ${BRAIN_PROFILE}) =="
 
-wiki_count="$(find "$ROOT/brain/wiki" -name '*.md' ! -path '*/.obsidian/*' 2>/dev/null | wc -l | tr -d ' ')"
+wiki_count="$(find "$SECOND_BRAIN_WIKI_VAULT" -name '*.md' ! -path '*/.obsidian/*' 2>/dev/null | wc -l | tr -d ' ')"
 if [[ "$wiki_count" -lt 2 ]]; then
-  fail "brain/wiki/ needs compiled pages beyond index.md (found ${wiki_count} *.md)"
+  fail "${SECOND_BRAIN_WIKI_VAULT} needs compiled pages beyond index.md (found ${wiki_count} *.md)"
 fi
-echo "acceptance-automated: [1/4] wiki pages OK (${wiki_count} *.md under brain/wiki/)"
+echo "acceptance-automated: [1/4] wiki pages OK (${wiki_count} *.md under ${SECOND_BRAIN_WIKI_VAULT})"
 
 bash "$HERMES_AD/setup-hermes-mcp.sh"
 echo "acceptance-automated: [2/4] setup-hermes-mcp + mcp-smoke-read OK"
@@ -42,11 +44,15 @@ fi
 
 echo "acceptance-automated: [4/4] Hermes config + MCP OK"
 
-bash "$ROOT/scripts/brain/nb-sb1-probe.sh"
-echo "acceptance-automated: [5/5] NB-SB1 search API cites L3 james source"
+if [[ "$BRAIN_PROFILE" == "personal" ]]; then
+  bash "$ROOT/scripts/brain/nb-sb1-probe.sh"
+  echo "acceptance-automated: [5/5] NB-SB1 search API cites L3 james source"
+else
+  echo "acceptance-automated: [5/5] NB-SB1 probe skipped (personal-profile corpus; BRAIN_PROFILE=${BRAIN_PROFILE})"
+fi
 
 echo ""
 echo "Manual P8 (see docs/ACCEPTANCE-second-brain-hermes-v1.md):"
-echo "  • Obsidian vault on ${ROOT}/brain/wiki (HG-5)"
+echo "  • Obsidian vault on ${SECOND_BRAIN_WIKI_VAULT} (HG-5)"
 echo "  • Hermes Desktop smoke — RUNBOOK_HARNESS_HERMES.md §4"
 echo "acceptance-automated: OK"

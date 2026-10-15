@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence, Tuple
 
 from retail_brain.embeddings import cosine_distance, embed_text
 from retail_brain.models import RESOLVED
@@ -49,6 +49,15 @@ def lexical_score(query: str, document: str) -> float:
     if not q:
         return 0.0
     return len(q & d) / len(q)
+
+
+def cosine_similarities(query: str, rows: Sequence[TicketRow]) -> Dict[str, float]:
+    """``1 - cosine_distance`` between the query and each row's embedding text (vectors are unit-norm)."""
+    q_emb = embed_text(query, task_type="RETRIEVAL_QUERY")
+    return {
+        r.ticket_id: 1.0 - cosine_distance(q_emb, embed_text(text_for_embedding(r.customer_query_text)))
+        for r in rows
+    }
 
 
 def vector_rank(
@@ -121,8 +130,8 @@ def _fuse(
     *,
     mode: str,
     limit: int,
-) -> List[str]:
-    """RRF-merge vector and lexical lists with optional V1.2 SAM-E term boost."""
+) -> List[Tuple[str, float]]:
+    """RRF-merge vector and lexical lists with optional V1.2 term boost → ``[(id, fused_score)]``."""
     w_v, w_l = rrf_list_weights(mode)
     extra: Dict[str, float] = {}
     if code_boost_enabled(mode):
@@ -140,7 +149,23 @@ def _fuse(
         lexical_rank_order=l_list,
         extra_score_by_id=extra,
     )
-    return [doc_id for doc_id, _ in fused[:limit]]
+    return fused[:limit]
+
+
+def search_ticket_scored(
+    query: str,
+    rows: Sequence[TicketRow],
+    *,
+    model_filter: Optional[str] = None,
+    limit: int = 10,
+) -> List[Tuple[str, Optional[float]]]:
+    """Ranked ``(ticket_id, fused_score)``; ``fused_score`` is None in ``vector_only`` (no fusion)."""
+    mode = resolve_ticket_search_mode()
+    if mode == "vector_only":
+        return [(tid, None) for tid in vector_rank(query, rows, model_filter=model_filter, limit=limit)]
+    v_list = vector_rank(query, rows, model_filter=model_filter, limit=limit * 2)
+    l_list = lexical_rank(query, rows, model_filter=model_filter, limit=limit * 2)
+    return list(_fuse(query, rows, v_list, l_list, mode=mode, limit=limit))
 
 
 def search_ticket_ids(
@@ -151,12 +176,7 @@ def search_ticket_ids(
     limit: int = 10,
 ) -> List[str]:
     """Vector-only or RRF fusion depending on RETAIL_TICKET_SEARCH_MODE."""
-    mode = resolve_ticket_search_mode()
-    if mode == "vector_only":
-        return vector_rank(query, rows, model_filter=model_filter, limit=limit)
-    v_list = vector_rank(query, rows, model_filter=model_filter, limit=limit * 2)
-    l_list = lexical_rank(query, rows, model_filter=model_filter, limit=limit * 2)
-    return _fuse(query, rows, v_list, l_list, mode=mode, limit=limit)
+    return [tid for tid, _ in search_ticket_scored(query, rows, model_filter=model_filter, limit=limit)]
 
 
 def row_by_id(rows: Sequence[TicketRow]) -> Dict[str, TicketRow]:

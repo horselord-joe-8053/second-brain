@@ -14,12 +14,28 @@ description: Query Fridges R Us US retail brain (RETAIL_MARKET=US) — ticket hy
 ## Routing
 
 1. `item_number` / `ticket_id` → SQL (read-only) → fridge **SKU** (`RF28K9070SG`, `GNE27JYMFS`, `KRFF507HPS`).
-2. Customer troubleshooting → **`semantic_search`** on **resolved** tickets (hybrid modes in production), then **`llm_wiki_search`** on retail wiki under the matching **`fridge-docs/<brand>_<model>/`** compile tree.
+2. Customer troubleshooting (a new ticket) → build the **`retail_answer.v1`** evidence bundle:
+
+   ```bash
+   scripts/py scripts/retail/answer/answer_ticket.py --query "<ticket text>" [--model <SKU>] --postgres --json
+   ```
+
+   The bundle always holds **both** legs: `tickets.hits` (top-2 resolved tickets, same model, each with
+   `cosine_similarity` + `fused_score`) and `manuals.hits` (wiki excerpt **or** raw PDF page text, each with
+   `raw_origin.pdf_path` + `pages`). Use `--md` for a deterministic human view; `--no-wiki` if LLM Wiki is down
+   (the bundle falls back to raw PDF pages and says so in `diagnostics.notes`).
 3. Manager metrics → **`generate_sql`** / **`execute_sql`**; cite counts.
 4. No resolution without tool output; escalate if ticket + wiki both fail.
 
+## Summarizing a bundle
+
+- Keep every reference: `ticket_id` with its cosine similarity, and every manual hit as `pdf_path p.N`
+  (also `wiki_path` when `source = wiki`). Never drop `raw_origin`, even when the wiki text is quoted.
+- Do not invent a confidence verdict — the bundle has none by design; report the scores as given.
+- Empty `tickets.hits` = no prior ticket for this model; answer from the manual hits alone.
+
 ## Domain boundary
 
-Do not search legacy `brain/` wiki for retail customer flows unless the user explicitly asks for personal corpus.
+Do not search the `brain/personal/` wiki for retail customer flows unless the user explicitly asks for personal corpus.
 
 Phone-era AU corpus remains under `sim_data/profiles/data_*` for regression only.

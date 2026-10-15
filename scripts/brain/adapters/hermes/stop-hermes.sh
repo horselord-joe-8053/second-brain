@@ -4,7 +4,7 @@ set -euo pipefail
 # shellcheck source=scripts/brain/hermes-env.sh
 source "$(dirname "$0")/hermes-env.sh"
 
-PIDFILE="${HERMES_PIDFILE:-$ROOT/brain/.cache/hermes-chat.pid}"
+PIDFILE="${HERMES_PIDFILE:-$ROOT/.cache/hermes/hermes-chat.pid}"
 
 stopped=0
 

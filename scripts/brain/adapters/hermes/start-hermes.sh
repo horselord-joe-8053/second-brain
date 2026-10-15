@@ -127,7 +127,7 @@ if [[ "$UI" == "desktop" ]]; then
   exec hermes desktop --cwd "$ROOT"
 fi
 
-PIDFILE="${HERMES_PIDFILE:-$ROOT/brain/.cache/hermes-chat.pid}"
+PIDFILE="${HERMES_PIDFILE:-$ROOT/.cache/hermes/hermes-chat.pid}"
 ARGS=(chat --tui --accept-hooks)
 [[ -n "$PROVIDER" ]] && ARGS+=(--provider "$PROVIDER")
 [[ -n "$MODEL" ]] && ARGS+=(-m "$MODEL")

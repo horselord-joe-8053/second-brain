@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[1]
-BRAIN = REPO / "brain"
+BRAIN = REPO / "brain" / "personal"
 
 SOURCE_CHANNELS = (
     "personal",
@@ -19,6 +19,7 @@ SOURCE_CHANNELS = (
 
 
 def test_ac_sb1_brain_layout() -> None:
+    """Personal profile keeps the Hermes v1 corpus shape; shared gitignore at brain/."""
     assert (BRAIN / "purpose.md").is_file()
     assert (BRAIN / "schema.md").is_file()
     assert (BRAIN / "wiki").is_dir()
@@ -26,7 +27,7 @@ def test_ac_sb1_brain_layout() -> None:
     assert (BRAIN / "raw" / "assets").is_dir()
     for ch in SOURCE_CHANNELS:
         assert (BRAIN / "raw" / "sources" / ch).is_dir()
-    assert (BRAIN / ".gitignore").is_file()
+    assert (BRAIN.parent / ".gitignore").is_file()
 
 
 def test_ac_sb2_readme_links() -> None:

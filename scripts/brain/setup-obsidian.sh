@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# P5 / HG-5: install Obsidian (Homebrew cask) and optionally open brain/wiki vault.
+# P5 / HG-5: install Obsidian (Homebrew cask) and optionally open the active profile's wiki vault.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-VAULT="${SECOND_BRAIN_OBSIDIAN_VAULT:-$ROOT/brain/wiki}"
+# shellcheck source=scripts/brain/brain-profile-env.sh
+source "$ROOT/scripts/brain/brain-profile-env.sh"
+VAULT="${SECOND_BRAIN_OBSIDIAN_VAULT:-$SECOND_BRAIN_WIKI_VAULT}"
 
 if ! command -v brew >/dev/null 2>&1; then
   echo "setup-obsidian: Homebrew not found — install from https://brew.sh then re-run"

@@ -23,6 +23,8 @@ class FruIssue:
     paraphrase: str
     weight: float
     models: tuple[str, ...]
+    #: Author-owned phrases a correct manual page must contain (answer-bundle manual gold).
+    manual_anchors: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -43,6 +45,13 @@ class CompanyProfile:
         """Issues allowed for a fridge SKU."""
         return [i for i in self.issues if sku in i.models]
 
+    def docs_folder_for_model(self, sku: str) -> str | None:
+        """Manual folder under ``fridge-docs/`` for a ticket ``model`` (e.g. GNE27JYMFS → ge_GNE27JYMFS)."""
+        for m in self.models:
+            if m.get("sku") == sku or m.get("docs_folder") == sku:
+                return m.get("docs_folder")
+        return None
+
     def issue_by_key(self, key: str) -> FruIssue:
         """Lookup issue by stable key (manifest / eval)."""
         for i in self.issues:
@@ -59,6 +68,7 @@ def _parse_issue(raw: dict[str, Any]) -> FruIssue:
         paraphrase=str(raw["paraphrase"]),
         weight=float(raw.get("weight", 1.0)),
         models=tuple(str(m) for m in raw["models"]),
+        manual_anchors=tuple(str(a) for a in raw.get("manual_anchors") or ()),
     )
 
 

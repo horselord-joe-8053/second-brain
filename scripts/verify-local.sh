@@ -11,11 +11,13 @@ elif [[ "${RUN_BRAIN_ACCEPTANCE:-0}" == "1" ]] && [[ -x "$ROOT/scripts/brain/ada
   bash "$ROOT/scripts/brain/adapters/hermes/acceptance-automated.sh"
 fi
 
-echo "== second-brain: brain/ layout =="
-test -d "$ROOT/brain/raw/sources"
-test -d "$ROOT/brain/wiki"
-test -d "$ROOT/brain/manifests"
-test -f "$ROOT/brain/purpose.md"
+echo "== second-brain: brain-profiles layout (personal + retail) =="
+for _bp in personal retail; do
+  test -d "$ROOT/brain/$_bp/raw/sources"
+  test -d "$ROOT/brain/$_bp/wiki"
+  test -d "$ROOT/brain/$_bp/manifests"
+  test -f "$ROOT/brain/$_bp/purpose.md"
+done
 
 echo "== second-brain: harness stub =="
 test -f "$ROOT/harness/second-brain/README.md"
