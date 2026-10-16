@@ -128,9 +128,9 @@ The Samsung AU phone corpus proved hybrid search and the ABC ladder; see [`ABOUT
 Ticket search is one leg of answering a **new** ticket. `scripts/retail/answer/answer_ticket.py` builds a deterministic **`retail_answer.v1`** JSON bundle with **both** legs, always:
 
 - **`tickets.hits`** — top-2 resolved tickets for the same fridge model, each with `cosine_similarity` (query vs ticket embedding; comparable across queries) and `fused_score` (RRF score in modes B/C, `null` in A).
-- **`manuals.hits`** — up to 3 passages, each citing `raw_origin.pdf_path` + `pages`. Source is the compiled LLM Wiki page when one is relevant for that model (`source: wiki`, frontmatter `sources:` → PDF, excerpt → page via the committed page index), else the PDF page text itself (`source: raw_pdf`).
+- **`manuals.hits`** — up to 3 passages, each citing `raw_origin.doc_path` (``.txt`` under `raw/sources/fridge-docs/`, optional `archive_pdf_path`). Source is compiled LLM Wiki when relevant (`source: wiki`, frontmatter `sources:` → ``.txt``), else SKU-scoped search over those ``.txt`` files (`source: raw_txt`). Page numbers deferred (Phase 2).
 
-No verdict field: a parser or an LLM summarizer reads the bundle and must keep every `ticket_id` and `pdf_path p.N`. Manual gold comes from author-owned `manual_anchors` per issue in the YAML (pages containing those phrases), not from the search's own output.
+No verdict field: summarizers must keep every `ticket_id` and `doc_path`. Manual E2E gold uses `expected_manual_docs` (anchor-derived doc paths), not page lists.
 
 **Live pre-run (2026-10-15, 32 gold rows, wiki not yet compiled → raw PDF pages only):**
 

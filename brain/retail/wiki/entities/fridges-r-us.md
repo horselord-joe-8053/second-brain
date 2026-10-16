@@ -4,7 +4,7 @@ title: Fridges R Us
 created: 2026-10-15
 updated: 2026-10-15
 tags: [organization, service manuals]
-related: ["samsung_RF28K9070SG", "kitchenaid_KRFF507HPS"]
+related: ["kitchenaid_KRFF507HPS"]
 sources: ["fridge-docs/README.md"]
 ---
 # Fridges R Us

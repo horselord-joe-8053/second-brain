@@ -11,7 +11,8 @@ import pytest
 from retail_brain.pdf_pages import PageRow, PdfPageIndex, load_page_index
 
 REPO = Path(__file__).resolve().parents[1]
-INDEX = REPO / "brain" / "retail" / "manifests" / "pdf_page_index.jsonl"
+_MANUALS = REPO / "scripts" / "retail" / "manuals"
+INDEX = REPO / "brain" / "retail" / "archive" / "pdf_page_index.jsonl"
 SKUS = ("samsung_RF28K9070SG", "ge_GNE27JYMFS", "kitchenaid_KRFF507HPS")
 
 
@@ -66,9 +67,65 @@ def _shift(s: str) -> str:
     return "".join(chr(ord(c) - 29) for c in s)
 
 
+def test_multilingual_trim_samsung_user_guide_marker() -> None:
+    """Samsung rule: trim at ``Español <page>`` after enough English prefix."""
+    import sys
+
+    if str(_MANUALS) not in sys.path:
+        sys.path.insert(0, str(_MANUALS))
+    from multilingual_trim import apply_multilingual_trim
+
+    body = "English section " * 3000 + "\nEspañol 12 Contenido traducido " + "x" * 500
+    eng, cut = apply_multilingual_trim(body, "samsung_RF28K9070SG", "user-guide")
+    assert cut is not None
+    assert "Español" not in eng
+    assert "English section" in eng
+
+
+def test_multilingual_trim_ge_user_guide_marker() -> None:
+    """GE rule: trim before French ``CONSIGNES DE SÉCURITÉ`` TOC block."""
+    import sys
+
+    if str(_MANUALS) not in sys.path:
+        sys.path.insert(0, str(_MANUALS))
+    from multilingual_trim import apply_multilingual_trim
+
+    prefix = "OWNER'S MANUAL ice maker troubleshooting " * 4000
+    body = prefix + "\nCONSIGNES DE SÉCURITÉ ...... 3 CONSIGNES D’UTILISATION"
+    eng, cut = apply_multilingual_trim(body, "ge_GNE27JYMFS", "user-guide")
+    assert cut is not None
+    assert "CONSIGNES DE SÉCURITÉ" not in eng
+    assert "ice maker" in eng
+
+
+def test_multilingual_trim_skips_unregistered_manuals() -> None:
+    """Repair guides and unknown SKUs pass through unchanged."""
+    import sys
+
+    if str(_MANUALS) not in sys.path:
+        sys.path.insert(0, str(_MANUALS))
+    from multilingual_trim import apply_multilingual_trim
+
+    body = "Fast Track Troubleshooting ERROR 41 ice maker"
+    same, cut = apply_multilingual_trim(body, "samsung_RF28K9070SG", "repair-guide")
+    assert cut is None and same == body
+
+
+def test_ge_committed_user_guide_has_no_spanish_precaucion_tail() -> None:
+    """After rebuild, GE raw user guide must not contain Spanish safety section header."""
+    ge = REPO / "brain" / "retail/raw/sources/fridge-docs/ge_GNE27JYMFS/user-guide.txt"
+    if not ge.is_file():
+        pytest.skip("run build_pdf_txt_and_page_idx to refresh corpus")
+    text = ge.read_text(encoding="utf-8")
+    assert "PRECAUCIÓN A fin de reducir el riesgo" not in text
+    assert "CONSIGNES DE SÉCURITÉ" not in text
+
+
 def test_builder_repairs_shifted_glyph_runs() -> None:
     """Shifted runs decode back to text; real all-caps words and part numbers stay as they are."""
-    spec = importlib.util.spec_from_file_location("bpi", REPO / "scripts/retail/manuals/build_pdf_page_index.py")
+    spec = importlib.util.spec_from_file_location(
+        "bpi", REPO / "scripts/retail/manuals/build_pdf_txt_and_page_idx.py"
+    )
     bpi = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(bpi)
     vocab = frozenset({"icemaker", "interior", "light", "does", "not", "work", "troubleshooting", "using"})
@@ -89,15 +146,15 @@ def test_committed_index_has_no_shifted_glyph_runs() -> None:
 
 
 @pytest.mark.skipif(not INDEX.is_file(), reason="page index not built yet")
-def test_committed_index_covers_all_six_pdfs() -> None:
-    """Real index: all 6 PDFs, contiguous 1-based pages, SKU from folder name."""
+def test_committed_index_covers_archive_pdfs() -> None:
+    """Real index: four canonical archive PDFs, contiguous 1-based pages."""
     idx = load_page_index(INDEX)
     by_pdf: dict[str, list[int]] = {}
     for r in idx.rows:
         by_pdf.setdefault(r.pdf_path, []).append(r.page)
         assert r.sku in SKUS
-        assert r.pdf_path.startswith(f"raw/sources/fridge-docs/{r.sku}/")
-    assert len(by_pdf) == 6
+        assert r.pdf_path.startswith(f"archive/fridge-docs/{r.sku}/")
+    assert len(by_pdf) == 4
     for pages in by_pdf.values():
         assert pages == list(range(1, len(pages) + 1))
 

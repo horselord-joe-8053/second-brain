@@ -1,4 +1,4 @@
-"""Layout contract for brain/retail Nashsu project root."""
+"""Layout contract for brain/retail Nashsu project root (txt-wiki track P11)."""
 
 from pathlib import Path
 
@@ -13,14 +13,20 @@ FRIDGE_SKUS = (
 
 
 def test_retail_brain_layout() -> None:
-    """FRU corpus expects purpose, wiki stub, and three fridge PDF folders."""
+    """FRU corpus: purpose, wiki stub, archive PDFs, raw ``.txt`` manuals (no PDFs in raw)."""
     assert (RETAIL / "purpose.md").is_file()
     assert (RETAIL / "wiki" / "index.md").is_file()
     for folder in FRIDGE_SKUS:
-        base = RETAIL / "raw" / "sources" / "fridge-docs" / folder
-        assert base.is_dir()
-        assert (base / "user-guide.pdf").is_file()
-        assert (base / "repair-guide.pdf").is_file()
+        raw = RETAIL / "raw" / "sources" / "fridge-docs" / folder
+        arch = RETAIL / "archive" / "fridge-docs" / folder
+        assert raw.is_dir()
+        assert arch.is_dir()
+        assert (arch / "user-guide.pdf").is_file()
+        assert not list(raw.glob("*.pdf")), f"PDFs must not live under raw/sources: {folder}"
+        assert (raw / "user-guide.txt").is_file(), folder
+        if folder == "samsung_RF28K9070SG":
+            assert (arch / "repair-guide.pdf").is_file()
+            assert (raw / "repair-guide.txt").is_file()
 
 
 def test_personal_profile_sibling_present() -> None:

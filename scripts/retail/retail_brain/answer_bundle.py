@@ -17,7 +17,7 @@ from typing import Any, Dict, Optional
 from retail_brain.answer_manuals import WikiSearchClient, manual_leg
 from retail_brain.answer_tickets import TicketSource, ticket_leg
 from retail_brain.company_profile import CompanyProfile, cached_company_profile
-from retail_brain.pdf_pages import PdfPageIndex
+from retail_brain.txt_docs import TxtDocIndex
 from retail_brain.search_mode import resolve_ticket_search_mode
 from retail_brain.text_normalize import diag_code_pattern
 
@@ -57,36 +57,62 @@ def build_answer_bundle(
     query: str,
     *,
     ticket_source: TicketSource,
-    page_index: PdfPageIndex,
+    txt_index: TxtDocIndex,
     wiki: Optional[WikiSearchClient],
     model: Optional[str] = None,
     k_tickets: int = 2,
     k_manuals: int = 3,
     corpus_profile: str = "fru_us_1k",
     company: Optional[CompanyProfile] = None,
+    skip_ticket_leg: bool = False,
+    skip_manual_leg: bool = False,
 ) -> Dict[str, Any]:
-    """Run both legs for one new ticket and return the bundle dict."""
+    """Run ticket and/or manual legs for one new ticket and return the bundle dict."""
     company = company or cached_company_profile()
     model = model or detect_model(query, company)
     model_sku = company.docs_folder_for_model(model) if model else None
     notes: list[str] = []
 
-    try:
-        tickets = ticket_leg(query, ticket_source, model=model, k=k_tickets)
+    if skip_ticket_leg:
+        tickets = {"search_mode": "skipped", "hits": []}
         ticket_ok = True
-    except Exception as e:  # noqa: BLE001 — leg isolation: any backend failure becomes a note
-        tickets = {"search_mode": resolve_ticket_search_mode(), "hits": []}
-        ticket_ok = False
-        notes.append(f"ticket leg failed: {type(e).__name__}: {e}")
-    if model is None:
-        notes.append("no fridge model found in query; tickets not model-scoped")
+        notes.append("ticket leg skipped")
+    else:
+        try:
+            tickets = ticket_leg(query, ticket_source, model=model, k=k_tickets)
+            ticket_ok = True
+        except Exception as e:  # noqa: BLE001 — leg isolation: any backend failure becomes a note
+            tickets = {"search_mode": resolve_ticket_search_mode(), "hits": []}
+            ticket_ok = False
+            notes.append(f"ticket leg failed: {type(e).__name__}: {e}")
+        if model is None:
+            notes.append("no fridge model found in query; tickets not model-scoped")
 
-    try:
-        manuals = manual_leg(manual_query(query, company), sku=model_sku, wiki=wiki, page_index=page_index, k=k_manuals)
-    except Exception as e:  # noqa: BLE001
-        manuals = {"hits": [], "diagnostics": {"manual_leg_ok": False, "wiki_available": False,
-                                               "notes": [f"manual leg failed: {type(e).__name__}: {e}"]}}
-    mdiag = manuals["diagnostics"]
+    if skip_manual_leg:
+        manuals = {
+            "hits": [],
+            "diagnostics": {
+                "manual_leg_ok": True,
+                "wiki_available": False,
+                "notes": ["manual leg skipped"],
+            },
+        }
+        mdiag = manuals["diagnostics"]
+    else:
+        try:
+            manuals = manual_leg(
+                manual_query(query, company), sku=model_sku, wiki=wiki, txt_index=txt_index, k=k_manuals
+            )
+        except Exception as e:  # noqa: BLE001
+            manuals = {
+                "hits": [],
+                "diagnostics": {
+                    "manual_leg_ok": False,
+                    "wiki_available": False,
+                    "notes": [f"manual leg failed: {type(e).__name__}: {e}"],
+                },
+            }
+        mdiag = manuals["diagnostics"]
 
     return {
         "schema": SCHEMA,

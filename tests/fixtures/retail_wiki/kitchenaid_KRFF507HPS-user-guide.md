@@ -1,7 +1,7 @@
 ---
 type: source
 title: "KitchenAid KRFF507HPS user guide — troubleshooting"
-sources: ["fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf"]
+sources: ["fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt"]
 tags: [fixture, troubleshooting]
 ---
 # KitchenAid KRFF507HPS user guide — troubleshooting

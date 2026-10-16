@@ -21,6 +21,9 @@ from retail_brain.seed import generate_tickets, write_manifest, write_service_cs
 def pytest_configure(config: pytest.Config) -> None:
     """Register repo markers (avoids PytestUnknownMarkWarning)."""
     config.addinivalue_line("markers", "no_embed_stub: use real Gemini embeddings (live tiers only)")
+    config.addinivalue_line("markers", "retail_ticket_leg: ticket leg unit tests (P5)")
+    config.addinivalue_line("markers", "retail_manual_leg: manual leg unit tests (P6/P13)")
+    config.addinivalue_line("markers", "retail_answer_integration: bundle + CI E2E (both legs)")
 
 
 @pytest.fixture(autouse=True)

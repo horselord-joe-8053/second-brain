@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 
+pytestmark = pytest.mark.retail_ticket_leg
+
 import retail_brain.embeddings as emb_mod
 from retail_brain.answer_tickets import InMemoryTicketSource, ticket_leg
 from retail_brain.embeddings import cosine_distance

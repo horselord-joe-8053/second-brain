@@ -1,9 +1,9 @@
 <h1 id="fru-product-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: FRU US retail service Second Brain (product path)</h1>
 
 **Status:** **wip** — V3 prep docs **`[X]`**; V2 / platform / V4 / V5 **`[ ]`**  
-**Execute order:** (1) `qimpltdd docs_manual_gen/ref_plan/wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md` (Platform phase); (2) manual HG-P2 + HG-2; (3) `qimpltdd docs_manual_gen/ref_plan/wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md` for V2 → V4 → V5.
+**Execute order:** (1) [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) **P11–P16** via `qimpltdd` on that plan (platform + answer bundle); (2) operator gates on **that plan** [§7](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-7-gates) (**HG-P2**, **HG-TXT-1/2** — not duplicated here); (3) `qimpltdd` **this** plan for V2 → V4 → V5.
 
-**Goal:** When a **new aftersales ticket** arrives, the agent finds the right **historical resolved ticket** (Postgres + hybrid search) and, **always alongside** (brain-profiles **E2**), the right **user/repair manual** passages cited to PDF path + page (LLM Wiki over fridge PDFs) — same architecture as the Samsung phone prototype, **US market + three fridge SKUs**.
+**Goal:** **New aftersales ticket** → historical **resolved ticket** (Postgres + hybrid search) **and** manual evidence **always together** ([brain-profiles **E2**](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-2-decisions)) as **`retail_answer.v1`**. Manual citations, corpus layout, wiki ingest, and E2E gold are **defined only** in the brain-profiles plan (**P11–P16**, doc-level `.txt` + optional archive PDFs) — this plan does not restate them.
 
 **Prerequisites (done elsewhere):**
 
@@ -33,8 +33,8 @@
 **In scope**
 
 - **Structured plane:** `service_queries` in Postgres; default corpus **`fru_us_1k`**; search modes **`vector_only` / `rrf_normal` / `rrf_term_boosted`**; Tantivy lexical leg; **`FRU-E###`** term boost; **`customer_id`** join key (column only — never in query text).
-- **Unstructured plane:** 6 PDFs under `brain/retail/raw/sources/fridge-docs/` compiled to `brain/retail/wiki/` via Hermes **`llm_wiki`** (model-scoped paths: `samsung_RF28K9070SG`, `ge_GNE27JYMFS`, `kitchenaid_KRFF507HPS`).
-- **Product routing:** `query-retail-brain` skill — resolved-ticket reuse first (**D2**), then manual search; optional manager SQL path in **V5**.
+- **Unstructured plane:** see brain-profiles plan — **`.txt`** manuals in `raw/sources/fridge-docs/`, PDFs in **`archive/`**, LLM Wiki compile over **`.txt`** only (**HG-TXT-2** on that plan).
+- **Product routing:** `query-retail-brain` skill → **`retail_answer.v1`** (both legs, **E2**); optional manager SQL in **V5**.
 - **Operator docs:** split Cursor prep vs Hermes wiki runbooks (**V3**).
 - **Agent loop:** HTTP sidecar with **`semantic_search`**, **`generate_sql`**, **`execute_sql`**, wiki tool calls (**V5**).
 
@@ -56,7 +56,7 @@
 | **G3** | Samsung master → **`completed/`**; V2–V5 continue here. | Avoid two “master” wips. |
 | **G4** | **Full stack** order: **V2 → platform (optional) → V3 → V4 → V5**. | Matches phone plan dependency order. |
 | **P1** | **Market US**; manuals + tickets use FRU SKUs and **`RETAIL_FAULT_CODE_PREFIX=FRU-E`**. | Aligns with committed corpus. |
-| **P2** | ~~**D2 routing:** `semantic_search` on **resolved** tickets above threshold → else **`llm_wiki_search`**.~~ **Superseded 2026-10-15** by [brain-profiles plan **E2**](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-2-decisions): always run both legs; return `retail_answer.v1` JSON (top-2 tickets + manual hits with raw PDF page). | User: always both, deterministic JSON. |
+| **P2** | ~~exclusive D2 routing~~ → [brain-profiles **E2**](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-2-decisions): always both legs, **`retail_answer.v1`**. Manual provenance: [that plan §3.3](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-3-3-manual). | DRY: no duplicate manual-leg spec here. |
 | **P3** | **D12 model scope:** resolve **`model`** (fridge SKU) from open ticket via SQL before search; eval already uses **`model_filter`**. | Prevents cross-SKU reuse mistakes. |
 | **P4** | **D9 / D11:** Cursor runs repo scripts + PG A/B; Hermes runs **`llm_wiki_*`** for product manual path. | Copy PDFs ≠ ingest. |
 | **P5** | **D13:** migrate **`utils/retail_fru/`** → **`utils/pg_rag/`** during **V5** (domain-agnostic loop). | Samsung plan D13, FRU naming. |
@@ -69,20 +69,16 @@ Inherited detail: see [Samsung plan sections 16–20](../completed/REFACTOR_SAMS
 
 ```mermaid
 graph TD
-  T[Incoming ticket text] --> R{Resolved ticket hit?}
-  R -->|yes| A[Reuse resolution from PG]
-  R -->|no| W[llm_wiki_search scoped by SKU]
-  W --> M[Manual passages + repair steps]
-  PG[(Postgres service_queries)] --> S[semantic_search + hybrid modes]
-  S --> R
-  PDF[fridge-docs PDFs] --> H[Hermes llm_wiki compile]
-  H --> Wiki[brain/retail/wiki]
+  T[Incoming ticket] --> B[retail_answer.v1\nbrain-profiles plan]
+  PG[(Postgres)] --> B
+  Wiki[brain/retail/wiki\nfrom .txt sources] --> B
+  B --> V5[V5 sidecar / skill]
 
   style T fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
   style PG fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
   style Wiki fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
-  style A fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
-  style M fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
+  style B fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
+  style V5 fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
 ```
 
 ---
@@ -100,14 +96,15 @@ graph TD
 
 <h3 id="4-platform" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.2 Platform — brain-profiles (required)</h3>
 
-- [X] Delivered by [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) P1–P3 (`brain/personal` + `brain/retail`, `BRAIN_PROFILE` default retail); its P4–P8 deliver the answer bundle + E2E tests that **V5** consumes.
+- [X] P1–P9 on [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) (profiles + answer bundle + CI E2E).
+- [ ] P11–P16 on **same plan** (txt-wiki corpus + doc-level manual leg + smoke) — **V5** consumes `build_answer_bundle` from that delivery.
 
-**Exit:** dual-domain layout documented; retail paths unchanged under `brain/retail/`.
+**Exit:** tick **Platform** when brain-profiles plan P11–P16 + its operator gates are done; do not duplicate acceptance rows here.
 
 <h3 id="4-v3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.3 V3 — Operator harness (Cursor vs Hermes)</h3>
 
 - [X] Split prep into **`CURSOR_PREP_RUNBOOK.md`** + **`HERMES_WIKI_OPERATOR.md`** (FRU PDF paths, **`fru_us_1k`** env block).
-- [ ] Hermes smoke: `llm_wiki_set_project` → `brain/retail`; rescan **`fridge-docs`**; one ice-maker search + read (**HG-2**, **manual**, scheduled **after** brain-profiles plan P1–P9 + HG-P2 — see its [section 7](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-7-gates)).
+- [ ] Hermes smoke: follow brain-profiles **[§7 HG-TXT-2](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-7-gates)** (`.txt` rescan, not PDF); record log here when done.
 - [X] Runbooks cite embed-once protocol and FRU ABC path (`SECOND_BRAIN_RUNBOOK.md` §16).
 
 **Exit:** operator checklist recorded; ticket A/B remains on **`03`/`05`** scripts, not Hermes.
@@ -138,7 +135,7 @@ graph TD
 | Phase | Tests / gates |
 |-------|----------------|
 | V2 | Export script unit tests; wiki file layout test |
-| V3 | Doc smoke only + optional `test_llm_wiki_ctl` ice-maker query (**HG-2**) |
+| V3 | Doc smoke; wiki operator path = brain-profiles **HG-TXT-2** |
 | V4 | Spec lint / CI rule if added |
 | V5 | Sidecar contract tests; mock-LLM loop test; SQL guardrail tests |
 
@@ -149,8 +146,8 @@ graph TD
 <h2 id="6-checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Execution checklist</h2>
 
 - [ ] **V2** — themes / exports / cron
-- [X] **Platform** — brain-profiles + answer bundle ([plan](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md); code P1–P9 done 2026-10-15, HG-P2 / HG-2 pending)
-- [X] **V3** — Cursor + Hermes runbooks (wiki smoke HG-2 open)
+- [ ] **Platform** — brain-profiles [plan](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md): P1–P16 code `[X]`; **HG-TXT-1/2** + live E2E `[ ]`
+- [X] **V3** — Cursor + Hermes runbooks (wiki smoke → brain-profiles **HG-TXT-2**)
 - [ ] **V4** — eval governance CI / held-out seed
 - [ ] **V5** — sidecar + skill + E2E eval JSONL
 
@@ -159,8 +156,8 @@ graph TD
 <h2 id="7-acceptance" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Acceptance</h2>
 
 1. **Incoming ticket demo:** paraphrase intake on a known FRU eval row retrieves gold ticket at rank 1 in mode **B** or **C** via sidecar (not CSV harness only).
-2. **Manual evidence:** every query's bundle carries manual hits cited to the correct SKU PDF path + page (wiki excerpt or raw-PDF fallback), per brain-profiles **E2/E4**.
-3. **Hermes path:** documented rescan + search smoke on fridge PDFs.
+2. **Manual evidence:** per brain-profiles plan acceptance (**doc_path**, wiki + **`raw_txt`** fallback) — [§4 P16](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-p16).
+3. **Hermes path:** **HG-TXT-2** on brain-profiles plan (`.txt` ingest smoke).
 4. **`./scripts/verify.sh`** green after **V5** merge.
 5. Corpus pivot plan P10–P12 complete (article numbers, runbooks, specs).
 

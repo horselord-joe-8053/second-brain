@@ -1,7 +1,7 @@
 <h1 id="bp-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: brain-profiles (personal | retail) + retail answer bundle E2E</h1>
 
-**Status:** **wip** — P1–P9 `[X]` on branch `feature/bootstrap-rrf-evolve-8-fru-second-brain` (2026-10-16); **P11–P16** (txt-wiki + doc-level manual leg) **`[ ]`** on branch `feature/bootstrap-rrf-evolve-9-fru-txt-wiki`; **P10** superseded by P11–P16  
-**Execute:** `qimpltdd docs_manual_gen/ref_plan/wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md` — implement **P11–P16** only after this revision; parent plan unchanged  
+**Status:** **wip** — P1–P18 **`[X]`**; **P19** doc/operator **`[X]`**; **HG-TXT-3 acceptance failed** (repair-guide wiki still summary-only after forced re-ingest); live E2E on **`raw_txt`**; **P10** superseded  
+**Execute:** operator **HG-TXT-3** + optional **`nu_llm_wiki`** manual profile; parent plan unchanged  
 **Parent product plan:** [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](../wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md) (this plan **replaces** its *Platform* phase and **supersedes** decision **P2** routing)
 
 **Goal:** (1) `brain/` holds exactly two **brain-profiles** — `brain/personal/` and `brain/retail/` — with one active at a time (`BRAIN_PROFILE`, default **retail**). (2) A FRU ticket produces **`retail_answer.v1`**: top-2 historical tickets with similarity **and** manual evidence cited to a **compiled manual document** (`raw/sources/.../*.txt` via wiki, or direct `.txt` search when wiki misses). **Page numbers are out of scope for P11–P16** (deferred Phase 2). (3) LLM Wiki ingests **`.txt` extracts** in `raw/sources/`; **PDFs + optional page index JSONL** live under **`brain/retail/archive/`** (committed), not watched by Source Watch.
@@ -15,7 +15,7 @@
     3.2 [Answer bundle contract](#bp-3-2-bundle) — JSON v1 (P11–P16: doc-level manual).
     3.3 [Manual leg provenance](#bp-3-3-manual) — wiki → `.txt`; no-wiki → `.txt` search.
     3.4 [Target layout after P12](#bp-3-4-archive) — archive vs raw.
-4. [Phases](#bp-4-phases) — P1–P9 done; P11–P16 txt-wiki (P10 superseded).
+4. [Phases](#bp-4-phases) — P1–P17 done; **P18–P19** corpus trim + wiki compile (P10 superseded).
 5. [Quality bar (TDD)](#bp-5-quality) — per-phase test-first rows.
 6. [Execution checklist](#bp-6-checklist) — progress.
 7. [Human gates](#bp-7-gates) — LLM Wiki / Obsidian / txt ingest.
@@ -43,7 +43,7 @@
 
 <h2 id="bp-2-decisions" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Decisions</h2>
 
-**last_aligned:** 2026-10-16 — **grillnow** txt-wiki (**E12**–**E16**); prior **E9**–**E11** / **P10** superseded by P11–P16.
+**last_aligned:** 2026-10-16 — **P18–P19** (explicit multilingual trim + retail wiki compile gap); prior **E12**–**E16** txt-wiki; **P10** superseded.
 
 | ID | Decision (MC answer) | Rationale |
 |----|----------------------|-----------|
@@ -66,6 +66,9 @@
 | **E14** | **manual_doc_only** — `raw_origin`: `{ "doc_path": "raw/sources/fridge-docs/…/user-guide.txt", "archive_pdf_path": "archive/fridge-docs/…/user-guide.pdf" (optional), "pages": [] }`. No runtime load of page index. **No-wiki fallback:** token search over SKU `.txt` files (same IDF-style scorer as today’s page search, file-level or chunked windows — implementer picks one pass in P13). | User: defer page numbers; drop jsonl from answer path. |
 | **E15** | **build_script** — rename `build_pdf_page_index.py` → **`build_pdf_txt_and_page_idx.py`**; default **`WRITE_PAGE_INDEX=0`** (env/CLI flag); always emit/refresh **`.txt`** into `raw/sources`; JSONL written only when flag on → **`brain/retail/archive/pdf_page_index.jsonl`**. | Keep JSONL in git for Phase 2; stop maintaining `manifests/pdf_page_index.jsonl`. |
 | **E16** | **wiki_reset_manuals** — before txt re-ingest, operator removes retail wiki pages compiled from failed PDF ingests (**HG-TXT-1**); then ingest **`.txt` only** (**HG-TXT-2**). | Grill 2026-10-16: reingest_replace. |
+| **E19** | **explicit_trim_markers** — per-manual cut markers in **`multilingual_trim.py`**; builder does not own generic language detection. | GE vs Samsung layouts differ; curated markers + `*.mul.txt` archive. |
+| **E20** | **trim_scope** — trim only registered `(sku_folder, guide_stem)`; else full extract. | Single-language repair guides unchanged. |
+| **E21** | **wiki_compile_gap** — thin retail **`type: source`** pages are LLM Wiki compile output; **HG-TXT-3** after English `.txt`. Personal uploads worked when compile kept **tables / dense text**. | Repair-guide wiki ≈ summaries; [`repair-guide.txt`](../../../brain/retail/raw/sources/fridge-docs/samsung_RF28K9070SG/repair-guide.txt) has real procedures → **`raw_txt`** wins today. |
 
 ---
 
@@ -267,56 +270,116 @@ Golden snapshot: `tests/fixtures/retail_answer/golden_bundle.json` (`RETAIL_UPDA
 
 <h3 id="bp-p11" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.11 P11 — Archive corpus + git layout</h3>
 
-- [ ] Create `brain/retail/archive/fridge-docs/<sku>/` and **git mv** PDFs from `raw/sources/fridge-docs/` into archive (preserve SKU folder names).
-- [ ] Move `brain/retail/manifests/pdf_page_index.jsonl` → `brain/retail/archive/pdf_page_index.jsonl` (keep in git; runtime does not read it until Phase 2 / flag re-enable).
-- [ ] Update `brain/.gitignore` and `tests/test_retail_corpus_layout.py`: assert no `*.pdf` under `retail/raw/sources/fridge-docs/`; archive PDFs present.
-- [ ] Document archive path in `brain/retail/schema.md` and runbook §16.
+- [X] Create `brain/retail/archive/fridge-docs/<sku>/` and **git mv** PDFs from `raw/sources/fridge-docs/` into archive (preserve SKU folder names).
+- [X] Move `brain/retail/manifests/pdf_page_index.jsonl` → `brain/retail/archive/pdf_page_index.jsonl` (paths rewritten to `archive/fridge-docs/`).
+- [X] Update `tests/test_retail_corpus_layout.py`: assert no `*.pdf` under `retail/raw/sources/fridge-docs/`; archive PDFs + `.txt` present.
+- [X] Document archive path in `brain/retail/schema.md` and runbook §16.
 
 **Exit:** layout test green; `rg 'raw/sources/fridge-docs.*\.pdf'` empty in tracked tree.
 
 <h3 id="bp-p12" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.12 P12 — Builder rename + `.txt` emit</h3>
 
-- [ ] Rename `scripts/retail/manuals/build_pdf_page_index.py` → **`build_pdf_txt_and_page_idx.py`** (update imports, runbook, ops log references, tests).
-- [ ] Read PDFs from **`$BRAIN_ROOT/archive/fridge-docs/`**; write **`user-guide.txt`** / **`repair-guide.txt`** under **`raw/sources/fridge-docs/<sku>/`** (GE shifted-glyph repair preserved).
-- [ ] Config **`WRITE_PAGE_INDEX`** (env + CLI, default **0**): when **1**, emit JSONL to **`archive/pdf_page_index.jsonl`** only; when **0**, skip JSONL entirely (**E15**).
-- [ ] Operator one-shot: run builder on branch to populate all `.txt` files; commit txts + archive move from P11.
+- [X] Rename → **`build_pdf_txt_and_page_idx.py`** (removed `build_pdf_page_index.py`; tests import new module).
+- [X] Read PDFs from **`archive/fridge-docs/`**; write **`.txt`** under **`raw/sources/fridge-docs/<sku>/`** (GE glyph repair preserved).
+- [X] **`WRITE_PAGE_INDEX`** default **0** (env + CLI); JSONL only when enabled → **`archive/pdf_page_index.jsonl`**.
+- [X] Operator run: four `.txt` files committed (2026-10-16).
 
 **Exit:** unit test — with flag off, no JSONL write; with flag on, JSONL rows match prior P4 shape but paths point at archive PDFs; each SKU has non-empty `.txt` for every archive PDF that had an index row.
 
 <h3 id="bp-p13" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.13 P13 — Manual leg: `.txt` doc citation + fallback</h3>
 
-- [ ] Refactor `retail_brain/answer_manuals.py`: resolve `sources:` to **`.txt`**; set `raw_origin.doc_path` (+ optional `archive_pdf_path`); **`pages: []`**; drop runtime `PdfPageIndex` / `best_pages` from answer path.
-- [ ] Add **`raw_txt`** fallback: search SKU `.txt` files under `raw/sources` (port or share scorer from `pdf_pages.py` at file/window granularity).
-- [ ] Update `answer_render.py` — cite `doc_path` (no `p.N`); `query-retail-brain` skill + bundle schema docs.
-- [ ] Fixture wiki pages: `sources:` → `.txt` paths under `tests/fixtures/retail_wiki/`.
+- [X] Refactor `answer_manuals.py`: **`.txt`** `sources:` → `doc_path` + `archive_pdf_path`; **`pages: []`**; no runtime page index.
+- [X] **`raw_txt`** fallback via `retail_brain/txt_docs.py` (IDF scorer reused from `pdf_pages`).
+- [X] `answer_render.py`, `answer_bundle.py`, `answer_ticket.py`, `query-retail-brain` skill updated.
+- [X] Fixture wiki: `sources:` → **`.txt`**.
 
 **Exit:** `pytest tests/test_retail_answer_manuals.py tests/test_retail_answer_bundle.py` — wiki hit → correct `doc_path`; `--no-wiki` → `raw_txt` with excerpt; no `pdf_path` required in new golden.
 
 <h3 id="bp-p14" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.14 P14 — Brain tree cleanup + wiki purge prep</h3>
 
-- [ ] Remove stale assets: failed PDF parsed stubs (`raw/parsed/fridge-docs/**`), wiki pages that only mirror broken PDF ingests (list in operator checklist **HG-TXT-1** — e.g. thin `concepts/user-guide.md`-style pages tied to fridge PDFs).
-- [ ] Align `scripts/retail/config/fru_us_service.yaml` **`manual_anchors`** to **document-level** phrases (no expected page lists).
-- [ ] Regenerate or hand-edit `answer_e2e.jsonl` expected manual fields: `{doc_path, anchor_phrase}` not `{pdf_path, pages}` (**P16** may split regen — stub expectations here).
+- [X] **HG-TXT-1** (partial): removed stale `kitchenaid_KRFF507HPS copy` wiki source + index link; no `raw/parsed/fridge-docs/**` stubs in repo.
+- [X] **`manual_anchors`** unchanged (phrases); E2E gold uses **`expected_manual_docs`** (doc paths only).
+- [X] Regenerated `answer_e2e.jsonl` via `build_answer_e2e.py` (2026-10-16).
 
 **Exit:** corpus layout + config tests green; documented file list for operator purge.
 
 <h3 id="bp-p15" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.15 P15 — Wiki ingest `.txt` (operator + smoke)</h3>
 
-- [ ] Code/docs ready for **HG-TXT-2**: LLM Wiki watches `brain/retail`, rescan **`fridge-docs/**/*.txt`** only; confirm Settings → Embeddings unchanged.
-- [ ] After operator purge + ingest: one `llm_wiki_search` ("ice maker" + SKU) returns a **procedure-length** excerpt, not a meta definition.
+- [X] Code/docs ready for **HG-TXT-2** (runbook §16, `schema.md`, `.txt` in `raw/sources`).
+- [X] API rescan + search smoke (`logs/ops/bp_p15_hg_txt2_smoke.log`, 2026-10-16). **Gap:** compiled pages remain **summary-style** (~2 KB); `answer_ticket` often uses **`raw_txt`** until Phase 2 richer wiki or compile tuning.
 - [ ] Optional TS fix (separate small commit): log when `tryReadSourceTextFile` fails — out of band unless blocking ingest.
 
 **Exit:** operator log snippet in plan or `logs/ops/`; live search hits wiki `sources:` ending in `.txt`.
 
 <h3 id="bp-p16" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.16 P16 — Smoke E2E + docs closeout</h3>
 
-- [ ] Update `build_answer_e2e.py` + `answer_e2e.jsonl`: manual gold = anchor phrase ⊆ excerpt or `doc_path` match; drop page-based assertions in CI.
-- [ ] Refresh `tests/fixtures/retail_answer/golden_bundle.json` (`RETAIL_UPDATE_GOLDEN=1` once).
-- [ ] CI: `./scripts/verify.sh` — manual gold floor ≥ **0.85** on doc-level rows (same bar as P8); **0** false prior-fix claims.
-- [ ] Live tier (after **HG-TXT-2**): `RUN_RETAIL_E2E=1 pytest tests/test_retail_answer_live.py -s` → log under `logs/ops/`; report `manual_hit_sources.wiki` vs `raw_txt` counts.
-- [ ] Update `SECOND_BRAIN_RUNBOOK.md`, `HERMES_WIKI_OPERATOR.md`, `ABOUT_SEARCH_RRF_FRU.md` §12 for txt-wiki; tick P11–P16 in checklist.
+- [X] `build_answer_e2e.py` + `answer_e2e.jsonl`: **`expected_manual_docs`**; CI gold = **`doc_path`** match.
+- [X] `golden_bundle.json` refreshed (`RETAIL_UPDATE_GOLDEN=1`, 2026-10-16).
+- [X] CI: `./scripts/verify.sh` green (doc-level manual gold ≥ 0.85).
+- [X] Live tier (after **HG-TXT-2**): `RUN_RETAIL_E2E=1 pytest tests/test_retail_answer_live.py -s` → `logs/ops/bp_p17_live_e2e.log`.
+- [X] `SECOND_BRAIN_RUNBOOK.md` §16; [ ] `HERMES_WIKI_OPERATOR.md` / `ABOUT_SEARCH_RRF_FRU.md` §12 (operator pass).
 
 **Exit:** verify green; one live log post–txt ingest; plan ready to move **`completed/`** after operator gates **HG-TXT-1/2** + **HG-P2** if still open.
+
+<h3 id="bp-p17" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.17 P17 — Leg tests, ops home, skip flags</h3>
+
+- [X] **Ops:** repeat-use Docker/Postgres load → [`scripts/retail/ops/`](../../../scripts/retail/ops/README.md); `cursor_gen/retail_v11_prep/00` + `03` delegate.
+- [X] **Docs:** [`tests/support/retail/RETAIL_ANSWER_LEGS.md`](../../../tests/support/retail/RETAIL_ANSWER_LEGS.md) + [`run_answer_ci_legs.sh`](../../../tests/support/retail/run_answer_ci_legs.sh).
+- [X] **Pytest markers:** `retail_ticket_leg`, `retail_manual_leg`, `retail_answer_integration` (registered in `tests/conftest.py`).
+- [X] **API:** `build_answer_bundle` + `answer_ticket.py` **`--skip-tickets`** / **`--skip-manual`**; `EmptyTicketSource` for skipped ticket leg.
+- [X] **Test:** `test_build_answer_bundle_skip_legs` in `test_retail_answer_bundle.py`.
+- [X] **Env:** `RETAIL_DATABASE_URL` in `.env` + `.env.example`; live E2E `logs/ops/bp_p17_live_e2e.log` (2026-10-16).
+
+**Exit:** `./scripts/verify.sh`; optional `bash tests/support/retail/run_answer_ci_legs.sh`; live E2E when PG + wiki ready.
+
+**Decisions (P17):** **E17** — leg-order CI is **script + markers**, not pytest-dependency plugin; **E18** — operator bash stays under **`scripts/retail/ops/`**, not `tests/` (tests folder documents + thin runner only).
+
+<h3 id="bp-p18" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.18 P18 — Explicit multilingual trim module</h3>
+
+**Problem:** `split_english_only()` in [`build_pdf_txt_and_page_idx.py`](../../../scripts/retail/manuals/build_pdf_txt_and_page_idx.py) uses one Samsung-style regex (`Español|Français|…` + page number). **GE** [`user-guide.txt`](../../../brain/retail/raw/sources/fridge-docs/ge_GNE27JYMFS/user-guide.txt) is still ~400 KB with French/Spanish tails (English ends ~page 104; French TOC ~line 105; Spanish block ~line 209). **Samsung** user guide may still retain a tail if the marker does not match extract shape.
+
+**Deliverables**
+
+- [X] New module [`scripts/retail/manuals/multilingual_trim.py`](../../../scripts/retail/manuals/multilingual_trim.py):
+  - File header + **constants at top**: `ManualTrimRule` entries keyed by `sku_folder` + `guide_stem` (e.g. `samsung_RF28K9070SG` / `user-guide`, `ge_GNE27JYMFS` / `user-guide`).
+  - Each rule documents **why** (PDF layout note) and **`cut_at_marker`**: literal or regex **first match** truncates **`raw`** `.txt`; full pre-trim body → **`archive/fridge-docs/<sku>/<stem>.mul.txt`** (same as today).
+  - **`apply_multilingual_trim(body, sku, stem) -> (trimmed, cut_index | None)`**; unknown `(sku, stem)` → `(body, None)`.
+  - Comments: *not* a general language detector — add a new constant when a new OEM manual is onboarded.
+- [X] Builder: remove inline `_LANG_SECTION` / `split_english_only`; import **`multilingual_trim`** only.
+- [X] Tests: [`tests/test_retail_pdf_pages.py`](../../../tests/test_retail_pdf_pages.py) — fixture snippets per rule (GE French header, Samsung `Español` section); committed corpus test — GE `user-guide.txt` has **no** `PRECAUCIÓN` / `CONSIGNES DE SÉCURITÉ` tail after rebuild; optional max char ceiling vs `.mul.txt`.
+- [X] Operator: run builder on `brain/retail`; commit trimmed `.txt` + new/updated `*.mul.txt`; log under `logs/ops/bp_p18_build_txt.log`.
+- [X] Update [`brain/retail/schema.md`](../../../brain/retail/schema.md) — point to **`multilingual_trim.py`** as source of truth for English-only raw policy.
+
+**Initial marker table (implement in module constants — adjust if pypdf extract shifts):**
+
+| SKU folder | Stem | Marker intent |
+|------------|------|----------------|
+| `samsung_RF28K9070SG` | `user-guide` | Second-language block start (e.g. `\nEspañol\s+\d+` after ≥20k chars) — document exact pattern in module |
+| `ge_GNE27JYMFS` | `user-guide` | Start of French reprint (e.g. `\nCONSIGNES DE SÉCURITÉ` or `*Modelos Selectos` Spanish divider — **English-only = before French TOC**) |
+| `kitchenaid_KRFF507HPS` | `user-guide` | TBD after inspect; rule optional until marker confirmed |
+
+**Exit:** `./scripts/verify.sh`; GE raw `.txt` English-only; Samsung/KitchenAid rules documented or explicitly “no trim”.
+
+<h3 id="bp-p19" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.19 P19 — Retail LLM Wiki compile quality (operator + doc)</h3>
+
+**Problem:** Rescan (**HG-TXT-2**) succeeded but compiled **`wiki/sources/*.md`** for fridge manuals are **thin summaries** (often French/Romanian), sometimes with **`---FILE: wiki/entities/...`** blocks inlined in one source page — e.g. Samsung **repair guide** wiki page vs rich **`repair-guide.txt`**. **`manual_hit_sources.wiki == 0`** on live E2E while **`raw_txt`** carries manual gold.
+
+**Why personal profile looked “fine”**
+
+| Source (personal) | Compile outcome | Retail fridge `.txt` today |
+|-------------------|-----------------|----------------------------|
+| [`7-uploads--46-james-homemade-conjugation-notes…`](../../../brain/personal/wiki/sources/7-uploads--46-james-homemade-conjugation-notes-o-2026-verb-a--e9m6g0.md) | **Tables + conjugation rows** preserved in wiki body | N/A |
+| Slide / election uploads | Narrative + headings survive search | Appliance compile → **concept graph** + 1–2 paragraphs |
+| — | Search hits **dense markdown** | Manual leg needs **English tokens** in wiki body ≥ `WIKI_RELEVANCE_FLOOR` — summaries fail → **`raw_txt`** |
+
+**Deliverables**
+
+- [X] Doc: [`docs_manual_gen/artifacts/RETAIL_LLM_WIKI_TXT_COMPILE.md`](../../../docs_manual_gen/artifacts/RETAIL_LLM_WIKI_TXT_COMPILE.md) — personal vs retail, repair-guide example, link [`BEST_DESIGN_LLM_WIKI_SERACH_ON_PDFS.md`](../../../docs_manual_gen/todos/BEST_DESIGN_LLM_WIKI_SERACH_ON_PDFS.md), **HG-TXT-3** acceptance (English procedural excerpt in `type: source` body).
+- [X] Extend [`HERMES_WIKI_OPERATOR.md`](../../../cursor_gen/retail_v11_prep/HERMES_WIKI_OPERATOR.md): **HG-TXT-3** steps.
+- [X] **HG-TXT-3 smoke log** — forced repair-guide re-ingest (`logs/ops/bp_p19_repair_guide_reingest.log`): English ~1.4k summary, **no** procedural excerpts; **acceptance not met** — needs LLM Wiki settings and/or product compile profile (see artifact §6).
+- [X] **Out of scope P19 code:** changing **`nu_llm_wiki`** compiler (separate product repo); Second Brain only documents + operator gates.
+
+**Exit:** doc merged; operator checklist **HG-TXT-3** in [§7 gates](#bp-7-gates); optional log `logs/ops/bp_p19_wiki_smoke.log` + live E2E wiki count &gt; 0 on ≥1 eval row.
 
 ---
 
@@ -340,6 +403,9 @@ Golden snapshot: `tests/fixtures/retail_answer/golden_bundle.json` (`RETAIL_UPDA
 | P14 | strict-TDD | config + corpus tests | Stale `pdf_path` gold | `./scripts/verify.sh` |
 | P15 | smoke-after-delete | Operator search smoke (doc in plan) | Wiki still cites PDF in frontmatter | **HG-TXT-2** log |
 | P16 | strict-TDD | `test_retail_answer_e2e.py` doc-level gold | Page-list gold | `./scripts/verify.sh`; live optional |
+| P17 | strict-TDD | `test_build_answer_bundle_skip_legs` + markers | Both legs required in CLI with no skip | `run_answer_ci_legs.sh`; verify |
+| P18 | strict-TDD | `tests/test_retail_pdf_pages.py` per-marker trim + GE corpus | Generic regex trims wrong SKU | `pytest tests/test_retail_pdf_pages.py`; rebuild `.txt` |
+| P19 | smoke-after-doc | `RETAIL_LLM_WIKI_TXT_COMPILE.md` + operator smoke | — | **HG-TXT-3**; optional live E2E wiki &gt; 0 |
 
 **Comments:** **cdcm** on all new modules (file header + per-symbol docstring).  
 **Git hygiene:** no `logs/`, `__pycache__/`, `.env`, `second_brain.code-workspace` in commits.
@@ -358,16 +424,19 @@ Golden snapshot: `tests/fixtures/retail_answer/golden_bundle.json` (`RETAIL_UPDA
 - [X] **P8** — E2E CI + live tiers; live **pre-run** done with wiki down (exwar: stories 8, 10)
 - [X] **P9** — docs + closeout (P1–P9 code)
 - [X] **HG-PDF** — `pypdf` installed (CLI)
-- [ ] **P11** — archive layout + move PDFs/jsonl
-- [ ] **P12** — `build_pdf_txt_and_page_idx.py` + `.txt` corpus
-- [ ] **P13** — manual leg doc-level + `raw_txt` fallback
-- [ ] **P14** — brain tree cleanup + doc-level anchors
-- [ ] **P15** — wiki txt ingest readiness + operator smoke
-- [ ] **P16** — E2E smoke + docs + golden refresh
+- [X] **P11** — archive layout + move PDFs/jsonl
+- [X] **P12** — `build_pdf_txt_and_page_idx.py` + `.txt` corpus
+- [X] **P13** — manual leg doc-level + `raw_txt` fallback
+- [X] **P14** — E2E gold + layout (HG-TXT-1 wiki purge open)
+- [ ] **P15** — operator **HG-TXT-2** smoke
+- [X] **P16** — CI E2E + golden + verify (live E2E after HG-TXT-2)
 - [ ] **HG-P2** — manual: re-point LLM Wiki + Obsidian to `brain/personal`
-- [ ] **HG-TXT-1** — purge thin/failed fridge wiki pages (before re-ingest)
-- [ ] **HG-TXT-2** — compile **`fridge-docs/**/*.txt`** in LLM Wiki (replaces **HG-2** PDF compile)
-- [ ] **Live E2E** — `RUN_RETAIL_E2E=1` after **HG-TXT-2**
+- [X] **HG-TXT-1** — stale copy-folder wiki page removed; optional deeper purge of summary-only concept pages (operator)
+- [X] **HG-TXT-2** — rescan API OK; `.txt` already ingested per `wiki/log.md` (2026-10-16)
+- [X] **P17** — leg markers, ops scripts, skip flags, `RETAIL_ANSWER_LEGS.md`
+- [X] **Live E2E** — PG reload `logs/ops/bp_p17_pg_load.log`; pytest `logs/ops/bp_p17_live_e2e.log` (32 rows, contract pass; wiki manual hits 0 / raw_txt 42 — compile still summary-style)
+- [X] **P18** — `multilingual_trim.py` + rebuild English raw `.txt` (GE tail)
+- [X] **P19** — doc + smoke log; **HG-TXT-3 acceptance** still open (wiki leg)
 
 **Branch:** `feature/bootstrap-rrf-evolve-9-fru-txt-wiki` (from `feature/bootstrap-rrf-evolve-8-fru-second-brain` @ post–P9 commit).
 
@@ -385,6 +454,7 @@ Golden snapshot: `tests/fixtures/retail_answer/golden_bundle.json` (`RETAIL_UPDA
 | **HG-TXT-1** | After P14, before P15 ingest | <span style="background:#fff9c4;padding:2px 4px">manual</span> | In Obsidian or LLM Wiki: delete retail wiki pages compiled from failed PDF ingests (thin concept pages, empty parsed stubs). Keep unrelated retail wiki (e.g. uploaded slides) unless user opts out. |
 | **HG-TXT-2** | After P12 + HG-TXT-1 | <span style="background:#fff9c4;padding:2px 4px">manual</span> | LLM Wiki: project `brain/retail`, rescan **`raw/sources/fridge-docs/**/*.txt`**, wait for compile; `llm_wiki_search` ("ice maker no ice") + `llm_wiki_read_file` — body should cite **`sources: ["fridge-docs/<sku>/user-guide.txt"]`**. |
 | **Live E2E** | After HG-TXT-2 | agent or operator | `RUN_RETAIL_E2E=1 pytest tests/test_retail_answer_live.py -s` → `logs/ops/`; expect **`manual_hit_sources.wiki > 0`** on realistic rows and **`raw_txt`** only when wiki deliberately off |
+| **HG-TXT-3** | After **P18** English `.txt` + **P19** doc | <span style="background:#fff9c4;padding:2px 4px">manual</span> | Purge thin retail wiki pages (summary-only source/entity stubs); rescan **`raw/sources/fridge-docs/**/*.txt`**; verify **`type: source`** bodies contain **English procedural** text (not only entity blurbs); re-run live E2E for **`wiki > 0`**. See [`RETAIL_LLM_WIKI_TXT_COMPILE.md`](../../../docs_manual_gen/artifacts/RETAIL_LLM_WIKI_TXT_COMPILE.md). |
 
 **HG-TXT-2 note:** Source Watch must **not** watch `archive/` — only `.txt` under `raw/sources` ([`HERMES_WIKI_OPERATOR.md`](../../../cursor_gen/retail_v11_prep/HERMES_WIKI_OPERATOR.md): update step 7 for `.txt` frontmatter).
 

@@ -22,13 +22,15 @@ import pytest
 from retail_brain.answer_bundle import build_answer_bundle
 from retail_brain.answer_manuals import LlmWikiHttpClient
 from retail_brain.answer_tickets import PgTicketSource, load_issue_keys
-from retail_brain.pdf_pages import cached_page_index
+from retail_brain.company_profile import load_company_profile
+from retail_brain.txt_docs import cached_txt_docs
 from test_retail_answer_e2e import GOLD, PROFILE, manual_gold_hit
 
 REPO = Path(__file__).resolve().parents[1]
 REPORT_DIR = REPO / "tmp" / "simulated_data" / "reports" / "answer_e2e"
 
 pytestmark = [
+    pytest.mark.retail_answer_integration,
     pytest.mark.no_embed_stub,
     pytest.mark.skipif(os.environ.get("RUN_RETAIL_E2E") != "1", reason="live tier: set RUN_RETAIL_E2E=1"),
 ]
@@ -46,7 +48,8 @@ def test_answer_e2e_live(monkeypatch: pytest.MonkeyPatch) -> None:
     assert dsn, "RETAIL_DATABASE_URL not set"
     source = PgTicketSource(dsn, load_issue_keys(PROFILE / "ticket_manifest.jsonl"))
     wiki = LlmWikiHttpClient(os.environ.get("BRAIN_ROOT") or str(REPO / "brain" / "retail"))
-    index = cached_page_index()
+    index = cached_txt_docs(str(REPO / "brain" / "retail"))
+    profile = load_company_profile()
     rows = [json.loads(line) for line in GOLD.read_text(encoding="utf-8").splitlines() if line.strip()]
 
     n, ticket_hit, issue_hit, manual_hit, manual_n = Counter(), Counter(), Counter(), Counter(), Counter()
@@ -54,14 +57,14 @@ def test_answer_e2e_live(monkeypatch: pytest.MonkeyPatch) -> None:
     wiki_up = True
     problems, per_row = [], []
     for row in rows:
-        b = build_answer_bundle(row["query"], ticket_source=source, page_index=index, wiki=wiki, model=row["model"])
+        b = build_answer_bundle(row["query"], ticket_source=source, txt_index=index, wiki=wiki, model=row["model"])
         s, d = row["stratum"], b["diagnostics"]
         n[s] += 1
         wiki_up &= d["wiki_available"]
         if not (d["ticket_leg_ok"] and d["manual_leg_ok"]):
             problems.append(f"{row['eval_id']}: {d['notes']}")
-        if any(not h["raw_origin"]["pdf_path"] for h in b["manuals"]["hits"]):
-            problems.append(f"{row['eval_id']}: manual hit without pdf_path")
+        if any(not h["raw_origin"].get("doc_path") for h in b["manuals"]["hits"]):
+            problems.append(f"{row['eval_id']}: manual hit without doc_path")
         tids = [h["ticket_id"] for h in b["tickets"]["hits"]]
         t_ok = bool(set(tids) & set(row["expected_ticket_ids"]))
         ticket_hit[s] += t_ok
@@ -71,12 +74,12 @@ def test_answer_e2e_live(monkeypatch: pytest.MonkeyPatch) -> None:
         if s == "no_prior_ticket":
             false_prior += any(h["issue_key"] == row["issue_key"] for h in b["tickets"]["hits"])
         m_ok = None
-        if row["expected_manual_pages"]:
+        if row.get("expected_manual_docs"):
             manual_n[s] += 1
-            m_ok = manual_gold_hit(b, row)
+            m_ok = manual_gold_hit(b, row, profile)
             manual_hit[s] += m_ok
         wiki_hits += sum(h["source"] == "wiki" for h in b["manuals"]["hits"])
-        raw_hits += sum(h["source"] == "raw_pdf" for h in b["manuals"]["hits"])
+        raw_hits += sum(h["source"] == "raw_txt" for h in b["manuals"]["hits"])
         per_row.append({"eval_id": row["eval_id"], "stratum": s, "ticket_gold_at_2": t_ok,
                         "issue_match_at_2": issue_ok, "manual_gold": m_ok,
                         "tickets": tids, "manual_sources": [h["source"] for h in b["manuals"]["hits"]],
@@ -90,7 +93,7 @@ def test_answer_e2e_live(monkeypatch: pytest.MonkeyPatch) -> None:
         "issue_match_at_2": {s: f"{issue_hit[s]}/{n[s]}" for s in sorted(n) if s != "no_prior_ticket"},
         "manual_gold": {s: f"{manual_hit[s]}/{manual_n[s]}" for s in sorted(manual_n)},
         "no_prior_false_claims": false_prior,
-        "manual_hit_sources": {"wiki": wiki_hits, "raw_pdf": raw_hits},
+        "manual_hit_sources": {"wiki": wiki_hits, "raw_txt": raw_hits},
         "per_row": per_row,
     }
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

@@ -5,18 +5,13 @@ from __future__ import annotations
 from typing import Any, Dict, List
 
 
-def _pages(pages: List[int]) -> str:
-    """``p.2`` / ``p.2, p.3``; empty → page not located."""
-    return ", ".join(f"p.{p}" for p in pages) if pages else "(page not located)"
-
-
 def _quote(text: str) -> str:
     """Single-line Markdown blockquote."""
     return "> " + " ".join((text or "").split())
 
 
 def render_markdown(bundle: Dict[str, Any]) -> str:
-    """Tickets with cosine/fused scores, then manual excerpts cited as ``pdf_path p.N``, then notes."""
+    """Tickets with cosine/fused scores, then manual excerpts cited by ``doc_path``, then notes."""
     out: List[str] = [f"# Answer evidence — {bundle['query']}", ""]
     meta = [f"model {bundle.get('model') or 'unknown'}"]
     if bundle.get("model_sku"):
@@ -44,8 +39,9 @@ def render_markdown(bundle: Dict[str, Any]) -> str:
         out.append("_No manual passage found._")
     for m in mhits:
         origin = m["raw_origin"]
-        via = f" (via wiki `{m['wiki_path']}`)" if m.get("wiki_path") else " (raw PDF)"
-        out += [f"{m['rank']}. {origin['pdf_path']} {_pages(origin['pages'])}{via}", "   " + _quote(m["excerpt"])]
+        doc = origin.get("doc_path") or origin.get("pdf_path", "")
+        via = f" (via wiki `{m['wiki_path']}`)" if m.get("wiki_path") else " (raw .txt search)"
+        out += [f"{m['rank']}. {doc}{via}", "   " + _quote(m["excerpt"])]
 
     notes = bundle["diagnostics"]["notes"]
     if notes:

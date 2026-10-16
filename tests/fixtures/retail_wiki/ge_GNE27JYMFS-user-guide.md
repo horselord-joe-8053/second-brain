@@ -1,7 +1,7 @@
 ---
 type: source
 title: "GE GNE27JYMFS user guide — troubleshooting"
-sources: ["fridge-docs/ge_GNE27JYMFS/user-guide.pdf"]
+sources: ["fridge-docs/ge_GNE27JYMFS/user-guide.txt"]
 tags: [fixture, troubleshooting]
 ---
 # GE GNE27JYMFS user guide — troubleshooting

@@ -21,15 +21,15 @@ description: Query Fridges R Us US retail brain (RETAIL_MARKET=US) — ticket hy
    ```
 
    The bundle always holds **both** legs: `tickets.hits` (top-2 resolved tickets, same model, each with
-   `cosine_similarity` + `fused_score`) and `manuals.hits` (wiki excerpt **or** raw PDF page text, each with
-   `raw_origin.pdf_path` + `pages`). Use `--md` for a deterministic human view; `--no-wiki` if LLM Wiki is down
-   (the bundle falls back to raw PDF pages and says so in `diagnostics.notes`).
+   `cosine_similarity` + `fused_score`) and `manuals.hits` (wiki excerpt **or** raw ``.txt`` search, each with
+   `raw_origin.doc_path` and optional `archive_pdf_path`; `pages` is empty until Phase 2). Use `--md` for a
+   deterministic human view; `--no-wiki` if LLM Wiki is down (falls back to SKU ``.txt`` search in `diagnostics.notes`).
 3. Manager metrics → **`generate_sql`** / **`execute_sql`**; cite counts.
 4. No resolution without tool output; escalate if ticket + wiki both fail.
 
 ## Summarizing a bundle
 
-- Keep every reference: `ticket_id` with its cosine similarity, and every manual hit as `pdf_path p.N`
+- Keep every reference: `ticket_id` with its cosine similarity, and every manual hit as `doc_path`
   (also `wiki_path` when `source = wiki`). Never drop `raw_origin`, even when the wiki text is quoted.
 - Do not invent a confidence verdict — the bundle has none by design; report the scores as given.
 - Empty `tickets.hits` = no prior ticket for this model; answer from the manual hits alone.

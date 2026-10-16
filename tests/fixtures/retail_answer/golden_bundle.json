@@ -13,11 +13,9 @@
         "excerpt": "Ice maker If the ice maker is not making ice, check the water supply line and shutoff valve.",
         "rank": 1,
         "raw_origin": {
-          "page_match_score": 1.0,
-          "pages": [
-            2
-          ],
-          "pdf_path": "raw/sources/fridge-docs/samsung_RF28K9070SG/user-guide.pdf"
+          "archive_pdf_path": "archive/fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+          "doc_path": "raw/sources/fridge-docs/samsung_RF28K9070SG/user-guide.txt",
+          "pages": []
         },
         "source": "wiki",
         "wiki_path": "wiki/sources/samsung-user-guide.md",
@@ -35,7 +33,7 @@
       {
         "cosine_similarity": 0.1656,
         "customer_query_text": "ice maker stopped producing cubes FRU-E101",
-        "fused_score": 0.016393,
+        "fused_score": 0.180328,
         "issue_key": "ice_maker_no_ice",
         "model": "RF28K9070SG",
         "rank": 1,

@@ -73,6 +73,16 @@ class InMemoryTicketSource:
         return mode, hits
 
 
+class EmptyTicketSource:
+    """Placeholder when the ticket leg is skipped (CLI ``--skip-tickets``); never embeds or queries PG."""
+
+    issue_keys: Dict[str, str] = {}
+
+    def hits(self, query: str, *, model: Optional[str], limit: int) -> Tuple[str, List[Dict[str, Any]]]:
+        """Return no hits without touching Postgres or Gemini."""
+        return "skipped", []
+
+
 class PgTicketSource:
     """Live source: Postgres ``service_queries`` (needs ``RETAIL_DATABASE_URL`` + Gemini key)."""
 

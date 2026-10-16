@@ -1,7 +1,8 @@
 """Per-page text index over the retail fridge PDFs, used to cite manual evidence by page.
 
-The index is a committed JSONL (``brain/retail/manifests/pdf_page_index.jsonl``) built once by
-``scripts/retail/manuals/build_pdf_page_index.py``; this module only reads it, so CI never needs
+The index is optional archived JSONL (``brain/retail/archive/pdf_page_index.jsonl``) built when
+``WRITE_PAGE_INDEX=1`` via ``build_pdf_txt_and_page_idx.py``; runtime manual leg uses ``txt_docs``
+instead. This module only reads the JSONL when needed; CI never needs
 ``pypdf``.
 
 Scoring is IDF-weighted query-token coverage: ``sum(idf(t) for t in query ∩ page) / sum(idf(t)
@@ -20,7 +21,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 DEFAULT_INDEX_PATH = (
-    Path(__file__).resolve().parents[3] / "brain" / "retail" / "manifests" / "pdf_page_index.jsonl"
+    Path(__file__).resolve().parents[3] / "brain" / "retail" / "archive" / "pdf_page_index.jsonl"
 )
 
 _TOKEN = re.compile(r"[a-z0-9]+")

@@ -1,7 +1,7 @@
 ---
 type: source
 title: "Samsung RF28K9070SG user guide — troubleshooting"
-sources: ["fridge-docs/samsung_RF28K9070SG/user-guide.pdf"]
+sources: ["fridge-docs/samsung_RF28K9070SG/user-guide.txt"]
 tags: [fixture, troubleshooting]
 ---
 # Samsung RF28K9070SG user guide — troubleshooting

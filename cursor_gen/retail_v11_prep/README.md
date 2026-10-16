@@ -1,6 +1,6 @@
 <h1 id="prep-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Retail V1.1 A/B — local prep (temporary)</h1>
 
-**Purpose:** Get **real Postgres + PDFs** ready before V1 vs V1.1 A/B. Scripts are **operator helpers** (not long-term product entrypoints).
+**Purpose:** One-off **V1 vs V1.1 A/B prep** (corpus generate, A/B matrix, Hermes prompts). **Repeat ops** (Docker + Postgres load) live in [`scripts/retail/ops/`](../../scripts/retail/ops/README.md); `00_*` and `03_*` here are thin wrappers.
 
 <h2 id="prep-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -30,12 +30,12 @@
 From repo root:
 
 ```bash
-bash cursor_gen/retail_v11_prep/00_docker_ensure.sh    # start daemon if Docker.app exists
+bash scripts/retail/ops/docker_ensure.sh              # canonical (00_* wrapper delegates here)
 bash cursor_gen/retail_v11_prep/01_copy_manuals.sh
 bash cursor_gen/retail_v11_prep/02_generate_corpus.sh    # phase 1: COUNT=50 (default)
 # … implement / load …
 COUNT=90 bash cursor_gen/retail_v11_prep/02_generate_corpus.sh   # phase 2: pre-A/B
-bash cursor_gen/retail_v11_prep/03_pg_up_and_load.sh   # calls 00; compose up + load
+bash scripts/retail/ops/pg_up_and_load.sh             # compose up + load (03_* wrapper delegates)
 bash cursor_gen/retail_v11_prep/04_run_ab_postgres.sh
 # when done:
 bash cursor_gen/retail_v11_prep/05_teardown.sh           # compose down

@@ -391,7 +391,7 @@ scripts/py scripts/retail/answer/answer_ticket.py --query "RF28K9070SG ice maker
 scripts/py scripts/retail/answer/answer_ticket.py --query "…" --no-wiki --json   # CSV corpus, raw PDF pages only
 ```
 
-The manual leg needs the committed page index `brain/retail/manifests/pdf_page_index.jsonl` (rebuild after PDF changes: `scripts/py scripts/retail/manuals/build_pdf_page_index.py`, ~5 min). Tests: CI tier `tests/test_retail_answer_e2e.py` (in `verify.sh`); live tier `RUN_RETAIL_E2E=1 scripts/py -m pytest -q tests/test_retail_answer_live.py -s` (Postgres + Gemini + LLM Wiki on `brain/retail`).
+Manual leg uses committed ``.txt`` under `brain/retail/raw/sources/fridge-docs/` (rebuild from archive PDFs: `scripts/py scripts/retail/manuals/build_pdf_txt_and_page_idx.py`, ~5 min; optional page JSONL with `WRITE_PAGE_INDEX=1`). Tests: CI `tests/test_retail_answer_e2e.py` (in `verify.sh`); live `RUN_RETAIL_E2E=1 scripts/py -m pytest -q tests/test_retail_answer_live.py -s` (Postgres + Gemini + LLM Wiki after **HG-TXT-2**).
 
 Spec: [`docs/specs/fru-us-service-synthetic-data.md`](../docs/specs/fru-us-service-synthetic-data.md). Prep split: [`cursor_gen/retail_v11_prep/CURSOR_PREP_RUNBOOK.md`](../cursor_gen/retail_v11_prep/CURSOR_PREP_RUNBOOK.md) · [`HERMES_WIKI_OPERATOR.md`](../cursor_gen/retail_v11_prep/HERMES_WIKI_OPERATOR.md).
 
