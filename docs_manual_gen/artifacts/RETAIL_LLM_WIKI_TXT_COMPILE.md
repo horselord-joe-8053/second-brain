@@ -37,7 +37,14 @@ Implementation: **`nu_llm_wiki/src/lib/ingest.ts`**.
 | **1 — Analysis** | `buildAnalysisPrompt(purpose, index, sourceContent, schema)` | System-style user message: “expert research analyst”; sections **Key Entities**, **Key Concepts**, **Main Arguments**, **Recommendations**; **`languageRule(sourceContent)`** (Settings → output language, or auto-detect from source); optional **Wiki Purpose**, **Current Wiki Index**, **Project Schema**. **Full source text** is appended for the chat call (chunked when &gt; budget). |
 | **2 — Generation** | `buildGenerationPrompt(...)` | “Wiki maintainer”; must emit `---FILE: wiki/...---` blocks: **(1)** source summary at `wiki/sources/...`, **(2)** entity/concept pages from analysis; **`sources: ["fridge-docs/.../repair-guide.txt"]`** in frontmatter; **`languageRule`** repeated at end. Parser: `parseFileBlocks()`. |
 
-**Not** “embed the PDF.” The model **never** receives a request to copy procedural sections verbatim into the source summary unless the analysis stage emphasized them and generation prompt rules apply (DDL/tables verbatim — appliance prose is usually paraphrased).
+**Aggregated chat payloads** (`autoIngest` in `ingest.ts` ~1091–1165):
+
+| Call | Roles | User message tail |
+|------|-------|-------------------|
+| Analysis | `system` = full `buildAnalysisPrompt(...)`; `user` | `Analyze this source document:` + **File** + optional folder + `---` + **full `sourceContext`** (the ``.txt`` body, possibly chunked for long docs) |
+| Generation | `system` = full `buildGenerationPrompt(...)`; `user` | Identity line; **“do NOT echo Stage 1 analysis tables/bullets”**; **Stage 1 analysis**; then **`## Source Context`** + **full `sourceContext` again**; closing line to emit `---FILE:` blocks only |
+
+**Not** “embed the PDF.” Generation is driven by **analysis prose**, and the only **verbatim** rule in `buildGenerationPrompt` targets **SQL/API/tables** — not appliance symptom lists. The source summary is therefore a **short paraphrase** plus separate thin entity/concept FILE blocks.
 
 **Entity fan-out:** Analysis asks for entities with “standalone-page significance”; generation creates **entity + concept** FILE blocks. Small repair PDFs still produce Diagnostic Mode, Error Codes, etc., with **one-paragraph** bodies — hence useless search snippets for “ice maker not making ice.”
 
