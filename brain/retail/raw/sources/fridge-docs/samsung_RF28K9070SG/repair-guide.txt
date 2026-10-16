@@ -21,4 +21,3 @@ TDM VALVE #1 Input from Drier #3 Outputs to Evaporators FF Section – Yellow Tu
 Main Board of Fridge Layout SMPS Inverter Board (Compressor) [Caution] AC input power and high voltage generated at SMPS PCB and INVERTER PCB power terminal. Please be cautious during repair and measurement.
 
 Wiring Diagram Dispenser
-

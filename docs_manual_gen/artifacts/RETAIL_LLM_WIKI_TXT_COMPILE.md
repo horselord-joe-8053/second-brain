@@ -10,6 +10,7 @@
 4. [Why retail manuals fail manual-leg wiki hits](#retail-fail) — relevance + language.
 5. [Force re-ingest](#force) — cache bust + rescan.
 6. [Recommended fixes](#fixes) — Second Brain vs **nu_llm_wiki**.
+7. [Full corpus reset](#full-reset) — purge all fridge-derived wiki pages.
 
 ---
 
@@ -79,6 +80,10 @@ Thin summaries / wrong language → “wiki returned 10 page(s) but none relevan
 4. LLM Wiki app running; `POST /api/v1/projects/{id}/sources/rescan` (see [`SECOND_BRAIN_RUNBOOK.md`](../SECOND_BRAIN_RUNBOOK.md) §8.4).
 5. Poll `.llm-wiki/ingest-queue.json` until idle; read compiled source page; smoke `llm_wiki_search` + live E2E.
 
+<h2 id="full-reset" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Full corpus reset (fridge-docs)</h2>
+
+When **entity/concept** pages stay in French/Romanian after **`type: source`** pages are English, purge **every** wiki `*.md` whose frontmatter `sources:` cites `fridge-docs/` (not only `wiki/sources/`), clear **`ingest-cache.json`** keys under `fridge-docs/`, and remove **`raw/sources/fridge-docs/**`** entries from **`.llm-wiki/file-snapshot.json`** so rescan enqueues **`kind: created`** tasks. Re-copy `fridge-docs/` if desired; operator log example: `logs/ops/bp_p20_fridge_docs_rescan2.log`.
+
 **Note:** Re-ingest **without** product changes often reproduces the same summary shape — fixes are in **§6**.
 
 ---
@@ -97,6 +102,15 @@ Thin summaries / wrong language → “wiki returned 10 page(s) but none relevan
 - Re-run rescan after **P18** corpus refresh.
 
 <h3 id="fixes-nu" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">6.3 nu_llm_wiki product (if wiki leg must carry gold)</h3>
+
+**Plan (product repo):** [`/Users/jjw8053/projects/nu_llm_wiki/cursor_gen/refactor_plans/wip/REFACTOR_NU_LLM_WIKI_INGEST_DETAIL_LEVEL.md`](/Users/jjw8053/projects/nu_llm_wiki/cursor_gen/refactor_plans/wip/REFACTOR_NU_LLM_WIKI_INGEST_DETAIL_LEVEL.md) — **`ingestionDetailLevel`** `low` / `medium` / `high` on **Settings → Source Watch** (Vite/TS only; no Tauri rebuild to change level).
+
+**Operator (retail manuals):**
+
+1. Open the retail brain project in LLM Wiki → **Settings → Source Watch** → **Ingest detail level** → **`high`** (or **`medium`** for longer summaries without mandatory fenced tables).
+2. Set **Output language** to **English** (§6.2).
+3. After changing detail level, **re-ingest** sources (purge wiki pages + invalidate `file-snapshot.json` entries for `fridge-docs/**` if hashes block rescan — see §7 full reset).
+4. Confirm source summary pages grow (repair guide should not contain nested `---FILE:` markers).
 
 | Idea | Where | Rationale |
 |------|--------|-----------|

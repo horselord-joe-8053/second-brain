@@ -1,72 +1,103 @@
 ---
 type: source
-title: "Source: fridge-docs/README.md"
-created: 2026-10-15
-updated: 2026-10-15
+title: Source: fridge-docs/README.md
+created: 2026-10-16
+updated: 2026-10-16
+tags: [fridges, manuals, service]
+related: [fridges-r-us, samsung-rf28k9070sg, ge-gne27jymfs, kitchenaid-krff507hps, user-guide, repair-guide]
 sources: ["fridge-docs/README.md"]
-tags: []
-related: []
+---
+# Fridges R Us Service Manuals Overview
+Fridges R Us provides service manuals for various fridge models, including user guides and repair guides. The documentation is structured to include both types of guides for each model, ensuring that users and technicians have the necessary resources for operation and maintenance.
+
+The following fridge models are included in the service documentation:
+
+- **Samsung RF28K9070SG**
+- **GE GNE27JYMFS**
+- **KitchenAid KRFF507HPS**
+
+Each model's folder must contain both a `user-guide.pdf` and a `repair-guide.pdf`, indicating a standardized approach to documentation.
+
 ---
 
-# Source: fridge-docs/README.md
+---FILE: wiki/entities/fridges-r-us.md---
+type: entity
+title: Fridges R Us
+created: 2026-10-16
+updated: 2026-10-16
+tags: [organization, service, manuals]
+related: [samsung-rf28k9070sg, ge-gne27jymfs, kitchenaid-krff507hps]
+sources: ["fridge-docs/README.md"]
+---
+# Fridges R Us
+Fridges R Us is an organization that provides service manuals for various fridge models. The organization plays a crucial role in ensuring that users and technicians have access to the necessary documentation for operating and maintaining their appliances.
 
-## Key Entities
+---
 
-1. **Fridges R Us** 
-   - Type: Organization
-   - Role and significance: The organization responsible for the service manuals for various fridge models.
-   - Page-worthy: yes (central to the source as it represents the overarching entity managing the documentation).
+---FILE: wiki/entities/samsung-rf28k9070sg.md---
+type: entity
+title: Samsung RF28K9070SG
+created: 2026-10-16
+updated: 2026-10-16
+tags: [product, fridge, Samsung]
+related: [fridges-r-us]
+sources: ["fridge-docs/README.md"]
+---
+# Samsung RF28K9070SG
+The Samsung RF28K9070SG is a specific fridge model for which Fridges R Us provides user and repair guides. This model is part of the organization's standardized documentation approach, ensuring that users have the necessary resources for operation and maintenance.
 
-2. **samsung_RF28K9070SG**
-   - Type: Product (Fridge Model)
-   - Role and significance: One of the specific fridge models for which user and repair guides are provided.
-   - Page-worthy: yes (specific model with associated documentation).
+---
 
-3. **ge_GNE27JYMFS**
-   - Type: Product (Fridge Model)
-   - Role and significance: Another fridge model included in the service documentation.
-   - Page-worthy: yes (specific model with associated documentation).
+---FILE: wiki/entities/ge-gne27jymfs.md---
+type: entity
+title: GE GNE27JYMFS
+created: 2026-10-16
+updated: 2026-10-16
+tags: [product, fridge, GE]
+related: [fridges-r-us]
+sources: ["fridge-docs/README.md"]
+---
+# GE GNE27JYMFS
+The GE GNE27JYMFS is another specific fridge model included in the service documentation provided by Fridges R Us. This model also benefits from the organization's structured approach to user and repair guides.
 
-4. **kitchenaid_KRFF507HPS**
-   - Type: Product (Fridge Model)
-   - Role and significance: The third fridge model covered by the service manuals.
-   - Page-worthy: yes (specific model with associated documentation).
+---
 
-## Key Concepts
+---FILE: wiki/entities/kitchenaid-krff507hps.md---
+type: entity
+title: KitchenAid KRFF507HPS
+created: 2026-10-16
+updated: 2026-10-16
+tags: [product, fridge, KitchenAid]
+related: [fridges-r-us]
+sources: ["fridge-docs/README.md"]
+---
+# KitchenAid KRFF507HPS
+The KitchenAid KRFF507HPS is the third specific fridge model for which Fridges R Us provides user and repair guides. This model is included in the organization's documentation strategy, ensuring users have access to essential operational and maintenance information.
 
-1. **User Guide**
-   - Definition: A manual providing instructions for the end-user on how to operate the fridge.
-   - Importance: Essential for customer support and user education.
-   - Page-worthy: yes (important documentation type).
+---
 
-2. **Repair Guide**
-   - Definition: A manual detailing troubleshooting and repair procedures for the fridge.
-   - Importance: Crucial for service technicians and maintenance.
-   - Page-worthy: yes (important documentation type).
+---FILE: wiki/concepts/user-guide.md---
+type: concept
+title: User Guide
+created: 2026-10-16
+updated: 2026-10-16
+tags: [documentation, user, guide]
+related: [repair-guide]
+sources: ["fridge-docs/README.md"]
+---
+# User Guide
+A user guide is a document providing instructions on how to use a product. It is essential for customers to understand the features and operation of fridge models, ensuring they can effectively utilize their appliances.
 
-## Main Arguments & Findings
+---
 
-- The document outlines the structure and contents of the service manuals for three specific fridge models.
-- Each model folder must contain both a user guide and a repair guide in PDF format.
-- The evidence supporting this structure is the requirement for each model to have designated documentation, ensuring consistency and accessibility for users and technicians.
-
-## Connections to Existing Wiki
-
-- This source relates to existing pages on the specific fridge models (samsung_RF28K9070SG, ge_GNE27JYMFS, kitchenaid_KRFF507HPS) and their respective user and repair guides.
-- It strengthens existing knowledge by providing a clear organizational structure for accessing these manuals.
-
-## Contradictions & Tensions
-
-- There are no apparent contradictions with existing wiki content, as the document serves as a straightforward organizational guide for the manuals.
-
-## Recommendations
-
-- Create or update wiki pages for:
-  - **Fridges R Us** (organization overview).
-  - **samsung_RF28K9070SG** (product page with links to user and repair guides).
-  - **ge_GNE27JYMFS** (product page with links to user and repair guides).
-  - **kitchenaid_KRFF507HPS** (product page with links to user and repair guides).
-  - **User Guide** (general page on the importance and content of user guides).
-  - **Repair Guide** (general page on the importance and content of repair guides).
-- Emphasize the importance of having both user and repair guides for each fridge model.
-- Open questions: Are there additional models or guides planned for future inclusion?
+---FILE: wiki/concepts/repair-guide.md---
+type: concept
+title: Repair Guide
+created: 2026-10-16
+updated: 2026-10-16
+tags: [documentation, repair, guide]
+related: [user-guide]
+sources: ["fridge-docs/README.md"]
+---
+# Repair Guide
+A repair guide is a document that outlines troubleshooting and repair procedures for a product. It is crucial for service technicians and users to perform maintenance and repairs on fridge models, ensuring the longevity and functionality of the appliances.

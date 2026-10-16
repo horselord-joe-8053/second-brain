@@ -31,8 +31,9 @@ class ManualTrimRule:
 def _samsung_user_guide_cut(body: str) -> int | None:
     """Samsung RF-style: English first; second language starts with ``Español <page>``."""
     min_english = 20_000
+    # Samsung PDF text sometimes glues the page number: ``Español2 Contenido`` (no space).
     pat = re.compile(
-        r"\n(Español|Français|Deutsch|Italiano|Português|Nederlands|Polski|한국어|中文|日本語)\s+\d+\s",
+        r"\n(Español|Français|Deutsch|Italiano|Português|Nederlands|Polski|한국어|中文|日本語)\s*\d+\s",
         re.IGNORECASE,
     )
     m = pat.search(body)

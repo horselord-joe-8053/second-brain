@@ -64,3 +64,25 @@ Sources:
 ## [2026-10-16] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
 
 ## [2026-10-16] ingest | fridge-docs/samsung_RF28K9070SG/repair-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/samsung_RF28K9070SG/repair-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/samsung_RF28K9070SG/user-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/README.md
+
+## [2026-10-16] ingest | fridge-docs/README.md
+
+## [2026-10-16] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/samsung_RF28K9070SG/repair-guide.txt
+
+## [2026-10-16] ingest | fridge-docs/samsung_RF28K9070SG/user-guide.txt
