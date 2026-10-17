@@ -288,7 +288,7 @@ Replace `{id}` with project UUID, project path, or `current`.
 Shared driver (any harness):
 
 ```bash
-./scripts/brain/setup-local.sh
+./scripts/brain/agent.sh setup
 ```
 
 Set **`active_harness`** in **`config/brain-stack.yaml`**, then open the matching runbook:
@@ -300,7 +300,7 @@ Set **`active_harness`** in **`config/brain-stack.yaml`**, then open the matchin
 
 **P4 MCP (all harnesses):** shared catalog **`config/second-brain.mcp-servers.yaml`**. Harness-neutral read smoke: **`./scripts/brain/mcp-smoke-read.sh`**.
 
-From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs **`setup-local.sh`** before layout/pytest checks.
+From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs **`agent.sh setup`** (via setup-local) before layout/pytest checks.
 
 ---
 
@@ -315,7 +315,7 @@ From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs **`setup-local.s
 OPEN_OBSIDIAN_VAULT=1 ./scripts/brain/setup-obsidian.sh   # also launch Obsidian on the vault
 ```
 
-Also runs from **`./scripts/brain/setup-local.sh`**. Record the vault path in spec **Decisions** (HG-5) after first open.
+Also runs from **`./scripts/brain/agent.sh setup`** (`setup-local.sh`). Record the vault path in spec **Decisions** (HG-5) after first open.
 
 <h2 id="backup" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Backup</h2>
 
@@ -356,7 +356,7 @@ cp config/brain-stack.example.yaml config/brain-stack.yaml
 
 **Do not** rely on `GEMINI_MODEL` or `OPENAI_MODEL` in `.env` for Hermes — set **`hermes.chat_model`** in **`brain-stack.yaml`** instead.
 
-Also runs at the start of **`./scripts/brain/setup-local.sh`**. **Does not** write LLM Wiki provider keys into the desktop app (GUI remains source for ingest).
+Also runs at the start of **`./scripts/brain/agent.sh setup`**. **Does not** write LLM Wiki provider keys into the desktop app (GUI remains source for ingest).
 
 <h2 id="p8-acceptance" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">15. After reboot + P8 acceptance (HG-8)</h2>
 
@@ -364,7 +364,7 @@ Also runs at the start of **`./scripts/brain/setup-local.sh`**. **Does not** wri
 
 1. **LLM Wiki** — `./scripts/brain/llm-wiki.sh start` (no-op if already up). Project **`…/second_brain/brain`**, API/MCP on. UI settings stay in macOS app data.
 2. **Obsidian** — vault **`…/second_brain/brain/wiki`** (already registered as **wiki**).
-3. **Harness wiring** — `./scripts/brain/setup-local.sh` (uses **`active_harness`**). Hermes P8 automated: `RUN_BRAIN_ACCEPTANCE=1 ./scripts/brain/setup-local.sh` or [`adapters/hermes/acceptance-automated.sh`](../scripts/brain/adapters/hermes/acceptance-automated.sh).
+3. **Harness wiring** — `./scripts/brain/agent.sh setup` (uses **`active_harness`**). Hermes P8 automated: `RUN_BRAIN_ACCEPTANCE=1 ./scripts/brain/agent.sh setup` or [`adapters/hermes/acceptance-automated.sh`](../scripts/brain/adapters/hermes/acceptance-automated.sh).
 
 4. **Harness integration chat** — [`RUNBOOK_HARNESS_HERMES.md`](./RUNBOOK_HARNESS_HERMES.md) §4 (Hermes Desktop smoke when `active_harness: hermes`).
 5. **Messaging (optional, Hermes)** — same runbook §5; confirm **Gateway ready** before Telegram/WhatsApp capture.
@@ -397,6 +397,6 @@ Spec: [`docs/specs/fru-us-service-synthetic-data.md`](../docs/specs/fru-us-servi
 
 <h2 id="future-script" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Idempotent driver</h2>
 
-**In repo:** [`scripts/brain/setup-local.sh`](../scripts/brain/setup-local.sh) — shared stack + **`adapters/<active_harness>/setup-harness.sh`**, Obsidian hint, optional **`RUN_BRAIN_ACCEPTANCE=1`** (Hermes: [`acceptance-automated.sh`](../scripts/brain/adapters/hermes/acceptance-automated.sh)).
+**In repo:** [`scripts/brain/agent.sh`](../scripts/brain/agent.sh) **`setup`** → [`setup-local.sh`](../scripts/brain/setup-local.sh) — shared stack + **`adapters/<active_harness>/setup-harness.sh`**, Obsidian hint, optional **`RUN_BRAIN_ACCEPTANCE=1`** (Hermes: [`acceptance-automated.sh`](../scripts/brain/adapters/hermes/acceptance-automated.sh)). Daily launch: **`agent.sh start`**.
 
 **Process up/down:** `./scripts/brain/llm-wiki.sh` and Hermes skill **`local-llm-wiki`**. **Still human-gated:** first-time LLM Wiki GUI (§5–§8: provider keys, enabling API), harness-specific chat smoke (per harness runbook), NB-SB1 cited table lookup in agent UI.

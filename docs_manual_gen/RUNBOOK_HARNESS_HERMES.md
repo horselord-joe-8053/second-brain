@@ -16,11 +16,11 @@
 
 <h2 id="hermes-auto" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Automated harness setup</h2>
 
-From repo root (shared driver calls this when `active_harness: hermes`):
+From repo root (**operator entry:** `scripts/brain/agent.sh`):
 
 ```bash
-./scripts/brain/setup-local.sh
-# or adapter only:
+./scripts/brain/agent.sh setup    # full bootstrap (includes setup-local → setup-harness)
+# adapter-only repair (internal):
 ./scripts/brain/adapters/hermes/setup-harness.sh
 ```
 
@@ -29,14 +29,11 @@ From repo root (shared driver calls this when `active_harness: hermes`):
 <h2 id="hermes-p3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. P3 — CLI + Desktop install</h2>
 
 ```bash
-./scripts/brain/adapters/hermes/setup-hermes.sh
-./scripts/brain/adapters/hermes/setup-hermes-desktop.sh
-./scripts/brain/adapters/hermes/start-hermes.sh --provider gemini -m gemini-3.0-flash
+./scripts/brain/agent.sh start --install
+./scripts/brain/agent.sh start --provider gemini -m gemini-3.0-flash
 ```
 
-One-shot: `./scripts/brain/adapters/hermes/install-and-start-hermes-desktop.sh --provider gemini -m gemini-3.0-flash`
-
-**P3 exit (HG-3):** `hermes doctor` clean. **Stop Desktop:** `./scripts/brain/adapters/hermes/stop-hermes.sh`
+**P3 exit (HG-3):** `hermes doctor` clean. **Stop Desktop:** `./scripts/brain/agent.sh stop`
 
 **Keys:** `~/.hermes/.env` for chat; sync via `./scripts/brain/apply-stack-config.sh`. See hub runbook §6.
 

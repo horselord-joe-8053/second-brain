@@ -2,6 +2,8 @@
 # secrets: values live ONLY in brain-stack.yaml (not committed). Optional legacy: repo .env fallback.
 version: 1
 
+# Agent runtime for ./scripts/brain/agent.sh (start|stop|restart): hermes | openclaw.
+# Does not select brain profile, LLM Wiki URL, or MCP catalog — only which harness adapter runs.
 active_harness: hermes
 
 # Brain-profiles: brain/personal (personal second brain) | brain/retail (FRU aftersales).

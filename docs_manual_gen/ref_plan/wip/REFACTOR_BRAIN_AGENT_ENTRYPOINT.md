@@ -1,6 +1,6 @@
 <h1 id="doc-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — brain agent single entry (`agent.sh`)</h1>
 
-**Status:** **new** — plan only (**onlyreftdd**); implement with **`aciubtdd docs_manual_gen/ref_plan/new/REFACTOR_BRAIN_AGENT_ENTRYPOINT.md`**.  
+**Status:** **wip** — P1–P6 implemented on branch **`feature/bootstrap-rrf-evolve-10-agent-entrypoint`**.  
 **Scope:** Second Brain harness operator UX — one idempotent entry for setup / start / stop / restart; docs + call-stack clarity; trim duplicate glue (not merge adapter setup steps).
 
 **last_aligned:** 2026-10-17
@@ -76,42 +76,42 @@ graph TD
 
 <h3 id="p1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.1 P1 — Config clarity</h3>
 
-- [ ] Expand **`config/brain-stack.example.yaml`** comments for **`active_harness`**: selects Hermes vs OpenClaw **agent runtime** for **`agent.sh`**; does not set brain profile, LLM Wiki URL, or MCP catalog path.
-- [ ] One line in **`scripts/brain/init-brain-stack-from-env.sh`** help (if present) pointing operators to copy example including **`active_harness`**.
+- [X] Expand **`config/brain-stack.example.yaml`** comments for **`active_harness`**: selects Hermes vs OpenClaw **agent runtime** for **`agent.sh`**; does not set brain profile, LLM Wiki URL, or MCP catalog path.
+- [X] One line in **`scripts/brain/init-brain-stack-from-env.sh`** help (if present) pointing operators to copy example including **`active_harness`**.
 
 <h3 id="p2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.2 P2 — `agent.sh` core</h3>
 
-- [ ] Add **`scripts/brain/agent.sh`**: subcommands **`setup`**, **`start`**, **`stop`**, **`restart`**, **`status`**, **`help`**; resolve **`HARNESS`** via **`scripts/py` + brain_stack** (same pattern as **`setup-local.sh`**).
-- [ ] **`setup`** → exec **`setup-local.sh`**.
-- [ ] **`start`** → **`apply-stack-config.sh`** → **`adapters/$HARNESS/start.sh`** (pass through unknown args).
-- [ ] **`stop`** / **`restart`** → delegate stop then (restart) start path.
-- [ ] **`status`**: print active harness, whether Hermes app/TUI pidfile exists (best-effort), suggest **`agent.sh help`**.
+- [X] Add **`scripts/brain/agent.sh`**: subcommands **`setup`**, **`start`**, **`stop`**, **`restart`**, **`status`**, **`help`**; resolve **`HARNESS`** via **`scripts/py` + brain_stack** (same pattern as **`setup-local.sh`**).
+- [X] **`setup`** → exec **`setup-local.sh`**.
+- [X] **`start`** → **`apply-stack-config.sh`** → **`adapters/$HARNESS/start.sh`** (pass through unknown args).
+- [X] **`stop`** / **`restart`** → delegate stop then (restart) start path.
+- [X] **`status`**: print active harness, whether Hermes app/TUI pidfile exists (best-effort), suggest **`agent.sh help`**.
 
 <h3 id="p3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.3 P3 — Hermes delegates + dedupe</h3>
 
-- [ ] Add **`adapters/hermes/start.sh`** → thin wrapper around **`start-hermes.sh`**; **`stop.sh`** → **`stop-hermes.sh`**.
-- [ ] Implement **`start --install`** (Desktop missing → **`setup-hermes-desktop.sh`**) inside **`start-hermes.sh`** or **`start.sh`** wrapper; document flag in help.
-- [ ] Remove **`install-and-start-hermes-desktop.sh`**; grep repo for references → **`agent.sh start --install`**.
-- [ ] Remove redundant **`apply-stack-config`** invocation from **`start-hermes.sh`** when **`agent.sh`** already ran it (env **`AGENT_SH_APPLIED_STACK=1`** or single call site documented in header comment).
+- [X] Add **`adapters/hermes/start.sh`** → thin wrapper around **`start-hermes.sh`**; **`stop.sh`** → **`stop-hermes.sh`**.
+- [X] Implement **`start --install`** (Desktop missing → **`setup-hermes-desktop.sh`**) inside **`start-hermes.sh`** or **`start.sh`** wrapper; document flag in help.
+- [X] Remove **`install-and-start-hermes-desktop.sh`**; grep repo for references → **`agent.sh start --install`**.
+- [X] Remove redundant **`apply-stack-config`** invocation from **`start-hermes.sh`** when **`agent.sh`** already ran it (env **`AGENT_SH_APPLIED_STACK=1`** or single call site documented in header comment).
 
 <h3 id="p4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.4 P4 — OpenClaw stubs</h3>
 
-- [ ] Add **`adapters/openclaw/start.sh`** and **`stop.sh`**: exit **2** with message + link **`RUNBOOK_HARNESS_OPENCLAW.md`** unless wired later.
-- [ ] **`agent.sh status`**: report stub state for openclaw.
+- [X] Add **`adapters/openclaw/start.sh`** and **`stop.sh`**: exit **2** with message + link **`RUNBOOK_HARNESS_OPENCLAW.md`** unless wired later.
+- [X] **`agent.sh status`**: report stub state for openclaw.
 
 <h3 id="p5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.5 P5 — Documentation (README contract)</h3>
 
-- [ ] **`scripts/brain/README.md`** (create): primary **`agent.sh`** usage; full call-stack table; **delegates are internal** warning; link **`llm-wiki.sh`**.
-- [ ] **`harness/second-brain/README.md`**: replace direct **`setup-local` / start-hermes** bullets with **`agent.sh`**; keep MCP/compiler contract.
-- [ ] **`scripts/brain/adapters/hermes/README.md`** (create): delegate stack only; banner **use `../../agent.sh`**.
-- [ ] **`scripts/brain/adapters/openclaw/README.md`** (create or extend): stub + future **`start.sh`**.
-- [ ] **`docs_manual_gen/RUNBOOK_HARNESS_HERMES.md`**, **`RUNBOOK_HARNESS_OPENCLAW.md`**, **`SECOND_BRAIN_RUNBOOK.md`**: operator paths → **`agent.sh`**; retain **`setup-local`** as “what setup subcommand runs”.
-- [ ] Root **`README.md`** local setup section: one line **`./scripts/brain/agent.sh setup`** then **`start`**.
+- [X] **`scripts/brain/README.md`** (create): primary **`agent.sh`** usage; full call-stack table; **delegates are internal** warning; link **`llm-wiki.sh`**.
+- [X] **`harness/second-brain/README.md`**: replace direct **`setup-local` / start-hermes** bullets with **`agent.sh`**; keep MCP/compiler contract.
+- [X] **`scripts/brain/adapters/hermes/README.md`** (create): delegate stack only; banner **use `../../agent.sh`**.
+- [X] **`scripts/brain/adapters/openclaw/README.md`** (create or extend): stub + future **`start.sh`**.
+- [X] **`docs_manual_gen/RUNBOOK_HARNESS_HERMES.md`**, **`RUNBOOK_HARNESS_OPENCLAW.md`**, **`SECOND_BRAIN_RUNBOOK.md`**: operator paths → **`agent.sh`**; retain **`setup-local`** as “what setup subcommand runs”.
+- [X] Root **`README.md`** local setup section: one line **`./scripts/brain/agent.sh setup`** then **`start`**.
 
 <h3 id="p6" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.6 P6 — `--ensure-setup` (optional light bootstrap)</h3>
 
-- [ ] **`agent.sh start --ensure-setup`**: if harness probe fails, run **`adapters/$HARNESS/setup-harness.sh`** only (not Obsidian/corpus tests).
-- [ ] Document difference vs **`agent.sh setup`** in **`scripts/brain/README.md`**.
+- [X] **`agent.sh start --ensure-setup`**: if harness probe fails, run **`adapters/$HARNESS/setup-harness.sh`** only (not Obsidian/corpus tests).
+- [X] Document difference vs **`agent.sh setup`** in **`scripts/brain/README.md`**.
 
 ---
 
@@ -159,11 +159,11 @@ graph TD
 
 <h2 id="checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Execution checklist</h2>
 
-- [ ] **P1** — config comments
-- [ ] **P2** — `agent.sh` core
-- [ ] **P3** — Hermes delegates + remove install-and-start glue
-- [ ] **P4** — OpenClaw stubs
-- [ ] **P5** — README + runbook sweep
-- [ ] **P6** — `--ensure-setup` (optional; may ship after P2–P5 if timeboxed)
+- [X] **P1** — config comments
+- [X] **P2** — `agent.sh` core
+- [X] **P3** — Hermes delegates + remove install-and-start glue
+- [X] **P4** — OpenClaw stubs
+- [X] **P5** — README + runbook sweep
+- [X] **P6** — `--ensure-setup` (optional; may ship after P2–P5 if timeboxed)
 
 **Out of scope:** Changing **`llm-wiki.sh`**; merging **`setup-hermes*.sh`** into one file; OpenClaw full Desktop launch implementation.

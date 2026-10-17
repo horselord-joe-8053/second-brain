@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Start Hermes Desktop (default) or terminal TUI for Second Brain.
+# Start Hermes Desktop (default) or terminal TUI — internal; use scripts/brain/agent.sh start.
 #
-# Usage:
-#   ./scripts/brain/start-hermes.sh --provider gemini -m gemini-3.0-flash
-#   ./scripts/brain/start-hermes.sh --tui          # terminal UI instead of Desktop
+# Usage (via agent.sh start):
+#   --provider gemini -m gemini-3.0-flash
+#   --tui          # terminal UI instead of Desktop
+#   --install      # run setup-hermes-desktop.sh if Hermes.app missing
 set -euo pipefail
 # shellcheck source=scripts/brain/hermes-env.sh
 source "$(dirname "$0")/hermes-env.sh"
@@ -11,6 +12,7 @@ source "$(dirname "$0")/hermes-env.sh"
 UI="desktop"
 PROVIDER=""
 MODEL=""
+INSTALL_DESKTOP=0
 EXTRA=()
 
 while [[ $# -gt 0 ]]; do
@@ -30,6 +32,10 @@ while [[ $# -gt 0 ]]; do
     -m|--model)
       MODEL="${2:-}"
       shift 2
+      ;;
+    --install)
+      INSTALL_DESKTOP=1
+      shift
       ;;
     --detach)
       echo "start-hermes: --detach applies to --tui only; Desktop runs as its own app." >&2
@@ -82,7 +88,9 @@ done < <(read_defaults || true)
 if [[ -n "$PROVIDER" || -n "$MODEL" ]]; then
   export APPLY_STACK_SKIP_MODEL=1
 fi
-bash "$ROOT/scripts/brain/apply-stack-config.sh" >/dev/null
+if [[ "${AGENT_SH_APPLIED_STACK:-0}" != "1" ]]; then
+  bash "$ROOT/scripts/brain/apply-stack-config.sh" >/dev/null
+fi
 
 if [[ -n "$PROVIDER" ]]; then
   hermes config set model.provider "$PROVIDER"
@@ -91,25 +99,41 @@ if [[ -n "$MODEL" ]]; then
   hermes config set model.default "$MODEL"
 fi
 
-launch_desktop_app() {
-  local app
-  for app in \
+hermes_desktop_app_paths() {
+  printf '%s\n' \
     "/Applications/Hermes.app" \
     "$HOME/Applications/Hermes.app" \
     "$HOME/.hermes/hermes-agent/apps/desktop/release/mac-arm64/Hermes.app" \
-    "$HOME/.hermes/hermes-agent/apps/desktop/release/mac/Hermes.app"; do
+    "$HOME/.hermes/hermes-agent/apps/desktop/release/mac/Hermes.app"
+}
+
+hermes_app_installed() {
+  local app
+  while IFS= read -r app; do
+    [[ -d "$app" ]] && return 0
+  done < <(hermes_desktop_app_paths)
+  return 1
+}
+
+launch_desktop_app() {
+  local app
+  while IFS= read -r app; do
     if [[ -d "$app" ]]; then
       echo "start-hermes: opening $app (cwd $ROOT)"
       open -a "$app" --args --cwd "$ROOT" 2>/dev/null && return 0
       open -a "$app" "$ROOT" 2>/dev/null && return 0
       open -a "$app" && return 0
     fi
-  done
+  done < <(hermes_desktop_app_paths)
   return 1
 }
 
 if [[ "$UI" == "desktop" ]]; then
   export HERMES_DESKTOP_CWD="$ROOT"
+  if [[ "$INSTALL_DESKTOP" -eq 1 ]] && ! hermes_app_installed; then
+    bash "$(dirname "$0")/setup-hermes-desktop.sh" --no-open-download-page 2>/dev/null || \
+      bash "$(dirname "$0")/setup-hermes-desktop.sh"
+  fi
   if [[ -n "$PROVIDER" || -n "$MODEL" ]]; then
     echo "start-hermes: config model → provider=${PROVIDER:-config} default=${MODEL:-config}"
     echo "start-hermes: in Desktop use **New session**; pick the same model in the dropdown (UI overrides per session)."

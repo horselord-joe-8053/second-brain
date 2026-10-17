@@ -24,8 +24,9 @@ Kit entry: `seed_grow/bootstrap.md`.
 ## Local setup (idempotent)
 
 ```bash
-./scripts/brain/setup-local.sh    # Hermes install/repair + doctor + corpus checks
-RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh   # same driver, then verify-local
+./scripts/brain/agent.sh setup    # full bootstrap (Hermes/OpenClaw per active_harness)
+./scripts/brain/agent.sh start    # apply stack + launch harness
+RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh   # setup driver + verify-local
 ```
 
 ## Verify

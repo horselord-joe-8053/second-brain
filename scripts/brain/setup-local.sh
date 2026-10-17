@@ -39,7 +39,7 @@ if [[ "${RUN_BRAIN_ACCEPTANCE:-0}" == "1" && "$HARNESS" == "hermes" && -f "$ROOT
 fi
 
 echo ""
-echo "After reboot (order): ./scripts/brain/llm-wiki.sh start → Obsidian vault → this script."
+echo "After reboot (order): ./scripts/brain/llm-wiki.sh start → Obsidian vault → ./scripts/brain/agent.sh setup (once) → agent.sh start."
 echo "Next (human gates):"
 echo "  • Hub runbook: docs_manual_gen/SECOND_BRAIN_RUNBOOK.md"
 case "$HARNESS" in

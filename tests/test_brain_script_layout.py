@@ -20,7 +20,6 @@ FORBIDDEN_ROOT_NAMES = {
     "merge-hermes-skills-config.py",
     "hermes-env.sh",
     "hermes-preflight.sh",
-    "install-and-start-hermes-desktop.sh",
     "smoke-integrated.sh",
     "acceptance-automated.sh",
 }
@@ -34,6 +33,19 @@ def test_no_hermes_shim_files_at_scripts_brain_root() -> None:
 def test_hermes_adapter_setup_harness_exists() -> None:
     p = BRAIN / "adapters" / "hermes" / "setup-harness.sh"
     assert p.is_file()
+
+
+def test_agent_sh_is_public_entry_at_brain_root() -> None:
+    assert (BRAIN / "agent.sh").is_file()
+
+
+def test_hermes_delegate_start_stop_exist() -> None:
+    assert (BRAIN / "adapters" / "hermes" / "start.sh").is_file()
+    assert (BRAIN / "adapters" / "hermes" / "stop.sh").is_file()
+
+
+def test_install_and_start_desktop_removed() -> None:
+    assert not (BRAIN / "adapters" / "hermes" / "install-and-start-hermes-desktop.sh").exists()
 
 
 def test_harness_runbooks_exist() -> None:

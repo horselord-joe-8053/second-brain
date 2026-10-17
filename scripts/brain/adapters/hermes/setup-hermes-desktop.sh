@@ -50,13 +50,13 @@ done
 
 if app="$(find_hermes_app)"; then
   echo "setup-hermes-desktop: found $app"
-  echo "Start with: ./scripts/brain/start-hermes.sh"
+  echo "Start with: ./scripts/brain/agent.sh start"
   exit 0
 fi
 
 echo "setup-hermes-desktop: Hermes.app not in Applications or CLI release folder."
 echo "  Official installer (Apple Silicon DMG): $DESKTOP_PAGE"
-echo "  After install, drag Hermes.app to /Applications and run ./scripts/brain/start-hermes.sh"
+echo "  After install, drag Hermes.app to /Applications and run ./scripts/brain/agent.sh start"
 
 if [[ "$OPEN_DOWNLOAD_PAGE" -eq 1 ]] && command -v open >/dev/null 2>&1; then
   open "$DESKTOP_PAGE" || true
@@ -73,5 +73,5 @@ if [[ "$BUILD_FROM_SOURCE" -eq 1 ]]; then
 else
   echo "setup-hermes-desktop: or build from CLI without DMG:"
   echo "  ./scripts/brain/setup-hermes-desktop.sh --build --no-open-download-page"
-  echo "  ./scripts/brain/start-hermes.sh   # runs hermes desktop --cwd …"
+  echo "  ./scripts/brain/agent.sh start   # runs hermes desktop --cwd …"
 fi
