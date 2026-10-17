@@ -86,3 +86,80 @@ Sources:
 ## [2026-10-16] ingest | fridge-docs/samsung_RF28K9070SG/repair-guide.txt
 
 ## [2026-10-16] ingest | fridge-docs/samsung_RF28K9070SG/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 2 wiki pages.
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 0 wiki pages.
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 0 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 5 wiki pages.
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 5 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 1 wiki pages.
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 1 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 1 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 2 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+
+Deleted 1 source file and 2 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt
+
+Deleted 1 source file and 6 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt
+
+## [2026-10-18] ingest | fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/samsung_RF28K9070SG/user-guide.txt
+
+Deleted 1 source file and 2 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/samsung_RF28K9070SG/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/samsung_RF28K9070SG/repair-guide.txt
+
+Deleted 1 source file and 2 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/samsung_RF28K9070SG/repair-guide.txt
+## [2026-10-17] external delete | fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt
+
+Deleted 1 source file and 10 wiki pages.
+
+## [2026-10-18] ingest | fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt
+## [2026-10-17] external delete | fridge-docs/README.md
+
+Deleted 1 source file and 1 wiki pages.
