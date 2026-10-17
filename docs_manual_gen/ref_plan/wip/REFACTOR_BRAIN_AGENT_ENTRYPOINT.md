@@ -1,16 +1,16 @@
 <h1 id="doc-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — brain agent single entry (`agent.sh`)</h1>
 
-**Status:** **wip** — P1–P6 implemented on branch **`feature/bootstrap-rrf-evolve-10-agent-entrypoint`**.  
+**Status:** **wip** — P1–P7 on branch **`feature/bootstrap-rrf-evolve-10-agent-entrypoint`** (P7 gateway lifecycle landed; not yet merged).  
 **Scope:** Second Brain harness operator UX — one idempotent entry for setup / start / stop / restart; docs + call-stack clarity; trim duplicate glue (not merge adapter setup steps).
 
-**last_aligned:** 2026-10-17
+**last_aligned:** 2026-10-17 (P8 D16 status/restart table parity)
 
 ## Document outline
 
 1. [Problem](#problem) — many scripts, unclear entry, duplicate apply-stack.
 2. [Decisions](#decisions) — grill / design lock.
 3. [Target architecture](#architecture) — `agent.sh` vs delegates.
-4. [Phases](#phases) — P1–P6.
+4. [Phases](#phases) — P1–P7.
 5. [Documentation map](#doc-map) — README locations and content contract.
 6. [Quality bar](#quality) — verification.
 7. [TDD bar](#tdd-bar) — per-phase test-first contracts.
@@ -32,10 +32,20 @@ Operators must remember **`setup-local.sh`**, **`apply-stack-config.sh`**, **`ad
 | **D2** | **Harness dispatch:** Read **`active_harness`** from **`config/brain-stack.yaml`** via existing **`brain_stack.active_harness()`** (default **`hermes`**). |
 | **D3** | **Delegates (internal):** **`adapters/<harness>/start.sh`** and **`stop.sh`** — not documented as operator entrypoints. Hermes may **`exec`** current **`start-hermes.sh`** / **`stop-hermes.sh`** initially; optional rename in a later phase. |
 | **D4** | **`setup`:** **`agent.sh setup`** → **`setup-local.sh`** unchanged (full idempotent bootstrap). |
-| **D5** | **`start` / `restart`:** Always run **`apply-stack-config.sh`** first; optional **`--ensure-setup`** runs **light** probe (e.g. `hermes doctor` / harness-specific) and **`adapters/<harness>/setup-harness.sh`** only on failure — **not** full **`setup-local`** every launch. |
+| **D5** | **`start` / `restart`:** Hermes: **bring-up plan table first** (D11/D15), then **`apply-stack-config.sh`**, then delegate start. Optional **`--ensure-setup`** runs **light** probe and **`setup-harness.sh`** only on failure — **not** full **`setup-local`** every launch. |
 | **D6** | **`start --install`:** If Hermes Desktop app missing, call **`setup-hermes-desktop.sh`** once; **remove** **`install-and-start-hermes-desktop.sh`**. |
 | **D7** | **OpenClaw:** **`start.sh` / `stop.sh`** stubs with clear “not wired” exit until real launch exists. |
 | **D8** | **Docs:** Each listed **`README.md`** gets usage + call-stack diagram + **“do not call delegates directly”** banner. |
+| **D9** | **Superseded by D11** (was strict refuse-if-any-layer-up). P7 shipped strict; D11 bring-up is next impl. |
+| **D10** | **Hermes teardown (P7):** **`stop`** runs **`hermes gateway stop`** plus Desktop quit and TUI pidfile cleanup. **`status`** uses **`hermes-runtime.sh`** + **`hermes gateway status`**. Cold **`start`**: **`hermes gateway start`** if gateway down, then UI. Detection: **`adapters/hermes/hermes-runtime.sh`**. |
+| **D11 (aligned 2026-10-17)** | **`start` = bring-up:** start **only missing** layers (gateway → UI), exit **0** when desired state reached. **Replaces strict D9** for default `start`. |
+| **D15 (aligned 2026-10-17)** | **Bring-up UX:** Before apply-stack, print **ASCII table** (component, running?, PID, notes) + **`Will start:`** list. During start: loud **`hermes bring-up: START|SKIP|DONE`** per component; if all satisfied, explicit no-op message. |
+| **D16 (aligned 2026-10-17)** | **Table parity:** **`agent.sh status`** prints the **same** bring-up table (default UI mode **desktop**; **`--tui`** passthrough selects TUI row). **`agent.sh restart`** mirrors **`start`**: stop → table → apply-stack → delegate start (same flags/args as **`start`**). |
+| **D12** | **`apply-stack-config`:** always on **`start`**, **after** the bring-up table and **before** adapter/UI launch (even when all layers already up — stack sync still runs, then START/SKIP/DONE may all be skip/no-op). |
+| **D13** | **Desktop when gateway up:** keep **`start-hermes`** order (`open -a Hermes.app` first, fallback **`hermes desktop --cwd`**). |
+| **D14** | **`stop`:** full stack (**gateway stop** + Desktop + TUI) — unchanged from P7. |
+
+**Grill (2026-10-17):** bring-up start · apply-stack before UI (after check) · start-hermes Desktop path · full stop.
 
 ---
 
@@ -113,6 +123,25 @@ graph TD
 - [X] **`agent.sh start --ensure-setup`**: if harness probe fails, run **`adapters/$HARNESS/setup-harness.sh`** only (not Obsidian/corpus tests).
 - [X] Document difference vs **`agent.sh setup`** in **`scripts/brain/README.md`**.
 
+<h3 id="p7" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.7 P7 — Hermes gateway lifecycle (single instance)</h3>
+
+- [X] Add **`adapters/hermes/hermes-runtime.sh`**: detect gateway ( **`hermes gateway status`** ), Desktop, detach TUI.
+- [X] **`agent.sh start`**: **`hermes_agent_running_or_exit`** before apply-stack; exit **1** with **`stop` / `restart`** / **`status`** messages.
+- [X] **`agent.sh status`**: **`agent running: yes|no`** + gateway status excerpt.
+- [X] **`stop-hermes.sh`**: **`hermes gateway stop`** + existing Desktop/TUI stop.
+- [X] **`start-hermes.sh`**: if gateway down, **`hermes gateway start`** then UI; no second gateway when supervised.
+- [X] Tests: **`test_brain_agent_entrypoint.py`** (runtime contract, gateway stop in teardown); **`scripts/brain/README.md`** single-instance note.
+- [X] **D11 impl:** bring-up **`start`** (missing layers only); exit **0** when complete; no duplicate gateway/TUI.
+- [X] **D12 impl:** apply-stack **before UI** after bring-up table (per grill).
+- [X] **D15 impl:** ASCII table + **`Will start:`** + per-component progress logs.
+
+<h3 id="p8" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.8 P8 — Bring-up table on status + restart</h3>
+
+- [X] **`agent.sh status` (Hermes):** after harness line, **`hermes_print_bringup_plan`** (same table as **`start`**); keep concise **`agent running:`** summary + optional gateway excerpt below table.
+- [X] **`agent.sh restart`:** parse **`start`** flags/args; **`delegate_stop`**; **table**; **`apply-stack-config`**; optional **`--ensure-setup`**; **`delegate_start`** (no table skip).
+- [X] Tests: **`test_brain_agent_entrypoint.py`** — status output contains table markers; **`restart`** branch sources plan before apply-stack.
+- [X] **`scripts/brain/README.md`:** one line on status/restart table parity.
+
 ---
 
 <h2 id="doc-map" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Documentation map</h2>
@@ -165,5 +194,9 @@ graph TD
 - [X] **P4** — OpenClaw stubs
 - [X] **P5** — README + runbook sweep
 - [X] **P6** — `--ensure-setup` (optional; may ship after P2–P5 if timeboxed)
+- [X] **P7** — Hermes gateway single-instance ( **`hermes-runtime.sh`** )
+- [X] **D11–D12** — bring-up start + apply-stack timing (grill locked)
+- [X] **D15** — bring-up table + progress logging
+- [X] **P8 / D16** — bring-up table on **status** + **restart**
 
 **Out of scope:** Changing **`llm-wiki.sh`**; merging **`setup-hermes*.sh`** into one file; OpenClaw full Desktop launch implementation.

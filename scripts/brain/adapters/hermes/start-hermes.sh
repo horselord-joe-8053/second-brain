@@ -6,10 +6,12 @@
 #   --tui          # terminal UI instead of Desktop
 #   --install      # run setup-hermes-desktop.sh if Hermes.app missing
 set -euo pipefail
-# shellcheck source=scripts/brain/hermes-env.sh
+# shellcheck source=scripts/brain/adapters/hermes/hermes-env.sh
 source "$(dirname "$0")/hermes-env.sh"
+# shellcheck source=scripts/brain/adapters/hermes/hermes-runtime.sh
+source "$(dirname "$0")/hermes-runtime.sh"
 
-UI="desktop"
+UI="${HERMES_BRINGUP_UI:-desktop}"
 PROVIDER=""
 MODEL=""
 INSTALL_DESKTOP=0
@@ -19,10 +21,12 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --tui|--terminal)
       UI="tui"
+      export HERMES_BRINGUP_UI="tui"
       shift
       ;;
     --desktop)
       UI="desktop"
+      export HERMES_BRINGUP_UI="desktop"
       shift
       ;;
     --provider)
@@ -128,8 +132,21 @@ launch_desktop_app() {
   return 1
 }
 
+if hermes_gateway_supervised; then
+  hermes_bringup_log_skip "gateway" "$(hermes_gateway_supervisor_pid)"
+else
+  hermes_bringup_log_start "gateway"
+  hermes gateway start
+  hermes_bringup_log_done "gateway"
+fi
+
 if [[ "$UI" == "desktop" ]]; then
   export HERMES_DESKTOP_CWD="$ROOT"
+  if hermes_desktop_running; then
+    hermes_bringup_log_skip "desktop" "$(hermes_desktop_pid)"
+    echo "hermes bring-up: target state satisfied for desktop mode." >&2
+    exit 0
+  fi
   if [[ "$INSTALL_DESKTOP" -eq 1 ]] && ! hermes_app_installed; then
     bash "$(dirname "$0")/setup-hermes-desktop.sh" --no-open-download-page 2>/dev/null || \
       bash "$(dirname "$0")/setup-hermes-desktop.sh"
@@ -143,12 +160,22 @@ if [[ "$UI" == "desktop" ]]; then
     bash "$(dirname "$0")/stop-hermes.sh" >/dev/null 2>&1 || true
     exec hermes desktop --cwd "$ROOT"
   fi
+  hermes_bringup_log_start "desktop"
   if launch_desktop_app; then
+    hermes_bringup_log_done "desktop"
     exit 0
   fi
   echo "start-hermes: Hermes.app not found — building/launching via CLI (first run can take several minutes)…"
   echo "  Install DMG: ./scripts/brain/setup-hermes-desktop.sh"
-  exec hermes desktop --cwd "$ROOT"
+  hermes desktop --cwd "$ROOT"
+  hermes_bringup_log_done "desktop"
+  exit 0
+fi
+
+if hermes_tui_running; then
+  hermes_bringup_log_skip "tui" "$(hermes_tui_pid)"
+  hermes_bringup_log_all_satisfied
+  exit 0
 fi
 
 PIDFILE="${HERMES_PIDFILE:-$ROOT/.cache/hermes/hermes-chat.pid}"
@@ -164,4 +191,5 @@ if [[ ! -t 1 ]]; then
   exit 1
 fi
 
+hermes_bringup_log_start "tui"
 exec hermes "${ARGS[@]}"

@@ -9,6 +9,9 @@ REPO = Path(__file__).resolve().parents[1]
 AGENT = REPO / "scripts" / "brain" / "agent.sh"
 HERMES_START = REPO / "scripts" / "brain" / "adapters" / "hermes" / "start.sh"
 HERMES_STOP = REPO / "scripts" / "brain" / "adapters" / "hermes" / "stop.sh"
+HERMES_RUNTIME = REPO / "scripts" / "brain" / "adapters" / "hermes" / "hermes-runtime.sh"
+START_HERMES = REPO / "scripts" / "brain" / "adapters" / "hermes" / "start-hermes.sh"
+STOP_HERMES = REPO / "scripts" / "brain" / "adapters" / "hermes" / "stop-hermes.sh"
 OPENCLAW_START = REPO / "scripts" / "brain" / "adapters" / "openclaw" / "start.sh"
 
 
@@ -45,6 +48,56 @@ def test_hermes_delegate_scripts_wrap_legacy_entrypoints() -> None:
     stop_text = HERMES_STOP.read_text(encoding="utf-8")
     assert "start-hermes.sh" in start_text
     assert "stop-hermes.sh" in stop_text
+
+
+def test_hermes_bringup_plan_and_progress_contract() -> None:
+    assert HERMES_RUNTIME.is_file()
+    agent_text = AGENT.read_text(encoding="utf-8")
+    assert "hermes_emit_bringup_plan" in agent_text
+    runtime = HERMES_RUNTIME.read_text(encoding="utf-8")
+    assert "hermes_print_bringup_plan" in runtime
+    assert "Will start:" in runtime
+    assert "hermes_bringup_log_start" in runtime
+    assert "hermes_bringup_log_skip" in START_HERMES.read_text(encoding="utf-8")
+
+
+def test_hermes_stop_includes_gateway_teardown() -> None:
+    stop_text = STOP_HERMES.read_text(encoding="utf-8")
+    assert "hermes gateway stop" in stop_text
+
+
+def test_agent_status_reports_gateway_running_hint() -> None:
+    agent_text = AGENT.read_text(encoding="utf-8")
+    assert "hermes-runtime.sh" in agent_text
+    assert "agent running:" in agent_text
+
+
+def test_agent_status_prints_hermes_bringup_table() -> None:
+    proc = subprocess.run(
+        ["bash", str(AGENT), "status"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr + proc.stdout
+    out = proc.stdout
+    assert "=== Hermes agent bring-up" in out
+    assert "| Component | Running? | PID" in out
+    assert "Will start:" in out
+
+
+def test_agent_restart_prints_bringup_plan_before_apply_stack() -> None:
+    agent_text = AGENT.read_text(encoding="utf-8")
+    restart_block = agent_text.split("restart)", 1)[-1].split("status)", 1)[0]
+    assert "hermes_emit_bringup_plan" in restart_block
+    plan_pos = restart_block.index("hermes_emit_bringup_plan")
+    apply_pos = restart_block.index("run_apply_stack_and_start")
+    assert plan_pos < apply_pos
+    start_block = agent_text.split("start)", 1)[-1].split("stop)", 1)[0]
+    assert start_block.index("hermes_emit_bringup_plan") < start_block.index(
+        "run_apply_stack_and_start"
+    )
 
 
 def test_openclaw_start_stub_exits_nonzero() -> None:

@@ -18,6 +18,8 @@
 - `--ensure-setup` — if probe fails, run `adapters/<harness>/setup-harness.sh` only (not full setup-local).
 - `--install` — Hermes: install Desktop app if missing (`setup-hermes-desktop.sh`).
 
+**Hermes bring-up:** **`agent.sh start`** and **`restart`** print the same **component table** before apply-stack; **`status`** prints that table for a live snapshot (optional **`--tui`** like **`start`**). Table columns: gateway / desktop / tui, PID, notes; then **`Will start:`** for missing layers. Per-component **`hermes bring-up: START|SKIP|DONE`** on stderr during start/restart. **`stop`** tears down gateway + Desktop + TUI.
+
 **Separate entry (not the agent harness):** LLM Wiki process — `./scripts/brain/llm-wiki.sh start|stop|restart`.
 
 ## Warning

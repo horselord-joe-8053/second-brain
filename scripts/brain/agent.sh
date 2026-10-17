@@ -28,9 +28,9 @@ Subcommands:
   start     Apply stack config, then adapters/<harness>/start.sh
   stop      adapters/<harness>/stop.sh
   restart   stop then start
-  status    Print active harness and best-effort process hints
+  status    Print active harness, Hermes bring-up table, process hints
 
-Start options:
+Start / restart / status options:
   --ensure-setup   If harness probe fails, run adapters/<harness>/setup-harness.sh only
   --install        (Hermes) install Desktop app if missing before launch
 
@@ -80,6 +80,55 @@ delegate_stop() {
   bash "$stop"
 }
 
+# Parse start/restart flags into ENSURE and START_ARGS (mutates globals).
+parse_start_flags() {
+  ENSURE=0
+  START_ARGS=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --ensure-setup) ENSURE=1; shift ;;
+      --install) START_ARGS+=("--install"); shift ;;
+      *) START_ARGS+=("$1"); shift ;;
+    esac
+  done
+}
+
+# Hermes only: desktop unless --tui / --terminal in START_ARGS.
+export_hermes_bringup_ui_from_args() {
+  HERMES_BRINGUP_UI="desktop"
+  for arg in "${START_ARGS[@]+"${START_ARGS[@]}"}"; do
+    if [[ "$arg" == "--tui" || "$arg" == "--terminal" ]]; then
+      HERMES_BRINGUP_UI="tui"
+      break
+    fi
+  done
+  export HERMES_BRINGUP_UI
+}
+
+# Print D15 bring-up table when active harness is Hermes.
+hermes_emit_bringup_plan() {
+  local harness="$1"
+  [[ "$harness" == "hermes" ]] || return 0
+  # shellcheck source=scripts/brain/adapters/hermes/hermes-runtime.sh
+  source "$BRAIN/adapters/hermes/hermes-runtime.sh"
+  export_hermes_bringup_ui_from_args
+  hermes_print_bringup_plan "$HERMES_BRINGUP_UI"
+}
+
+run_apply_stack_and_start() {
+  local harness="$1"
+  export AGENT_SH_APPLIED_STACK=1
+  bash "$BRAIN/apply-stack-config.sh"
+  if [[ "$ENSURE" -eq 1 ]]; then
+    ensure_harness_light "$harness"
+  fi
+  if ((${#START_ARGS[@]} > 0)); then
+    delegate_start "$harness" "${START_ARGS[@]}"
+  else
+    delegate_start "$harness"
+  fi
+}
+
 CMD="${1:-help}"
 if [[ "$CMD" == "-h" || "$CMD" == "--help" ]]; then
   usage
@@ -95,35 +144,24 @@ case "$CMD" in
     exec bash "$BRAIN/setup-local.sh" "$@"
     ;;
   start)
-    ENSURE=0
-    START_ARGS=()
-    while [[ $# -gt 0 ]]; do
-      case "$1" in
-        --ensure-setup) ENSURE=1; shift ;;
-        --install) START_ARGS+=("--install"); shift ;;
-        *) START_ARGS+=("$1"); shift ;;
-      esac
-    done
+    parse_start_flags "$@"
     HARNESS="$(resolve_harness)"
-    export AGENT_SH_APPLIED_STACK=1
-    bash "$BRAIN/apply-stack-config.sh"
-    if [[ "$ENSURE" -eq 1 ]]; then
-      ensure_harness_light "$HARNESS"
-    fi
-    delegate_start "$HARNESS" "${START_ARGS[@]}"
+    hermes_emit_bringup_plan "$HARNESS"
+    run_apply_stack_and_start "$HARNESS"
     ;;
   stop)
     HARNESS="$(resolve_harness)"
     delegate_stop "$HARNESS" "$@"
     ;;
   restart)
+    parse_start_flags "$@"
     HARNESS="$(resolve_harness)"
     delegate_stop "$HARNESS"
-    export AGENT_SH_APPLIED_STACK=1
-    bash "$BRAIN/apply-stack-config.sh"
-    delegate_start "$HARNESS" "$@"
+    hermes_emit_bringup_plan "$HARNESS"
+    run_apply_stack_and_start "$HARNESS"
     ;;
   status)
+    parse_start_flags "$@"
     HARNESS="$(resolve_harness)"
     echo "agent.sh status: active_harness=$HARNESS (from config/brain-stack.yaml)"
     case "$HARNESS" in
@@ -133,9 +171,14 @@ case "$CMD" in
         else
           echo "  hermes CLI: not on PATH (run: agent.sh setup)"
         fi
-        PIDFILE="${HERMES_PIDFILE:-$ROOT/.cache/hermes/hermes-chat.pid}"
-        if [[ -f "$PIDFILE" ]]; then
-          echo "  detach TUI pidfile: $PIDFILE"
+        hermes_emit_bringup_plan "$HARNESS"
+        # shellcheck source=scripts/brain/adapters/hermes/hermes-runtime.sh
+        source "$BRAIN/adapters/hermes/hermes-runtime.sh"
+        if hermes_agent_running; then
+          echo "  agent running: yes"
+          hermes_gateway_status_text 2>/dev/null | sed 's/^/    /' || true
+        else
+          echo "  agent running: no (safe to agent.sh start)"
         fi
         ;;
       openclaw)

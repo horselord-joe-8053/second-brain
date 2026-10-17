@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# Stop Hermes Desktop app and/or detached TUI from start-hermes.sh --tui --detach.
+# Stop Hermes agent stack — internal; use scripts/brain/agent.sh stop.
 set -euo pipefail
-# shellcheck source=scripts/brain/hermes-env.sh
+# shellcheck source=scripts/brain/adapters/hermes/hermes-env.sh
 source "$(dirname "$0")/hermes-env.sh"
+# shellcheck source=scripts/brain/adapters/hermes/hermes-runtime.sh
+source "$(dirname "$0")/hermes-runtime.sh"
 
 PIDFILE="${HERMES_PIDFILE:-$ROOT/.cache/hermes/hermes-chat.pid}"
 
@@ -18,14 +20,22 @@ if [[ -f "$PIDFILE" ]]; then
   rm -f "$PIDFILE"
 fi
 
-if command -v osascript >/dev/null 2>&1; then
-  if osascript -e 'tell application "System Events" to (name of processes) contains "Hermes"' 2>/dev/null | grep -q true; then
-    osascript -e 'tell application "Hermes" to quit' 2>/dev/null || true
-    echo "stop-hermes: quit Hermes Desktop"
+if hermes_desktop_running; then
+  osascript -e 'tell application "Hermes" to quit' 2>/dev/null || true
+  echo "stop-hermes: quit Hermes Desktop"
+  stopped=1
+fi
+
+if hermes_gateway_supervised; then
+  echo "stop-hermes: stopping messaging gateway…"
+  if hermes gateway stop; then
+    echo "stop-hermes: gateway stop requested"
     stopped=1
+  else
+    echo "stop-hermes: warning — hermes gateway stop failed (see hermes gateway status)" >&2
   fi
 fi
 
 if [[ "$stopped" -eq 0 ]]; then
-  echo "stop-hermes: no running Hermes Desktop or detach TUI found"
+  echo "stop-hermes: no running Hermes gateway, Desktop, or detach TUI found"
 fi
