@@ -163,3 +163,37 @@ Deleted 1 source file and 10 wiki pages.
 ## [2026-10-17] external delete | fridge-docs/README.md
 
 Deleted 1 source file and 1 wiki pages.
+## [2026-10-18] external batch delete | 4 source files
+
+Deleted 4 source files and 20 wiki pages.
+
+Sources:
+- fridge-docs/ge_GNE27JYMFS/user-guide.txt
+- fridge-docs/kitchenaid_KRFF507HPS/user-guide.txt
+- fridge-docs/samsung_RF28K9070SG/repair-guide.txt
+- fridge-docs/samsung_RF28K9070SG/user-guide.txt
+
+## [2026-10-18] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.pdf
+
+## [2026-10-18] ingest | fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf
+
+## [2026-10-18] ingest | fridge-docs/samsung_RF28K9070SG/repair-guide.pdf
+
+## [2026-10-18] ingest | fridge-docs/samsung_RF28K9070SG/user-guide.pdf
+## [2026-10-18] external batch delete | 4 source files
+
+Deleted 4 source files and 8 wiki pages.
+
+Sources:
+- fridge-docs/ge_GNE27JYMFS/user-guide.pdf
+- fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf
+- fridge-docs/samsung_RF28K9070SG/repair-guide.pdf
+- fridge-docs/samsung_RF28K9070SG/user-guide.pdf
+
+## [2026-10-19] ingest | fridge-docs/ge_GNE27JYMFS/user-guide.pdf
+
+## [2026-10-19] ingest | fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf
+
+## [2026-10-19] ingest | fridge-docs/samsung_RF28K9070SG/repair-guide.pdf
+
+## [2026-10-19] ingest | fridge-docs/samsung_RF28K9070SG/user-guide.pdf

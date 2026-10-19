@@ -1,11 +1,11 @@
 ---
 type: concept
 title: Fast Track Troubleshooting
-created: 2026-10-18
-updated: 2026-10-18
-tags: [concept, troubleshooting]
-related: [samsung-rf28k9070sg, repair-guide]
-sources: ["fridge-docs/samsung_RF28K9070SG/repair-guide.txt"]
+created: 2026-10-19
+updated: 2026-10-19
+tags: [troubleshooting, repair, efficiency]
+related: [samsung-rf28k9070sg]
+sources: ["fridge-docs/samsung_RF28K9070SG/repair-guide.pdf"]
 ---
 
-Fast Track Troubleshooting is a quick reference guide for technicians to diagnose and resolve issues with the Samsung RF28K9070SG refrigerator. It streamlines the repair process by providing essential troubleshooting steps and common symptoms with corresponding actions.
+Fast Track Troubleshooting refers to a quick reference guide designed for technicians to diagnose and resolve issues with appliances like the Samsung RF28K9070SG refrigerator. This method enhances repair efficiency by providing immediate steps for addressing common problems.
