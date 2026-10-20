@@ -1,6 +1,6 @@
 <h1 id="lsc-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — external shards, full-copy ingest, service-manual cards</h1>
 
-**Status:** **new** — plan only. All implementable items **`[ ]`**. **Last aligned:** 2026-10-20 (external-shard + full-copy; service-manual profile; Prompt C v3).
+**Status:** **wip** — P1–P4, P7 + settings implemented in `nu_llm_wiki` (2026-10-20). **Last aligned:** 2026-10-20 (external-shard + full-copy; service-manual profile; Prompt C v3; UI-only flags).
 **Chain:** **`onlyref`**. Implement with **`implref`** (`.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`).
 **Code repo:** `/Users/jjw8053/projects/nu_llm_wiki`. Plan file: `second_brain/docs_manual_gen/ref_plan/new/`.
 **Goal:** **`raw/sources`** holds **one Markdown file per handbook section** (from [Prompt C v3 split](../../../brain/retail/archive/fridge_prompts_pdf_or_zip_updated/Prompt_C_v3_split.md)). LLM Wiki **`full-copy`** maps each raw file → one **`wiki/sources`** page (bytes + frontmatter). A **cards-only** model pass reads **`raw/sources`** (not wiki pages) under **`ingestProfile: service-manual`**. No in-app `##` splitting.
@@ -93,6 +93,14 @@ Schema expects **~25–35** cards for this file. Under-build causes: **page-wort
 </tbody>
 </table>
 
+<h2 id="lsc-decisions-impl" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5.1 Implementation decisions (2026-10-20)</h2>
+
+| Id | Choice |
+|---|---|
+| **I1** | **UI-only** `sourcePageMode` + `ingestProfile` on Source Watch settings (no committed brain config yet). |
+| **I2** | Ingest-cache fingerprint includes detail level + page mode + profile (cache miss on any change). |
+| **I3** | **P5** orphan source cleanup deferred — full-copy overwrite on re-ingest only for now. |
+
 ---
 
 <h2 id="lsc-detail-levels" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Detail levels (global, deferred)</h2>
@@ -171,23 +179,23 @@ flowchart TD
 
 <h3 id="lsc-p1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.1 P1 — full-copy</h3>
 
-- [ ] `full-copy-ingest.ts`: read raw file, write `wiki/sources/<derived-slug>.md`, frontmatter (`sources`, title from first `#`/`##`, optional `source_shard: true`).
-- [ ] Tests: bytes preserved; slug stable from relative path.
+- [X] `full-copy-ingest.ts`: read raw file, write `wiki/sources/<derived-slug>.md`, frontmatter (`sources`, title from first `#`/`##`, optional `source_shard: true`).
+- [X] Tests: bytes preserved; slug stable from relative path.
 
 <h3 id="lsc-p2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.2 P2 — flags</h3>
 
-- [ ] `sourcePageMode`: `summary` | `full-copy`. `ingestProfile`: `default` | `service-manual`. Settings UI + cache clear.
-- [ ] Defaults preserve today for existing projects.
+- [X] `sourcePageMode`: `summary` | `full-copy`. `ingestProfile`: `default` | `service-manual`. Settings UI + cache clear.
+- [X] Defaults preserve today for existing projects.
 
 <h3 id="lsc-p3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.3 P3 — wire full-copy before model</h3>
 
-- [ ] `full-copy` + index, then model branch on same raw file. `summary` mode unchanged.
+- [X] `full-copy` + index, then model branch on same raw file. `summary` mode unchanged.
 
 <h3 id="lsc-p4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.4 P4 — service-manual cards-only</h3>
 
-- [ ] When `ingestProfile === service-manual` and `full-copy`: omit source FILE in generation; analysis/generation appendices per **D5–D6** (generic unit-id patterns, not GE-only).
-- [ ] Drop stray `wiki/sources/` FILE blocks from model output.
-- [ ] `ingest.prompt.test.ts` coverage.
+- [X] When `ingestProfile === service-manual` and `full-copy`: omit source FILE in generation; analysis/generation appendices per **D5–D6** (generic unit-id patterns, not GE-only).
+- [X] Drop stray `wiki/sources/` FILE blocks from model output.
+- [X] `ingest.prompt.test.ts` coverage.
 
 <h3 id="lsc-p5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.5 P5 — replace rules</h3>
 
@@ -199,7 +207,7 @@ flowchart TD
 
 <h3 id="lsc-p7" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.7 P7 — related backfill</h3>
 
-- [ ] Deterministic `related` among co-ingested pages when model leaves empty (D9).
+- [X] Deterministic `related` among co-ingested pages when model leaves empty (D9).
 
 ---
 
@@ -213,13 +221,13 @@ flowchart TD
 
 <h2 id="lsc-check" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. Execution checklist</h2>
 
-- [ ] P1 full-copy
-- [ ] P2 flags
-- [ ] P3 wire
-- [ ] P4 service-manual cards
+- [X] P1 full-copy
+- [X] P2 flags
+- [X] P3 wire
+- [X] P4 service-manual cards
 - [ ] P5 replace
 - [ ] P6 docs
-- [ ] P7 related backfill
+- [X] P7 related backfill
 
 ---
 

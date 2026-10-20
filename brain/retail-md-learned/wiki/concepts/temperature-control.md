@@ -1,13 +1,15 @@
 ---  
 type: concept  
 title: Temperature Control  
-created: 2026-10-19  
-updated: 2026-10-19  
-tags: [appliance, feature, temperature]  
-related: []  
-sources: ["fridge-docs_md_learned/ge_GNE27JYMFS/user-guide.md", "fridge-docs_md_learned/kitchenaid_KRFF507HPS/user-guide.md"]  
+created: 2026-10-20  
+updated: 2026-10-20  
+tags: [refrigeration, operation, refrigerator, appliance, temperature]  
+related: [troubleshooting, gne27jymfs, samsung-rf28k9070sg]  
+sources: ["fridge-docs-split-less/ge_GNE27JYMFS/user-guide/user-guide--part-05-troubleshooting-core.md", "fridge-docs-split-less/samsung_RF28K9070SG/user-guide/user-guide--part-03-controls-connectivity.md"]  
 ---  
 
 # Temperature Control
 
-Temperature Control refers to the mechanisms and settings used to adjust and maintain the temperature within the refrigerator and freezer compartments. Proper temperature management is vital for food preservation and appliance efficiency. The user guide provides detailed instructions on how to set and stabilize temperatures for optimal performance, emphasizing the importance of allowing time for adjustments to take effect.
+Temperature control refers to the mechanism used to set and maintain the desired temperature within the refrigerator and freezer compartments. This feature is essential for maintaining food safety and quality, ensuring that food remains fresh and safe for consumption, preventing spoilage and waste. 
+
+This concept is critical for diagnosing cooling performance issues and is addressed in the troubleshooting guide for the GNE27JYMFS model, highlighting its importance in appliance operation.
