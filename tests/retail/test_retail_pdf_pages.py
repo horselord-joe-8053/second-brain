@@ -10,7 +10,7 @@ import pytest
 
 from retail_brain.pdf_pages import PageRow, PdfPageIndex, load_page_index
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 _MANUALS = REPO / "scripts" / "retail" / "manuals"
 INDEX = REPO / "brain" / "retail" / "archive" / "pdf_page_index.jsonl"
 SKUS = ("samsung_RF28K9070SG", "ge_GNE27JYMFS", "kitchenaid_KRFF507HPS")

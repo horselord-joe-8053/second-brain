@@ -18,7 +18,7 @@ from retail_brain.answer_tickets import InMemoryTicketSource
 from retail_brain.hybrid_search import TicketRow
 from retail_brain.txt_docs import TxtDocIndex, TxtDocRow
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 GOLDEN = REPO / "tests" / "fixtures" / "retail_answer" / "golden_bundle.json"
 SAM = "samsung_RF28K9070SG"
 SAM_TXT = f"raw/sources/fridge-docs/{SAM}/user-guide.txt"

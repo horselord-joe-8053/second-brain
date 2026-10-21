@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 PY="$ROOT/scripts/py"
 cd "$ROOT"
 echo "=== retail_ticket_leg ==="
-"$PY" -m pytest tests/test_retail_answer_tickets.py -q
+"$PY" -m pytest tests/retail/test_retail_answer_tickets.py -q
 echo "=== retail_manual_leg ==="
 "$PY" -m pytest tests/test_retail_answer_manuals.py -q
 echo "=== retail_answer_integration ==="

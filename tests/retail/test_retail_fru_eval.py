@@ -4,7 +4,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 EVAL = REPO / "scripts/retail/sim_data/profiles/fru_us_1000_100/ticket_retrieval.jsonl"
 CSV = REPO / "scripts/retail/sim_data/profiles/fru_us_1000_100/service_queries.csv"
 

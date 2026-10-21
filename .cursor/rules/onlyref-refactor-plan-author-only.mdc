@@ -84,7 +84,7 @@ The output **Markdown MUST** satisfy the same structural bar **implref** expects
 
 4. **Write phases** covering: deterministic prose thoroughness (**all error codes ↔ English** strategy), duplication audit (**context keys ranked by redundancy**), feature-flag rollout, parity tests (**batch + single-unit**), reconciliation with prior plans (e.g. **`REFACTOR_PLGW_BATCH_PROMPT_TRIM_*.md`** B.1).
 
-5. **Quality bar:** Explicit bullets for tests (unit + integration snapshots) and **cdcm** comments — file headers; **≥1 doc line per class and per function/method** in touched modules ([cdcm per-symbol](.cursor/rules/cdcm-code-comments.mdc#cdcm-per-symbol)); inline notes where non-obvious — not vague "add comments someday."
+5. **Quality bar:** Explicit bullets for tests (unit + integration snapshots) and **cdcm** comments — file headers; **≥1 doc line per class and per function/method** in touched modules ([cdcm per-symbol](.cursor/rules/cdcm-code-comments.mdc#cdcm-per-symbol)); inline notes where non-obvious — not vague "add comments someday." For phases that add **runners, harnesses, or ops CLIs**, include **operator logging** per **`.cursor/rules/neatlog-operator-logging-bar.mdc`**: **neat_logger** (default), JSONL checkpoint, **DEBUG** env for live debugging, heartbeat on slow steps.
 
 6. **Finish with:** **Deferred / follow-ups** table for risky or product-owned items (**OpenAI prompt caching**, pure UI diagnostics, etc.).
 

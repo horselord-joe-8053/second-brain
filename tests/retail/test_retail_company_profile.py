@@ -14,6 +14,6 @@ def test_fru_profile_loads_24_issues() -> None:
 
 
 def test_fru_customers_seed_count() -> None:
-    path = Path(__file__).resolve().parents[1] / "scripts/retail/sim_data/seed/fru_customers.jsonl"
+    path = Path(__file__).resolve().parents[2] / "scripts/retail/sim_data/seed/fru_customers.jsonl"
     lines = [ln for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
     assert len(lines) == 150

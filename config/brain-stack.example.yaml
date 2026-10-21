@@ -61,3 +61,15 @@ hermes:
   mcp_server_js: "../nu_llm_wiki/mcp-server/dist/src/index.js"
 
 # Obsidian vault is derived from the active profile (<brains_dir>/<profile>/wiki); no obsidian.vault_path key.
+
+# Shared retail manual retrieval (production bundle + lane A–D benchmark use the same knobs).
+# Production Hermes path: expose concatenated page_prefix text in retail_answer.v1 (no forced summarization).
+# Benchmark harness adds a closed-world answer LLM step via tests/.../run-config.yaml → retail_eval only.
+second_brain:
+  retail_evidence:
+    search_top_k: 5
+    query_template: "{model_id} {question}"
+    page_prefix_chars: 8000
+    insufficient_literal: Insufficient_Information_Based_On_Given_PDF
+    # Future: evidence_mode excerpt | page_prefix | both (prod bundle); benchmark uses page_prefix for fairness.
+    evidence_mode: page_prefix

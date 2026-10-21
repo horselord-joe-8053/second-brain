@@ -19,9 +19,9 @@
 <tr style="background:#1565c0;color:white"><th>Leg</th><th>Finds</th><th>Typical backend (live)</th><th>CI tests</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd"><strong>Ticket</strong></td><td>Top-2 <strong>resolved</strong> past tickets + cosine / fused score</td><td>Postgres + pgvector + lexical (<code>RETAIL_DATABASE_URL</code>)</td><td><code>tests/test_retail_answer_tickets.py</code> · marker <code>retail_ticket_leg</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>Ticket</strong></td><td>Top-2 <strong>resolved</strong> past tickets + cosine / fused score</td><td>Postgres + pgvector + lexical (<code>RETAIL_DATABASE_URL</code>)</td><td><code>tests/retail/test_retail_answer_tickets.py</code> · marker <code>retail_ticket_leg</code></td></tr>
 <tr><td style="background:#e3f2fd"><strong>Manual</strong></td><td>Up to 3 manual excerpts with <code>doc_path</code> (wiki → compiled page → <code>.txt</code>, or <code>raw_txt</code> grep)</td><td>LLM Wiki HTTP + SKU-scoped <code>raw/sources/fridge-docs/**/*.txt</code></td><td><code>tests/test_retail_answer_manuals.py</code> · marker <code>retail_manual_leg</code></td></tr>
-<tr><td style="background:#e3f2fd"><strong>Both</strong></td><td>One JSON bundle + optional Markdown render</td><td><code>answer_ticket.py</code> (default both legs)</td><td><code>test_retail_answer_bundle.py</code>, <code>test_retail_answer_e2e.py</code> · marker <code>retail_answer_integration</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>Both</strong></td><td>One JSON bundle + optional Markdown render</td><td><code>answer_ticket.py</code> (default both legs)</td><td><code>tests/retail/test_retail_answer_bundle.py</code>, <code>tests/retail/test_retail_answer_e2e.py</code> · marker <code>retail_answer_integration</code></td></tr>
 </tbody>
 </table>
 

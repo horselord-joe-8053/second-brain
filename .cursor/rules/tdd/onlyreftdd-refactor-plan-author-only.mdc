@@ -44,7 +44,7 @@ That covers: plan-only boundary, folder lifecycle (`new/` only), MRKD shape, pha
 
 <h2 id="onlyreftdd-quality" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. TDD delta — Quality bar</h2>
 
-After **`onlyref`** shape is satisfied, **extend the plan’s Quality bar** (or add **“TDD bar”** subsection) with **per-phase** rows:
+After **`onlyref`** shape is satisfied, **extend the plan’s Quality bar** (or add **“TDD bar”** subsection) with **per-phase** rows. Runner/harness phases also inherit **onlyref** **neatlog** criteria (**.cursor/rules/neatlog-operator-logging-bar.mdc**).
 
 | Column | Content |
 |--------|---------|

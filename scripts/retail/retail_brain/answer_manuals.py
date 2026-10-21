@@ -64,6 +64,7 @@ class LlmWikiHttpClient:
         ).rstrip("/")
         self.token = token if token is not None else os.environ.get("LLM_WIKI_API_TOKEN", "")
         self.timeout = timeout
+        self.last_search_meta: Dict[str, Any] = {}
 
     def _request(self, method: str, url: str, body: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """JSON request with Bearer auth; network/HTTP errors become ``WikiUnavailable``."""
@@ -85,8 +86,17 @@ class LlmWikiHttpClient:
         return f"{self.api_base}/projects/{urllib.parse.quote(self.project, safe='')}"
 
     def search(self, query: str, *, limit: int) -> List[Dict[str, Any]]:
-        """Hybrid wiki search; returns the API's ``results`` list."""
+        """Hybrid wiki search; returns the API's ``results`` list.
+
+        Also stores ``last_search_meta`` (mode and hit counts) from the same response.
+        """
         out = self._request("POST", f"{self._project_url()}/search", {"query": query, "topK": limit})
+        self.last_search_meta = {
+            "mode": out.get("mode"),
+            "tokenHits": out.get("tokenHits"),
+            "vectorHits": out.get("vectorHits"),
+            "graphHits": out.get("graphHits"),
+        }
         return list(out.get("results") or [])
 
     def read(self, path: str) -> str:

@@ -199,11 +199,13 @@ flowchart TD
 
 <h3 id="lsc-p5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.5 P5 — replace rules</h3>
 
-- [ ] Re-ingest raw shard overwrites its wiki source page. Remove orphan wiki source rows whose raw shard path disappeared.
+- [ ] **Code (`nu_llm_wiki`):** re-ingest overwrites wiki source; **remove orphan** `wiki/sources` rows when raw shard deleted.
+- [X] **Operator (2026-10-20):** replaced raw tree with **Prompt C v4** / `fridge-docs-split-less` shards (manual delete of old raw files).
 
 <h3 id="lsc-p6" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.6 P6 — docs</h3>
 
-- [ ] Settings strings; artifact pointer; reference **Prompt C v3** in plan README row.
+- [X] Operator artifact [`RETAIL_LEARNED_FULL_COPY_OPERATOR.md`](../../artifacts/RETAIL_LEARNED_FULL_COPY_OPERATOR.md): Source Watch **Full copy** + **Service manual** labels, v3/v4 prompt paths, links.
+- [X] Plan README row updated for **Prompt C v4** + artifact pointer.
 
 <h3 id="lsc-p7" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.7 P7 — related backfill</h3>
 
@@ -225,8 +227,8 @@ flowchart TD
 - [X] P2 flags
 - [X] P3 wire
 - [X] P4 service-manual cards
-- [ ] P5 replace
-- [ ] P6 docs
+- [ ] P5 replace (code in `nu_llm_wiki`; operator shard swap done)
+- [X] P6 docs
 - [X] P7 related backfill
 
 ---
@@ -246,6 +248,7 @@ flowchart TD
 
 | Doc | Role |
 |-----|------|
-| `brain/retail/archive/fridge_prompts_pdf_or_zip_updated/Prompt_C_v3_split.md` | Shard authoring |
+| `brain/retail/archive/fridge_prompts_pdf_or_zip_updated/Prompt_C_v4_split.md` | Shard authoring (preferred; v3 = fine split) |
+| [`docs_manual_gen/artifacts/RETAIL_LEARNED_FULL_COPY_OPERATOR.md`](../../artifacts/RETAIL_LEARNED_FULL_COPY_OPERATOR.md) | P6 operator + UI settings |
 | `docs_manual_gen/artifacts/LEARNED_MD_VS_TXT_WIKI_SEARCH.md` | Diagnosis |
-| `docs_manual_gen/ref_plan/new/REFACTOR_FRIDGE_MANUAL_INGEST_ABCD_BENCHMARK.md` | Metrics |
+| `docs_manual_gen/ref_plan/new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md` | Metrics |

@@ -1,0 +1,20 @@
+# Lane A–D harness eval overrides → tests/retail_multi_profiles/lib/runner.py
+#
+# Retrieval: config/brain-stack.yaml → second_brain.retail_evidence
+#
+# Env: OPENAI_API_KEY + OPENAI_MODEL (answer); GEMINI_API_KEY + RETAIL_JUDGE_MODEL or judge.model;
+#      LLM_WIKI_API_BASE_URL, LLM_WIKI_API_TOKEN
+
+schema_version: "1.0"
+
+retail_eval:
+  answer:
+    provider: openai
+    model: gpt-4o-mini # override: OPENAI_MODEL in .env
+    temperature: 0
+  judge:
+    provider: gemini
+    model: gemini-3.1-flash-lite # override: RETAIL_JUDGE_MODEL (else GEMINI_MODEL)
+    temperature: 0
+
+smoke_question_ids: [samsung_RF28K9070SG-E01, samsung_RF28K9070SG-H01]

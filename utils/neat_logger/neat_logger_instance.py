@@ -106,6 +106,13 @@ class NeatLogger:
     def info(self, msg: str) -> None:
         self._emit("INFO", msg, stream=sys.stdout)
 
+    def debug(self, msg: str) -> None:
+        """Verbose operator detail when ``NEAT_LOGGER_DEBUG`` is 1/true/yes."""
+        flag = os.environ.get("NEAT_LOGGER_DEBUG", "").strip().lower()
+        if flag not in ("1", "true", "yes", "on"):
+            return
+        self._emit("INFO", f"[DEBUG] {msg}", stream=sys.stdout)
+
     def success(self, msg: str) -> None:
         self._emit("SUCCESS", msg, stream=sys.stdout)
 

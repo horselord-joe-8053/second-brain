@@ -7,7 +7,7 @@ and — for wiki-sourced hits — LLM Wiki running with the retail project compi
 Hard: every bundle is contract-valid (both legs ok, provenance on every manual hit). Soft (reported to
 ``tmp/simulated_data/reports/answer_e2e/answer_e2e_report_<mode>.json``): ticket gold@2, same-issue@2, manual gold, wiki share.
 
-  RUN_RETAIL_E2E=1 scripts/py -m pytest -q tests/test_retail_answer_live.py -s
+  RUN_RETAIL_E2E=1 scripts/py -m pytest -q tests/retail/test_retail_answer_live.py -s
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ from retail_brain.company_profile import load_company_profile
 from retail_brain.txt_docs import cached_txt_docs
 from test_retail_answer_e2e import GOLD, PROFILE, manual_gold_hit
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 REPORT_DIR = REPO / "tmp" / "simulated_data" / "reports" / "answer_e2e"
 
 pytestmark = [

@@ -90,7 +90,7 @@ If the named plan is **already all implementable `[X]`** (e.g. a completed maste
 
 For each iteration:
 
-1. Implement the **next** scoped chunk (prefer smallest green increment under the current phase).
+1. Implement the **next** scoped chunk (prefer smallest green increment under the current phase). Runners/CLIs: **neat_logger** + checkpoint per **`.cursor/rules/neatlog-operator-logging-bar.mdc`** (INFO milestones; **DEBUG** when debugging).
 2. Run **relevant** tests for that chunk (unit / Vitest / Playwright mocked e2e as the plan’s Quality bar requires).
 3. On failure: fix and re-run until green or a true blocker.
 4. When a **phase** (or major deliverable) reaches green tests: run the [**Exwar gate**](#aciub-exwar-gate) **before** marking that phase `[X]` or starting the next phase. Record outcome in the plan Decision log or phase notes when useful.

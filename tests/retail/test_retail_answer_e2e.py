@@ -17,7 +17,7 @@ from retail_brain.company_profile import load_company_profile
 from retail_brain.ticket_store import load_ticket_rows
 from retail_brain.txt_docs import cached_txt_docs
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 PROFILE = REPO / "scripts" / "retail" / "sim_data" / "profiles" / "fru_us_1000_100"
 GOLD = PROFILE / "answer_e2e.jsonl"
 WIKI_FIXTURES = REPO / "tests" / "fixtures" / "retail_wiki"

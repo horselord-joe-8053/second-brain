@@ -1,0 +1,15 @@
+# Retail ingest lanes A–D (experimental LLM Wiki projects). Not BRAIN_PROFILE switches.
+schema_version: "1.0"
+lanes:
+  A:
+    path: brain/retail
+    ingest_kind: pdf_in_app
+  B:
+    path: brain/retail-md
+    ingest_kind: external_markdown
+  C:
+    path: brain/retail-txt
+    ingest_kind: external_text
+  D:
+    path: brain/retail-md-learned
+    ingest_kind: learned_markdown

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 PREP = REPO / "cursor_gen" / "retail_v11_prep"
 LEX = PREP / "lexical_docker"
 
