@@ -169,6 +169,22 @@ Concept/entity cards frequently **outrank** per-page **`wiki/sources/`**. Image-
 | **Sources-only replay** | Same tickets; top 10; **`wiki/sources/`** only | B **3/38**, D **24/38** — gap not only concept cards |
 | **RRF / vector tables** | Explain scores on E02 | `SOURCES_ONLY_RRF_VECTOR_SCORES.md` |
 | **Harness D14** | Persist `top_hits`, `search_meta` on new runs | Implemented; full overnight run not backfilled |
+| **Raw-sources RAG (B/C/D)** | Same 90 Q; **vector-only** on `raw/sources/**` (no wiki compile) vs wiki hybrid | Run **`abcd-raw-full-openai-v1`** — see table below |
+
+<h3 id="four-lane-raw-rag" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">9.1 Raw RAG vs LLM Wiki (2026-10-21)</h3>
+
+**Raw arm:** `python -m tests.retail_multi_profiles --full --retrieval-mode raw_rag --lanes B,C,D` · Lance index under `brain/<lane>/.retail-raw-rag/` · harness embedding **`text-embedding-3-small`**.  
+**Wiki baseline:** `abcd-full-openai-v2` (hybrid search on `wiki/**`).
+
+| Lane | Wiki pass (90) | Raw RAG pass (90) | Δ (raw − wiki) |
+|------|----------------|-------------------|----------------|
+| **B** | 43.3% | **64.4%** | +21.1 |
+| **C** | 37.8% | **66.7%** | +28.9 |
+| **D** | **67.8%** | 65.6% | −2.2 |
+
+**Read carefully:** Raw RAG **beats wiki on B and C** on this closed-world benchmark, but **D wiki still wins slightly** — and D compares **full-copy wiki sources** to **split-less raw shards** (not identical corpora). Raw retrieval has **no graph leg** and **no keyword hybrid**; embed model is harness-owned, not necessarily the wiki desktop embed config.
+
+Artifacts: `ops/runs/retail-lane-abcd-raw/abcd-raw-full-openai-v1/` (`results.json`, `compare_wiki_vs_raw.md`, `scoreboard.md`). Operator doc: `tests/retail_multi_profiles/docs/RAW_RAG.md`.
 
 Mechanism details (keyword walk, RRF **`1/(60+rank)`**, graph slot reservation): [**B/D doc §9**](./ABOUT_LANE_B_D_DETAILED_ANALYSIS.md#b-d-search) — not repeated here (DRY).
 

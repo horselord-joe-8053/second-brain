@@ -1,6 +1,6 @@
 <h1 id="raw-rag-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — raw-sources RAG vs LLM Wiki (lanes B/C/D)</h1>
 
-**Status:** **wip** — P0–P7 implemented (2026-10-21); **P8** live operator run open.  
+**Status:** **wip** — P0–P8 operator run **`abcd-raw-full-openai-v1`** complete (2026-10-21); optional scoreboard badge + live smoke sign-off remain.  
 **Chain:** **`qimpltdd`** / **`implref`** on this file after approval.  
 **Branch context:** `feature/evo-13-multi-retail-test-rag`.  
 **Goal:** Run the **same 90-question retail manual QA suite** on **pure dense RAG** over each lane’s **`raw/sources/**`** tree (not `wiki/**`), reuse the existing **`tests/retail_multi_profiles/`** harness for answer + judge, and publish a **Wiki vs raw-RAG** comparison per lane alongside the completed LLM Wiki baseline (`abcd-full-openai-v2`).  
@@ -368,9 +368,9 @@ Deliverables:
 
 <h3 id="raw-rag-p8" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.8 P8 — Full operator run and artifact update</h3>
 
-- [ ] Live: **90 × 3 lanes** raw RAG (`abcd-raw-full-openai-v1` or dated run id).
-- [ ] Publish `compare_wiki_vs_raw` against `abcd-full-openai-v2`.
-- [ ] Refresh `ABOUT_FOUR_LANE_TEST_ANALYSIS.md` with interpretation (incl. Lane D corpus caveat).
+- [X] Live: **90 × 3 lanes** raw RAG (`abcd-raw-full-openai-v1`; 270 rows, ~12 min).
+- [X] Publish `compare_wiki_vs_raw` against `abcd-full-openai-v2`.
+- [X] Refresh `ABOUT_FOUR_LANE_TEST_ANALYSIS.md` with interpretation (incl. Lane D corpus caveat).
 
 ---
 
@@ -415,7 +415,7 @@ Deliverables:
 - [X] P5 Full run, logging, resume (live smoke sign-off open)
 - [X] P6 Wiki vs raw comparison report (scoreboard badge deferred)
 - [X] P7 CI tier
-- [ ] P8 Full operator run and artifact update
+- [X] P8 Full operator run and artifact update
 
 ---
 

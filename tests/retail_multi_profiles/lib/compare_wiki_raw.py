@@ -50,7 +50,9 @@ def compare_runs(
     wiki_rates = _pass_rates(list(wiki.get("rows") or []))
     raw_rates = _pass_rates(list(raw.get("rows") or []))
 
-    lanes = sorted(set(wiki_rates) | set(raw_rates))
+    lanes = sorted(set(wiki_rates) & set(raw_rates))
+    if not lanes:
+        lanes = sorted(set(raw_rates) or set(wiki_rates))
     table: list[dict[str, Any]] = []
     for lane in lanes:
         w = wiki_rates.get(lane, {})
