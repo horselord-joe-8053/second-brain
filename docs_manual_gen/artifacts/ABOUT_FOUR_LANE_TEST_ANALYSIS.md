@@ -184,7 +184,7 @@ Concept/entity cards frequently **outrank** per-page **`wiki/sources/`**. Image-
 
 **Read carefully:** Raw RAG **beats wiki on B and C** on this closed-world benchmark, but **D wiki still wins slightly** — and D compares **full-copy wiki sources** to **split-less raw shards** (not identical corpora). Raw retrieval has **no graph leg** and **no keyword hybrid**; embed model is harness-owned, not necessarily the wiki desktop embed config.
 
-Artifacts: `ops/runs/retail-lane-abcd-raw/abcd-raw-full-openai-v1/` (`results.json`, `compare_wiki_vs_raw.md`, `scoreboard.md`). Operator doc: `tests/retail_multi_profiles/docs/RAW_RAG.md`.
+Artifacts: `ops/runs/retail-lane-abcd-raw/abcd-raw-full-openai-v1/` (`results.json`, `compare_wiki_vs_raw.md`, `scoreboard.md`). Operator doc: `tests/retail_multi_profiles/docs/RAW_RAG.md`. **Deep comparison (excerpts + ticket lists):** [`ABOUT_WIKI_VS_RAW_RAG_BCD_DETAILED.md`](./ABOUT_WIKI_VS_RAW_RAG_BCD_DETAILED.md).
 
 Mechanism details (keyword walk, RRF **`1/(60+rank)`**, graph slot reservation): [**B/D doc §9**](./ABOUT_LANE_B_D_DETAILED_ANALYSIS.md#b-d-search) — not repeated here (DRY).
 
