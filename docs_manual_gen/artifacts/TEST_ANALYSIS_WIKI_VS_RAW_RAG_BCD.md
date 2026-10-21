@@ -1,38 +1,38 @@
-<h1 id="wiki-raw-detail" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Wiki vs raw RAG — detailed comparison (lanes B, C, D)</h1>
+<h1 id="test-wr-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Test analysis — LLM Wiki vs raw-sources RAG (lanes B, C, D)</h1>
 
-**Runs:** wiki `abcd-full-openai-v2` · raw `abcd-raw-full-openai-v1` · same 90 Q, answer/judge, top-k=5, 8000-char prefix.
+**Type:** benchmark post-mortem (retrieval + Q&A).  
+**Wiki run:** `ops/runs/retail-lane-abcd/abcd-full-openai-v2/` · **Raw run:** `ops/runs/retail-lane-abcd-raw/abcd-raw-full-openai-v1/` · **90 questions × 3 lanes** · same answer/judge, top-k=5, 8000-char prefix.  
+**Related:** [`ABOUT_FOUR_LANE_TEST_ANALYSIS.md`](./ABOUT_FOUR_LANE_TEST_ANALYSIS.md) · plan [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../ref_plan/wip/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) · **Last updated:** 2026-10-21.
 
-## Document outline
+<h2 id="test-wr-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
-1. [Headline quadrants](#quadrants)
+1. [Headline quadrants](#test-wr-1-quadrants) — pass/fail matrix per lane.
+2. [Why methods differ](#test-wr-2-mechanisms) — corpus, retrieval, win/loss patterns.
+3. [Retrieval path mix](#test-wr-3-path-mix) — wiki path kinds on raw-win tickets.
+4. [Lane B — external Markdown](#test-wr-4-lane-b) — `brain/retail-md` case studies + samples.
+5. [Lane C — plain text](#test-wr-5-lane-c) — `brain/retail-txt` case studies + samples.
+6. [Lane D — learned digest](#test-wr-6-lane-d) — wiki full-copy vs raw split-less.
+7. [Appendix — ticket lists](#test-wr-7-appendix) — full raw-only / wiki-only ids.
 
-2. [Why methods differ](#mechanisms)
+---
 
-3. [Retrieval path mix](#path-mix)
+<h2 id="test-wr-1-quadrants" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Headline quadrants</h2>
 
-4. [Lane B — external Markdown](#lane-b)
-
-5. [Lane C — plain text](#lane-c)
-
-6. [Lane D — learned shards vs wiki full-copy](#lane-d)
-
-7. [Appendix — ticket lists](#appendix)
-
-<h2 id="quadrants" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Headline quadrants</h2>
-
-| Lane | Both pass | Wiki only | Raw only | Both fail | Wiki pass rate | Raw pass rate |
-|------|-----------|-----------|----------|-----------|----------------|---------------|
-
-| **B** | 34 | 5 | 24 | 27 | 43.3% | 64.4% |
-
-| **C** | 34 | 0 | 26 | 30 | 37.8% | 66.7% |
-
-| **D** | 50 | 11 | 9 | 20 | 67.8% | 65.6% |
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Lane</th><th>Both pass</th><th>Wiki only</th><th>Raw only</th><th>Both fail</th><th>Wiki pass rate</th><th>Raw pass rate</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>B</strong></td><td>34</td><td>5</td><td style="background:#e8f5e9">24</td><td>27</td><td>43.3%</td><td style="background:#e8f5e9"><strong>64.4%</strong></td></tr>
+<tr><td style="background:#e3f2fd"><strong>C</strong></td><td>34</td><td>0</td><td style="background:#e8f5e9">26</td><td>30</td><td>37.8%</td><td style="background:#e8f5e9"><strong>66.7%</strong></td></tr>
+<tr><td style="background:#e3f2fd"><strong>D</strong></td><td>50</td><td style="background:#fff3e0">11</td><td>9</td><td>20</td><td style="background:#e8f5e9"><strong>67.8%</strong></td><td>65.6%</td></tr>
+</tbody>
+</table>
 
 
 **Raw-only wins (wiki fail → raw pass)** are the main driver of raw beating wiki on **B** and **C**. **Wiki-only** cases on **D** often involve facts present in compiled **`wiki/sources/`** full-copy pages but absent or split differently in **`raw/sources/`** split-less digest.
 
-<h2 id="mechanisms" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Why methods differ</h2>
+<h2 id="test-wr-2-mechanisms" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Why methods differ</h2>
 
 
 <table>
@@ -44,7 +44,7 @@
 <tr><td style="background:#e3f2fd">Typical loss</td><td>Top-k fills with <code>wiki/concepts/*</code> or wrong SKU source shard</td><td>Wrong SKU file in top-1; chunk boundary cuts gold sentence</td></tr>
 </tbody></table>
 
-<h2 id="path-mix" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Retrieval path mix (raw-only win tickets)</h2>
+<h2 id="test-wr-3-path-mix" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Retrieval path mix (raw-only win tickets)</h2>
 
 **Lane B** — wiki top-5 path kinds on **24** raw-win tickets: `{'concept': 31, 'entity': 35, 'wiki_source': 36, 'other': 18}`
 
@@ -52,9 +52,9 @@
 
 **Lane D** — wiki top-5 path kinds on **9** raw-win tickets: `{'wiki_source': 28, 'concept': 3, 'other': 9, 'entity': 5}`
 
-<h2 id="lane-b" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Lane B — external Markdown (`brain/retail-md`)</h2>
+<h2 id="test-wr-4-lane-b" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Lane B — external Markdown (`brain/retail-md`)</h2>
 
-<h3>Case study: `ge_GNE27JYMFS-E02` (door alarm, 2 minutes)</h3>
+<h3 id="test-wr-4-1-e02" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.1 Case study — `ge_GNE27JYMFS-E02` (door alarm, 2 minutes)</h3>
 
 - **Gold:** alarm if door open **more than 2 minutes**.
 
@@ -104,10 +104,9 @@ Changing °F to °C or °C to °F: Press and hold the
 **Why raw wins:** full Docling MD retains the **Door Alarm** section verbatim; vector search lands on the same file (despite Kitchenaid rank-1 noise, prefix includes GE in top-k).
 
 
-<h3>Raw wins (wiki failed) — samples</h3>
+<h3 id="test-wr-raw-wins-samples" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">Raw wins (wiki failed) — samples</h3>
 
-#### `ge_GNE27JYMFS-H05` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h05-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H05` (hard)</h3>
 **Question:** My GNE27J shows “tc,” and some food by the back vent is freezing. What does “tc” mean and what should I do about the food?
 
 
@@ -178,8 +177,7 @@ temperature, or when puttin
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `ge_GNE27JYMFS-H06` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h06-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H06` (hard)</h3>
 **Question:** I want to clean the fridge exterior and then pull the appliance out to clean behind it. What cleaning products and moving method should I use?
 
 
@@ -262,8 +260,7 @@ Black Stainless models. Please follow these inst
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `kitchenaid_KRFF507HPS-H06` (hard)
-
+<h3 id="test-wr-ticket-kitchenaid-krff507hps-h06-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`kitchenaid_KRFF507HPS-H06` (hard)</h3>
 **Question:** The water from my dispenser is warm after I have filled several large jugs. How long should I wait for it to cool again, and what button sequence starts Measured Fill calibration?
 
 
@@ -346,8 +343,7 @@ sudden
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `kitchenaid_KRFF507HPS-H09` (hard)
-
+<h3 id="test-wr-ticket-kitchenaid-krff507hps-h09-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`kitchenaid_KRFF507HPS-H09` (hard)</h3>
 **Question:** I replaced the water filter and still get weak dispenser flow. What must be true about the filter’s installed position, and which test distinguishes a clog from another water-supply problem?
 
 
@@ -406,8 +402,7 @@ Connect the Water Supply........................................................
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `kitchenaid_KRFF507HPS-H10` (hard)
-
+<h3 id="test-wr-ticket-kitchenaid-krff507hps-h10-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`kitchenaid_KRFF507HPS-H10` (hard)</h3>
 **Question:** My newly installed refrigerator has not cooled fully. How long should the first cool-down take, and after changing a temperature set point how long should I wait before changing it again?
 
 
@@ -481,10 +476,9 @@ Take off the door
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-<h3>Wiki wins (raw failed) — samples</h3>
+<h3 id="test-wr-wiki-wins-samples" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">Wiki wins (raw failed) — samples</h3>
 
-#### `ge_GNE27JYMFS-H04` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h04-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H04` (hard)</h3>
 **Question:** My water filter is unavailable, but I still want water and ice. What must be installed instead of the filter, and what water-pressure range does the guide require?
 
 
@@ -549,8 +543,7 @@ Lo
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-#### `ge_GNE27JYMFS-E04` (easy)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-e04-easy" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-E04` (easy)</h3>
 **Question:** What is the rated water-filter capacity of the XWFE cartridge?
 
 
@@ -626,8 +619,7 @@ Shelves in the refrigerator compartment are adjustable.
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-#### `ge_GNE27JYMFS-E05` (easy)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-e05-easy" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-E05` (easy)</h3>
 **Question:** What cold-water pressure is required for the automatic ice maker?
 
 
@@ -725,8 +717,7 @@ REFRIGERATOR SAFETY............…
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-#### `samsung_RF28K9070SG-E02` (easy)
-
+<h3 id="test-wr-ticket-samsung-rf28k9070sg-e02-easy" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`samsung_RF28K9070SG-E02` (easy)</h3>
 **Question:** What freezer temperature settings can I select with the Freezer button?
 
 
@@ -794,8 +785,7 @@ NOTE: Measure the width of your door opening, to see whether or not you need to 
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-#### `samsung_RF28K9070SG-E08` (easy)
-
+<h3 id="test-wr-ticket-samsung-rf28k9070sg-e08-easy" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`samsung_RF28K9070SG-E08` (easy)</h3>
 **Question:** What water pressure does the ice maker require?
 
 
@@ -904,12 +894,11 @@ This appliance is intended to be used in household and similar applications such
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-<h2 id="lane-c" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Lane C — plain text (`brain/retail-txt`)</h2>
+<h2 id="test-wr-5-lane-c" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Lane C — plain text (`brain/retail-txt`)</h2>
 
-<h3>Raw wins (wiki failed) — samples</h3>
+<h3 id="test-wr-raw-wins-samples" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">Raw wins (wiki failed) — samples</h3>
 
-#### `ge_GNE27JYMFS-H05` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h05-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H05` (hard)</h3>
 **Question:** My GNE27J shows “tc,” and some food by the back vent is freezing. What does “tc” mean and what should I do about the food?
 
 
@@ -960,8 +949,7 @@ as laundry, lighted candles, lighted cigarettes, dishes, chemicals, metal object
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `ge_GNE27JYMFS-H06` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h06-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H06` (hard)</h3>
 **Question:** I want to clean the fridge exterior and then pull the appliance out to clean behind it. What cleaning products and moving method should I use?
 
 
@@ -1020,8 +1008,7 @@ mar the finish. DO USE DO NOT USE ✔ Soft, clean cloth ✘ Abrasive cloths ✘ 
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `kitchenaid_KRFF507HPS-H01` (hard)
-
+<h3 id="test-wr-ticket-kitchenaid-krff507hps-h01-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`kitchenaid_KRFF507HPS-H01` (hard)</h3>
 **Question:** My ice cubes are hollow. What inlet water-pressure range is required, and what two water-supply checks does the troubleshooting section recommend?
 
 
@@ -1077,8 +1064,7 @@ Front ..............................................................11 - Replace
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `kitchenaid_KRFF507HPS-H04` (hard)
-
+<h3 id="test-wr-ticket-kitchenaid-krff507hps-h04-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`kitchenaid_KRFF507HPS-H04` (hard)</h3>
 **Question:** If I keep getting food smells, what kind of filter is described for controlling odors, and what is the replacement interval and indicator colour?
 
 
@@ -1126,8 +1112,7 @@ W11218735B FRENCH DOOR BOTTOM MOUNT REFRIGERATOR USE & CARE GUIDE WWW.KITCHENAID
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `samsung_RF28K9070SG-H03` (hard)
-
+<h3 id="test-wr-ticket-samsung-rf28k9070sg-h03-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`samsung_RF28K9070SG-H03` (hard)</h3>
 **Question:** I want to use the bottom-right FlexZone for deli meat, but the controls are locked. What mode and temperature do I need, how do I unlock it, and does Control Lock also prevent water or ice dispensing?
 
 
@@ -1191,14 +1176,13 @@ English36 Operations Feature panel 01 02 03 04 05 07 08 06 09 01 Freezer / Power
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-<h3>Wiki wins (raw failed) — samples</h3>
+<h3 id="test-wr-wiki-wins-samples" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">Wiki wins (raw failed) — samples</h3>
 
-<h2 id="lane-d" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Lane D — learned (`brain/retail-md-learned`)</h2>
+<h2 id="test-wr-6-lane-d" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Lane D — learned (`brain/retail-md-learned`)</h2>
 
-<h3>Raw wins (wiki failed) — samples</h3>
+<h3 id="test-wr-raw-wins-samples" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">Raw wins (wiki failed) — samples</h3>
 
-#### `ge_GNE27JYMFS-H04` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h04-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H04` (hard)</h3>
 **Question:** My water filter is unavailable, but I still want water and ice. What must be installed instead of the filter, and what water-pressure range does the guide require?
 
 
@@ -1257,8 +1241,7 @@ When using a reverse osmosis system with the refrigerator, ensure the following 
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `ge_GNE27JYMFS-H08` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h08-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H08` (hard)</h3>
 **Question:** After replacing my XWFE filter, I see water spurting at the dispenser. How much water should I run, and when does the manual say to replace the filter again?
 
 
@@ -1310,8 +1293,7 @@ url: ""
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `kitchenaid_KRFF507HPS-H01` (hard)
-
+<h3 id="test-wr-ticket-kitchenaid-krff507hps-h01-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`kitchenaid_KRFF507HPS-H01` (hard)</h3>
 **Question:** My ice cubes are hollow. What inlet water-pressure range is required, and what two water-supply checks does the troubleshooting section recommend?
 
 
@@ -1363,8 +1345,7 @@ o see whether or not you need to remove the refrigerator doors to move the refri
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `kitchenaid_KRFF507HPS-H06` (hard)
-
+<h3 id="test-wr-ticket-kitchenaid-krff507hps-h06-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`kitchenaid_KRFF507HPS-H06` (hard)</h3>
 **Question:** The water from my dispenser is warm after I have filled several large jugs. How long should I wait for it to cool again, and what button sequence starts Measured Fill calibration?
 
 
@@ -1425,8 +1406,7 @@ em” on printed pages 17–18 show the locking direction and correct seating.
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-#### `samsung_RF28K9070SG-H10` (hard)
-
+<h3 id="test-wr-ticket-samsung-rf28k9070sg-h10-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`samsung_RF28K9070SG-H10` (hard)</h3>
 **Question:** A technician mentions compressor error 81, and I am wondering whether I should attempt a repair myself. What checks does that error call for and what safety limitation does the service sheet state?
 
 
@@ -1489,10 +1469,9 @@ This document serves as a safety guide for the Samsung RF28K9070SG refrigerator 
 _Analysis:_ Wiki hybrid often surfaces **compiled abstractions** (concepts/entities) or **partial OCR shards**; raw chunk still contains **manual sentences** matching gold numbers/phrasing.
 
 
-<h3>Wiki wins (raw failed) — samples</h3>
+<h3 id="test-wr-wiki-wins-samples" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">Wiki wins (raw failed) — samples</h3>
 
-#### `ge_GNE27JYMFS-H05` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h05-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H05` (hard)</h3>
 **Question:** My GNE27J shows “tc,” and some food by the back vent is freezing. What does “tc” mean and what should I do about the food?
 
 
@@ -1551,8 +1530,7 @@ ely
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-#### `ge_GNE27JYMFS-H09` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h09-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H09` (hard)</h3>
 **Question:** If the XWFE filter fails from a manufacturing defect shortly after I buy the fridge, how long is the limited filter warranty, and what is the ordinary replacement interval?
 
 
@@ -1611,8 +1589,7 @@ This document provides warranty and support information for GE Appliances refrig
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-#### `ge_GNE27JYMFS-H10` (hard)
-
+<h3 id="test-wr-ticket-ge-gne27jymfs-h10-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`ge_GNE27JYMFS-H10` (hard)</h3>
 **Question:** The GNE27J refrigerator seems too warm after I changed the settings and the icemaker is not making ice yet. What stabilization time applies to the temperature setting, and what separate initial ice-maker delay is normal?
 
 
@@ -1678,8 +1655,7 @@ D replacement indicator light for the water filter
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-#### `samsung_RF28K9070SG-H01` (hard)
-
+<h3 id="test-wr-ticket-samsung-rf28k9070sg-h01-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`samsung_RF28K9070SG-H01` (hard)</h3>
 **Question:** I have just replaced the Samsung water filter but the water dispenser still will not work. How do I reset and flush after replacement, and what panel control might be blocking dispensing?
 
 
@@ -1738,8 +1714,7 @@ d delivery chute every 2 weeks.
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-#### `samsung_RF28K9070SG-H04` (hard)
-
+<h3 id="test-wr-ticket-samsung-rf28k9070sg-h04-hard" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">`samsung_RF28K9070SG-H04` (hard)</h3>
 **Question:** My freezer is not as cold as I want. What temperature range can I select, and what basic operating checks should I make before requesting repair?
 
 
@@ -1791,7 +1766,7 @@ plies to:** Models RF28K9070, RF22K9381 and RF28K9380 as printed on this service
 _Analysis:_ Wiki **source shard** or graph-assisted path includes the fact; raw top chunk is **off-topic**, **wrong SKU**, or **missing** the gold span in the 8k window.
 
 
-<h2 id="appendix" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Appendix — full ticket lists</h2>
+<h2 id="test-wr-7-appendix" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Appendix — full ticket lists</h2>
 
 **Lane B raw-only (24):** `ge_GNE27JYMFS-E02`, `ge_GNE27JYMFS-E07`, `ge_GNE27JYMFS-E08`, `ge_GNE27JYMFS-E09`, `ge_GNE27JYMFS-H05`, `ge_GNE27JYMFS-H06`, `kitchenaid_KRFF507HPS-E01`, `kitchenaid_KRFF507HPS-E03`, `kitchenaid_KRFF507HPS-E04`, `kitchenaid_KRFF507HPS-E06`, `kitchenaid_KRFF507HPS-E07`, `kitchenaid_KRFF507HPS-E08`, `kitchenaid_KRFF507HPS-E09`, `kitchenaid_KRFF507HPS-E10`, `kitchenaid_KRFF507HPS-H06`, `kitchenaid_KRFF507HPS-H09`, `kitchenaid_KRFF507HPS-H10`, `samsung_RF28K9070SG-E01`, `samsung_RF28K9070SG-E03`, `samsung_RF28K9070SG-E05` …
 

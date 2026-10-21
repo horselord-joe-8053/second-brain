@@ -25,6 +25,6 @@ Retail and Samsung service-brain plans live here instead of scattered under `doc
 | [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](./completed/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) | **completed** | Phone-era master (phases 0–7); reference for V2–V5 |
 | [`REFACTOR_RETAIL_SIM_DATA_SCALE_1K.md`](./completed/REFACTOR_RETAIL_SIM_DATA_SCALE_1K.md) | **completed** | Phone 60/10 → 1000/100 archive |
 
-**Article (not a plan):** [`../artifacts/ABOUT_SEARCH_RRF_FRU.md`](../artifacts/ABOUT_SEARCH_RRF_FRU.md).
+**Articles (not plans):** [`../artifacts/ABOUT_SEARCH_RRF_FRU.md`](../artifacts/ABOUT_SEARCH_RRF_FRU.md) · [`../artifacts/TEST_ANALYSIS_WIKI_VS_RAW_RAG_BCD.md`](../artifacts/TEST_ANALYSIS_WIKI_VS_RAW_RAG_BCD.md) (Wiki vs raw RAG, lanes B/C/D).
 
 **Legacy pointer:** `cursor_gen/refactor_plans/` may hold stubs; canonical retail plans are under this tree.
