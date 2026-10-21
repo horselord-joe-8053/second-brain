@@ -300,6 +300,8 @@ Set **`active_harness`** in **`config/brain-stack.yaml`**, then open the matchin
 
 **P4 MCP (all harnesses):** shared catalog **`config/second-brain.mcp-servers.yaml`**. Harness-neutral read smoke: **`./scripts/brain/mcp-smoke-read.sh`**.
 
+**Retail lane raw RAG (eval harness, not Hermes):** [`tests/retail_multi_profiles/docs/RAW_RAG.md`](../tests/retail_multi_profiles/docs/RAW_RAG.md).
+
 From verify: `RUN_BRAIN_SETUP=1 ./scripts/verify-local.sh` runs **`agent.sh setup`** (via setup-local) before layout/pytest checks.
 
 ---

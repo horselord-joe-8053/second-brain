@@ -1,6 +1,6 @@
 <h1 id="raw-rag-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — raw-sources RAG vs LLM Wiki (lanes B/C/D)</h1>
 
-**Status:** **new** — plan only (**`onlyref`**); all implementable items **`[ ]`**.  
+**Status:** **wip** — P0–P7 implemented (2026-10-21); **P8** live operator run open.  
 **Chain:** **`qimpltdd`** / **`implref`** on this file after approval.  
 **Branch context:** `feature/evo-13-multi-retail-test-rag`.  
 **Goal:** Run the **same 90-question retail manual QA suite** on **pure dense RAG** over each lane’s **`raw/sources/**`** tree (not `wiki/**`), reuse the existing **`tests/retail_multi_profiles/`** harness for answer + judge, and publish a **Wiki vs raw-RAG** comparison per lane alongside the completed LLM Wiki baseline (`abcd-full-openai-v2`).  
@@ -316,55 +316,55 @@ Deliverables:
 
 <h3 id="raw-rag-p0" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.0 P0 — Design spike and config</h3>
 
-- [ ] Add **`raw_glob`** (and `raw_rag_enabled: true|false`) to lane config for B/C/D; A `raw_rag_enabled: false`.
-- [ ] Add **`tests/retail_multi_profiles/docs/RAW_RAG.md`** stub + update **`README.md`** / **`ARCHITECTURE.md`** (centralization **§7**).
-- [ ] Document corpus globs + Lane D caveat in **`docs/RAW_RAG.md`** (not scattered).
-- [ ] Spike: embed 3 strings via **`retail_raw_rag.embedding`** stub; write/read one Lance row under `.retail-raw-rag/` (manual or pytest `@pytest.mark.live`).
+- [X] Add **`raw_glob`** (and `raw_rag_enabled: true|false`) to lane config for B/C/D; A `raw_rag_enabled: false`.
+- [X] Add **`tests/retail_multi_profiles/docs/RAW_RAG.md`** stub + update **`README.md`** / **`ARCHITECTURE.md`** (centralization **§7**).
+- [X] Document corpus globs + Lane D caveat in **`docs/RAW_RAG.md`** (not scattered).
+- [X] Spike: embed 3 strings via **`retail_raw_rag.embedding`** stub; write/read one Lance row under `.retail-raw-rag/` (pytest `test_raw_rag_index.py`).
 - **Exit:** written `chunk_policy_version` v1 spec in README; Lance path confirmed writable.
 
 <h3 id="raw-rag-p1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.1 P1 — Raw corpus enumeration and chunking</h3>
 
-- [ ] `lib/raw_corpus.py`: walk globs; stable `chunk_id`; optional `model_id` from path (`ge_GNE27JYMFS`, etc.).
-- [ ] `lib/raw_chunking.py`: chunk policy v1 + unit tests on fixture files in `fixtures/raw_chunks/`.
-- [ ] Index manifest JSON: file path, mtime, sha256, chunk count.
+- [X] `lib/raw_corpus.py`: walk globs; stable `chunk_id`; optional `model_id` from path (`ge_GNE27JYMFS`, etc.).
+- [X] `lib/raw_chunking.py`: chunk policy v1 + unit tests on fixture files in `fixtures/raw_chunks/`.
+- [X] Index manifest JSON: file path, mtime, sha256, chunk count.
 
 <h3 id="raw-rag-p2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.2 P2 — Embedding client (Tier C)</h3>
 
-- [ ] Add **`retail_raw_rag.embedding`** to `data/run-config.yaml` + merge in `lib/run_config.py`.
-- [ ] `lib/raw_embed.py`: batch embed with retries/timeouts; no imports from LLM Wiki.
-- [ ] Pytest: mock embed → deterministic vectors for CI.
+- [X] Add **`retail_raw_rag.embedding`** to `data/run-config.yaml` + merge in `lib/run_config.py`.
+- [X] `lib/raw_embed.py`: batch embed with retries/timeouts; no imports from LLM Wiki.
+- [X] Pytest: mock embed → deterministic vectors for CI.
 
 <h3 id="raw-rag-p3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.3 P3 — Lance index build and vector search</h3>
 
-- [ ] `lib/raw_rag_index.py`: create/open `raw_chunks_v1`; upsert; ANN query top-k.
-- [ ] CLI: `python -m tests.retail_multi_profiles --index-raw --lanes B,C,D`.
-- [ ] `lib/raw_rag_index.py`: **`ensure_index_fresh(lane)`** — auto compare manifest vs index metadata; rebuild changed files or full regen when `embed_model_id` / `chunk_policy_version` changes (**D-R10**).
-- [ ] CLI flags: **`--force-reindex`**, **`--skip-index-check`** (override auto preflight).
-- [ ] **Logging exit (P3):** neatlog + `index_progress.jsonl` + heartbeats on embed batches (**§8**).
+- [X] `lib/raw_rag_index.py`: create/open `raw_chunks_v1`; upsert; ANN query top-k.
+- [X] CLI: `python -m tests.retail_multi_profiles --index-raw --lanes B,C,D`.
+- [X] `lib/raw_rag_index.py`: **`ensure_index_fresh(lane)`** — auto compare manifest vs index metadata; rebuild changed files or full regen when `embed_model_id` / `chunk_policy_version` changes (**D-R10**).
+- [X] CLI flags: **`--force-reindex`**, **`--skip-index-check`** (override auto preflight).
+- [X] **Logging exit (P3):** neatlog + `index_progress.jsonl` + heartbeats on embed batches (**§8**).
 
 <h3 id="raw-rag-p4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.4 P4 — Answer pipeline branch</h3>
 
-- [ ] `lib/raw_rag_search.py`: query embed + top-k + concat to `page_prefix_chars` budget (reuse concat helper or parallel `concat_top_k_raw_chunks`).
-- [ ] `lib/answer_pipeline.py`: branch on `retrieval_mode`; raw arm skips `LlmWikiHttpClient` search/read.
-- [ ] Persist hits on each row (like D14 search hits for wiki).
+- [X] `lib/raw_rag_search.py`: query embed + top-k + concat to `page_prefix_chars` budget (reuse concat helper or parallel `concat_top_k_raw_chunks`).
+- [X] `lib/runner.py`: branch on `retrieval_mode`; raw arm skips `LlmWikiHttpClient` search/read.
+- [X] Persist hits on each row (like D14 search hits for wiki).
 
 <h3 id="raw-rag-p5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.5 P5 — Full run, logging, resume</h3>
 
-- [ ] Extend `lib/runner.py` + `__main__.py`: `--retrieval-mode raw_rag`, `--full`, lanes default B,C,D for raw.
-- [ ] Reuse **`logging_utils/run_progress`** + **neatlog** from parent P5; **`--resume`** for raw rows (**§8**).
-- [ ] Raw-only JSONL steps: `index_preflight_*`, `raw_search_*`; flush before/after slow calls.
+- [X] Extend `lib/runner.py` + `__main__.py`: `--retrieval-mode raw_rag`, `--full`, lanes default B,C,D for raw.
+- [X] Reuse **`logging_utils/run_progress`** + **neatlog** from parent P5; **`--resume`** for raw rows (**§8**).
+- [X] Raw-only JSONL steps: `index_preflight_*`, `raw_search_*`; flush before/after slow calls.
 - [ ] Smoke: 2 questions × B,C,D raw (`smoke_question_ids`); verify last JSONL line pinpoints ticket on injected failure (pytest or manual checklist in RAW_RAG.md).
 
 <h3 id="raw-rag-p6" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.6 P6 — Wiki vs raw comparison report</h3>
 
-- [ ] `lib/compare_wiki_raw.py`: load wiki baseline + raw run; emit delta scoreboard.
+- [X] `lib/compare_wiki_raw.py`: load wiki baseline + raw run; emit delta scoreboard.
 - [ ] `lib/report_md.py` / `report_html.py`: optional `retrieval_mode` badge column.
-- [ ] **`SECOND_BRAIN_RUNBOOK.md`:** single link to **`tests/retail_multi_profiles/docs/RAW_RAG.md`** (no duplicated commands).
+- [X] **`SECOND_BRAIN_RUNBOOK.md`:** single link to **`tests/retail_multi_profiles/docs/RAW_RAG.md`** (no duplicated commands).
 
 <h3 id="raw-rag-p7" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.7 P7 — CI tier</h3>
 
-- [ ] Fixture Lance index (tiny corpus) + mocked embed; 3 questions deterministic pass/fail structure.
-- [ ] No live Lance/OpenAI in default `./scripts/verify.sh`.
+- [X] Fixture Lance index (tiny corpus) + mocked embed; 3 questions deterministic pass/fail structure.
+- [X] No live Lance/OpenAI in default `./scripts/verify.sh` (pytest mocks / importorskip).
 
 <h3 id="raw-rag-p8" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.8 P8 — Full operator run and artifact update</h3>
 
@@ -407,14 +407,14 @@ Deliverables:
 
 <h2 id="raw-rag-checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">13. Execution checklist</h2>
 
-- [ ] P0 Design spike and config
-- [ ] P1 Raw corpus enumeration and chunking
-- [ ] P2 Embedding client (Tier C)
-- [ ] P3 Lance index build and vector search
-- [ ] P4 Answer pipeline branch
-- [ ] P5 Full run, logging, resume
-- [ ] P6 Wiki vs raw comparison report
-- [ ] P7 CI tier
+- [X] P0 Design spike and config
+- [X] P1 Raw corpus enumeration and chunking
+- [X] P2 Embedding client (Tier C)
+- [X] P3 Lance index build and vector search
+- [X] P4 Answer pipeline branch
+- [X] P5 Full run, logging, resume (live smoke sign-off open)
+- [X] P6 Wiki vs raw comparison report (scoreboard badge deferred)
+- [X] P7 CI tier
 - [ ] P8 Full operator run and artifact update
 
 ---

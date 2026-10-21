@@ -20,6 +20,15 @@ _DEFAULT_EVIDENCE: dict[str, Any] = {
     "insufficient_literal": "Insufficient_Information_Based_On_Given_PDF",
 }
 
+_DEFAULT_RAW_RAG: dict[str, Any] = {
+    "embedding": {
+        "provider": "openai",
+        "model": "text-embedding-3-small",
+        "batch_size": 32,
+        "timeout_sec": 120,
+    },
+}
+
 _DEFAULT_EVAL: dict[str, Any] = {
     "answer": {
         "provider": "openai",
@@ -98,6 +107,8 @@ def load_merged_run_config(
 
     eval_cfg = _deep_merge(_DEFAULT_EVAL, {k: v for k, v in eval_block.items() if v is not None})
 
+    raw_rag_cfg = _deep_merge(_DEFAULT_RAW_RAG, run_raw.get("retail_raw_rag") or {})
+
     evidence = _coerce_evidence_scalars(evidence)
     try:
         eval_rel = str(cfg_path.relative_to(repo_root))
@@ -110,9 +121,11 @@ def load_merged_run_config(
         "answer": eval_cfg["answer"],
         "judge": eval_cfg["judge"],
         "smoke_question_ids": _smoke_question_ids(run_raw),
+        "retail_raw_rag": raw_rag_cfg,
         "config_sources": {
             "retail_evidence": "config/brain-stack.example.yaml → second_brain.retail_evidence",
             "retail_eval": eval_rel,
+            "retail_raw_rag": eval_rel,
         },
     }
     return merged

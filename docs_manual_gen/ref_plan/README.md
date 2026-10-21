@@ -16,7 +16,7 @@ Retail and Samsung service-brain plans live here instead of scattered under `doc
 |-------------|--------|------|
 | [`REFACTOR_MULTI_PROFILE_AGENT_OPS.md`](./new/REFACTOR_MULTI_PROFILE_AGENT_OPS.md) | **new** | Hermes compile, delete, and rename on either brain profile without that project on screen |
 | [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](./new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) | **new** | A/B/C/D retail manual ingest lanes + 90-Q benchmark harness (`eval/retail_manual_qa/`), tiered scoring, industry scan |
-| [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](./new/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | **new** | Raw `sources/**` vector-only RAG (lanes B/C/D) vs LLM Wiki baseline; extend `tests/retail_multi_profiles/` |
+| [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](./wip/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | **wip** | Raw `sources/**` vector-only RAG (lanes B/C/D) vs LLM Wiki baseline; extend `tests/retail_multi_profiles/` |
 | [`REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md`](./new/REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md) | **wip** | Prompt C **v4** shards + `full-copy` + service-manual cards (`nu_llm_wiki`); P6 operator doc done |
 | [`REFACTOR_BRAIN_AGENT_ENTRYPOINT.md`](./wip/REFACTOR_BRAIN_AGENT_ENTRYPOINT.md) | **wip** | Single **`scripts/brain/agent.sh`** entry; docs + delegate call stacks |
 | [`REFACTOR_FRU_US_SERVICE_BRAIN.md`](./completed/REFACTOR_FRU_US_SERVICE_BRAIN.md) | **completed** | FRU corpus + ABC (1k / Tantivy ladder) |

@@ -18,3 +18,10 @@ retail_eval:
     temperature: 0
 
 smoke_question_ids: [samsung_RF28K9070SG-E01, samsung_RF28K9070SG-H01]
+
+retail_raw_rag:
+  embedding:
+    provider: openai
+    model: text-embedding-3-small
+    batch_size: 32
+    timeout_sec: 120

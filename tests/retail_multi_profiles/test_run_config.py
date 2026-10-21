@@ -21,6 +21,7 @@ def test_merged_config_includes_evidence_from_brain_stack_example() -> None:
     assert cfg["answer"]["provider"] == "openai"
     assert cfg["answer"]["model"] == "gpt-4o-mini"
     assert cfg["judge"]["provider"] == "gemini"
+    assert cfg["retail_raw_rag"]["embedding"]["model"] == "text-embedding-3-small"
 
 
 def test_run_config_eval_overrides_answer_model(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

@@ -29,6 +29,8 @@ from retail_brain.answer_manuals import LlmWikiHttpClient
 from utils.neat_logger.neat_logger_instance import NeatLogger, NeatLoggerFactory
 
 from .answer_pipeline import answer_from_context, retrieve_context, scoped_query
+from .raw_rag_index import ensure_index_fresh
+from .raw_rag_search import retrieve_raw_context
 from .eval_models import resolve_eval_llms
 from .lanes import Lane, load_lanes
 from .load_suite import SuiteQuestion, filter_question_ids, iter_questions, load_suite
@@ -51,9 +53,16 @@ def _git_head(repo: Path) -> str:
         return ""
 
 
-def _ops_logger(run_id: str) -> NeatLogger:
+def _ops_logger(run_id: str, *, retrieval_mode: str = "llm_wiki") -> NeatLogger:
     """Per-run tee under logs/ops for tail -f during long benchmarks."""
     safe = run_id.replace("/", "_")
+    if retrieval_mode == "raw_rag":
+        return NeatLoggerFactory.create(
+            "OPS",
+            "RETAIL_RAW_RAG",
+            log_file_name=f"retail-lane-abcd-raw-{safe}.log",
+            log_output="both",
+        )
     return NeatLoggerFactory.create(
         "OPS",
         "RETAIL_ABCD",
@@ -76,6 +85,9 @@ class _RunContext:
     log: NeatLogger
     completed: set[str]
     total_planned: int
+    retrieval_mode: str
+    force_reindex: bool
+    skip_index_check: bool
 
 
 def _emit_progress(ctx: _RunContext, **fields: Any) -> None:
@@ -112,7 +124,7 @@ def _run_one_row(
     *,
     lane: Lane,
     q: SuiteQuestion,
-    wiki: LlmWikiHttpClient,
+    wiki: LlmWikiHttpClient | None,
     index: int,
     answer_llm: Any,
     judge_llm: Any,
@@ -142,9 +154,38 @@ def _run_one_row(
         ctx.log.debug(
             f"retrieve query={query[:120]!r} top_k={top_k} page_prefix_chars={page_prefix}"
         )
-        hits, context, retrieval_ms = retrieve_context(
-            wiki, query, top_k=top_k, page_prefix_chars=page_prefix
-        )
+        if ctx.retrieval_mode == "raw_rag":
+            embed_cfg = (ctx.cfg.get("retail_raw_rag") or {}).get("embedding") or {}
+            _emit_progress(
+                ctx,
+                step="raw_search_start",
+                lane=lane.lane_id,
+                question_id=q.question_id,
+                index=index,
+            )
+            hits, context, retrieval_ms = retrieve_raw_context(
+                lane,
+                query,
+                embed_cfg=embed_cfg,
+                top_k=top_k,
+                page_prefix_chars=page_prefix,
+                force_reindex=ctx.force_reindex,
+                skip_index_check=ctx.skip_index_check,
+            )
+            _emit_progress(
+                ctx,
+                step="raw_search_done",
+                lane=lane.lane_id,
+                question_id=q.question_id,
+                index=index,
+                retrieval_ms=retrieval_ms,
+            )
+        else:
+            if wiki is None:
+                raise RuntimeError("wiki client required for llm_wiki retrieval_mode")
+            hits, context, retrieval_ms = retrieve_context(
+                wiki, query, top_k=top_k, page_prefix_chars=page_prefix
+            )
         ctx.log.debug(
             f"retrieve done paths={hits[:3]!r} context_chars={len(context)} ms={retrieval_ms}"
         )
@@ -214,6 +255,23 @@ def _run_one_row(
                 judge_ms=judge_ms,
             )
 
+        if ctx.retrieval_mode == "raw_rag":
+            top_paths = [h.get("source_relpath") for h in hits[:top_k]]
+            top_hits = [
+                {
+                    "source_relpath": h.get("source_relpath"),
+                    "distance": h.get("distance"),
+                    "vector_score": h.get("vector_score"),
+                    "chunk_id": h.get("chunk_id"),
+                }
+                for h in hits[:top_k]
+            ]
+            search_meta: dict[str, Any] = {"mode": "raw_rag_vector"}
+        else:
+            top_paths = [h.get("path") for h in hits[:top_k]]
+            top_hits = compact_search_hits(hits[:top_k])
+            search_meta = dict(getattr(wiki, "last_search_meta", {}) or {})
+
         row = {
             "lane": lane.lane_id,
             "ingest_kind": lane.ingest_kind,
@@ -222,9 +280,10 @@ def _run_one_row(
             "model_id": q.model_id,
             "difficulty": q.difficulty,
             "query": query,
-            "search_meta": dict(getattr(wiki, "last_search_meta", {}) or {}),
-            "top_paths": [h.get("path") for h in hits[:top_k]],
-            "top_hits": compact_search_hits(hits[:top_k]),
+            "retrieval_mode": ctx.retrieval_mode,
+            "search_meta": search_meta,
+            "top_paths": top_paths,
+            "top_hits": top_hits,
             "candidate_answer": candidate,
             "pass": passed,
             "judge_rationale": rationale,
@@ -267,9 +326,36 @@ def _run_rows(ctx: _RunContext, *, lanes: list[Lane], questions: list[SuiteQuest
     template = str(cfg.get("query_template") or "{model_id} {question}")
     answer_llm, judge_llm = resolve_eval_llms(cfg)
 
+    embed_cfg = (cfg.get("retail_raw_rag") or {}).get("embedding") or {}
     index = 0
     for lane in lanes:
-        wiki = LlmWikiHttpClient(str(lane.project_path), timeout=120.0)
+        wiki: LlmWikiHttpClient | None = None
+        if ctx.retrieval_mode == "raw_rag":
+            if not lane.raw_rag_enabled:
+                raise ValueError(f"lane {lane.lane_id} is not raw_rag_enabled")
+            _emit_progress(
+                ctx,
+                step="index_preflight_start",
+                lane=lane.lane_id,
+                question_id="*",
+                index=index,
+            )
+            with ctx.log.heartbeat(f"{lane.lane_id} raw index preflight"):
+                ensure_index_fresh(
+                    lane,
+                    embed_cfg,
+                    force=ctx.force_reindex,
+                    skip_check=ctx.skip_index_check,
+                )
+            _emit_progress(
+                ctx,
+                step="index_preflight_done",
+                lane=lane.lane_id,
+                question_id="*",
+                index=index,
+            )
+        else:
+            wiki = LlmWikiHttpClient(str(lane.project_path), timeout=120.0)
         for q in questions:
             index += 1
             _run_one_row(
@@ -297,6 +383,9 @@ def run_benchmark(
     kind: str,
     run_id: str | None = None,
     resume: bool = False,
+    retrieval_mode: str = "llm_wiki",
+    force_reindex: bool = False,
+    skip_index_check: bool = False,
 ) -> Path:
     """Run selected questions on lanes; checkpoint JSONL + incremental results.json."""
     cfg = load_merged_run_config(repo_root)
@@ -304,10 +393,15 @@ def run_benchmark(
     selected = [lanes_map[lid] for lid in lane_ids]
 
     rid = run_id or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out_dir = repo_root / "ops" / "runs" / "retail-lane-abcd" / rid
+    runs_root = (
+        "retail-lane-abcd-raw"
+        if retrieval_mode == "raw_rag"
+        else "retail-lane-abcd"
+    )
+    out_dir = repo_root / "ops" / "runs" / runs_root / rid
     out_dir.mkdir(parents=True, exist_ok=True)
     jsonl_path = out_dir / "results.jsonl"
-    log = _ops_logger(rid)
+    log = _ops_logger(rid, retrieval_mode=retrieval_mode)
 
     completed = completed_row_keys(jsonl_path) if resume else set()
     if resume and completed:
@@ -331,10 +425,15 @@ def run_benchmark(
         log=log,
         completed=completed,
         total_planned=total_planned,
+        retrieval_mode=retrieval_mode,
+        force_reindex=force_reindex,
+        skip_index_check=skip_index_check,
     )
 
     t0 = time.perf_counter()
-    log.step(f"retail lane benchmark {kind} run_id={rid} rows={total_planned}")
+    log.step(
+        f"retail lane benchmark {kind} mode={retrieval_mode} run_id={rid} rows={total_planned}"
+    )
     try:
         _run_rows(ctx, lanes=selected, questions=questions)
     finally:
@@ -352,6 +451,9 @@ def run_smoke(
     question_ids: list[str],
     run_id: str | None = None,
     resume: bool = False,
+    retrieval_mode: str = "llm_wiki",
+    force_reindex: bool = False,
+    skip_index_check: bool = False,
 ) -> Path:
     """Execute smoke questions on selected lanes; write ops run directory."""
     suite_path = repo_root / "tests/retail_multi_profiles/data/retail-manual-qa-test-suite.json"
@@ -368,6 +470,9 @@ def run_smoke(
         kind="smoke",
         run_id=run_id,
         resume=resume,
+        retrieval_mode=retrieval_mode,
+        force_reindex=force_reindex,
+        skip_index_check=skip_index_check,
     )
 
 
@@ -378,6 +483,9 @@ def run_full(
     limit: int = 0,
     run_id: str | None = None,
     resume: bool = False,
+    retrieval_mode: str = "llm_wiki",
+    force_reindex: bool = False,
+    skip_index_check: bool = False,
 ) -> Path:
     """Run full suite (90 questions) per lane; optional ``limit`` truncates for dry runs."""
     suite_path = repo_root / "tests/retail_multi_profiles/data/retail-manual-qa-test-suite.json"
@@ -392,4 +500,7 @@ def run_full(
         kind="full" if limit <= 0 else f"full-limit-{limit}",
         run_id=run_id,
         resume=resume,
+        retrieval_mode=retrieval_mode,
+        force_reindex=force_reindex,
+        skip_index_check=skip_index_check,
     )

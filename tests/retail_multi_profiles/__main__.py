@@ -15,6 +15,11 @@ for p in (str(REPO), str(RETAIL_PKG)):
 from tests.retail_multi_profiles.lib.report_html import write_scoreboard_html  # noqa: E402
 from tests.retail_multi_profiles.lib.report_md import write_scoreboard_md  # noqa: E402
 from tests.retail_multi_profiles.lib.run_config import load_merged_run_config  # noqa: E402
+from tests.retail_multi_profiles.lib.compare_wiki_raw import (  # noqa: E402
+    compare_runs,
+    write_compare_markdown,
+)
+from tests.retail_multi_profiles.lib.raw_index_runner import run_index_raw  # noqa: E402
 from tests.retail_multi_profiles.lib.runner import run_full, run_smoke  # noqa: E402
 from tests.retail_multi_profiles.lib.sources_only_replay import run_sources_only_replay  # noqa: E402
 
@@ -42,6 +47,42 @@ def main(argv: list[str] | None = None) -> int:
         help="Skip rows already present in ops/.../results.jsonl",
     )
     parser.add_argument(
+        "--retrieval-mode",
+        choices=("llm_wiki", "raw_rag"),
+        default="llm_wiki",
+        help="llm_wiki (default) or raw_rag on raw/sources Lance index",
+    )
+    parser.add_argument(
+        "--index-raw",
+        action="store_true",
+        help="Build raw-sources vector index for --lanes (no Q&A)",
+    )
+    parser.add_argument(
+        "--force-reindex",
+        action="store_true",
+        help="With raw_rag: rebuild Lance index even if manifest matches",
+    )
+    parser.add_argument(
+        "--skip-index-check",
+        action="store_true",
+        help="With raw_rag: skip auto index freshness (expert; may use stale index)",
+    )
+    parser.add_argument(
+        "--compare-wiki-raw",
+        action="store_true",
+        help="Write compare_wiki_vs_raw.md from wiki + raw results.json paths",
+    )
+    parser.add_argument(
+        "--wiki-results",
+        default="ops/runs/retail-lane-abcd/abcd-full-openai-v2/results.json",
+        help="Wiki baseline results.json for --compare-wiki-raw",
+    )
+    parser.add_argument(
+        "--raw-results",
+        default="",
+        help="Raw RAG results.json for --compare-wiki-raw",
+    )
+    parser.add_argument(
         "--sources-only-replay",
         action="store_true",
         help="Replay mixed-outcome tickets using only wiki/sources hits inside top 10",
@@ -52,6 +93,31 @@ def main(argv: list[str] | None = None) -> int:
         help="Mixed-outcome JSON for --sources-only-replay",
     )
     args = parser.parse_args(argv)
+
+    if args.compare_wiki_raw:
+        raw_path = Path(args.raw_results) if args.raw_results else None
+        if raw_path is None or not raw_path.is_file():
+            parser.error("--compare-wiki-raw requires --raw-results pointing to results.json")
+        wiki_path = REPO / args.wiki_results
+        payload = compare_runs(wiki_path, raw_path)
+        out_dir = raw_path.parent
+        md = write_compare_markdown(payload, out_dir / "compare_wiki_vs_raw.md")
+        print(f"Wrote {md}")
+        return 0
+
+    if args.index_raw:
+        lane_ids = [x.strip() for x in args.lanes.split(",") if x.strip()]
+        if args.lanes == "A,B,C,D":
+            lane_ids = ["B", "C", "D"]
+        out = run_index_raw(
+            REPO,
+            lane_ids=lane_ids,
+            run_id=args.run_id or None,
+            force_reindex=args.force_reindex,
+            skip_index_check=args.skip_index_check,
+        )
+        print(f"Wrote {out}")
+        return 0
 
     if args.sources_only_replay:
         ticket = Path(args.ticket_file) if args.ticket_file else (
@@ -75,13 +141,25 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("Specify exactly one of --smoke or --full")
 
     lane_ids = [x.strip() for x in args.lanes.split(",") if x.strip()]
+    if args.retrieval_mode == "raw_rag" and args.lanes == "A,B,C,D":
+        lane_ids = ["B", "C", "D"]
     run_id = args.run_id or None
+    raw_kw = {
+        "retrieval_mode": args.retrieval_mode,
+        "force_reindex": args.force_reindex,
+        "skip_index_check": args.skip_index_check,
+    }
 
     if args.smoke:
         cfg = load_merged_run_config(REPO)
         qids = list(cfg.get("smoke_question_ids") or [])
         out_dir = run_smoke(
-            REPO, lane_ids=lane_ids, question_ids=qids, run_id=run_id, resume=args.resume
+            REPO,
+            lane_ids=lane_ids,
+            question_ids=qids,
+            run_id=run_id,
+            resume=args.resume,
+            **raw_kw,
         )
     else:
         out_dir = run_full(
@@ -90,6 +168,7 @@ def main(argv: list[str] | None = None) -> int:
             limit=args.limit,
             run_id=run_id,
             resume=args.resume,
+            **raw_kw,
         )
 
     results = out_dir / "results.json"

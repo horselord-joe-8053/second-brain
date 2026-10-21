@@ -22,6 +22,8 @@ class Lane:
     lane_id: str
     project_path: Path
     ingest_kind: str
+    raw_rag_enabled: bool = False
+    raw_glob: str = ""
 
 
 def load_lanes(repo_root: Path, config_path: Path | None = None) -> dict[str, Lane]:
@@ -31,9 +33,17 @@ def load_lanes(repo_root: Path, config_path: Path | None = None) -> dict[str, La
     out: dict[str, Lane] = {}
     for lane_id, entry in (raw.get("lanes") or {}).items():
         rel = str(entry["path"])
+        raw_enabled = entry.get("raw_rag_enabled")
         out[str(lane_id)] = Lane(
             lane_id=str(lane_id),
             project_path=(repo_root / rel).resolve(),
             ingest_kind=str(entry.get("ingest_kind") or ""),
+            raw_rag_enabled=bool(raw_enabled) if raw_enabled is not None else False,
+            raw_glob=str(entry.get("raw_glob") or ""),
         )
     return out
+
+
+def raw_rag_lanes(lanes: dict[str, Lane]) -> list[Lane]:
+    """Lanes configured for raw-sources vector RAG (typically B, C, D)."""
+    return [ln for ln in lanes.values() if ln.raw_rag_enabled and ln.raw_glob]
