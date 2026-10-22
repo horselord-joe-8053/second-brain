@@ -184,7 +184,9 @@ Concept/entity cards frequently **outrank** per-page **`wiki/sources/`**. Image-
 
 **Read carefully:** Raw RAG **beats wiki on B and C** on this closed-world benchmark, but **D wiki still wins slightly** — and D compares **full-copy wiki sources** to **split-less raw shards** (not identical corpora). Raw retrieval has **no graph leg** and **no keyword hybrid**; embed model is harness-owned, not necessarily the wiki desktop embed config.
 
-Artifacts: `ops/runs/retail-lane-abcd-raw/abcd-raw-full-openai-v1/` (`results.json`, `compare_wiki_vs_raw.md`, `scoreboard.md`). Operator doc: `tests/retail_multi_profiles/docs/RAW_RAG.md`. **Deep comparison (excerpts + ticket lists):** [`TEST_ANALYSIS_WIKI_VS_RAW_RAG_BCD.md`](./TEST_ANALYSIS_WIKI_VS_RAW_RAG_BCD.md).
+**Performance (same runs, lanes B/C/D):** Raw full benchmark **~12.4 min** (270 rows) vs wiki full **~49 min** (360 rows); wiki B/C/D slice scales to **~37 min**. Per-row **`latency_ms`**: raw retrieval **~307 ms** mean vs wiki **~4.4 s** (**~14×**); row total **~2.3 s** vs **~6.6 s** (**~2.9×**). Detail: [`TEST_ANALYSIS_WIKI_VS_RAW_RAG_BCD.md` §2](./TEST_ANALYSIS_WIKI_VS_RAW_RAG_BCD.md#test-wr-2-performance).
+
+Artifacts: `ops/runs/retail-lane-abcd-raw/abcd-raw-full-openai-v1/` (`results.json`, `compare_wiki_vs_raw.md`, `scoreboard.md`). Operator doc: `tests/retail_multi_profiles/docs/RAW_RAG.md`. **Deep comparison (accuracy + latency + excerpts):** [`TEST_ANALYSIS_WIKI_VS_RAW_RAG_BCD.md`](./TEST_ANALYSIS_WIKI_VS_RAW_RAG_BCD.md).
 
 Mechanism details (keyword walk, RRF **`1/(60+rank)`**, graph slot reservation): [**B/D doc §9**](./ABOUT_LANE_B_D_DETAILED_ANALYSIS.md#b-d-search) — not repeated here (DRY).
 
