@@ -1,6 +1,6 @@
 <h1 id="gpt-enh-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — three Q&amp;A tracks, then Chief of Staff (realigned)</h1>
 
-**Status:** **new** — plan only (`onlyref` / **`onlyreftdd`** shape). All implementable items **`[ ]`**.  
+**Status:** **wip** — Phase **1** code in progress (**P1.5** operator judged runs pending). Phases **2–4** gated by **HG-P***.  
 **Execute:** **`qimpltdd`** this file → **`aciubtdd`** / **`implreftdd`** (Phase **1** first; Phases 2–4 after **HG-P***). Plain **`implref`** without TDD table is legacy.  
 **last_aligned:** 2026-10-24 — dimensions; **R14**; TDD **1–4** (**R16**); **neatlog** §17.6 (**R17**).
 
@@ -208,34 +208,34 @@ Phases **2–4** are fully specified below for roadmap clarity. **Implementation
 
 <h3 id="gpt-p1-0" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.0 P1.0 — Run profiles registry (optional, recommended)</h3>
 
-- [ ] Add **`run_profiles`** entries to `tests/retail_multi_profiles/data/run-config.yaml` per [`REALIGNMENT_DIMENSIONS.md`](../../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) §5–§9 (Lane B baselines + Phase 1 candidates).
-- [ ] Runner: resolve `--profile <id>` → CLI flags (D3/D5/D6/D2).
+- [X] Add **`run_profiles`** entries to `tests/retail_multi_profiles/data/run-config.yaml` per [`REALIGNMENT_DIMENSIONS.md`](../../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) §5–§9 (Lane B baselines + Phase 1 candidates).
+- [X] Runner: resolve `--profile <id>` → CLI flags (D3/D5/D6/D2).
 
 <h3 id="gpt-p1-1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.1 P1.1 — Retriever core</h3>
 
-- [ ] SKU-filtered vector search; manual keyword index; RRF; config under `retail_raw_rag`.
-- [ ] Unit tests on fixture corpus (wrong-SKU blocked under hybrid).
+- [X] SKU-filtered vector search; manual keyword index; RRF; config under `retail_raw_rag`.
+- [X] Unit tests on fixture corpus (wrong-SKU blocked under hybrid).
 
 <h3 id="gpt-p1-2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.2 P1.2 — Listwise rerank</h3>
 
-- [ ] Shared `rerank.py`; mode `hybrid_rrf_rerank` vs `hybrid_rrf` vs legacy `vector`.
+- [X] Shared `rerank.py`; mode `hybrid_rrf_rerank` vs `hybrid_rrf` vs legacy `vector`.
 
 <h3 id="gpt-p1-3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.3 P1.3 — Evidence packages + harness</h3>
 
-- [ ] `evidence/retriever.py`, `verifier.py`, `agentic.py` (manual policy).
-- [ ] Harness `--raw-retrieval`; persist rank metadata; **no wiki combined flags**.
-- [ ] **§17.6:** extend raw runner progress steps (hybrid, rerank, verifier, agentic); DEBUG rank fields when `NEAT_LOGGER_DEBUG=1`.
+- [X] `evidence/retriever.py`, `verifier.py`, `agentic.py` (manual policy).
+- [X] Harness `--raw-retrieval`; persist rank metadata; **no wiki combined flags**.
+- [X] **§17.6:** extend raw runner progress steps (hybrid, rerank, verifier, agentic); DEBUG rank fields when `NEAT_LOGGER_DEBUG=1`.
 
 <h3 id="gpt-p1-4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.4 P1.4 — Agentic bounded expansion</h3>
 
-- [ ] Verifier coverage on **hard** tier; at most **one** subquery when configured; abstain path.
+- [X] Verifier coverage on **hard** tier; at most **one** subquery when configured; abstain path.
 
 <h3 id="gpt-p1-5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.5 P1.5 — Judged runs + analysis</h3>
 
-- [ ] **§17.2 step 1:** smoke Lane B raw (see table).
+- [ ] **§17.2 step 1:** smoke Lane B raw (see table) — **operator pending**.
 - [ ] **§17.2 step 2:** Lane **B** full **90** × `hybrid_rrf`, `hybrid_rrf_rerank`; Lane **C** smoke optional (**R10**).
-- [ ] **§17.2 step 3:** `docs_manual_gen/artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md` — compare to `abcd-raw-full-openai-v1` + wiki B via **profile_id**; judge **R14**.
-- [ ] Update `tests/retail_multi_profiles/docs/RAW_RAG.md`.
+- [ ] **§17.2 step 3:** `docs_manual_gen/artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md` — stub committed; fill after judged runs vs **R14**.
+- [X] Update `tests/retail_multi_profiles/docs/RAW_RAG.md`.
 
 **Phase 1 exit:** Lane **B** answerable (60) for best mode **`hybrid_rrf_rerank`** meets **R14**; `./scripts/verify.sh` green; **P1.5** analysis committed. Unblocks **HG-P1**. Lane D re-benchmark is **out of Phase 1 exit**.
 
@@ -585,11 +585,11 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 
 **Phase 1 — A2**
 
-- [ ] P1.0 Run profiles registry (optional)
-- [ ] P1.1 Retriever core
-- [ ] P1.2 Listwise rerank
-- [ ] P1.3 Evidence packages + harness
-- [ ] P1.4 Agentic bounded expansion
+- [X] P1.0 Run profiles registry (optional)
+- [X] P1.1 Retriever core
+- [X] P1.2 Listwise rerank
+- [X] P1.3 Evidence packages + harness
+- [X] P1.4 Agentic bounded expansion
 - [ ] P1.5 Judged runs + TEST_ANALYSIS_A2_MANUAL_RAG.md
 
 **Phase 2 — A3** (after **HG-P1**)

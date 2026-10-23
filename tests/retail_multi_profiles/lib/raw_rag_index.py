@@ -173,6 +173,31 @@ def ensure_index_fresh(
     return build_index_for_lane(lane, embed_cfg, embed_fn=embed_fn)
 
 
+def list_index_chunks(lane: Lane, *, limit: int = 5000) -> list[dict[str, Any]]:
+    """Load chunk rows from Lance (for hybrid lexical pool and tests)."""
+    if lancedb is None:
+        raise RuntimeError("lancedb is not installed")
+    db = lancedb.connect(lance_uri(lane.project_path))
+    if RAW_LANCE_TABLE not in db.table_names():
+        return []
+    tbl = db.open_table(RAW_LANCE_TABLE)
+    arrow = tbl.to_arrow()
+    n = min(int(arrow.num_rows), limit)
+    rows = arrow.slice(0, n).to_pylist()
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        out.append(
+            {
+                "chunk_id": row.get("chunk_id"),
+                "source_relpath": row.get("source_relpath"),
+                "model_id": row.get("model_id"),
+                "text": row.get("text"),
+                "vector": list(row.get("vector") or []),
+            }
+        )
+    return out
+
+
 def vector_search(
     lane: Lane,
     query_vector: list[float],

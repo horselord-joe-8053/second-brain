@@ -22,6 +22,19 @@ def test_merged_config_includes_evidence_from_brain_stack_example() -> None:
     assert cfg["answer"]["model"] == "gpt-4o-mini"
     assert cfg["judge"]["provider"] == "gemini"
     assert cfg["retail_raw_rag"]["embedding"]["model"] == "text-embedding-3-small"
+    assert "MANUAL_B_RAW_HYBRID" in (cfg.get("run_profiles") or {})
+
+
+def test_run_profile_resolves_raw_flags() -> None:
+    """P1.0 — profile id maps to retrieval_mode and raw_retrieval."""
+    from tests.retail_multi_profiles.lib.run_config import load_merged_run_config
+    from tests.retail_multi_profiles.lib.run_profiles import resolve_run_profile
+
+    cfg = load_merged_run_config(REPO)
+    prof = resolve_run_profile(cfg, "MANUAL_B_RAW_HYBRID_RERANK")
+    assert prof["retrieval_mode"] == "raw_rag"
+    assert prof["raw_retrieval"] == "hybrid_rrf_rerank"
+    assert prof["lanes"] == "B"
 
 
 def test_run_config_eval_overrides_answer_model(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

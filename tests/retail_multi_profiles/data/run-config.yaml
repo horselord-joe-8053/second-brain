@@ -25,3 +25,23 @@ retail_raw_rag:
     model: text-embedding-3-small
     batch_size: 32
     timeout_sec: 120
+  retrieval:
+    default_mode: vector
+    rrf_k: 60
+  agentic:
+    enabled: false
+    max_loops: 1
+
+run_profiles:
+  MANUAL_B_RAW_VECTOR:
+    retrieval_mode: raw_rag
+    raw_retrieval: vector
+    lanes: B
+  MANUAL_B_RAW_HYBRID:
+    retrieval_mode: raw_rag
+    raw_retrieval: hybrid_rrf
+    lanes: B
+  MANUAL_B_RAW_HYBRID_RERANK:
+    retrieval_mode: raw_rag
+    raw_retrieval: hybrid_rrf_rerank
+    lanes: B

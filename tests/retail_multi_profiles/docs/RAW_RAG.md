@@ -11,8 +11,12 @@ python -m tests.retail_multi_profiles --index-raw --lanes B,C,D
 # Smoke Q&A on raw RAG
 python -m tests.retail_multi_profiles --smoke --retrieval-mode raw_rag --lanes B,C,D
 
-# Full 90×3 live run
+# Full 90×3 live run (vector-only default)
 python -m tests.retail_multi_profiles --full --retrieval-mode raw_rag --lanes B,C,D
+
+# Phase 1 hybrid / rerank / agentic (Lane B profiles in run-config.yaml)
+python -m tests.retail_multi_profiles --smoke --profile MANUAL_B_RAW_HYBRID --lanes B
+python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_HYBRID_RERANK --lanes B --raw-agentic
 
 # Compare to wiki baseline
 python -m tests.retail_multi_profiles --compare-wiki-raw \

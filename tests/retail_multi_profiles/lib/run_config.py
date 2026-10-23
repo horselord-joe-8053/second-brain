@@ -27,6 +27,8 @@ _DEFAULT_RAW_RAG: dict[str, Any] = {
         "batch_size": 32,
         "timeout_sec": 120,
     },
+    "retrieval": {"default_mode": "vector", "rrf_k": 60},
+    "agentic": {"enabled": False, "max_loops": 1},
 }
 
 _DEFAULT_EVAL: dict[str, Any] = {
@@ -115,6 +117,8 @@ def load_merged_run_config(
     except ValueError:
         eval_rel = str(cfg_path)
 
+    run_profiles = run_raw.get("run_profiles") or {}
+
     merged: dict[str, Any] = {
         "schema_version": str(run_raw.get("schema_version") or "1.0"),
         **evidence,
@@ -122,6 +126,7 @@ def load_merged_run_config(
         "judge": eval_cfg["judge"],
         "smoke_question_ids": _smoke_question_ids(run_raw),
         "retail_raw_rag": raw_rag_cfg,
+        "run_profiles": run_profiles,
         "config_sources": {
             "retail_evidence": "config/brain-stack.example.yaml → second_brain.retail_evidence",
             "retail_eval": eval_rel,

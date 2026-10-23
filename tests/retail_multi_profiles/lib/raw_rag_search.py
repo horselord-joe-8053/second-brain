@@ -7,7 +7,8 @@ from typing import Any
 
 from .lanes import Lane
 from .raw_embed import embed_texts_batch
-from .raw_rag_index import ensure_index_fresh, vector_search
+from .raw_hybrid_search import filter_chunks_by_model
+from .raw_rag_index import ensure_index_fresh, list_index_chunks, vector_search
 
 
 def concat_top_k_raw_chunks(
@@ -39,6 +40,7 @@ def retrieve_raw_context(
     force_reindex: bool = False,
     skip_index_check: bool = False,
     embed_fn: Any | None = None,
+    model_id: str = "",
 ) -> tuple[list[dict[str, Any]], str, int]:
     """Ensure index, embed query, vector top-k, return hits + context + latency ms."""
     t0 = time.perf_counter()
@@ -53,7 +55,13 @@ def retrieve_raw_context(
         qvec = embed_fn([query])[0]
     else:
         qvec = embed_texts_batch([query], embed_cfg)[0]
-    hits = vector_search(lane, qvec, top_k=top_k)
+    if model_id:
+        pool = filter_chunks_by_model(list_index_chunks(lane), model_id=model_id)
+        from .raw_hybrid_search import rank_chunks_vector
+
+        hits = rank_chunks_vector(qvec, pool, top_n=top_k)
+    else:
+        hits = vector_search(lane, qvec, top_k=top_k)
     context = concat_top_k_raw_chunks(hits, page_prefix_chars=page_prefix_chars)
     ms = int((time.perf_counter() - t0) * 1000)
     return hits, context, ms

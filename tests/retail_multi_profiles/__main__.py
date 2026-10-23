@@ -53,6 +53,22 @@ def main(argv: list[str] | None = None) -> int:
         help="llm_wiki (default) or raw_rag on raw/sources Lance index",
     )
     parser.add_argument(
+        "--raw-retrieval",
+        choices=("vector", "hybrid_rrf", "hybrid_rrf_rerank"),
+        default="",
+        help="Raw arm D3 mode when --retrieval-mode raw_rag (default: run-config retrieval.default_mode)",
+    )
+    parser.add_argument(
+        "--raw-agentic",
+        action="store_true",
+        help="Enable bounded agentic re-search + verifier on raw_rag rows",
+    )
+    parser.add_argument(
+        "--profile",
+        default="",
+        help="Named run_profiles id from run-config.yaml (overrides mode/lanes when set)",
+    )
+    parser.add_argument(
         "--index-raw",
         action="store_true",
         help="Build raw-sources vector index for --lanes (no Q&A)",
@@ -140,18 +156,31 @@ def main(argv: list[str] | None = None) -> int:
     if args.smoke == args.full:
         parser.error("Specify exactly one of --smoke or --full")
 
+    cfg = load_merged_run_config(REPO)
     lane_ids = [x.strip() for x in args.lanes.split(",") if x.strip()]
-    if args.retrieval_mode == "raw_rag" and args.lanes == "A,B,C,D":
+    retrieval_mode = args.retrieval_mode
+    raw_retrieval = args.raw_retrieval
+    raw_agentic = args.raw_agentic
+    if args.profile:
+        from tests.retail_multi_profiles.lib.run_profiles import resolve_run_profile
+
+        prof = resolve_run_profile(cfg, args.profile)
+        retrieval_mode = str(prof.get("retrieval_mode") or retrieval_mode)
+        raw_retrieval = str(prof.get("raw_retrieval") or raw_retrieval)
+        if prof.get("lanes"):
+            lane_ids = [x.strip() for x in str(prof["lanes"]).split(",") if x.strip()]
+    if retrieval_mode == "raw_rag" and args.lanes == "A,B,C,D" and not args.profile:
         lane_ids = ["B", "C", "D"]
     run_id = args.run_id or None
     raw_kw = {
-        "retrieval_mode": args.retrieval_mode,
+        "retrieval_mode": retrieval_mode,
+        "raw_retrieval": raw_retrieval,
+        "raw_agentic": raw_agentic,
         "force_reindex": args.force_reindex,
         "skip_index_check": args.skip_index_check,
     }
 
     if args.smoke:
-        cfg = load_merged_run_config(REPO)
         qids = list(cfg.get("smoke_question_ids") or [])
         out_dir = run_smoke(
             REPO,
