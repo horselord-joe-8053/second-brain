@@ -424,7 +424,7 @@ Deliverables:
 | Item | Why deferred |
 |------|----------------|
 | **Lane A raw RAG** | PDF extraction; B/C cover converted text arms |
-| **Raw hybrid RRF + lexical** | User interest in dynamic RRF tuning; needs v1 vector baseline first |
+| **Raw hybrid RRF + lexical** | Follow-up is [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md) (SKU filter, fusion, listwise rerank). This plan stays the vector-only baseline. |
 | **Identical chunk boundaries to wiki_chunks_v2** | Requires porting page split from `page_embedding.rs` / search chunker |
 | **Tier B — wiki-matched embedding config** | User chose Tier C to avoid `nu_llm_wiki` changes; revisit if vector-score parity matters |
 | **Reuse wiki Lance file in read-only mode** | Wiki vectors index **wiki** text only—not `raw/sources` |
