@@ -232,8 +232,8 @@ Phases **2–4** are fully specified below for roadmap clarity. **Implementation
 
 <h3 id="gpt-p1-5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.5 P1.5 — Judged runs + analysis</h3>
 
-- [ ] **§17.2 step 1:** smoke Lane B raw (see table) — **operator pending**.
-- [ ] **§17.2 step 2:** Lane **B** full **90** × `hybrid_rrf`, `hybrid_rrf_rerank`; Lane **C** smoke optional (**R10**).
+- [ ] **§17.2 step 1 (smoke):** `python -m tests.retail_multi_profiles --smoke --profile MANUAL_B_RAW_HYBRID --lanes B`
+- [ ] **§17.2 step 2 (full):** Lane **B** M90 — hybrid then rerank profiles (table §17.2); Lane **C** smoke optional (**R10**).
 - [ ] **§17.2 step 3:** `docs_manual_gen/artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md` — stub committed; fill after judged runs vs **R14**.
 - [X] Update `tests/retail_multi_profiles/docs/RAW_RAG.md`.
 
@@ -473,12 +473,12 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 
 <h3 id="gpt-phase-exit" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">17.2 Phase exit — smoke, benchmark, analysis (**R15**)</h3>
 
-Every phase **ends** with the same **three-step operator pattern** (CI stays unit/smoke-only; full benchmark is **manual**):
+Every phase **ends** with smoke → full → analysis (**implref §3.1h**). CI pytest stays fixture/smoke-only; **agent runs** smoke then full when keys/env OK; **fail-fast** on red — not “manual benchmark” by default.
 
 | Step | Purpose | Phase 1 (A2 raw) | Phase 2 (A3 tickets) | Phase 3 (A1 wiki) | Phase 4 (COS) |
 |------|---------|------------------|----------------------|-------------------|---------------|
-| **1 Smoke** | Harness alive, no full cost | `python -m tests.retail_multi_profiles --smoke --retrieval-mode raw_rag --lanes B` | `eval_ticket_search.py` on **5** fixture rows or smoke profile | `--smoke --retrieval-mode llm_wiki --lanes B` | `cos_cli` two demo prompts |
-| **2 Benchmark** | Full eval contract **D6** | **M90** Lane **B** full 90 (`--full`, modes per P1.5) | **T100** full ticket eval + ABC regression script | **M90** Lane **B** wiki modes (P3.4) | Demo scripts only (no M90 scoreboard) |
+| **1 Smoke** | Harness alive, no full cost | `python -m tests.retail_multi_profiles --smoke --profile MANUAL_B_RAW_HYBRID --lanes B` | `eval_ticket_search.py` on **5** fixture rows or smoke profile | `--smoke --retrieval-mode llm_wiki --lanes B` | `cos_cli` two demo prompts |
+| **2 Benchmark** | Full eval contract **D6** | **Full:** `--full --profile MANUAL_B_RAW_HYBRID --lanes B --run-id a2-hybrid-rrf-b-v1`; then `--profile MANUAL_B_RAW_HYBRID_RERANK --raw-agentic --run-id a2-hybrid-rerank-b-v1` | **T100** full ticket eval + ABC regression script | **M90** Lane **B** wiki modes (P3.4) | Demo scripts only (no M90 scoreboard) |
 | **3 Analysis** | Compare to **prior run with same profile_id** | `TEST_ANALYSIS_A2_MANUAL_RAG.md` | `TEST_ANALYSIS_A3_TICKET_RAG.md` | `TEST_ANALYSIS_A1_LLM_WIKI.md` | `COS_DEMO_SCRIPTS.md` + short note |
 
 **Analysis doc must include (concise):**

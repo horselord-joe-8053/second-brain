@@ -82,6 +82,7 @@ against **every** plan produced or updated in step 2 (named path(s)).
 | Rule | Behavior |
 |------|----------|
 | **Continuous** | Run **`aciub <plan.md>`** through **all** phases and open sidetracks — **no** mid-plan permission prompts. |
+| **Long-run Exit** | **implref [§3.1h](implref-resumimpl-refactor-plan-followthrough.mdc#ir-s3-1h)** (via **aciub**; no handoff on green path). |
 | **Delegate** | **aciub** pulls in **implref** / **resumimpl** per classic chain ([§6](#qimpl-chain)). |
 | **Tests** | Honor each phase’s Quality bar; fix failures before marking `[X]`. |
 | **Exwar** | Mandatory per **aciub** after each phase — not optional under **`qimpl`**. |
@@ -101,6 +102,7 @@ When step 3 completes or hits a stop condition, reply with a **SUPER concise lay
 | **Tests** | What ran green (brief) |
 | **War stories** | New **#N** or explicit skip per **aciub** |
 | **Blockers** | None, or minimal user action needed |
+| **Long-run / phase done** | Smoke/full pass-fail + plan `[X]` or **§3.1d/§3.1e** — **implref §3.1h** |
 
 No jargon walls; tables over long prose.
 
@@ -126,7 +128,7 @@ Pause and engage the user only when:
 
 - **Step 1** true ambiguity needs answers (multiple-choice sent).
 - **aciub** / **implref** true blocker (build/tests unfixable, missing secrets, explicit scope cut, session cut per **implref** §3.1e).
-- All plan scope **and** sidetracks are **`[X]`** — then step 4 and stop.
+- All plan scope **and** sidetracks are **`[X]`** — including Exit smoke→full per **implref §3.1h** where the plan defines them — then step 4 and stop.
 
 Resume: **`qimpl <same-plan-path>`** or **`aciub`** / **`resumimpl`** on the plan — classic chain only.
 
