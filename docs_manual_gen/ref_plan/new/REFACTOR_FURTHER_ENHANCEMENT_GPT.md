@@ -232,7 +232,7 @@ Phases **2–4** are fully specified below for roadmap clarity. **Implementation
 
 <h3 id="gpt-p1-5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.5 P1.5 — Judged runs + analysis</h3>
 
-- [ ] **§17.2 step 1 (smoke):** `python -m tests.retail_multi_profiles --smoke --profile MANUAL_B_RAW_HYBRID --lanes B`
+- [X] **§17.2 step 1 (smoke):** `a2-p15-smoke-hybrid-b` (2/2 rows; harness OK — 1/2 judge pass on smoke ids)
 - [ ] **§17.2 step 2 (full):** Lane **B** M90 — hybrid then rerank profiles (table §17.2); Lane **C** smoke optional (**R10**).
 - [ ] **§17.2 step 3:** `docs_manual_gen/artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md` — stub committed; fill after judged runs vs **R14**.
 - [X] Update `tests/retail_multi_profiles/docs/RAW_RAG.md`.
