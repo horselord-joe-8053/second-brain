@@ -164,8 +164,8 @@ Lanes are **experimental LLM Wiki projects** — not the same switch as `BRAIN_P
 <tr><td style="background:#e3f2fd"><strong>D3.T-C</strong></td><td>RRF + diagnostic code boost</td><td>D4.PG + D4.LX</td><td style="background:#e8f5e9">✓ mode C (prod default)</td></tr>
 <tr><td style="background:#e3f2fd"><strong>D3.W-H</strong></td><td>Wiki lexical + dense + RRF + graph slot</td><td>D4.W</td><td style="background:#e8f5e9">✓ manual wiki arm</td></tr>
 <tr><td style="background:#e3f2fd"><strong>D3.R-V</strong></td><td>Dense vector on raw chunks</td><td>D4.LC</td><td style="background:#e8f5e9">✓ raw RAG baseline</td></tr>
-<tr><td style="background:#e3f2fd"><strong>D3.R-H</strong></td><td>BM25/Tantivy or Lance keyword + vector → RRF, SKU filter</td><td>D4.LC</td><td style="background:#fff9c4;padding:2px 4px">planned P1.1</td></tr>
-<tr><td style="background:#e3f2fd"><strong>D3.*-RR</strong></td><td>Any of above + listwise rerank</td><td>same</td><td style="background:#fff9c4;padding:2px 4px">planned P1.2 / P2.3 / P3.3</td></tr>
+<tr><td style="background:#e3f2fd"><strong>D3.R-H</strong></td><td>BM25/Tantivy or Lance keyword + vector → RRF, SKU filter</td><td>D4.LC</td><td style="background:#e8f5e9">✓ P1.1 Lane B (34/60 interim)</td></tr>
+<tr><td style="background:#e3f2fd"><strong>D5.R</strong> (not D3)</td><td>Listwise rerank on any D3 pool</td><td>same D4</td><td style="background:#fff3e0">library ✓; harness **llm_listwise** open (P1.2b)</td></tr>
 </tbody>
 </table>
 
@@ -191,7 +191,29 @@ Examples:
 **Compare fairly:** hold **D6** and **D2** fixed, sweep **D3** and **D5**.  
 **Do not** compare `D6.T100` to `D6.M90` directly — different questions.
 
-**Harness direction (not implemented yet):** one YAML **`run_profiles:`** section mapping `profile_id` → CLI flags (`--retrieval-mode`, `--lanes`, ticket mode env, `wiki_evidence`, `raw_retrieval` submode).
+**Harness (partial → P1.0b):** YAML **`run_profiles:`** in `tests/retail_multi_profiles/data/run-config.yaml` maps informal ids → **D3** today; **D5** must live on each profile block (**R18–R20** in GPT plan).
+
+**Implementer / operator doc:** [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md) — **`ResolvedRunProfile`**, `d5.rerank.enabled` (off switch) + `d5.rerank.backend` (default **`llm_listwise`** when enabled), env overrides, pre-flight.
+
+**Target profile shape (Lane B raw — illustrative):**
+
+```yaml
+MANUAL_B_RAW_HYBRID_RERANK:
+  retrieval_mode: raw_rag
+  raw_retrieval: hybrid_rrf          # D3.R-H only
+  lanes: B
+  d5:
+    rerank:
+      enabled: true
+      backend: llm_listwise          # D5.R — not a separate D3 engine name
+    verifier:
+      enabled: true                  # D5.V
+    agentic:
+      enabled: true
+      max_loops: 1                   # D5.A (R4)
+```
+
+**Legacy mistake:** treating `raw_retrieval: hybrid_rrf_rerank` as “rerank on” without **`d5.rerank`** + wired **`rank_fn`** — rerank was a no-op in interim **v1** runs (**R21**).
 
 ---
 

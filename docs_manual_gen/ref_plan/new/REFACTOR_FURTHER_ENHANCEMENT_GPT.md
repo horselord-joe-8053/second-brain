@@ -1,8 +1,8 @@
 <h1 id="gpt-enh-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — three Q&amp;A tracks, then Chief of Staff (realigned)</h1>
 
-**Status:** **wip** — Phase **1** code in progress (**P1.5** operator judged runs pending). Phases **2–4** gated by **HG-P***.  
-**Execute:** **`qimpltdd`** this file → **`aciubtdd`** / **`implreftdd`** (Phase **1** first; Phases 2–4 after **HG-P***). Plain **`implref`** without TDD table is legacy.  
-**last_aligned:** 2026-10-24 — dimensions; **R14**; TDD **1–4** (**R16**); **neatlog** §17.6 (**R17**).
+**Status:** **wip** — Phase **1 hard exit met** (v2 fair runs); **HG-P1** human sign-off before Phase **2**. Phases **2–4** gated by **HG-P***.  
+**Execute:** **`qimpltdd`** this file → **`aciubtdd`** / **`implreftdd`** (finish Phase **1** P1.0b–P1.5b first; Phases 2–4 after **HG-P1**). Plain **`implref`** without TDD table is legacy.  
+**last_aligned:** 2026-10-24 — **R18–R21** (config SSOT, D5 backends, Phase 1 rework); interim judged runs documented; operator doc [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md).
 
 **Branch:** `feature/evo-14-multi-retail-gpt-rerank`.  
 **Realignment source:** ChatGPT share from user diagrams — [refactor three tracks](https://chatgpt.com/share/6adb338c-a8e0-83ec-88aa-f633463cb70e) (from *“I am trying hard to make what we want to refactor/improve more concrete…”*). Transcript: `utils/chatgpt/transcripts/refactor_three_tracks_cos_6adb338c-a8e0-83ec-88aa-f633463cb70e.txt`.  
@@ -49,7 +49,7 @@ Phase 1 TDD table: [§17.1](#gpt-tdd).
 | **D5** | Post-retrieval | **0** today → **R/V/A** (phases 1–3) · **C** COS (phase 4) |
 | **D6** | Eval contract | **T100** tickets · **M90** manual 90-Q · **AUDIT** wiki claims |
 
-**Fair compare:** fix **D6 + D2 (+ D1)**, sweep **D3** and **D5**. Target harness: **`run_profiles`** in `run-config.yaml` (see dimensions doc §9).
+**Fair compare:** fix **D6 + D2 (+ D1)**, sweep **D3** and **D5**. Target harness: **`run_profiles`** in `run-config.yaml` → **`ResolvedRunProfile`** (see [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md) and dimensions doc §5).
 
 <h2 id="gpt-measured" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Measured baselines</h2>
 
@@ -206,38 +206,50 @@ Phases **2–4** are fully specified below for roadmap clarity. **Implementation
 
 <h2 id="gpt-phase1" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">10. Phase 1 — A2 Manual RAG</h2>
 
-<h3 id="gpt-p1-0" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.0 P1.0 — Run profiles registry (optional, recommended)</h3>
+<h3 id="gpt-p1-0" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.0 P1.0 — Run profiles registry (scaffolding — partial)</h3>
 
-- [X] Add **`run_profiles`** entries to `tests/retail_multi_profiles/data/run-config.yaml` per [`REALIGNMENT_DIMENSIONS.md`](../../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) §5–§9 (Lane B baselines + Phase 1 candidates).
-- [X] Runner: resolve `--profile <id>` → CLI flags (D3/D5/D6/D2).
+- [X] Add **`run_profiles`** entries to `tests/retail_multi_profiles/data/run-config.yaml` (Lane B: vector / hybrid / rerank id).
+- [X] Runner: resolve `--profile <id>` → **`retrieval_mode`**, **`raw_retrieval`**, lanes only (**D3 partial**).
+- [X] **P1.0b — Resolved run profile (D1–D6 on profile):** YAML **`d5`** blocks; **`resolve_effective_profile()`** → **`ResolvedRunProfile`** (**R18**); [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md).
+- [X] **P1.0c — Config coercion:** **`config_coerce.py`** + **`_coerce_raw_rag_scalars`**; snapshot **`resolved_profile`** in `results.json`.
 
-<h3 id="gpt-p1-1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.1 P1.1 — Retriever core</h3>
+<h3 id="gpt-p1-1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.1 P1.1 — Retriever core (D3.R-H — done)</h3>
 
 - [X] SKU-filtered vector search; manual keyword index; RRF; config under `retail_raw_rag`.
 - [X] Unit tests on fixture corpus (wrong-SKU blocked under hybrid).
+- [X] Inline comments in `raw_hybrid_search.py` / retriever: **D3 vs D5** (**R19**).
 
-<h3 id="gpt-p1-2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.2 P1.2 — Listwise rerank</h3>
+<h3 id="gpt-p1-2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.2 P1.2 — D5.R listwise rerank (library done; harness incomplete)</h3>
 
-- [X] Shared `rerank.py`; mode `hybrid_rrf_rerank` vs `hybrid_rrf` vs legacy `vector`.
+- [X] Shared `rerank.py` + `listwise_rerank(..., rank_fn=...)`; unit test with mock **`rank_fn`**.
+- [X] Retriever calls listwise step when legacy mode `hybrid_rrf_rerank` (hook only).
+- [X] **P1.2b — Wire rerank:** `retail_brain/rerank_registry.py` + **`manual_raw_pipeline.py`** (**R5**).
+- [X] **P1.2c — Config:** profile **`d5.rerank`** + env overrides (**R20**).
+- [X] **P1.2d — Pre-flight:** **`assert_rerank_preflight`** at run start; v2 run **51/60** rows reorder vs hybrid.
 
-<h3 id="gpt-p1-3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.3 P1.3 — Evidence packages + harness</h3>
+**Naming (rerank backend):** use **`d5.rerank.enabled`** + **`d5.rerank.backend`** — not separate env names `LIST_WISE_RANK_FN` vs `LLM_RANK_FN` (same **llm_listwise**). Cross-encoder = **`cross_encoder`**, not `BERT_RANK_FN`.
+
+<h3 id="gpt-p1-3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.3 P1.3 — Evidence packages + harness (partial)</h3>
 
 - [X] `evidence/retriever.py`, `verifier.py`, `agentic.py` (manual policy).
-- [X] Harness `--raw-retrieval`; persist rank metadata; **no wiki combined flags**.
-- [X] **§17.6:** extend raw runner progress steps (hybrid, rerank, verifier, agentic); DEBUG rank fields when `NEAT_LOGGER_DEBUG=1`.
+- [X] Harness `--raw-retrieval`; progress steps (hybrid, rerank, verifier, agentic); **§17.6** neatlog.
+- [X] **P1.3b — Thin runner:** **`build_manual_raw_pipeline`**; removed **`bool(yaml)`** agentic OR (**R18**).
+- [X] Persist **`search_meta.agentic`**, **`search_meta.resolved_d5`**.
 
-<h3 id="gpt-p1-4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.4 P1.4 — Agentic bounded expansion</h3>
+<h3 id="gpt-p1-4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.4 P1.4 — D5.V + D5.A (unit tests done; profile differentiation incomplete)</h3>
 
-- [X] Verifier coverage on **hard** tier; at most **one** subquery when configured; abstain path.
+- [X] Verifier + agentic unit tests; budget **≤ 1** loop.
+- [X] **P1.4b — Profile-owned D5:** YAML **`d5`**; v2 rerank arm **6** rows with **`agentic.loops > 0`**.
+- [ ] Optional: hard-tier stricter **`min_term_coverage`** (deferred — +A fires on v2).
 
 <h3 id="gpt-p1-5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.5 P1.5 — Judged runs + analysis</h3>
 
-- [X] **§17.2 step 1 (smoke):** `a2-p15-smoke-hybrid-b` (2/2 rows; harness OK — 1/2 judge pass on smoke ids)
-- [ ] **§17.2 step 2 (full):** Lane **B** M90 — hybrid then rerank profiles (table §17.2); Lane **C** smoke optional (**R10**).
-- [ ] **§17.2 step 3:** `docs_manual_gen/artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md` — stub committed; fill after judged runs vs **R14**.
-- [X] Update `tests/retail_multi_profiles/docs/RAW_RAG.md`.
+- [X] **Interim §17.2:** smoke `a2-p15-smoke-hybrid-b`; full `a2-hybrid-rrf-b-v1` **34/60**; `a2-hybrid-rerank-b-v1` **33/60** (not a fair D5 compare — identical `top_hits`).
+- [X] Interim [`TEST_ANALYSIS_A2_MANUAL_RAG.md`](../../artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md) + [`RAW_RAG.md`](../../../tests/retail_multi_profiles/docs/RAW_RAG.md).
+- [X] **P1.5b — Fair re-benchmark:** `a2-hybrid-rrf-b-v2` **34/60**; `a2-hybrid-rerank-b-v2` **37/60** (fair D5).
+- [X] **P1.5c — Analysis update:** [`TEST_ANALYSIS_A2_MANUAL_RAG.md`](../../artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md) v2 section; **HG-P1** candidate: promote **`MANUAL_B_RAW_HYBRID_RERANK`** default.
 
-**Phase 1 exit:** Lane **B** answerable (60) for best mode **`hybrid_rrf_rerank`** meets **R14**; `./scripts/verify.sh` green; **P1.5** analysis committed. Unblocks **HG-P1**. Lane D re-benchmark is **out of Phase 1 exit**.
+**Phase 1 hard exit (revised):** Lane **B** answerable **≥ 30/60** on best arm; **fair** D5 ladder; **`hybrid_rrf` + D5.0** **≥ 28/60**; rerank profile must prove **active D5.R** before **R+V+A** claims; `./scripts/verify.sh` green or waived in Decisions. Unblocks **HG-P1**.
 
 ---
 
@@ -433,7 +445,11 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 | **R11** | **COS MVP** — CLI demo before FastAPI (**P4.2** before **P4.3**). |
 | **R12** | **Plan depth** — Phases 2–4 fully specified in this file; **code** still gated by **HG-P*** rows. |
 | **R13** | **Dimension vocabulary** — [`REALIGNMENT_DIMENSIONS.md`](../../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) is canonical for benchmarks and run profiles; phases map via [§3](#gpt-dim-map). |
-| **R14** | **Phase 1 exit (Lane B, answerable/60):** Baselines — wiki hybrid **9/60** (`abcd-full-openai-v2`); raw vector **28/60** (`abcd-raw-full-openai-v1` scoreboard). Promote **`hybrid_rrf_rerank`** when answerable **≥ 30/60** (beats raw vector +2) **and** mean retrieval **&lt; 2 s** on B; intermediate **`hybrid_rrf`** must not regress below **28/60**. Else **P1.5** fail doc with next lever (ingest vs ranker). **Scope:** **raw RAG (D3 on D4.LC) only** — not LLM Wiki (**D3.W-H**); wiki harness is **Phase 3**. |
+| **R14** | **Phase 1 exit (Lane B, answerable/60):** Baselines — wiki hybrid **9/60** (`abcd-full-openai-v2`); raw vector **28/60** (`abcd-raw-full-openai-v1`). Best arm **≥ 30/60**, mean retrieval **&lt; 2 s**; **`hybrid_rrf` + D5.0** **≥ 28/60**. Promote default profile only after **fair** D5 compare (**R21**). **Scope:** raw RAG only — not LLM Wiki. |
+| **R18** | **Run profile SSOT:** **`ResolvedRunProfile`** from YAML `run_profiles` + env + CLI; runner must not OR-parse YAML booleans. Doc: [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md). |
+| **R19** | **D3 vs D5 vocabulary:** `hybrid_rrf` = D3; D5.R/V/A only via **`d5`** on profile. Legacy `hybrid_rrf_rerank` D3 string deprecated after P1.0b (alias OK during migration). |
+| **R20** | **D5.R config:** `d5.rerank.enabled` (bool) is the off switch; when true, `d5.rerank.backend` defaults **`llm_listwise`**, alt **`cross_encoder`** (P1: **llm_listwise** only; cross-encoder must not silent no-op). |
+| **R21** | **Interim runs (2026-10-24):** `a2-hybrid-*-b-v1` invalid for D5 promotion — identical retrieval; **P1.5b** `-v2` required before **HG-P1**. |
 | **R15** | **Phase exit trio:** smoke → full benchmark (**D6**) → analysis vs prior **profile_id** — [§17.2](#gpt-phase-exit); required at end of **each** phase before **HG-P*** unlock. |
 | **R16** | **`onlyreftdd` Phases 2–4 (2026-10-24):** TDD tables in [§17.3–17.5](#gpt-tdd-p2); plan is **paper-ready** for multi-phase **`qimpltdd`**; **execution** order unchanged (**HG-P***). |
 | **R17** | **Operator logging:** all new runners/CLIs follow [§17.6](#gpt-neatlog) + **neatlog** rule; logging ships **in the same phase** as the feature (qimpl/aciub bar). |
@@ -442,6 +458,15 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 
 **Grill 2026-10-23 (phase expansion):** **G3** A3 exit = stratum-first (**R9**). **G4** A1/A2 benchmark base = **Lane B**; Lane D later (**R10**). **G5** COS MVP = CLI before API (**R11**).
 
+**Align 2026-10-24 (Phase 1 rework — eval → plan):**
+
+| # | Choice | Rationale |
+|---|--------|-----------|
+| **A** | **`d5.rerank.enabled` (bool) + `backend` (default `llm_listwise` when on)** — no `none` backend | Cross-encoder = **`cross_encoder`** only when explicitly chosen (**R20**) |
+| **B** | **YAML profile SSOT + env override + `ResolvedRunProfile`**; remove runner `bool(yaml)` OR | Fair D5.0 vs R+V+A; fixes interim v1 mis-compare (**R18**, **R21**) |
+| **C** | **cdcm + [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md)** everywhere D3/D5 touched | Multi-dimensional profiles stay legible without spelunking `runner.py` |
+| **D** | Re-open **P1.0b–P1.5b**; interim v1 runs kept for history only | **HG-P1** waits on **v2** fair benchmark |
+
 ---
 
 <h2 id="gpt-quality" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">17. Quality bar</h2>
@@ -449,7 +474,7 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 | Area | Requirement |
 |------|-------------|
 | **Tests** | Unit tests for fusion, rerank, agentic budget, verifier JSON; no live 90 in CI. |
-| **Comments** | **cdcm** on `evidence/*` and harness edits. |
+| **Comments** | **cdcm** on `evidence/*`, **`run_profiles` / resolver**, pipeline factory, and harness edits; tie comments to **D3** vs **D5** terms in [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md). |
 | **Logging** | Mandatory **[§17.6 neatlog](#gpt-neatlog)** — every new CLI/runner; same phase as feature code (**not** deferred polish). |
 | **Safety** | Default `vector` + wiki `full` unchanged until human promotes after analysis. |
 
@@ -462,10 +487,12 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 <tbody>
 <tr><td style="background:#e3f2fd"><strong>P1.0</strong> profiles</td><td style="background:#fff8e1">smoke-after-delete</td><td><code>tests/retail_multi_profiles/test_run_config.py</code> — profile id resolves flags</td><td>N/A (additive config)</td><td><code>pytest tests/retail_multi_profiles/test_run_config.py</code></td></tr>
 <tr><td style="background:#e3f2fd"><strong>P1.1</strong> hybrid</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail_multi_profiles/test_raw_hybrid_search.py</code> (new) — RRF fusion + SKU filter on fixtures</td><td><code>hybrid_rrf</code> not implemented → import/call fails</td><td><code>pytest tests/retail_multi_profiles/test_raw_hybrid_search.py</code></td></tr>
-<tr><td style="background:#e3f2fd"><strong>P1.2</strong> rerank</td><td style="background:#e8f5e9">strict-TDD</td><td><code>scripts/retail/retail_brain/tests/test_rerank.py</code> or under <code>tests/retail_multi_profiles/</code> — stable order from mock LLM</td><td><code>hybrid_rrf_rerank</code> mode missing</td><td>rerank unit tests + existing raw tests green</td></tr>
+<tr><td style="background:#e3f2fd"><strong>P1.2</strong> rerank lib</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail_multi_profiles/test_raw_rerank.py</code> — mock <code>rank_fn</code> reorders</td><td>listwise no-op when ids valid</td><td>rerank unit tests green</td></tr>
+<tr><td style="background:#e3f2fd"><strong>P1.2b–d</strong> harness rerank</td><td style="background:#e8f5e9">strict-TDD</td><td><code>test_run_config.py</code> + new <code>test_resolved_run_profile.py</code> — profile with <code>d5.rerank.enabled: true</code> builds non-null <code>rank_fn</code>; integration smoke: harness <code>top_hits</code> order ≠ hybrid-only on fixture</td><td>profile enables rerank but <code>rank_fn</code> None at runtime</td><td>pytest retail_multi_profiles + pre-flight passes</td></tr>
+<tr><td style="background:#e3f2fd"><strong>P1.0b–c</strong> resolver</td><td style="background:#e8f5e9">strict-TDD</td><td><code>test_resolved_run_profile.py</code> — <code>agentic.enabled: false</code> string → off; MANUAL_B_RAW_HYBRID vs RERANK D5 diff</td><td><code>bool("false")</code> turns agentic on</td><td>resolver tests green</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P1.3</strong> evidence</td><td style="background:#e8f5e9">strict-TDD</td><td><code>scripts/retail/retail_brain/tests/test_evidence_manual.py</code> — package JSON shape from fixture chunks</td><td><code>EvidenceRetriever</code> manual policy absent</td><td>evidence unit tests green</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P1.4</strong> agentic</td><td style="background:#e8f5e9">strict-TDD</td><td>same file — agentic budget **≤ 1** loop; verifier triggers re-query once</td><td>second loop allowed when budget exhausted</td><td>agentic budget tests green</td></tr>
-<tr><td style="background:#e3f2fd"><strong>P1.5</strong> operator</td><td style="background:#fff8e1">smoke-after-delete</td><td>Manual: Lane B full run; artifact <code>TEST_ANALYSIS_A2_MANUAL_RAG.md</code></td><td>N/A</td><td><code>./scripts/verify.sh</code> + analysis vs **R14**</td></tr>
+<tr><td style="background:#e3f2fd"><strong>P1.5b</strong> operator</td><td style="background:#fff8e1">smoke-after-delete</td><td>Fair **v2** full runs; update <code>TEST_ANALYSIS_A2_MANUAL_RAG.md</code>; <code>resolved_profile</code> in results</td><td>N/A</td><td><code>./scripts/verify.sh</code> + **R14** / **R21** + **HG-P1** note</td></tr>
 </tbody>
 </table>
 
@@ -478,7 +505,7 @@ Every phase **ends** with smoke → full → analysis (**implref §3.1h**). CI p
 | Step | Purpose | Phase 1 (A2 raw) | Phase 2 (A3 tickets) | Phase 3 (A1 wiki) | Phase 4 (COS) |
 |------|---------|------------------|----------------------|-------------------|---------------|
 | **1 Smoke** | Harness alive, no full cost | `python -m tests.retail_multi_profiles --smoke --profile MANUAL_B_RAW_HYBRID --lanes B` | `eval_ticket_search.py` on **5** fixture rows or smoke profile | `--smoke --retrieval-mode llm_wiki --lanes B` | `cos_cli` two demo prompts |
-| **2 Benchmark** | Full eval contract **D6** | **Full:** `--full --profile MANUAL_B_RAW_HYBRID --lanes B --run-id a2-hybrid-rrf-b-v1`; then `--profile MANUAL_B_RAW_HYBRID_RERANK --raw-agentic --run-id a2-hybrid-rerank-b-v1` | **T100** full ticket eval + ABC regression script | **M90** Lane **B** wiki modes (P3.4) | Demo scripts only (no M90 scoreboard) |
+| **2 Benchmark** | Full eval contract **D6** | **Full (fair):** `--full --profile MANUAL_B_RAW_HYBRID --run-id a2-hybrid-rrf-b-v2`; `--full --profile MANUAL_B_RAW_HYBRID_RERANK --run-id a2-hybrid-rerank-b-v2` (**no** `--raw-agentic` — D5 from profile). Interim **v1** runs: **R21** — not for promotion. | **T100** full ticket eval + ABC regression script | **M90** Lane **B** wiki modes (P3.4) | Demo scripts only (no M90 scoreboard) |
 | **3 Analysis** | Compare to **prior run with same profile_id** | `TEST_ANALYSIS_A2_MANUAL_RAG.md` | `TEST_ANALYSIS_A3_TICKET_RAG.md` | `TEST_ANALYSIS_A1_LLM_WIKI.md` | `COS_DEMO_SCRIPTS.md` + short note |
 
 **Analysis doc must include (concise):**
@@ -585,12 +612,13 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 
 **Phase 1 — A2**
 
-- [X] P1.0 Run profiles registry (optional)
-- [X] P1.1 Retriever core
-- [X] P1.2 Listwise rerank
-- [X] P1.3 Evidence packages + harness
-- [X] P1.4 Agentic bounded expansion
-- [ ] P1.5 Judged runs + TEST_ANALYSIS_A2_MANUAL_RAG.md
+- [X] P1.0 Run profiles registry (D3 scaffolding)
+- [X] P1.0b–c ResolvedRunProfile + coercion + results snapshot
+- [X] P1.1 Retriever core (D3.R-H)
+- [X] P1.2 rerank library + P1.2b–d harness **llm_listwise** + pre-flight
+- [X] P1.3 evidence modules + P1.3b thin runner + row meta
+- [X] P1.4 agentic unit tests + P1.4b profile D5.0 vs R+V+A
+- [X] P1.5 interim + P1.5b–c fair **v2** benchmark + analysis
 
 **Phase 2 — A3** (after **HG-P1**)
 
@@ -637,6 +665,7 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 | Link | Role |
 |------|------|
 | [`REALIGNMENT_DIMENSIONS.md`](../../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) | **D1–D6**, Part 1 fact-check, run profiles |
+| [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md) | Operator + implementer: **D3/D5**, config SSOT, backends |
 | [`REALIGNMENT_REFACTOR_GOALS.md`](../../artifacts/aggregated/REALIGNMENT_REFACTOR_GOALS.md) | One-page A/B summary from diagram chat |
 | [`ABOUT_FURTHER_ENHANCEMENT_GPT.md`](../../artifacts/aggregated/ABOUT_FURTHER_ENHANCEMENT_GPT.md) | First long chat digestion |
 | [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../wip/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | Vector baseline done |

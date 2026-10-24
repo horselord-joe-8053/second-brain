@@ -161,14 +161,22 @@ def main(argv: list[str] | None = None) -> int:
     retrieval_mode = args.retrieval_mode
     raw_retrieval = args.raw_retrieval
     raw_agentic = args.raw_agentic
+    resolved = None
+    profile_id = args.profile or ""
     if args.profile:
-        from tests.retail_multi_profiles.lib.run_profiles import resolve_run_profile
+        from tests.retail_multi_profiles.lib.resolved_run_profile import resolve_effective_profile
 
-        prof = resolve_run_profile(cfg, args.profile)
-        retrieval_mode = str(prof.get("retrieval_mode") or retrieval_mode)
-        raw_retrieval = str(prof.get("raw_retrieval") or raw_retrieval)
-        if prof.get("lanes"):
-            lane_ids = [x.strip() for x in str(prof["lanes"]).split(",") if x.strip()]
+        resolved = resolve_effective_profile(
+            cfg,
+            profile_id=args.profile,
+            lane_ids=lane_ids,
+            retrieval_mode=retrieval_mode,
+            raw_retrieval=raw_retrieval,
+            raw_agentic=raw_agentic,
+        )
+        retrieval_mode = resolved.retrieval_mode
+        raw_retrieval = resolved.d3_engine
+        lane_ids = list(resolved.lane_ids)
     if retrieval_mode == "raw_rag" and args.lanes == "A,B,C,D" and not args.profile:
         lane_ids = ["B", "C", "D"]
     run_id = args.run_id or None
@@ -178,6 +186,8 @@ def main(argv: list[str] | None = None) -> int:
         "raw_agentic": raw_agentic,
         "force_reindex": args.force_reindex,
         "skip_index_check": args.skip_index_check,
+        "profile_id": profile_id,
+        "resolved": resolved,
     }
 
     if args.smoke:

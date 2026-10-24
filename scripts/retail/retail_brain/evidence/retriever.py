@@ -19,7 +19,7 @@ from tests.retail_multi_profiles.lib.raw_rag_search import (  # noqa: E402
 
 from .types import EvidenceChunk, EvidencePackage
 
-RankFn = Callable[[str, list[dict[str, Any]]], list[str]]
+RankFn = Callable[[str, list[dict[str, Any]]], str]
 
 
 class ManualEvidenceRetriever:
@@ -54,6 +54,7 @@ class ManualEvidenceRetriever:
     ) -> EvidencePackage:
         """Run configured retrieval mode and normalize to EvidencePackage."""
         t0 = time.perf_counter()
+        # D3 hybrid RRF — D5 listwise rerank runs only when rank_fn is wired (not mode name).
         if self.mode in ("hybrid_rrf", "hybrid_rrf_rerank"):
             hits = hybrid_rrf_search(
                 self.lane,
@@ -65,19 +66,20 @@ class ManualEvidenceRetriever:
                 force_reindex=force_reindex,
                 skip_index_check=skip_index_check,
             )
-            if self.mode == "hybrid_rrf_rerank" and hits:
+            if hits and self.rank_fn is not None:
                 from retail_brain.rerank import listwise_rerank
 
                 hits = listwise_rerank(query, hits, rank_fn=self.rank_fn, max_candidates=self.top_k)
             chunks = _hits_to_chunks(hits)
             ms = int((time.perf_counter() - t0) * 1000)
+            pkg_mode = "hybrid_rrf" if self.mode == "hybrid_rrf_rerank" else self.mode
             return EvidencePackage(
                 query=query,
                 model_id=model_id,
-                mode=self.mode,
+                mode=pkg_mode,
                 chunks=chunks,
                 latency_ms=ms,
-                meta={"hit_count": len(hits)},
+                meta={"hit_count": len(hits), "d5_rerank": self.rank_fn is not None},
             )
 
         hits, _ctx, ms = retrieve_raw_context(

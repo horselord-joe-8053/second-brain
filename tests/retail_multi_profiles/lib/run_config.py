@@ -13,6 +13,8 @@ if str(BRAIN_SCRIPTS) not in sys.path:
 
 from brain_stack import _parse_simple_yaml, load_brain_stack  # noqa: E402
 
+from .config_coerce import coerce_bool, coerce_int  # noqa: E402
+
 _DEFAULT_EVIDENCE: dict[str, Any] = {
     "search_top_k": 5,
     "query_template": "{model_id} {question}",
@@ -53,6 +55,26 @@ def _smoke_question_ids(run_raw: dict[str, Any]) -> list[str]:
     if isinstance(raw, dict):
         return [str(v) for v in raw.values() if v]
     return []
+
+
+def _coerce_raw_rag_scalars(raw_rag: dict[str, Any]) -> dict[str, Any]:
+    """Normalize retail_raw_rag booleans/ints after simple YAML parse."""
+    out = dict(raw_rag)
+    agentic = dict(out.get("agentic") or {})
+    agentic["enabled"] = coerce_bool(agentic.get("enabled"), default=False)
+    agentic["max_loops"] = coerce_int(agentic.get("max_loops"), default=1)
+    out["agentic"] = agentic
+    retr = dict(out.get("retrieval") or {})
+    if "rrf_k" in retr:
+        retr["rrf_k"] = coerce_int(retr.get("rrf_k"), default=60)
+    out["retrieval"] = retr
+    emb = dict(out.get("embedding") or {})
+    if "batch_size" in emb:
+        emb["batch_size"] = coerce_int(emb.get("batch_size"), default=32)
+    if "timeout_sec" in emb:
+        emb["timeout_sec"] = coerce_int(emb.get("timeout_sec"), default=120)
+    out["embedding"] = emb
+    return out
 
 
 def _coerce_evidence_scalars(evidence: dict[str, Any]) -> dict[str, Any]:
@@ -110,6 +132,7 @@ def load_merged_run_config(
     eval_cfg = _deep_merge(_DEFAULT_EVAL, {k: v for k, v in eval_block.items() if v is not None})
 
     raw_rag_cfg = _deep_merge(_DEFAULT_RAW_RAG, run_raw.get("retail_raw_rag") or {})
+    raw_rag_cfg = _coerce_raw_rag_scalars(raw_rag_cfg)
 
     evidence = _coerce_evidence_scalars(evidence)
     try:

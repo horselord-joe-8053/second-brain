@@ -1,4 +1,7 @@
-"""Hybrid lexical + vector retrieval with RRF on raw Lance chunks."""
+"""D3.R-H: hybrid lexical + vector retrieval with RRF on raw Lance chunks (SKU-filtered).
+
+Listwise rerank is D5.R — applied in ManualEvidenceRetriever when rank_fn is wired, not here.
+"""
 
 from __future__ import annotations
 

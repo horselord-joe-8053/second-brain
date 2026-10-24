@@ -29,9 +29,10 @@ from retail_brain.answer_manuals import LlmWikiHttpClient
 from utils.neat_logger.neat_logger_instance import NeatLogger, NeatLoggerFactory
 
 from .answer_pipeline import answer_from_context, retrieve_context, scoped_query
-from retail_brain.evidence.agentic import AgenticRetrievalController
-from retail_brain.evidence.retriever import ManualEvidenceRetriever
+from retail_brain.evidence.verifier import verify_manual_coverage
 
+from .manual_raw_pipeline import build_manual_raw_pipeline
+from .resolved_run_profile import ResolvedRunProfile
 from .raw_rag_index import ensure_index_fresh
 from .raw_rag_search import concat_top_k_raw_chunks, retrieve_raw_context
 from .eval_models import resolve_eval_llms
@@ -93,6 +94,8 @@ class _RunContext:
     raw_agentic: bool
     force_reindex: bool
     skip_index_check: bool
+    resolved: ResolvedRunProfile | None
+    profile_id: str
 
 
 def _emit_progress(ctx: _RunContext, **fields: Any) -> None:
@@ -122,6 +125,24 @@ def _flush_results_json(ctx: _RunContext, questions: list[SuiteQuestion]) -> Non
         "rows": rows,
     }
     (ctx.out_dir / "results.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def _fallback_resolved(ctx: _RunContext) -> ResolvedRunProfile:
+    """CLI-only raw runs without --profile (legacy flags → minimal ResolvedRunProfile)."""
+    d3 = ctx.raw_retrieval or str(
+        ((ctx.cfg.get("retail_raw_rag") or {}).get("retrieval") or {}).get("default_mode") or "vector"
+    )
+    if d3 == "hybrid_rrf_rerank":
+        d3 = "hybrid_rrf"
+    return ResolvedRunProfile(
+        profile_id=ctx.profile_id or "cli",
+        retrieval_mode=ctx.retrieval_mode,
+        d3_engine=d3,
+        lane_ids=list(ctx.lane_ids),
+        d5_rerank_enabled=ctx.raw_retrieval == "hybrid_rrf_rerank",
+        d5_verifier_enabled=ctx.raw_agentic,
+        d5_agentic_enabled=ctx.raw_agentic,
+    )
 
 
 def _run_one_row(
@@ -160,14 +181,15 @@ def _run_one_row(
             f"retrieve query={query[:120]!r} top_k={top_k} page_prefix_chars={page_prefix}"
         )
         verifier_summary: dict[str, Any] | None = None
+        agentic_meta: dict[str, Any] | None = None
         context = ""
         retrieval_ms = 0
         hits: list[dict[str, Any]] = []
         if ctx.retrieval_mode == "raw_rag":
             embed_cfg = (ctx.cfg.get("retail_raw_rag") or {}).get("embedding") or {}
             raw_cfg = ctx.cfg.get("retail_raw_rag") or {}
-            agentic_on = ctx.raw_agentic or bool((raw_cfg.get("agentic") or {}).get("enabled"))
-            mode = ctx.raw_retrieval or str((raw_cfg.get("retrieval") or {}).get("default_mode") or "vector")
+            resolved = ctx.resolved or _fallback_resolved(ctx)
+            mode = resolved.d3_engine
             _emit_progress(
                 ctx,
                 step="raw_search_start",
@@ -175,21 +197,23 @@ def _run_one_row(
                 question_id=q.question_id,
                 index=index,
                 raw_mode=mode,
+                profile_id=resolved.profile_id,
             )
-            if mode in ("hybrid_rrf", "hybrid_rrf_rerank") or agentic_on:
-                retriever = ManualEvidenceRetriever(
+            if mode in ("hybrid_rrf", "hybrid_rrf_rerank") or resolved.d5_verifier_enabled or resolved.d5_agentic_enabled:
+                answer_cfg = ctx.cfg.get("answer") or {}
+                pipeline = build_manual_raw_pipeline(
                     lane,
+                    resolved,
                     embed_cfg=embed_cfg,
-                    mode=mode,
                     top_k=top_k,
                     page_prefix_chars=page_prefix,
+                    raw_rag_cfg=raw_cfg,
+                    answer_llm_cfg=answer_cfg,
                 )
-                if agentic_on:
-                    max_loops = int((raw_cfg.get("agentic") or {}).get("max_loops") or 1)
-                    ctrl = AgenticRetrievalController(retriever, max_loops=max_loops)
-                    if mode == "hybrid_rrf_rerank":
-                        _emit_progress(ctx, step="rerank_start", lane=lane.lane_id, question_id=q.question_id, index=index)
-                    agent_out = ctrl.retrieve_with_verifier(
+                if pipeline.rank_fn_active:
+                    _emit_progress(ctx, step="rerank_start", lane=lane.lane_id, question_id=q.question_id, index=index)
+                if pipeline.agentic is not None:
+                    agent_out = pipeline.agentic.retrieve_with_verifier(
                         query,
                         q.question,
                         model_id=q.model_id,
@@ -198,19 +222,22 @@ def _run_one_row(
                     )
                     pkg = agent_out.package
                     verifier_summary = agent_out.verifier.to_dict()
-                    retrieval_ms = pkg.latency_ms
-                    hits = [
-                        {
-                            "chunk_id": c.chunk_id,
-                            "source_relpath": c.source_relpath,
-                            "model_id": c.model_id,
-                            "text": c.text,
-                            **c.scores,
-                        }
-                        for c in pkg.chunks
-                    ]
-                    if mode == "hybrid_rrf_rerank":
-                        _emit_progress(ctx, step="rerank_done", lane=lane.lane_id, question_id=q.question_id, index=index)
+                    agentic_meta = {
+                        "subquery_used": agent_out.subquery_used,
+                        "loops": agent_out.loops,
+                    }
+                else:
+                    pkg = pipeline.retriever.retrieve(
+                        query,
+                        model_id=q.model_id,
+                        force_reindex=ctx.force_reindex,
+                        skip_index_check=ctx.skip_index_check,
+                    )
+                    if resolved.d5_verifier_enabled:
+                        verifier_summary = verify_manual_coverage(pkg, q.question).to_dict()
+                if pipeline.rank_fn_active:
+                    _emit_progress(ctx, step="rerank_done", lane=lane.lane_id, question_id=q.question_id, index=index)
+                if verifier_summary is not None:
                     _emit_progress(
                         ctx,
                         step="verifier_done",
@@ -219,28 +246,17 @@ def _run_one_row(
                         index=index,
                         sufficient=verifier_summary.get("sufficient"),
                     )
-                else:
-                    if mode == "hybrid_rrf_rerank":
-                        _emit_progress(ctx, step="rerank_start", lane=lane.lane_id, question_id=q.question_id, index=index)
-                    pkg = retriever.retrieve(
-                        query,
-                        model_id=q.model_id,
-                        force_reindex=ctx.force_reindex,
-                        skip_index_check=ctx.skip_index_check,
-                    )
-                    retrieval_ms = pkg.latency_ms
-                    hits = [
-                        {
-                            "chunk_id": c.chunk_id,
-                            "source_relpath": c.source_relpath,
-                            "model_id": c.model_id,
-                            "text": c.text,
-                            **c.scores,
-                        }
-                        for c in pkg.chunks
-                    ]
-                    if mode == "hybrid_rrf_rerank":
-                        _emit_progress(ctx, step="rerank_done", lane=lane.lane_id, question_id=q.question_id, index=index)
+                retrieval_ms = pkg.latency_ms
+                hits = [
+                    {
+                        "chunk_id": c.chunk_id,
+                        "source_relpath": c.source_relpath,
+                        "model_id": c.model_id,
+                        "text": c.text,
+                        **c.scores,
+                    }
+                    for c in pkg.chunks
+                ]
             else:
                 hits, context, retrieval_ms = retrieve_raw_context(
                     lane,
@@ -348,12 +364,15 @@ def _run_one_row(
                 }
                 for h in hits[:top_k]
             ]
-            raw_mode = ctx.raw_retrieval or str(
-                ((ctx.cfg.get("retail_raw_rag") or {}).get("retrieval") or {}).get("default_mode") or "vector"
-            )
-            search_meta = {"mode": f"raw_rag_{raw_mode}"}
+            resolved = ctx.resolved or _fallback_resolved(ctx)
+            search_meta = {
+                "mode": f"raw_rag_{resolved.d3_engine}",
+                "resolved_d5": (resolved.to_dict().get("d5") or {}),
+            }
             if verifier_summary is not None:
                 search_meta["verifier"] = verifier_summary
+            if agentic_meta is not None:
+                search_meta["agentic"] = agentic_meta
         else:
             top_paths = [h.get("path") for h in hits[:top_k]]
             top_hits = compact_search_hits(hits[:top_k])
@@ -475,9 +494,14 @@ def run_benchmark(
     raw_agentic: bool = False,
     force_reindex: bool = False,
     skip_index_check: bool = False,
+    profile_id: str = "",
+    resolved: ResolvedRunProfile | None = None,
 ) -> Path:
     """Run selected questions on lanes; checkpoint JSONL + incremental results.json."""
     cfg = load_merged_run_config(repo_root)
+    if resolved is not None:
+        cfg = dict(cfg)
+        cfg["resolved_profile"] = resolved.to_dict()
     lanes_map = load_lanes(repo_root)
     selected = [lanes_map[lid] for lid in lane_ids]
 
@@ -519,12 +543,25 @@ def run_benchmark(
         raw_agentic=raw_agentic,
         force_reindex=force_reindex,
         skip_index_check=skip_index_check,
+        resolved=resolved,
+        profile_id=profile_id,
     )
+
+    if retrieval_mode == "raw_rag" and resolved is not None and selected:
+        build_manual_raw_pipeline(
+            selected[0],
+            resolved,
+            embed_cfg=(cfg.get("retail_raw_rag") or {}).get("embedding") or {},
+            top_k=int(cfg.get("search_top_k") or 5),
+            page_prefix_chars=int(cfg.get("page_prefix_chars") or 8000),
+            raw_rag_cfg=cfg.get("retail_raw_rag") or {},
+            answer_llm_cfg=cfg.get("answer") or {},
+        )
 
     t0 = time.perf_counter()
     log.step(
         f"retail lane benchmark {kind} mode={retrieval_mode} raw={raw_retrieval or 'default'} "
-        f"run_id={rid} rows={total_planned}"
+        f"profile={profile_id or '-'} run_id={rid} rows={total_planned}"
     )
     try:
         _run_rows(ctx, lanes=selected, questions=questions)
@@ -548,6 +585,8 @@ def run_smoke(
     raw_agentic: bool = False,
     force_reindex: bool = False,
     skip_index_check: bool = False,
+    profile_id: str = "",
+    resolved: ResolvedRunProfile | None = None,
 ) -> Path:
     """Execute smoke questions on selected lanes; write ops run directory."""
     suite_path = repo_root / "tests/retail_multi_profiles/data/retail-manual-qa-test-suite.json"
@@ -569,6 +608,8 @@ def run_smoke(
         raw_agentic=raw_agentic,
         force_reindex=force_reindex,
         skip_index_check=skip_index_check,
+        profile_id=profile_id,
+        resolved=resolved,
     )
 
 
@@ -584,6 +625,8 @@ def run_full(
     raw_agentic: bool = False,
     force_reindex: bool = False,
     skip_index_check: bool = False,
+    profile_id: str = "",
+    resolved: ResolvedRunProfile | None = None,
 ) -> Path:
     """Run full suite (90 questions) per lane; optional ``limit`` truncates for dry runs."""
     suite_path = repo_root / "tests/retail_multi_profiles/data/retail-manual-qa-test-suite.json"
@@ -603,4 +646,6 @@ def run_full(
         raw_agentic=raw_agentic,
         force_reindex=force_reindex,
         skip_index_check=skip_index_check,
+        profile_id=profile_id,
+        resolved=resolved,
     )

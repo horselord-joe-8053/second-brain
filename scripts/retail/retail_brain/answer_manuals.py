@@ -64,7 +64,6 @@ class LlmWikiHttpClient:
         ).rstrip("/")
         self.token = token if token is not None else os.environ.get("LLM_WIKI_API_TOKEN", "")
         self.timeout = timeout
-        self.last_search_meta: Dict[str, Any] = {}
 
     def _request(self, method: str, url: str, body: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """JSON request with Bearer auth; network/HTTP errors become ``WikiUnavailable``."""

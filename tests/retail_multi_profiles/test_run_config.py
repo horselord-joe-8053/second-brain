@@ -33,8 +33,11 @@ def test_run_profile_resolves_raw_flags() -> None:
     cfg = load_merged_run_config(REPO)
     prof = resolve_run_profile(cfg, "MANUAL_B_RAW_HYBRID_RERANK")
     assert prof["retrieval_mode"] == "raw_rag"
-    assert prof["raw_retrieval"] == "hybrid_rrf_rerank"
+    assert prof["raw_retrieval"] == "hybrid_rrf"
     assert prof["lanes"] == "B"
+    from tests.retail_multi_profiles.lib.config_coerce import coerce_bool
+
+    assert coerce_bool(prof["d5"]["rerank"]["enabled"]) is True
 
 
 def test_run_config_eval_overrides_answer_model(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
