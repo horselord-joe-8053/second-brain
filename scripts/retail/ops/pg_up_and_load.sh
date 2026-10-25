@@ -43,6 +43,7 @@ export RETAIL_FAULT_CODE_PREFIX="${RETAIL_FAULT_CODE_PREFIX:-FRU-E}"
 echo "pg_up_and_load: apply schema migrations (idempotent)..."
 docker compose exec -T retail_pg psql -U retail -d retail -f - < "$ROOT/scripts/retail/schema/002_search_text.sql"
 docker compose exec -T retail_pg psql -U retail -d retail -f - < "$ROOT/scripts/retail/schema/004_customer_id.sql"
+docker compose exec -T retail_pg psql -U retail -d retail -f - < "$ROOT/scripts/retail/schema/005_manual_chunks.sql"
 
 export PYTHONPATH="$ROOT:$ROOT/scripts/retail${PYTHONPATH:+:$PYTHONPATH}"
 "$ROOT/scripts/py" "$ROOT/scripts/retail/reload_postgres_corpus.py"

@@ -26,6 +26,7 @@ class ResolvedRunProfile:
     d5_verifier_enabled: bool = False
     d5_agentic_enabled: bool = False
     d5_agentic_max_loops: int = 1
+    manual_d3_backend: str = "lance"
 
     def dimension_tuple(self) -> str:
         """Informal profile_id string for analysis docs (D1.M manual raw)."""
@@ -68,6 +69,7 @@ class ResolvedRunProfile:
                     "max_loops": self.d5_agentic_max_loops,
                 },
             },
+            "manual_d3_backend": self.manual_d3_backend,
         }
 
 
@@ -153,6 +155,11 @@ def resolve_effective_profile(
         prof, raw_rag, cli_raw_agentic=raw_agentic, env=env
     )
 
+    env_map = env if env is not None else os.environ
+    manual_backend = str(prof.get("manual_d3_backend") or "lance").strip().lower()
+    if env_map.get("RETAIL_MANUAL_D3_BACKEND"):
+        manual_backend = env_map["RETAIL_MANUAL_D3_BACKEND"].strip().lower()
+
     return ResolvedRunProfile(
         profile_id=profile_id,
         retrieval_mode=rm,
@@ -163,6 +170,7 @@ def resolve_effective_profile(
         d5_verifier_enabled=verifier_on,
         d5_agentic_enabled=agentic_on,
         d5_agentic_max_loops=max_loops,
+        manual_d3_backend=manual_backend,
     )
 
 

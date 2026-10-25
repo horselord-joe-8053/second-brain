@@ -12,6 +12,7 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from tests.retail_multi_profiles.lib.lanes import Lane  # noqa: E402
+from retail_brain.manual_pg_search import hybrid_pg_rrf_search  # noqa: E402
 from tests.retail_multi_profiles.lib.raw_hybrid_search import hybrid_rrf_search  # noqa: E402
 from tests.retail_multi_profiles.lib.raw_rag_search import (  # noqa: E402
     retrieve_raw_context,
@@ -36,6 +37,8 @@ class ManualEvidenceRetriever:
         max_chars_per_chunk: int = 0,
         rank_fn: RankFn | None = None,
         embed_fn: Any | None = None,
+        backend: str = "lance",
+        pg_dsn: str | None = None,
     ) -> None:
         self.lane = lane
         self.embed_cfg = embed_cfg
@@ -45,6 +48,8 @@ class ManualEvidenceRetriever:
         self.max_chars_per_chunk = max_chars_per_chunk
         self.rank_fn = rank_fn
         self.embed_fn = embed_fn
+        self.backend = (backend or "lance").strip().lower()
+        self.pg_dsn = pg_dsn
 
     def retrieve(
         self,
@@ -58,16 +63,31 @@ class ManualEvidenceRetriever:
         t0 = time.perf_counter()
         # D3 hybrid RRF — D5 listwise rerank runs only when rank_fn is wired (not mode name).
         if self.mode in ("hybrid_rrf", "hybrid_rrf_rerank"):
-            hits = hybrid_rrf_search(
-                self.lane,
-                query,
-                model_id=model_id,
-                embed_cfg=self.embed_cfg,
-                top_k=self.top_k,
-                embed_fn=self.embed_fn,
-                force_reindex=force_reindex,
-                skip_index_check=skip_index_check,
-            )
+            if self.backend == "pg":
+                if not self.pg_dsn:
+                    raise RuntimeError("manual_d3_backend=pg requires RETAIL_DATABASE_URL")
+                hits = hybrid_pg_rrf_search(
+                    self.pg_dsn,
+                    self.lane,
+                    query,
+                    model_id=model_id,
+                    embed_cfg=self.embed_cfg,
+                    top_k=self.top_k,
+                    embed_fn=self.embed_fn,
+                    force_reindex=force_reindex,
+                    skip_index_check=skip_index_check,
+                )
+            else:
+                hits = hybrid_rrf_search(
+                    self.lane,
+                    query,
+                    model_id=model_id,
+                    embed_cfg=self.embed_cfg,
+                    top_k=self.top_k,
+                    embed_fn=self.embed_fn,
+                    force_reindex=force_reindex,
+                    skip_index_check=skip_index_check,
+                )
             if hits and self.rank_fn is not None:
                 from retail_brain.rerank import listwise_rerank
 

@@ -78,6 +78,11 @@ def main(argv: list[str] | None = None) -> int:
         help="Build raw-sources vector index for --lanes (no Q&A)",
     )
     parser.add_argument(
+        "--ingest-manual-pg",
+        action="store_true",
+        help="Ingest raw manual chunks into Postgres manual_chunks for --lanes (no Q&A)",
+    )
+    parser.add_argument(
         "--force-reindex",
         action="store_true",
         help="With raw_rag: rebuild Lance index even if manifest matches",
@@ -137,6 +142,33 @@ def main(argv: list[str] | None = None) -> int:
             skip_index_check=args.skip_index_check,
         )
         print(f"Wrote {out}")
+        return 0
+
+    if args.ingest_manual_pg:
+        import os
+
+        from retail_brain.manual_pg_ingest import ensure_manual_pg_fresh
+        from tests.retail_multi_profiles.lib.lanes import load_lanes
+
+        dsn = os.environ.get("RETAIL_DATABASE_URL")
+        if not dsn:
+            parser.error("--ingest-manual-pg requires RETAIL_DATABASE_URL")
+        lane_ids = [x.strip() for x in args.lanes.split(",") if x.strip()]
+        cfg = load_merged_run_config(REPO)
+        embed_cfg = (cfg.get("retail_raw_rag") or {}).get("embedding") or {}
+        lanes_map = load_lanes(REPO)
+        for lid in lane_ids:
+            lane = lanes_map[lid]
+            if not lane.raw_rag_enabled:
+                parser.error(f"lane {lid} is not raw_rag_enabled")
+            meta = ensure_manual_pg_fresh(
+                dsn,
+                lane,
+                embed_cfg,
+                force=args.force_reindex,
+                skip_check=args.skip_index_check,
+            )
+            print(f"lane {lid}: manual_pg chunks={meta.get('chunk_count', 0)}")
         return 0
 
     if args.sources_only_replay:

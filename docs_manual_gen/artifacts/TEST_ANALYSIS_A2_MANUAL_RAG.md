@@ -10,7 +10,7 @@
 3. [Comparison 2 — Rerank stack vs hybrid](#a2-cmp-rerank) — summary table + [win/lose cases](#a2-cmp-rerank-cases).
 4. [Interim v1 (invalid)](#a2-interim) — R21.
 5. [R14 promotion](#a2-r14) — exit criteria + HG-P1.
-6. [Next](#a2-next).
+6. [Next](#a2-next) — Phase 2, PG A/B doc link, optional retrieval.
 
 **Scope:** Lane **B**, **answerable** stratum only (easy + hard, **60** questions). Latency from `latency_ms` on those rows in each `results.json`. Full-run wall time from operator logs (90 rows incl. negatives).
 
@@ -195,5 +195,6 @@ Other baselines: wiki hybrid Lane B **9/60** (`abcd-full-openai-v2`).
 <h2 id="a2-next" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Next</h2>
 
 - **Phase 2** (tickets) may start per plan gate (**HG-P1** closed — default profile above).
+- **Postgres manual D3 A/B:** [`TEST_ANALYSIS_A2_MANUAL_RAG_PG.md`](./TEST_ANALYSIS_A2_MANUAL_RAG_PG.md) (PG vs Lance v2, flip tables + overlap).
 - Optional retrieval: raise **K** or intent decomposition (H08-style rank‑7 gold chunks) — see multi-subquery TODO.
 - Optional: cheaper rerank (smaller model, rerank top-3 only, or batch) if wall time is blocking adoption.

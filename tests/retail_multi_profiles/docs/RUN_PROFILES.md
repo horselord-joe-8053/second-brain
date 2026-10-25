@@ -125,6 +125,10 @@ Document any override in **`results.json`** → **`config_snapshot.resolved_prof
 | **`MANUAL_B_RAW_VECTOR`** | `MANUAL\|M\|D2.B\|D3.R-V\|LC\|0\|M90\|B` | `vector` | **0** |
 | **`MANUAL_B_RAW_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|M90\|B` | `hybrid_rrf` | **0** |
 | **`MANUAL_B_RAW_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|M90\|B` | `hybrid_rrf` | **R+V+A** (`llm_listwise`) |
+| **`MANUAL_B_RAW_PG_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **0** |
+| **`MANUAL_B_RAW_PG_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **R+V+A** |
+
+**PG path:** requires **`RETAIL_DATABASE_URL`**; preflight **`ensure_manual_pg_fresh`** (or **`--ingest-manual-pg --lanes B`**). Lance index is not rebuilt when profile sets **`manual_d3_backend: pg`**.
 
 **Fair compare (Phase 1 exit):** run **`MANUAL_B_RAW_HYBRID`** vs **`MANUAL_B_RAW_HYBRID_RERANK`** with **only D5** changing; D3 engine for both should be **`hybrid_rrf`** once resolver removes the misleading `hybrid_rrf_rerank` D3-only mode (or alias with explicit D5).
 

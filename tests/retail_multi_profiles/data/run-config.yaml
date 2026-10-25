@@ -71,3 +71,28 @@ run_profiles:
       agentic:
         enabled: true
         max_loops: 1
+  MANUAL_B_RAW_PG_HYBRID:
+    retrieval_mode: raw_rag
+    raw_retrieval: hybrid_rrf
+    manual_d3_backend: pg
+    lanes: B
+    d5:
+      rerank:
+        enabled: false
+      verifier:
+        enabled: false
+      agentic:
+        enabled: false
+  MANUAL_B_RAW_PG_HYBRID_RERANK:
+    retrieval_mode: raw_rag
+    raw_retrieval: hybrid_rrf
+    manual_d3_backend: pg
+    lanes: B
+    d5:
+      rerank:
+        enabled: true
+      verifier:
+        enabled: true
+      agentic:
+        enabled: true
+        max_loops: 1

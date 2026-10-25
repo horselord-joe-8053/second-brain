@@ -33,6 +33,8 @@ from retail_brain.evidence.verifier import verify_manual_coverage
 
 from .manual_raw_pipeline import build_manual_raw_pipeline
 from .resolved_run_profile import ResolvedRunProfile
+from retail_brain.manual_pg_ingest import ensure_manual_pg_fresh  # noqa: E402
+
 from .raw_rag_index import ensure_index_fresh
 from .raw_rag_search import concat_top_k_raw_chunks, retrieve_raw_context
 from .sku_scope import SkuScopeError, resolve_retrieval_sku, sku_scope_to_dict
@@ -500,12 +502,32 @@ def _run_rows(ctx: _RunContext, *, lanes: list[Lane], questions: list[SuiteQuest
                 index=index,
             )
             with ctx.log.heartbeat(f"{lane.lane_id} raw index preflight"):
-                ensure_index_fresh(
-                    lane,
-                    embed_cfg,
-                    force=ctx.force_reindex,
-                    skip_check=ctx.skip_index_check,
+                use_pg = (
+                    ctx.resolved is not None
+                    and ctx.resolved.manual_d3_backend == "pg"
                 )
+                if use_pg:
+                    import os
+
+                    dsn = os.environ.get("RETAIL_DATABASE_URL")
+                    if not dsn:
+                        raise RuntimeError(
+                            "manual_d3_backend=pg requires RETAIL_DATABASE_URL"
+                        )
+                    ensure_manual_pg_fresh(
+                        dsn,
+                        lane,
+                        embed_cfg,
+                        force=ctx.force_reindex,
+                        skip_check=ctx.skip_index_check,
+                    )
+                else:
+                    ensure_index_fresh(
+                        lane,
+                        embed_cfg,
+                        force=ctx.force_reindex,
+                        skip_check=ctx.skip_index_check,
+                    )
             _emit_progress(
                 ctx,
                 step="index_preflight_done",
