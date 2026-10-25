@@ -19,6 +19,7 @@ _DEFAULT_EVIDENCE: dict[str, Any] = {
     "search_top_k": 5,
     "query_template": "{model_id} {question}",
     "page_prefix_chars": 8000,
+    "context_max_chars_per_chunk": 2000,
     "insufficient_literal": "Insufficient_Information_Based_On_Given_PDF",
 }
 
@@ -84,6 +85,8 @@ def _coerce_evidence_scalars(evidence: dict[str, Any]) -> dict[str, Any]:
         out["search_top_k"] = int(out["search_top_k"])
     if "page_prefix_chars" in out:
         out["page_prefix_chars"] = int(out["page_prefix_chars"])
+    if "context_max_chars_per_chunk" in out:
+        out["context_max_chars_per_chunk"] = int(out["context_max_chars_per_chunk"])
     return out
 
 
@@ -121,7 +124,13 @@ def load_merged_run_config(
         pass
 
     # Legacy harness file: top-level retrieval keys override brain-stack until removed.
-    for key in ("search_top_k", "query_template", "page_prefix_chars", "insufficient_literal"):
+    for key in (
+        "search_top_k",
+        "query_template",
+        "page_prefix_chars",
+        "context_max_chars_per_chunk",
+        "insufficient_literal",
+    ):
         if key in run_raw:
             evidence[key] = run_raw[key]
 
@@ -141,6 +150,7 @@ def load_merged_run_config(
         eval_rel = str(cfg_path)
 
     run_profiles = run_raw.get("run_profiles") or {}
+    default_run_profile = str(run_raw.get("default_run_profile") or "").strip()
 
     merged: dict[str, Any] = {
         "schema_version": str(run_raw.get("schema_version") or "1.0"),
@@ -150,6 +160,7 @@ def load_merged_run_config(
         "smoke_question_ids": _smoke_question_ids(run_raw),
         "retail_raw_rag": raw_rag_cfg,
         "run_profiles": run_profiles,
+        "default_run_profile": default_run_profile,
         "config_sources": {
             "retail_evidence": "config/brain-stack.example.yaml → second_brain.retail_evidence",
             "retail_eval": eval_rel,

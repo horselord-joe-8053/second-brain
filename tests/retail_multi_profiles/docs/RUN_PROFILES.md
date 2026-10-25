@@ -64,6 +64,8 @@ graph LR
 
 **Runner rule:** `runner.py` must **not** re-interpret YAML strings with `bool("false")` or OR together global agentic + CLI; it only reads **`ResolvedRunProfile`**.
 
+**HG-P1 default (when CLI omits `--profile`):** If **`--retrieval-mode raw_rag`**, the harness resolves **`run-config.yaml` → `default_run_profile`** (currently **`MANUAL_B_RAW_HYBRID_RERANK`**). Wiki runs (`llm_wiki`, the CLI default) are **unchanged** — no implicit profile. **Eval anchor** for “vs legacy raw RAG” remains **`MANUAL_B_RAW_VECTOR`** / run **`abcd-raw-full-openai-v1`** — not the operational default.
+
 ---
 
 <h2 id="d5-rerank" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. D5 rerank — `enabled` + `backend`</h2>

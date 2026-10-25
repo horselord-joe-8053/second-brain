@@ -122,6 +122,7 @@ def test_ticket_leg_failure_is_isolated() -> None:
 def test_bundle_json_is_byte_stable_and_matches_golden(monkeypatch: pytest.MonkeyPatch) -> None:
     """Two builds serialize identically; snapshot pinned (RETAIL_UPDATE_GOLDEN=1 rewrites it)."""
     monkeypatch.setenv("RETAIL_TICKET_SEARCH_MODE", "rrf_term_boosted")
+    monkeypatch.setenv("RETAIL_FAULT_CODE_PREFIX", "FRU-E")
     a, b = bundle_to_json(_bundle()), bundle_to_json(_bundle())
     assert a == b
     assert "timestamp" not in a and json.loads(a)["schema"] == SCHEMA

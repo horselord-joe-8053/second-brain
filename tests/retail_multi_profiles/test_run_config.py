@@ -16,6 +16,7 @@ def test_merged_config_includes_evidence_from_brain_stack_example() -> None:
     cfg = load_merged_run_config(REPO)
     assert cfg["search_top_k"] == 5
     assert cfg["page_prefix_chars"] == 8000
+    assert cfg["context_max_chars_per_chunk"] == 2000
     assert "{model_id}" in cfg["query_template"]
     assert cfg["insufficient_literal"] == "Insufficient_Information_Based_On_Given_PDF"
     assert cfg["answer"]["provider"] == "openai"
@@ -23,6 +24,24 @@ def test_merged_config_includes_evidence_from_brain_stack_example() -> None:
     assert cfg["judge"]["provider"] == "gemini"
     assert cfg["retail_raw_rag"]["embedding"]["model"] == "text-embedding-3-small"
     assert "MANUAL_B_RAW_HYBRID" in (cfg.get("run_profiles") or {})
+    assert cfg.get("default_run_profile") == "MANUAL_B_RAW_HYBRID_RERANK"
+
+
+def test_effective_run_profile_id_hg_p1_default() -> None:
+    """Omitting --profile on raw_rag uses default_run_profile (HG-P1); wiki stays unset."""
+    from tests.retail_multi_profiles.lib.run_config import load_merged_run_config
+    from tests.retail_multi_profiles.lib.run_profiles import effective_run_profile_id
+
+    cfg = load_merged_run_config(REPO)
+    assert (
+        effective_run_profile_id(cfg, cli_profile="", retrieval_mode="raw_rag")
+        == "MANUAL_B_RAW_HYBRID_RERANK"
+    )
+    assert effective_run_profile_id(cfg, cli_profile="", retrieval_mode="llm_wiki") == ""
+    assert (
+        effective_run_profile_id(cfg, cli_profile="MANUAL_B_RAW_HYBRID", retrieval_mode="raw_rag")
+        == "MANUAL_B_RAW_HYBRID"
+    )
 
 
 def test_run_profile_resolves_raw_flags() -> None:

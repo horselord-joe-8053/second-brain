@@ -68,8 +68,10 @@ def validate(corpus_dir: Path) -> list[str]:
 
     sam_rows = sum(1 for r in rows if extract_diag_code(r["customer_query_text"]))
     lo, hi = sam_band
-    if not (lo <= sam_rows <= hi):
-        errors.append(f"diag-code row count {sam_rows} outside ~50% band ({lo}–{hi})")
+    # Legacy phone demo profiles (``data_*``) have no SAM/FRU codes in customer_query_text.
+    if not corpus_dir.name.startswith("data_"):
+        if not (lo <= sam_rows <= hi):
+            errors.append(f"diag-code row count {sam_rows} outside ~50% band ({lo}–{hi})")
 
     if corpus_dir.name == "fru_us_1000_100":
         for r in rows:

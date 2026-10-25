@@ -1,14 +1,15 @@
 <h1 id="a2-analysis-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">TEST_ANALYSIS — A2 Manual RAG (Lane B)</h1>
 
-**Status:** Phase **1 hard exit** (2026-10-24) — fair **v2** D5 compare. **HG-P1:** human sign-off on default profile.
+**Status:** Phase **1 hard exit** met on fair **v2** (2026-10-24). **P1.6–P1.7** re-runs (**v3/v4**) in [§1.1](#a2-v34). **HG-P1 closed (2026-10-25):** operational default when CLI omits **`--profile`** on **`raw_rag`** = **`MANUAL_B_RAW_HYBRID_RERANK`** (`run-config.yaml` **`default_run_profile`**). **Eval anchor** for comparisons remains raw vector **`abcd-raw-full-openai-v1`** (28/60).
 
 <h2 id="a2-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
 1. [Fair v2 runs](#a2-v2) — run ids and headline pass rates.
+ 1.1 [P1.6–P1.7 v3 / v4 runs](#a2-v34) — SKU scope, context caps, verify gate.
 2. [Comparison 1 — Hybrid vs raw vector](#a2-cmp-vector) — summary table + [win/lose cases](#a2-cmp-vector-cases) + [insufficient token](#a2-insufficient-token).
 3. [Comparison 2 — Rerank stack vs hybrid](#a2-cmp-rerank) — summary table + [win/lose cases](#a2-cmp-rerank-cases).
 4. [Interim v1 (invalid)](#a2-interim) — R21.
-5. [R14 promotion](#a2-r14) — exit criteria.
+5. [R14 promotion](#a2-r14) — exit criteria + HG-P1.
 6. [Next](#a2-next).
 
 **Scope:** Lane **B**, **answerable** stratum only (easy + hard, **60** questions). Latency from `latency_ms` on those rows in each `results.json`. Full-run wall time from operator logs (90 rows incl. negatives).
@@ -24,6 +25,28 @@
 | `MANUAL_B_RAW_HYBRID_RERANK` | **D3.R-H** · **D5.R+V+A** | `a2-hybrid-rerank-b-v2` | **37/60** |
 
 Paths: `ops/runs/retail-lane-abcd-raw/<run_id>/`.
+
+**Promotion / R14:** Still keyed to **v2** rows above (fair D5 ladder). **v3/v4** are regression checks after harness changes — not a new promotion ladder.
+
+<h3 id="a2-v34" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">1.1 P1.6–P1.7 — v3 / v4 re-benchmark (SKU scope + context caps)</h3>
+
+After **`sku_scope.py`** (query-parsed SKU filter), **`context_max_chars_per_chunk: 2000`**, and **`./scripts/verify.sh`** green (P1.7):
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Profile</th><th>run_id</th><th>Answerable pass</th><th>Δ vs v2</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>MANUAL_B_RAW_HYBRID</code></td><td><code>a2-hybrid-rrf-b-v3</code></td><td>33/60</td><td style="background:#ffebee">−1</td><td>Single flip: <code>ge_GNE27JYMFS-H08</code> (**R22**)</td></tr>
+<tr><td style="background:#e3f2fd"><code>MANUAL_B_RAW_HYBRID</code></td><td><code>a2-hybrid-rrf-b-v4</code></td><td>33/60</td><td style="background:#ffebee">−1</td><td>Same as v3 (post–verify.sh)</td></tr>
+<tr><td style="background:#e3f2fd"><code>MANUAL_B_RAW_HYBRID_RERANK</code></td><td><code>a2-hybrid-rerank-b-v3</code></td><td>37/60</td><td style="background:#e8f5e9">0</td><td>2 pass flips vs v2; net zero</td></tr>
+<tr><td style="background:#e3f2fd"><code>MANUAL_B_RAW_HYBRID_RERANK</code></td><td><code>a2-hybrid-rerank-b-v4</code></td><td>37/60</td><td style="background:#e8f5e9">0</td><td>Matches v2/v3</td></tr>
+</tbody>
+</table>
+
+**Harness metadata (v3+):** `search_meta.sku_scope` and `context_max_chars_per_chunk` on each Lane B row. **Vector baseline** (`abcd-raw-full-openai-v1`) was **not** re-run per plan.
+
+**H08 retrieval note (hybrid):** Gold troubleshooting chunk (**index 55**, “3 minutes / spurting”) was **hybrid rank 7** (outside top‑5 context) on v4 re-query — same top‑5 chunk ids as v2; v3/v4 fail is **answer/judge** (“~5 min”) not SKU filter (**R22**). See [`TODO_MULTI_SUBQUERY_RAG_DECOMPOSITION.md`](../todos/TODO_MULTI_SUBQUERY_RAG_DECOMPOSITION.md) for multi-intent retrieval ideas.
 
 ---
 
@@ -160,7 +183,8 @@ Paths: `ops/runs/retail-lane-abcd-raw/<run_id>/`.
 <tr><td>Best arm <strong>≥ 30/60</strong></td><td style="background:#e8f5e9"><strong>Yes</strong> — 37/60 (rerank v2)</td></tr>
 <tr><td>Hybrid D5.0 <strong>≥ 28/60</strong></td><td style="background:#e8f5e9"><strong>Yes</strong> — 34/60</td></tr>
 <tr><td>Mean retrieval <strong>&lt; 2 s</strong> (R14 retrieval field)</td><td style="background:#e8f5e9"><strong>Yes</strong> both v2 arms on answerable rows</td></tr>
-<tr><td><strong>Default profile (HG-P1)</strong></td><td style="background:#fff3e0">Recommend <code>MANUAL_B_RAW_HYBRID_RERANK</code> if +3 passes worth ~52% full-run time; else <code>MANUAL_B_RAW_HYBRID</code></td></tr>
+<tr><td><strong>verify.sh (P1.7)</strong></td><td style="background:#e8f5e9"><strong>Green</strong> (2026-10-25) — satisfies revised Phase 1 exit text</td></tr>
+<tr><td><strong>Default profile (HG-P1)</strong></td><td style="background:#e8f5e9"><strong>Closed</strong> — <code>MANUAL_B_RAW_HYBRID_RERANK</code> when CLI omits <code>--profile</code> and uses <code>--retrieval-mode raw_rag</code> only; explicit <code>--profile</code> still required for D5.0 hybrid / vector baseline arms.</td></tr>
 </tbody>
 </table>
 
@@ -170,6 +194,6 @@ Other baselines: wiki hybrid Lane B **9/60** (`abcd-full-openai-v2`).
 
 <h2 id="a2-next" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Next</h2>
 
-- **HG-P1** — accept Phase 1 exit and pick default profile (see §5).
-- Phase **2** (tickets) after gate.
+- **Phase 2** (tickets) may start per plan gate (**HG-P1** closed — default profile above).
+- Optional retrieval: raise **K** or intent decomposition (H08-style rank‑7 gold chunks) — see multi-subquery TODO.
 - Optional: cheaper rerank (smaller model, rerank top-3 only, or batch) if wall time is blocking adoption.

@@ -1,8 +1,8 @@
 <h1 id="gpt-enh-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — three Q&amp;A tracks, then Chief of Staff (realigned)</h1>
 
-**Status:** **wip** — Phase **1 hard exit met** (v2 fair runs); **HG-P1** human sign-off before Phase **2**. Phases **2–4** gated by **HG-P***.  
-**Execute:** **`qimpltdd`** this file → **`aciubtdd`** / **`implreftdd`** (finish Phase **1** P1.0b–P1.5b first; Phases 2–4 after **HG-P1**). Plain **`implref`** without TDD table is legacy.  
-**last_aligned:** 2026-10-24 — **R18–R21** (config SSOT, D5 backends, Phase 1 rework); interim judged runs documented; operator doc [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md).
+**Status:** **wip** — Phase **1 complete** (hard exit + **HG-P1** default profile); Phase **2** unblocked. Phases **2–4** gated by **HG-P2** onward.  
+**Execute:** **`qimpltdd`** this file → **`aciubtdd`** / **`implreftdd`** (Phase **2+** after **HG-P1**). Plain **`implref`** without TDD table is legacy.  
+**last_aligned:** 2026-10-25 — **R25** A3 before A1 (non-wiki search depth); **HG-P1** (**R23**); Phase **2** scope **R24**.
 
 **Branch:** `feature/evo-14-multi-retail-gpt-rerank`.  
 **Realignment source:** ChatGPT share from user diagrams — [refactor three tracks](https://chatgpt.com/share/6adb338c-a8e0-83ec-88aa-f633463cb70e) (from *“I am trying hard to make what we want to refactor/improve more concrete…”*). Transcript: `utils/chatgpt/transcripts/refactor_three_tracks_cos_6adb338c-a8e0-83ec-88aa-f633463cb70e.txt`.  
@@ -19,7 +19,7 @@
 6. [Part A — three independent systems](#gpt-part-a) — A1, A2, A3.
 7. [Shared Python components](#gpt-shared) — not one algorithm for everything.
 8. [Part B — Chief of Staff](#gpt-part-b) — after A is measured.
-9. [Implementation order](#gpt-order) — phases 1–4; **start code** on Phase 1 only until **HG-P1**.
+9. [Implementation order](#gpt-order) — phases 1–4; **Phase 2 (A3)** active after **HG-P1** closed.
 10. [Phase 1 — A2 Manual RAG](#gpt-phase1) — full checklist.
 11. [Phase 2 — A3 Ticket RAG](#gpt-phase2) — full checklist.
 12. [Phase 3 — A1 LLM Wiki](#gpt-phase3) — full checklist.
@@ -196,11 +196,13 @@ Wiki may **lead** searches (context) but **important facts** default to verified
 | Phase | Track | Why this order |
 |-------|-------|----------------|
 | **1** | **A2 Manual RAG** | Clearest metric (90-Q); fixes the aggregate report pain first |
-| **2** | **A3 Ticket RAG** | Reuse libs; production ticket path already exists |
-| **3** | **A1 LLM Wiki** | Audit + wiki Q&amp;A modes; depends on verifier from Phase 1 |
+| **2** | **A3 Ticket RAG** | **Before A1 (R25):** same **non–LLM-Wiki** retrieval family as A2 (hybrid dense+lexical, RRF, D5 stack) — deepen shared **`EvidenceRetriever` / rerank / verifier / agentic** on **indexed search**, not compiled wiki HTTP |
+| **3** | **A1 LLM Wiki** | **After A3 (R25):** different **D3.W-H** path (compiled wiki + harness); claim audit + wiki Q&amp;A modes; reuses verifier **patterns** from Phases 1–2 |
 | **4** | **B COS + API** | Integrate measured components only |
 
-Phases **2–4** are fully specified below for roadmap clarity. **Implementation order is still strict:** do not **`implref`** Phase 2+ until [§14 HG-P1](#gpt-gates) unless the gate row says otherwise (adapter stubs in Phase 1 are OK).
+**Conscious sequencing (R25):** Ticket cases are **grounded in manual/product context**, like A1’s corpus — but **implementation order** is **A2 → A3 → A1** so we finish hardening **classic hybrid retrieval** (Lance raw manuals, then Postgres tickets) before the **LLM-Wiki** compile/harness track. Not “tickets unrelated to manuals”; “same retrieval **style**, different **D1** store.”
+
+Phases **2–4** are fully specified below for roadmap clarity. **HG-P1 closed (R23):** **`aciubtdd` / `implreftdd`** Phase **2** may proceed; Phase **3+** still gated by **HG-P2** / **HG-P3** per [§14](#gpt-gates).
 
 ---
 
@@ -251,11 +253,31 @@ Phases **2–4** are fully specified below for roadmap clarity. **Implementation
 
 **Phase 1 hard exit (revised):** Lane **B** answerable **≥ 30/60** on best arm; **fair** D5 ladder; **`hybrid_rrf` + D5.0** **≥ 28/60**; rerank profile must prove **active D5.R** before **R+V+A** claims; `./scripts/verify.sh` green or waived in Decisions. Unblocks **HG-P1**.
 
+<h3 id="gpt-p1-6" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.6 P1.6 — SKU scope SSOT + answer context caps (2026-10-25)</h3>
+
+- [X] **`sku_scope.py`:** three legit model ids; **`resolve_retrieval_sku(query)`**; reject unknown `ge_` / `samsung_` / `kitchenaid_` tokens; multi-SKU → open pool; **`filter_chunks_by_model`** centralized.
+- [X] **Runner:** parse scoped query before retrieve; **`search_meta.sku_scope`**; illegal SKU → fail row (no crash).
+- [X] **`context_max_chars_per_chunk`** (default **2000**) on **`concat_top_k_raw_chunks`** + **`page_prefix_chars`** total budget **8000**.
+- [X] Tests: **`test_sku_scope.py`**, **`test_raw_rag_context.py`**; **`pytest tests/retail_multi_profiles`** green.
+- [X] **P1.6b — Re-benchmark:** `a2-hybrid-rrf-b-v3` **33/60**; `a2-hybrid-rerank-b-v3` **37/60** (rerank flat vs v2; hybrid **−1** = judge/answer variance — see **R22**).
+
+<h3 id="gpt-p1-7" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">10.7 P1.7 — `./scripts/verify.sh` alignment (layout + env + corpus validator)</h3>
+
+- [X] **Brain layout:** allow lane roots **`retail-md`**, **`retail-txt`**, **`retail-md-learned`** under **`brain/`**; lane profiles need **`purpose.md` + raw/sources** (not full Nashsu manifests).
+- [X] **Lane A corpus test:** PDF archive under **`archive/pdf/fridge-docs/`**; raw may hold **`.txt` or `.pdf`** during txt→md migration.
+- [X] **`tests/retail/conftest.py`:** autouse clear **`RETAIL_FAULT_CODE_PREFIX`** so SAM-E unit tests are not polluted by operator **`FRU-E`** shell env.
+- [X] **`validate_llm_corpus`:** skip SAM/FRU diag-code band for phone demo **`data_60_10`** (no codes in CSV).
+- [X] **P16 e2e:** **`pytest.skip`** when **`brain/retail`** has no **`fridge-docs/*.txt`** (manuals on Lane **B/C** until txt restored or e2e repointed).
+- [X] **P1.7b — Post-fix verify:** `./scripts/verify.sh` green (2026-10-25).
+- [X] **P1.7c — Re-benchmark after verify:** `a2-hybrid-rrf-b-v4` **33/60**; `a2-hybrid-rerank-b-v4` **37/60** (matches v3; hybrid still **−1** vs v2 on **H08** — **R22**).
+
 ---
 
 <h2 id="gpt-phase2" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. Phase 2 — A3 Ticket RAG</h2>
 
-**Prerequisite:** [HG-P1](#gpt-gates) (Phase 1 exit). Reuses Phase 1 **`rerank.py`**, **`verifier.py`**, **`agentic.py`** with a **ticket policy** — not manual SKU rules.
+**Prerequisite:** [HG-P1](#gpt-gates) (Phase 1 exit). **Order vs A1:** Phase **2** runs **before** Phase **3 (A1)** per **R25** — both follow Phase **1 (A2)** so **non–LLM-Wiki** hybrid search + D5 stack are exercised on **manual index** then **ticket Postgres** before wiki compile/harness work.
+
+Reuses Phase 1 **`rerank.py`**, **`verifier.py`**, **`agentic.py`** with a **ticket policy** — not manual SKU rules.
 
 **Baseline (do not regress):** FRU **`fru_us_1k`** ABC ladder — mode **C** `rrf_term_boosted` overall recall@1 **~0.54**; `scripts/retail/eval/check_abc_ladder.py` must keep passing. See [`ABOUT_SEARCH_RRF_FRU.md`](../../artifacts/ABOUT_SEARCH_RRF_FRU.md).
 
@@ -308,7 +330,7 @@ Phases **2–4** are fully specified below for roadmap clarity. **Implementation
 
 <h2 id="gpt-phase3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Phase 3 — A1 LLM Wiki</h2>
 
-**Prerequisite:** [HG-P1](#gpt-gates) (verifier module from Phase 1). **No** `nu_llm_wiki` ranking or compile fork (**R6**). Harness + offline jobs only.
+**Prerequisite:** [HG-P1](#gpt-gates) (verifier module from Phase 1); **recommended:** Phase **2 (A3)** exit or progress per **R25** (wiki track deferred until **hybrid retrieval** libs are proven on A2 **and** A3). **No** `nu_llm_wiki` ranking or compile fork (**R6**). Harness + offline jobs only.
 
 **Baseline:** Lane **B** wiki + raw from same aggregate runs as A2; sources-only replay on **B** (see aggregate §7 B vs D + **`sources_only_replay.py`**).
 
@@ -403,7 +425,7 @@ graph TD
 
 | Gate | Starts | Condition |
 |------|--------|-----------|
-| **HG-P1** | Phase **2** `implref` | Phase **1** exit met **or** written waiver in this plan **Decisions** |
+| **HG-P1** | Phase **2** `implref` | **Closed 2026-10-25** — Phase **1** exit + **`default_run_profile`** (**R23**) |
 | **HG-P2** | Phase **3** `implref` | Phase **2** exit met |
 | **HG-P3** | Phase **4** `implref` | Phase **1** exit + Phase **3** wiki audit job runnable (Phase 2 may lag if tickets deprioritized — record in Decisions) |
 | **HG-P4** | COS deploy / default path change | Phase **4** exit + operator sign-off |
@@ -434,7 +456,7 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 |----|----------|
 | **R1** | **A before B** — no COS/combined integration until A2 (minimum) is measured. |
 | **R2** | **Three tracks, three policies** — shared module names, not shared ranking rules across manuals vs tickets. |
-| **R3** | **Phase 1 = A2 only** — wiki and ticket work explicitly Phase 2–3. |
+| **R3** | **Phase 1 = A2 only** — wiki and ticket work explicitly Phase 2–3 (**order: A3 then A1**, **R25**). |
 | **R4** | **Agentic = bounded controller** — max one extra search in v1; not an open agent loop. |
 | **R5** | **Rerank = listwise LLM first**; cross-encoder deferred. |
 | **R6** | **Wiki ranking: harness-only** (grill G2). |
@@ -450,6 +472,10 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 | **R19** | **D3 vs D5 vocabulary:** `hybrid_rrf` = D3; D5.R/V/A only via **`d5`** on profile. Legacy `hybrid_rrf_rerank` D3 string deprecated after P1.0b (alias OK during migration). |
 | **R20** | **D5.R config:** `d5.rerank.enabled` (bool) is the off switch; when true, `d5.rerank.backend` defaults **`llm_listwise`**, alt **`cross_encoder`** (P1: **llm_listwise** only; cross-encoder must not silent no-op). |
 | **R21** | **Interim runs (2026-10-24):** `a2-hybrid-*-b-v1` invalid for D5 promotion — identical retrieval; **P1.5b** `-v2` required before **HG-P1**. |
+| **R22** | **H08 v3 regression (2026-10-25):** `ge_GNE27JYMFS-H08` hybrid **v2 pass → v3 fail** with **identical** `top_hits` chunk ids; answer LLM said **~5 min** vs gold **3 min** (v2 **“few minutes”** passed judge). Not SKU filter or **context_max_chars_per_chunk** — treat as **judge/answer variance** unless context logging shows a diff. |
+| **R23** | **HG-P1 default profile (2026-10-25):** When harness CLI omits **`--profile`** and uses **`--retrieval-mode raw_rag`**, resolve **`run-config.yaml` → `default_run_profile`** = **`MANUAL_B_RAW_HYBRID_RERANK`**. **Eval comparison anchor** unchanged: raw vector **`abcd-raw-full-openai-v1`** — use explicit **`--profile MANUAL_B_RAW_*`** for ladder arms. |
+| **R24** | **Phase 2 qimpltdd scope (2026-10-25):** **`aciubtdd`** through **P2.6** + **`TEST_ANALYSIS_A3_TICKET_RAG.md`** (full Phase 2). CI stays **mock/fixture** for ticket evidence tests; **optional live Postgres smoke** documented + skipped when DB env absent. |
+| **R25** | **A3 before A1 (2026-10-25):** Implement **Phase 2 (tickets)** before **Phase 3 (LLM Wiki)** even though ticket content is manual-adjacent. **Rationale:** A2 and A3 both use **non–LLM-Wiki hybrid retrieval** (dense + lexical / RRF-style fusion, optional D5 rerank·verifier·agentic on a **search index** — Lance manuals vs Postgres tickets). Prefer a **deep grip on that retrieval family** across two **D1** corpora before A1’s **D3.W-H** (compiled wiki HTTP, claim audit, harness-only ranking per **R6**). |
 | **R15** | **Phase exit trio:** smoke → full benchmark (**D6**) → analysis vs prior **profile_id** — [§17.2](#gpt-phase-exit); required at end of **each** phase before **HG-P*** unlock. |
 | **R16** | **`onlyreftdd` Phases 2–4 (2026-10-24):** TDD tables in [§17.3–17.5](#gpt-tdd-p2); plan is **paper-ready** for multi-phase **`qimpltdd`**; **execution** order unchanged (**HG-P***). |
 | **R17** | **Operator logging:** all new runners/CLIs follow [§17.6](#gpt-neatlog) + **neatlog** rule; logging ships **in the same phase** as the feature (qimpl/aciub bar). |
@@ -493,6 +519,9 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 <tr><td style="background:#e3f2fd"><strong>P1.3</strong> evidence</td><td style="background:#e8f5e9">strict-TDD</td><td><code>scripts/retail/retail_brain/tests/test_evidence_manual.py</code> — package JSON shape from fixture chunks</td><td><code>EvidenceRetriever</code> manual policy absent</td><td>evidence unit tests green</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P1.4</strong> agentic</td><td style="background:#e8f5e9">strict-TDD</td><td>same file — agentic budget **≤ 1** loop; verifier triggers re-query once</td><td>second loop allowed when budget exhausted</td><td>agentic budget tests green</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P1.5b</strong> operator</td><td style="background:#fff8e1">smoke-after-delete</td><td>Fair **v2** full runs; update <code>TEST_ANALYSIS_A2_MANUAL_RAG.md</code>; <code>resolved_profile</code> in results</td><td>N/A</td><td><code>./scripts/verify.sh</code> + **R14** / **R21** + **HG-P1** note</td></tr>
+<tr><td style="background:#e3f2fd"><strong>P1.6</strong> SKU + context</td><td style="background:#e8f5e9">strict-TDD</td><td><code>test_sku_scope.py</code>, <code>test_raw_rag_context.py</code></td><td>unknown SKU not rejected; concat ignores per-chunk cap</td><td><code>pytest tests/retail_multi_profiles</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>P1.7</strong> verify.sh</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/test_brain_profile_layout.py</code>, <code>test_retail_corpus_layout.py</code>, <code>tests/retail/conftest.py</code></td><td>layout tests fail on lane roots; <code>code_boost</code> fails under <code>FRU-E</code> shell</td><td><code>./scripts/verify.sh</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>P1.7c</strong> operator</td><td style="background:#fff8e1">smoke-after-delete</td><td>Full **v4** hybrid + rerank Lane B vs **v2/v3**</td><td>N/A</td><td>Headline **≥ v2 − 1** hybrid; rerank **≥ 37/60**</td></tr>
 </tbody>
 </table>
 
@@ -619,6 +648,9 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 - [X] P1.3 evidence modules + P1.3b thin runner + row meta
 - [X] P1.4 agentic unit tests + P1.4b profile D5.0 vs R+V+A
 - [X] P1.5 interim + P1.5b–c fair **v2** benchmark + analysis
+- [X] P1.6 SKU scope SSOT + context caps + **v3** benchmark
+- [X] P1.7 verify.sh alignment (**P1.7b** green)
+- [X] P1.7c **v4** hybrid + rerank re-benchmark
 
 **Phase 2 — A3** (after **HG-P1**)
 

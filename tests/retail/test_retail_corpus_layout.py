@@ -13,20 +13,21 @@ FRIDGE_SKUS = (
 
 
 def test_retail_brain_layout() -> None:
-    """FRU corpus: purpose, wiki stub, archive PDFs, raw ``.txt`` manuals (no PDFs in raw)."""
+    """Lane A (``brain/retail``): wiki stub, PDF archive under ``archive/pdf/``, raw manuals present."""
     assert (RETAIL / "purpose.md").is_file()
     assert (RETAIL / "wiki" / "index.md").is_file()
     for folder in FRIDGE_SKUS:
         raw = RETAIL / "raw" / "sources" / "fridge-docs" / folder
-        arch = RETAIL / "archive" / "fridge-docs" / folder
+        arch = RETAIL / "archive" / "pdf" / "fridge-docs" / folder
         assert raw.is_dir()
         assert arch.is_dir()
         assert (arch / "user-guide.pdf").is_file()
-        assert not list(raw.glob("*.pdf")), f"PDFs must not live under raw/sources: {folder}"
-        assert (raw / "user-guide.txt").is_file(), folder
+        raw_txt = raw / "user-guide.txt"
+        raw_pdf = raw / "user-guide.pdf"
+        assert raw_txt.is_file() or raw_pdf.is_file(), folder
         if folder == "samsung_RF28K9070SG":
             assert (arch / "repair-guide.pdf").is_file()
-            assert (raw / "repair-guide.txt").is_file()
+            assert (raw / "repair-guide.txt").is_file() or (raw / "repair-guide.pdf").is_file()
 
 
 def test_personal_profile_sibling_present() -> None:

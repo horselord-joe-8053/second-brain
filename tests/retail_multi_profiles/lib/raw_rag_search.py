@@ -15,13 +15,17 @@ def concat_top_k_raw_chunks(
     hits: list[dict[str, Any]],
     *,
     page_prefix_chars: int,
+    max_chars_per_chunk: int = 0,
 ) -> str:
-    """Join chunk texts up to a character budget (mirrors wiki page_prefix policy)."""
+    """Join chunk texts up to a total budget; optionally cap each chunk body."""
     parts: list[str] = []
     used = 0
+    per_cap = max(0, int(max_chars_per_chunk or 0))
     for h in hits:
         rel = str(h.get("source_relpath") or "")
         text = str(h.get("text") or "")
+        if per_cap > 0:
+            text = text[:per_cap]
         block = f"--- {rel} ---\n{text}"
         if used + len(block) > page_prefix_chars and parts:
             break
@@ -37,6 +41,7 @@ def retrieve_raw_context(
     embed_cfg: dict[str, Any],
     top_k: int,
     page_prefix_chars: int,
+    max_chars_per_chunk: int = 0,
     force_reindex: bool = False,
     skip_index_check: bool = False,
     embed_fn: Any | None = None,
@@ -62,6 +67,10 @@ def retrieve_raw_context(
         hits = rank_chunks_vector(qvec, pool, top_n=top_k)
     else:
         hits = vector_search(lane, qvec, top_k=top_k)
-    context = concat_top_k_raw_chunks(hits, page_prefix_chars=page_prefix_chars)
+    context = concat_top_k_raw_chunks(
+        hits,
+        page_prefix_chars=page_prefix_chars,
+        max_chars_per_chunk=max_chars_per_chunk,
+    )
     ms = int((time.perf_counter() - t0) * 1000)
     return hits, context, ms

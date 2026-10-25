@@ -20,27 +20,7 @@ from .lanes import Lane
 from .raw_embed import embed_texts_batch
 from .raw_lexical import rank_chunks_lexical
 from .raw_rag_index import _cosine_distance, ensure_index_fresh, list_index_chunks
-
-
-def _normalize_model_id(model_id: str) -> str:
-    return (model_id or "").strip().lower()
-
-
-def filter_chunks_by_model(
-    chunks: list[dict[str, Any]],
-    *,
-    model_id: str,
-) -> list[dict[str, Any]]:
-    """Keep rows matching suite model_id; empty model_id rows are excluded when filter set."""
-    want = _normalize_model_id(model_id)
-    if not want:
-        return chunks
-    out: list[dict[str, Any]] = []
-    for row in chunks:
-        mid = _normalize_model_id(str(row.get("model_id") or ""))
-        if mid == want:
-            out.append(row)
-    return out
+from .sku_scope import filter_chunks_by_model
 
 
 def rank_chunks_vector(
@@ -83,7 +63,9 @@ def hybrid_rrf_search(
         skip_check=skip_index_check,
         embed_fn=embed_fn,
     )
-    pool = filter_chunks_by_model(list_index_chunks(lane, limit=pool_limit), model_id=model_id)
+    pool = list_index_chunks(lane, limit=pool_limit)
+    if (model_id or "").strip():
+        pool = filter_chunks_by_model(pool, model_id=model_id)
     if not pool:
         return []
 

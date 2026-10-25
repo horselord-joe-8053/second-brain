@@ -35,6 +35,7 @@ from .manual_raw_pipeline import build_manual_raw_pipeline
 from .resolved_run_profile import ResolvedRunProfile
 from .raw_rag_index import ensure_index_fresh
 from .raw_rag_search import concat_top_k_raw_chunks, retrieve_raw_context
+from .sku_scope import SkuScopeError, resolve_retrieval_sku, sku_scope_to_dict
 from .eval_models import resolve_eval_llms
 from .lanes import Lane, load_lanes
 from .load_suite import SuiteQuestion, filter_question_ids, iter_questions, load_suite
@@ -128,7 +129,10 @@ def _flush_results_json(ctx: _RunContext, questions: list[SuiteQuestion]) -> Non
 
 
 def _fallback_resolved(ctx: _RunContext) -> ResolvedRunProfile:
-    """CLI-only raw runs without --profile (legacy flags → minimal ResolvedRunProfile)."""
+    """Legacy raw_rag when ResolvedRunProfile was not built (tests/direct runner calls only).
+
+    Normal CLI: __main__ applies run-config default_run_profile when --profile is omitted.
+    """
     d3 = ctx.raw_retrieval or str(
         ((ctx.cfg.get("retail_raw_rag") or {}).get("retrieval") or {}).get("default_mode") or "vector"
     )
@@ -157,6 +161,7 @@ def _run_one_row(
     literal: str,
     top_k: int,
     page_prefix: int,
+    chunk_max_per: int,
     template: str,
 ) -> None:
     """Execute one lane × question with step progress (pinpoints timeouts)."""
@@ -166,6 +171,8 @@ def _run_one_row(
         return
 
     query = scoped_query(template, model_id=q.model_id, question=q.question)
+    sku_scope = resolve_retrieval_sku(query, suite_model_id=q.model_id or None)
+    retrieval_filter_id = sku_scope.filter_model_id or ""
     _emit_progress(
         ctx,
         step="row_start",
@@ -207,6 +214,7 @@ def _run_one_row(
                     embed_cfg=embed_cfg,
                     top_k=top_k,
                     page_prefix_chars=page_prefix,
+                    max_chars_per_chunk=chunk_max_per,
                     raw_rag_cfg=raw_cfg,
                     answer_llm_cfg=answer_cfg,
                 )
@@ -216,7 +224,7 @@ def _run_one_row(
                     agent_out = pipeline.agentic.retrieve_with_verifier(
                         query,
                         q.question,
-                        model_id=q.model_id,
+                        model_id=retrieval_filter_id,
                         force_reindex=ctx.force_reindex,
                         skip_index_check=ctx.skip_index_check,
                     )
@@ -229,7 +237,7 @@ def _run_one_row(
                 else:
                     pkg = pipeline.retriever.retrieve(
                         query,
-                        model_id=q.model_id,
+                        model_id=retrieval_filter_id,
                         force_reindex=ctx.force_reindex,
                         skip_index_check=ctx.skip_index_check,
                     )
@@ -264,12 +272,17 @@ def _run_one_row(
                     embed_cfg=embed_cfg,
                     top_k=top_k,
                     page_prefix_chars=page_prefix,
+                    max_chars_per_chunk=chunk_max_per,
                     force_reindex=ctx.force_reindex,
                     skip_index_check=ctx.skip_index_check,
-                    model_id=q.model_id,
+                    model_id=retrieval_filter_id,
                 )
             if not context:
-                context = concat_top_k_raw_chunks(hits, page_prefix_chars=page_prefix)
+                context = concat_top_k_raw_chunks(
+                    hits,
+                    page_prefix_chars=page_prefix,
+                    max_chars_per_chunk=chunk_max_per,
+                )
             _emit_progress(
                 ctx,
                 step="raw_search_done",
@@ -368,6 +381,8 @@ def _run_one_row(
             search_meta = {
                 "mode": f"raw_rag_{resolved.d3_engine}",
                 "resolved_d5": (resolved.to_dict().get("d5") or {}),
+                "sku_scope": sku_scope_to_dict(sku_scope),
+                "context_max_chars_per_chunk": chunk_max_per,
             }
             if verifier_summary is not None:
                 search_meta["verifier"] = verifier_summary
@@ -409,6 +424,43 @@ def _run_one_row(
             index=index,
             passed=passed,
         )
+    except SkuScopeError as e:
+        _emit_progress(
+            ctx,
+            step="row_error",
+            lane=lane.lane_id,
+            question_id=q.question_id,
+            index=index,
+            error=f"{type(e).__name__}: {e}",
+        )
+        ctx.log.error(f"sku scope rejected {key}: {e}")
+        row = {
+            "lane": lane.lane_id,
+            "ingest_kind": lane.ingest_kind,
+            "project_path": str(lane.project_path),
+            "question_id": q.question_id,
+            "model_id": q.model_id,
+            "difficulty": q.difficulty,
+            "query": query,
+            "retrieval_mode": ctx.retrieval_mode,
+            "search_meta": {"sku_scope_error": str(e), "code": e.code},
+            "top_paths": [],
+            "top_hits": [],
+            "candidate_answer": "",
+            "pass": False,
+            "judge_rationale": f"sku_scope_rejected: {e}",
+            "latency_ms": {"retrieval": 0, "answer": 0, "judge": 0},
+        }
+        write_jsonl_line(ctx.jsonl_path, {"type": "result", "row": row})
+        ctx.completed.add(key)
+        _emit_progress(
+            ctx,
+            step="row_done",
+            lane=lane.lane_id,
+            question_id=q.question_id,
+            index=index,
+            passed=False,
+        )
     except Exception as e:
         _emit_progress(
             ctx,
@@ -429,6 +481,7 @@ def _run_rows(ctx: _RunContext, *, lanes: list[Lane], questions: list[SuiteQuest
     literal = str(cfg.get("insufficient_literal") or "")
     top_k = int(cfg.get("search_top_k") or 5)
     page_prefix = int(cfg.get("page_prefix_chars") or 8000)
+    chunk_max_per = int(cfg.get("context_max_chars_per_chunk") or 0)
     template = str(cfg.get("query_template") or "{model_id} {question}")
     answer_llm, judge_llm = resolve_eval_llms(cfg)
 
@@ -475,6 +528,7 @@ def _run_rows(ctx: _RunContext, *, lanes: list[Lane], questions: list[SuiteQuest
                 literal=literal,
                 top_k=top_k,
                 page_prefix=page_prefix,
+                chunk_max_per=chunk_max_per,
                 template=template,
             )
             _flush_results_json(ctx, questions)
@@ -554,6 +608,7 @@ def run_benchmark(
             embed_cfg=(cfg.get("retail_raw_rag") or {}).get("embedding") or {},
             top_k=int(cfg.get("search_top_k") or 5),
             page_prefix_chars=int(cfg.get("page_prefix_chars") or 8000),
+            max_chars_per_chunk=int(cfg.get("context_max_chars_per_chunk") or 0),
             raw_rag_cfg=cfg.get("retail_raw_rag") or {},
             answer_llm_cfg=cfg.get("answer") or {},
         )

@@ -66,7 +66,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--profile",
         default="",
-        help="Named run_profiles id from run-config.yaml (overrides mode/lanes when set)",
+        help=(
+            "Named run_profiles id from run-config.yaml (overrides mode/lanes when set). "
+            "When omitted and --retrieval-mode raw_rag, harness uses run-config default_run_profile "
+            "(HG-P1: MANUAL_B_RAW_HYBRID_RERANK)."
+        ),
     )
     parser.add_argument(
         "--index-raw",
@@ -161,14 +165,17 @@ def main(argv: list[str] | None = None) -> int:
     retrieval_mode = args.retrieval_mode
     raw_retrieval = args.raw_retrieval
     raw_agentic = args.raw_agentic
-    resolved = None
-    profile_id = args.profile or ""
-    if args.profile:
-        from tests.retail_multi_profiles.lib.resolved_run_profile import resolve_effective_profile
+    from tests.retail_multi_profiles.lib.resolved_run_profile import resolve_effective_profile
+    from tests.retail_multi_profiles.lib.run_profiles import effective_run_profile_id
 
+    resolved = None
+    profile_id = effective_run_profile_id(
+        cfg, cli_profile=args.profile, retrieval_mode=retrieval_mode
+    )
+    if profile_id:
         resolved = resolve_effective_profile(
             cfg,
-            profile_id=args.profile,
+            profile_id=profile_id,
             lane_ids=lane_ids,
             retrieval_mode=retrieval_mode,
             raw_retrieval=raw_retrieval,
@@ -177,7 +184,8 @@ def main(argv: list[str] | None = None) -> int:
         retrieval_mode = resolved.retrieval_mode
         raw_retrieval = resolved.d3_engine
         lane_ids = list(resolved.lane_ids)
-    if retrieval_mode == "raw_rag" and args.lanes == "A,B,C,D" and not args.profile:
+    elif retrieval_mode == "raw_rag" and args.lanes == "A,B,C,D":
+        # Legacy CLI-only raw_rag (no default_run_profile): vector on B,C,D — prefer --profile explicitly.
         lane_ids = ["B", "C", "D"]
     run_id = args.run_id or None
     raw_kw = {

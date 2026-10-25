@@ -30,6 +30,7 @@ def build_manual_raw_pipeline(
     embed_cfg: dict[str, Any],
     top_k: int,
     page_prefix_chars: int,
+    max_chars_per_chunk: int = 0,
     raw_rag_cfg: dict[str, Any],
     answer_llm_cfg: dict[str, Any] | None = None,
     generate_fn: Any | None = None,
@@ -53,6 +54,7 @@ def build_manual_raw_pipeline(
         mode=resolved.d3_engine,
         top_k=top_k,
         page_prefix_chars=page_prefix_chars,
+        max_chars_per_chunk=max_chars_per_chunk,
         rank_fn=rank_fn,
     )
 

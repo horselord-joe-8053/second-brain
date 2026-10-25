@@ -33,6 +33,7 @@ class ManualEvidenceRetriever:
         mode: str = "vector",
         top_k: int = 5,
         page_prefix_chars: int = 8000,
+        max_chars_per_chunk: int = 0,
         rank_fn: RankFn | None = None,
         embed_fn: Any | None = None,
     ) -> None:
@@ -41,6 +42,7 @@ class ManualEvidenceRetriever:
         self.mode = mode
         self.top_k = top_k
         self.page_prefix_chars = page_prefix_chars
+        self.max_chars_per_chunk = max_chars_per_chunk
         self.rank_fn = rank_fn
         self.embed_fn = embed_fn
 
@@ -88,6 +90,7 @@ class ManualEvidenceRetriever:
             embed_cfg=self.embed_cfg,
             top_k=self.top_k,
             page_prefix_chars=self.page_prefix_chars,
+            max_chars_per_chunk=self.max_chars_per_chunk,
             force_reindex=force_reindex,
             skip_index_check=skip_index_check,
             embed_fn=self.embed_fn,

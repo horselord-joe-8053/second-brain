@@ -262,6 +262,7 @@ MANUAL_B_RAW_HYBRID_RERANK:
 3. **Tickets never use D2** — use **model_filter** and code boost instead of manual lanes.
 4. **Lane D later:** still valid for **D2.D** experiments; promotion baseline is **D2.B** per grill **G4**.
 5. **BM25:** Tantivy on tickets and (planned) keyword leg on raw; wiki has its own lexical leg — not one shared BM25 index across all D1.
+6. **Phase order A2 → A3 → A1 (R25):** **D1.T** tickets are manual-adjacent in content, but plan **Phase 2 before Phase 3** because **D3.T-A/B/C** and **D3.R-H** are both **non–LLM-Wiki hybrid retrieval** (index + fusion + shared D5 modules). **D3.W-H** (wiki) is a separate retrieval family — scheduled after ticket adapters prove the shared stack on a second corpus.
 
 ---
 

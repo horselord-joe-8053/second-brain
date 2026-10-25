@@ -10,13 +10,12 @@ Plan: [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../../../../docs_manual_gen/ref_pl
 # Build indexes (lanes B,C,D) — auto refresh when raw files change
 python -m tests.retail_multi_profiles --index-raw --lanes B,C,D
 
-# Smoke Q&A on raw RAG
-python -m tests.retail_multi_profiles --smoke --retrieval-mode raw_rag --lanes B,C,D
+# Smoke / full Lane B — omit --profile → default_run_profile (HG-P1: MANUAL_B_RAW_HYBRID_RERANK)
+python -m tests.retail_multi_profiles --smoke --retrieval-mode raw_rag
+python -m tests.retail_multi_profiles --full --retrieval-mode raw_rag --run-id my-lane-b-run
 
-# Full 90×3 live run (vector-only default)
-python -m tests.retail_multi_profiles --full --retrieval-mode raw_rag --lanes B,C,D
-
-# Phase 1 Lane B — use named profiles (D5 from YAML after P1.0b; no --raw-agentic for fair compare)
+# Explicit profiles (fair D5 compare, vector baseline, hybrid D5.0)
+python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_VECTOR --run-id abcd-raw-full-openai-v1
 python -m tests.retail_multi_profiles --smoke --profile MANUAL_B_RAW_HYBRID --lanes B
 python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_HYBRID --run-id a2-hybrid-rrf-b-v2
 python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_HYBRID_RERANK --run-id a2-hybrid-rerank-b-v2

@@ -3,14 +3,10 @@
 from __future__ import annotations
 
 import hashlib
-import re
 from dataclasses import dataclass
 from pathlib import Path
 
-_MODEL_RE = re.compile(
-    r"(ge_GNE27JYMFS|kitchenaid_KRFF507HPS|samsung_RF28K9070SG)",
-    re.IGNORECASE,
-)
+from .sku_scope import infer_model_id_from_path_text
 
 
 @dataclass(frozen=True)
@@ -27,8 +23,7 @@ class RawSourceFile:
 
 def infer_model_id_from_path(path: Path) -> str:
     """Best-effort SKU folder token from raw path segments."""
-    m = _MODEL_RE.search(str(path))
-    return m.group(1) if m else ""
+    return infer_model_id_from_path_text(str(path))
 
 
 def sha256_file(path: Path) -> str:

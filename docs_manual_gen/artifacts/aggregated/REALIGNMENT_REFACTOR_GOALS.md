@@ -75,9 +75,11 @@ Integration diagram in chat: orchestrator → wiki (fast insight) + EvidenceRetr
 Chat sequence (adopted in refactor plan):
 
 1. **A2 Manual RAG** — 90-Q on **D2.B** (`brain/retail-md`); beat Lane **B** wiki + raw baselines (**R10**); **D2.D** later.
-2. **A3 Ticket RAG** — extend libs; **D2 n/a** (tickets only).
+2. **A3 Ticket RAG** — extend libs; **D2 n/a** (tickets only). **Before A1** (**R25** in refactor plan).
 3. **A1 LLM Wiki** — audit + harness wiki Q&amp;A on **D2.B** only for now; **D2.D** later.
 4. **B COS + thin API** — wire proven pieces only.
+
+**Why A3 before A1 (conscious choice, 2026-10-25):** Tickets and manuals both touch product knowledge, but **A2 and A3 share the same retrieval *style*** — hybrid search over an **index** (raw Lance vs Postgres), not the **LLM-Wiki** compile + **`llm_wiki`** HTTP path (**A1**). We finish hardening rerank · verifier · agentic on **non-wiki search** for manuals **then** tickets **before** investing in wiki audit and wiki harness modes.
 
 **Note:** Older summaries cited “beat Lane D **31/60**” — that was the aggregate **D2.D** wiki high-water mark; **promotion bar is Lane B** until you explicitly reopen D.
 
