@@ -686,6 +686,7 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 |------|--------|
 | Combined wiki+raw / COS routing | **B — Phase 4** |
 | Cross-encoder rerank | A2 after listwise measured |
+| **Unified PG manual embeddings (Lance A/B)** | [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](./REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md) — **evo-16**; parallel to Phase **2** |
 | Canonical MD pipeline | A1/A2 — separate plan if needed |
 | nu_llm_wiki internal changes | A1 — external audit first |
 | Ticket→wiki KCS | B / product policy |
