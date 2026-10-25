@@ -7,7 +7,7 @@ from typing import Any
 
 from retail_brain.evidence.agentic import AgenticRetrievalController
 from retail_brain.evidence.retriever import ManualEvidenceRetriever
-from retail_brain.rerank_registry import rank_fn_for_resolved
+from retail_brain.rerank_registry import rank_fn_for_resolved  # shared D5.R with ticket_evidence_pipeline
 
 from .lanes import Lane
 from .resolved_run_profile import ResolvedRunProfile, assert_rerank_preflight

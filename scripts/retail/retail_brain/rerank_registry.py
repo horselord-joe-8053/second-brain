@@ -8,17 +8,36 @@ from typing import Any, Callable, Sequence
 RankFn = Callable[[str, Sequence[dict[str, Any]]], str]
 
 
+def candidate_row_id(row: dict[str, Any]) -> str:
+    """Stable id for manual chunks or ticket rows (ticket_id wins when both present)."""
+    if row.get("ticket_id"):
+        return str(row["ticket_id"])
+    return str(row.get("chunk_id") or row.get("id") or "")
+
+
+def candidate_row_snippet(row: dict[str, Any], *, max_len: int = 500) -> str:
+    """Text shown to listwise LLM — manual chunk text or ticket intake + resolution."""
+    if row.get("text"):
+        return str(row["text"])[:max_len].replace("\n", " ")
+    parts = [str(row.get("customer_query_text") or "")]
+    res = str(row.get("resolution_text") or "").strip()
+    if res:
+        parts.append(f"Resolution: {res}")
+    return " ".join(parts)[:max_len].replace("\n", " ")
+
+
 def _listwise_prompt(query: str, candidates: Sequence[dict[str, Any]]) -> str:
-    """Compact listwise rerank prompt — model returns JSON array of chunk_id strings."""
+    """Compact listwise rerank prompt — JSON array of ids (chunk_id or ticket_id)."""
+    pool = "tickets" if any(c.get("ticket_id") for c in candidates) else "manual chunks"
     lines = [
-        "Rank the following manual chunks by relevance to the query.",
-        "Reply with ONLY a JSON array of chunk_id strings, best first.",
+        f"Rank the following {pool} by relevance to the query.",
+        "Reply with ONLY a JSON array of id strings, best first.",
         f"Query: {query}",
-        "Chunks:",
+        "Candidates:",
     ]
     for row in candidates:
-        cid = row.get("chunk_id") or row.get("id") or ""
-        snippet = str(row.get("text") or "")[:500].replace("\n", " ")
+        cid = candidate_row_id(row)
+        snippet = candidate_row_snippet(row)
         lines.append(f"- id={cid} text={snippet!r}")
     return "\n".join(lines)
 

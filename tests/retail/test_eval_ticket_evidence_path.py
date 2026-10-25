@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from retail_brain.ticket_evidence_eval import run_evidence_path_row, write_evidence_jsonl
+
+REPO = Path(__file__).resolve().parents[2]
 
 
 def _mock_search(
@@ -39,6 +42,7 @@ def test_evidence_path_retriever_emits_jsonl_fields(tmp_path) -> None:
         case,
         dsn="postgresql://mock",
         mode="retriever",
+        repo_root=REPO,
         search_fn=_mock_search,
     )
     assert row["hit_strict"] is True

@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Callable, Literal
+from typing import Any, Callable
 
-from retail_brain.evidence.ticket_agentic import TicketAgenticController
-from retail_brain.evidence.ticket_retriever import TicketEvidenceRetriever
+from retail_brain.evidence.ticket_evidence_pipeline import (
+    EvidencePathMode,
+    build_ticket_evidence_stack,
+)
 from retail_brain.pg_search import search_ticket_hits_pg
-
-EvidencePathMode = Literal["baseline", "retriever", "retriever_rerank", "agentic"]
 
 
 def run_evidence_path_row(
@@ -18,8 +18,9 @@ def run_evidence_path_row(
     *,
     dsn: str,
     mode: EvidencePathMode,
+    repo_root: Path,
     search_fn: Callable[..., tuple[str, list[dict[str, Any]]]] | None = None,
-    rank_fn: Callable[[str, list[dict[str, Any]]], str] | None = None,
+    generate_fn: Any | None = None,
 ) -> dict[str, Any]:
     """Evaluate one JSONL case through the selected evidence path."""
     query = str(case["query"])
@@ -34,23 +35,23 @@ def run_evidence_path_row(
         _m, hits = search(dsn, query, model_filter=model_filter or None, limit=5)
         top_id = hits[0]["ticket_id"] if hits else None
     else:
-        retriever = TicketEvidenceRetriever(
+        stack = build_ticket_evidence_stack(
             dsn,
+            repo_root=repo_root,
+            mode=mode,
+            generate_fn=generate_fn,
             search_fn=search_fn,
-            top_k=5,
-            rank_fn=rank_fn if mode == "retriever_rerank" else None,
         )
-        if mode == "agentic":
-            agentic = TicketAgenticController(retriever, max_loops=1).retrieve_with_verifier(
-                query, model_filter=model_filter
-            )
+        if mode == "agentic" and stack.agentic is not None:
+            agentic = stack.agentic.retrieve_with_verifier(query, model_filter=model_filter)
             pkg = agentic.package
             verifier_json = agentic.verifier.to_dict()
             loops = agentic.loops
         else:
-            pkg = retriever.retrieve(query, model_filter=model_filter)
+            pkg = stack.retriever.retrieve(query, model_filter=model_filter)
+            loops = 0
         top_id = pkg.chunks[0].chunk_id if pkg.chunks else None
-        package_meta = pkg.meta
+        package_meta = {**pkg.meta, "rank_fn_active": stack.rank_fn_active}
 
     hit_strict = bool(top_id and top_id in expected)
     return {

@@ -77,7 +77,12 @@ def main() -> None:
         run_id = args.evidence_run_id or os.environ.get("FRU_TICKET_EVIDENCE_RUN_ID") or "evidence-dev"
         out_dir = ROOT / "ops" / "runs" / "fru-ticket-evidence" / run_id
         rows = [
-            run_evidence_path_row(c, dsn=dsn, mode=args.evidence_path)  # type: ignore[arg-type]
+            run_evidence_path_row(
+                c,
+                dsn=dsn,
+                mode=args.evidence_path,  # type: ignore[arg-type]
+                repo_root=ROOT,
+            )
             for c in cases
         ]
         write_evidence_jsonl(rows, out_dir / "evidence_rows.jsonl")
