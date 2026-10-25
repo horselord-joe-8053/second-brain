@@ -37,9 +37,9 @@ retail_raw_rag:
     enabled: false
     max_loops: 1
 
-# HG-P1 default when CLI omits --profile and --retrieval-mode raw_rag (Lane B hybrid + D5 R+V+A).
-# Does NOT replace eval baseline abcd-raw-full-openai-v1 (vector 28/60) — see TEST_ANALYSIS_A2 §1.
-default_run_profile: MANUAL_B_RAW_HYBRID_RERANK
+# HG-P1 default when CLI omits --profile and --retrieval-mode raw_rag (Lane B PG hybrid + D5 R+V+A).
+# Lance manual path: set RETAIL_MANUAL_D3_BACKEND=lance or use explicit legacy compare runs.
+default_run_profile: MANUAL_B_RAW_PG_HYBRID_RERANK
 
 # run_profiles: informal ids → harness flags. Target: each block also carries d5: (rerank/verifier/agentic).
 # D3 = raw_retrieval (vector | hybrid_rrf). D5.R = d5.rerank.enabled + backend llm_listwise (not hybrid_rrf_rerank alone).
@@ -51,6 +51,7 @@ run_profiles:
   MANUAL_B_RAW_HYBRID:
     retrieval_mode: raw_rag
     raw_retrieval: hybrid_rrf
+    manual_d3_backend: pg
     lanes: B
     d5:
       rerank:
@@ -62,6 +63,7 @@ run_profiles:
   MANUAL_B_RAW_HYBRID_RERANK:
     retrieval_mode: raw_rag
     raw_retrieval: hybrid_rrf
+    manual_d3_backend: pg
     lanes: B
     d5:
       rerank:

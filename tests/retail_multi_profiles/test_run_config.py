@@ -25,7 +25,7 @@ def test_merged_config_includes_evidence_from_brain_stack_example() -> None:
     assert cfg["retail_raw_rag"]["embedding"]["model"] == "text-embedding-3-small"
     assert "MANUAL_B_RAW_HYBRID" in (cfg.get("run_profiles") or {})
     assert "MANUAL_B_RAW_PG_HYBRID" in (cfg.get("run_profiles") or {})
-    assert cfg.get("default_run_profile") == "MANUAL_B_RAW_HYBRID_RERANK"
+    assert cfg.get("default_run_profile") == "MANUAL_B_RAW_PG_HYBRID_RERANK"
 
 
 def test_effective_run_profile_id_hg_p1_default() -> None:
@@ -36,7 +36,7 @@ def test_effective_run_profile_id_hg_p1_default() -> None:
     cfg = load_merged_run_config(REPO)
     assert (
         effective_run_profile_id(cfg, cli_profile="", retrieval_mode="raw_rag")
-        == "MANUAL_B_RAW_HYBRID_RERANK"
+        == "MANUAL_B_RAW_PG_HYBRID_RERANK"
     )
     assert effective_run_profile_id(cfg, cli_profile="", retrieval_mode="llm_wiki") == ""
     assert (
@@ -59,6 +59,21 @@ def test_pg_run_profile_sets_manual_d3_backend() -> None:
     )
     assert resolved.manual_d3_backend == "pg"
     assert resolved.d5_rerank_enabled is True
+
+
+def test_lane_b_hybrid_rerank_profile_uses_pg_backend() -> None:
+    """After P5 cutover, legacy profile ids on Lane B resolve to manual_d3_backend=pg."""
+    from tests.retail_multi_profiles.lib.resolved_run_profile import resolve_effective_profile
+    from tests.retail_multi_profiles.lib.run_config import load_merged_run_config
+
+    cfg = load_merged_run_config(REPO)
+    resolved = resolve_effective_profile(
+        cfg,
+        profile_id="MANUAL_B_RAW_HYBRID_RERANK",
+        lane_ids=["B"],
+        retrieval_mode="raw_rag",
+    )
+    assert resolved.manual_d3_backend == "pg"
 
 
 def test_run_profile_resolves_raw_flags() -> None:

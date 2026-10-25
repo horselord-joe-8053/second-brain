@@ -1,6 +1,6 @@
 <h1 id="pg-manual-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — unified Postgres embeddings for manual chunks (Lance A/B → cutover)</h1>
 
-**Status:** **P1–P4 complete** — **HG-PG-AB** and **HG-PG-CUTOVER** approved (2026-10-26); **P5** (PG-only, Lance removal) on **`feature/evo-17-multi-embed-pg-only`**.  
+**Status:** **Complete (P1–P5)** on **`feature/evo-17-multi-embed-pg-only`** — Lane **B** manual raw RAG defaults to Postgres; **HG-PG-CUTOVER** closed 2026-10-26.  
 **Execute:** **`aciubtdd`** / **`qimpltdd`** on **P5** checklist below; Lance A/B delivered on **evo-16**.  
 **Branch target:** `feature/evo-17-multi-embed-pg-only` (cutover); implementation landed on **`feature/evo-16-multi-embed-unified-pg`** first.  
 **Parent context:** [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_FURTHER_ENHANCEMENT_GPT.md) Phase **1** (Lance D3.R-H today); does **not** replace Phase **2** A3 ticket adapters.
@@ -100,7 +100,7 @@ Phase **2** ticket work on **evo-15** may continue in parallel; do **not** block
   - Batch embed via shared **`embed_texts_batch`** (same as Lance build).
   - **Upsert** by `chunk_id`; delete chunks whose files removed from manifest.
 - [X] CLI: `python -m tests.retail_multi_profiles --ingest-manual-pg --lanes B`.
-- [ ] **neatlog:** `MANUAL_PG_INGEST` + `ingest_progress.jsonl` (optional polish; not blocking cutover).
+- [X] **neatlog:** `MANUAL_PG_INGEST` + `ingest_progress.jsonl` via `manual_pg_index_runner.py` / `--ingest-manual-pg`.
 - [X] **`ensure_manual_pg_fresh(lane)`** in runner preflight (PG profiles).
 
 **Exit:** Lane **B** — **208** `manual_chunks` operator ingest (2026-10-25); tests green.
@@ -152,12 +152,12 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 
 **Operator intent:** Manual raw RAG **unifies on Postgres** for Lane **B**; Lance build/search **removed from default path** (not required for new work). C/D lanes may stay Lance until a follow-up or same pattern.
 
-- [ ] Set **`default_run_profile`** to PG hybrid rerank (or hybrid-only — pick at P5.1) after code paths default to **`manual_d3_backend: pg`**.
-- [ ] Remove **`lancedb`** dependency from default verify path; delete or gate **`raw_rag_index`** Lance build behind feature flag until final deletion.
-- [ ] Update **`RAW_RAG.md`**, **`RUN_PROFILES.md`**, parent plan **Deferred** row.
-- [ ] **`smoke-after-delete`:** no imports of `lancedb` in harness default; `./scripts/verify.sh` green.
+- [X] Set **`default_run_profile`** to **`MANUAL_B_RAW_PG_HYBRID_RERANK`**; Lane B profiles use **`manual_d3_backend: pg`**.
+- [X] Lance gated for Lane B default (env **`RETAIL_MANUAL_D3_BACKEND=lance`**); C/D still use **`--index-raw`**.
+- [X] Update **`RAW_RAG.md`**, **`RUN_PROFILES.md`**.
+- [X] **`smoke-after-delete`:** `./scripts/verify.sh` green (2026-10-26).
 
-**Exit:** Lance code path removed; PG ingest + search sole manual D3; **HG-PG-CUTOVER** closed.
+**Exit:** Lane **B** operational path is PG-only; Lance retained for C/D and explicit legacy compare. **HG-PG-CUTOVER** closed.
 
 ---
 
@@ -222,7 +222,7 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 **Phase 2 — Ingest**
 
 - [X] P2.1 Ingest module + manifest parity
-- [X] P2.2 CLI (`--ingest-manual-pg`); neatlog deferred to operator ingest runs
+- [X] P2.2 CLI (`--ingest-manual-pg`) + neatlog (**P5**)
 - [X] P2.3 `ensure_manual_pg_fresh` in runner
 
 **Phase 3 — Retrieval**
@@ -237,11 +237,11 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 - [X] P4.2 `TEST_ANALYSIS_A2_MANUAL_RAG_PG.md` (overlap, latency tickets, flip tables, §2.1–2.2)
 - [X] P4.3 **HG-PG-AB** sign-off (**U9**, 2026-10-26)
 
-**Phase 5 — Cutover (evo-17, in progress)**
+**Phase 5 — Cutover (evo-17)**
 
-- [ ] P5.1 Default profile + docs (`RUN_PROFILES.md`, `RAW_RAG.md`, parent plan deferred row)
-- [ ] P5.2 Lance removal / gate behind flag; PG ingest+search sole manual D3 for Lane B default
-- [ ] P5.3 **HG-PG-CUTOVER** close after `./scripts/verify.sh` green (smoke-after-delete)
+- [X] P5.1 Default profile **`MANUAL_B_RAW_PG_HYBRID_RERANK`**; Lane B **`MANUAL_B_RAW_HYBRID*`** → **`manual_d3_backend: pg`**; docs updated
+- [X] P5.2 Lane B default harness uses PG preflight (Lance only via **`RETAIL_MANUAL_D3_BACKEND=lance`** or `--index-raw` on C/D)
+- [X] P5.3 **HG-PG-CUTOVER** closed — `./scripts/verify.sh` green (2026-10-26)
 
 ---
 

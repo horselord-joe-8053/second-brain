@@ -7,10 +7,15 @@ Plan: [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../../../../docs_manual_gen/ref_pl
 <h2 id="raw-rag-commands" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Commands</h2>
 
 ```bash
-# Build indexes (lanes B,C,D) — auto refresh when raw files change
+# Lane B manual corpus — Postgres (default after P5 cutover)
+bash scripts/retail/ops/pg_up_and_load.sh   # once per dev DB
+python -m tests.retail_multi_profiles --ingest-manual-pg --lanes B
+# Logs: logs/ops/retail-manual-pg-ingest-<run_id>.log · ops/runs/retail-manual-pg-ingest/<run_id>/ingest_progress.jsonl
+
+# Lanes C,D — Lance index (legacy until PG ingest exists for those lanes)
 python -m tests.retail_multi_profiles --index-raw --lanes B,C,D
 
-# Smoke / full Lane B — omit --profile → default_run_profile (HG-P1: MANUAL_B_RAW_HYBRID_RERANK)
+# Smoke / full Lane B — omit --profile → default_run_profile (MANUAL_B_RAW_PG_HYBRID_RERANK)
 python -m tests.retail_multi_profiles --smoke --retrieval-mode raw_rag
 python -m tests.retail_multi_profiles --full --retrieval-mode raw_rag --run-id my-lane-b-run
 
@@ -33,10 +38,11 @@ python -m tests.retail_multi_profiles --compare-wiki-raw \
 | Run | Log file | JSONL |
 |-----|----------|-------|
 | Q&A | `logs/ops/retail-lane-abcd-raw-<run_id>.log` | `ops/runs/retail-lane-abcd-raw/<run_id>/results.jsonl` |
-| Index only | `logs/ops/retail-lane-abcd-raw-index-<run_id>.log` | `index_progress.jsonl` |
+| Index only (Lance) | `logs/ops/retail-lane-abcd-raw-index-<run_id>.log` | `index_progress.jsonl` |
+| Manual PG ingest | `logs/ops/retail-manual-pg-ingest-<run_id>.log` | `ingest_progress.jsonl` |
 
 Set **`NEAT_LOGGER_DEBUG=1`** for top-k paths and embed batch details.
 
 <h2 id="raw-rag-index" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Index location</h2>
 
-Per lane project: `brain/<lane>/.retail-raw-rag/` (Lance + manifest). Requires **`OPENAI_API_KEY`** for live embed (same model as `retail_raw_rag.embedding` in run-config).
+**Lane B (default):** dense store **`manual_chunks`** in Postgres (`RETAIL_DATABASE_URL`); freshness metadata `brain/<lane>/.retail-raw-rag/manual_pg_meta.json`. **Lanes C/D:** Lance under `brain/<lane>/.retail-raw-rag/lancedb` until PG ingest extends. Requires **`OPENAI_API_KEY`** for live embed (same model as `retail_raw_rag.embedding` in run-config). Legacy Lance compare on Lane B: **`RETAIL_MANUAL_D3_BACKEND=lance`** (requires `--index-raw` first).

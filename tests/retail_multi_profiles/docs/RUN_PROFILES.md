@@ -64,7 +64,7 @@ graph LR
 
 **Runner rule:** `runner.py` must **not** re-interpret YAML strings with `bool("false")` or OR together global agentic + CLI; it only reads **`ResolvedRunProfile`**.
 
-**HG-P1 default (when CLI omits `--profile`):** If **`--retrieval-mode raw_rag`**, the harness resolves **`run-config.yaml` → `default_run_profile`** (currently **`MANUAL_B_RAW_HYBRID_RERANK`**). Wiki runs (`llm_wiki`, the CLI default) are **unchanged** — no implicit profile. **Eval anchor** for “vs legacy raw RAG” remains **`MANUAL_B_RAW_VECTOR`** / run **`abcd-raw-full-openai-v1`** — not the operational default.
+**HG-P1 default (when CLI omits `--profile`):** If **`--retrieval-mode raw_rag`**, the harness resolves **`run-config.yaml` → `default_run_profile`** (currently **`MANUAL_B_RAW_PG_HYBRID_RERANK`** with **`manual_d3_backend: pg`**). Lane **B** profile ids **`MANUAL_B_RAW_HYBRID*`** also set **`manual_d3_backend: pg`** after cutover. Wiki runs (`llm_wiki`, the CLI default) are **unchanged**. **Eval anchor** for vector baseline remains **`MANUAL_B_RAW_VECTOR`** / **`abcd-raw-full-openai-v1`**. Lance A/B on B: env **`RETAIL_MANUAL_D3_BACKEND=lance`** + Lance index.
 
 ---
 
@@ -123,8 +123,8 @@ Document any override in **`results.json`** → **`config_snapshot.resolved_prof
 | YAML `run_profiles` id | Dimension tuple (informal) | D3 | D5 |
 |------------------------|----------------------------|----|----|
 | **`MANUAL_B_RAW_VECTOR`** | `MANUAL\|M\|D2.B\|D3.R-V\|LC\|0\|M90\|B` | `vector` | **0** |
-| **`MANUAL_B_RAW_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|M90\|B` | `hybrid_rrf` | **0** |
-| **`MANUAL_B_RAW_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|M90\|B` | `hybrid_rrf` | **R+V+A** (`llm_listwise`) |
+| **`MANUAL_B_RAW_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|M90\|B` | `hybrid_rrf` + **`manual_d3_backend: pg`** | **0** |
+| **`MANUAL_B_RAW_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|M90\|B` | `hybrid_rrf` + **`manual_d3_backend: pg`** | **R+V+A** (`llm_listwise`) |
 | **`MANUAL_B_RAW_PG_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **0** |
 | **`MANUAL_B_RAW_PG_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **R+V+A** |
 

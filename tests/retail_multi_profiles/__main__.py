@@ -147,28 +147,21 @@ def main(argv: list[str] | None = None) -> int:
     if args.ingest_manual_pg:
         import os
 
-        from retail_brain.manual_pg_ingest import ensure_manual_pg_fresh
-        from tests.retail_multi_profiles.lib.lanes import load_lanes
+        from tests.retail_multi_profiles.lib.manual_pg_index_runner import run_ingest_manual_pg
 
         dsn = os.environ.get("RETAIL_DATABASE_URL")
         if not dsn:
             parser.error("--ingest-manual-pg requires RETAIL_DATABASE_URL")
         lane_ids = [x.strip() for x in args.lanes.split(",") if x.strip()]
-        cfg = load_merged_run_config(REPO)
-        embed_cfg = (cfg.get("retail_raw_rag") or {}).get("embedding") or {}
-        lanes_map = load_lanes(REPO)
-        for lid in lane_ids:
-            lane = lanes_map[lid]
-            if not lane.raw_rag_enabled:
-                parser.error(f"lane {lid} is not raw_rag_enabled")
-            meta = ensure_manual_pg_fresh(
-                dsn,
-                lane,
-                embed_cfg,
-                force=args.force_reindex,
-                skip_check=args.skip_index_check,
-            )
-            print(f"lane {lid}: manual_pg chunks={meta.get('chunk_count', 0)}")
+        out = run_ingest_manual_pg(
+            REPO,
+            dsn=dsn,
+            lane_ids=lane_ids,
+            run_id=args.run_id or None,
+            force_reindex=args.force_reindex,
+            skip_index_check=args.skip_index_check,
+        )
+        print(f"Wrote {out}")
         return 0
 
     if args.sources_only_replay:
