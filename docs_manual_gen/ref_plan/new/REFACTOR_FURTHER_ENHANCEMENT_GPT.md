@@ -293,36 +293,36 @@ Reuses Phase 1 **`rerank.py`**, **`verifier.py`**, **`agentic.py`** with a **tic
 
 <h3 id="gpt-p2-1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">11.1 P2.1 — Ticket EvidenceRetriever adapter</h3>
 
-- [ ] `evidence/retriever.py`: **`TicketRetrieverPolicy`** — wraps `search_ticket_hits_pg` (modes A/B/C unchanged as config); **`model_filter`** from open ticket SKU (same as eval **`model_filter`**).
-- [ ] Returns normalized **evidence packages** (ticket id, model, intake excerpt, resolution excerpt, fused rank, mode, cosine when hydrated).
-- [ ] Unit tests with fixture PG or mocked cursor — no live embed in CI.
+- [X] **`TicketEvidenceRetriever`** (`evidence/ticket_retriever.py`) — wraps `search_ticket_hits_pg`; **`model_filter`** from eval row.
+- [X] Normalized **evidence packages** (ticket id, intake + resolution text, fused/cosine scores).
+- [X] Unit tests mocked; optional live smoke when **`RETAIL_DATABASE_URL`** set (**R24**).
 
 <h3 id="gpt-p2-2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">11.2 P2.2 — Ticket EvidenceVerifier</h3>
 
-- [ ] **`TicketApplicabilityVerifier`**: checks top hits for **model alignment**, **symptom/code overlap** with query, and **resolution_text** present before suggesting reuse.
-- [ ] Output JSON: `applicable` bool, `reasons[]`, optional `escalate` when no hit passes threshold.
-- [ ] Tests on frozen snippets from P9 report examples (paraphrase / hybrid_stress / code_in_query strata).
+- [X] **`verify_ticket_applicability`** (`evidence/ticket_verifier.py`) — model, symptom overlap, resolution presence.
+- [X] Output JSON: `applicable`, `reasons[]`, `escalate`.
+- [X] Tests on fixture snippets (**P2.2**).
 
 <h3 id="gpt-p2-3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">11.3 P2.3 — Optional listwise rerank (ticket pool)</h3>
 
-- [ ] Reuse Phase 1 **`rerank.py`** on top **K** ticket hits (default K=20); new search mode env e.g. **`rrf_term_boosted_rerank`** (or harness flag `--ticket-rerank`) — **additive**, default production stays mode **C**.
+- [X] Reuse **`listwise_rerank`** via **`TicketEvidenceRetriever.rank_fn`** (eval path **`retriever_rerank`**); production mode **C** unchanged until promotion.
 - [ ] Compare on eval only first; promote only if [exit](#gpt-p2-6) met.
 
 <h3 id="gpt-p2-4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">11.4 P2.4 — Agentic ticket controller</h3>
 
-- [ ] **`AgenticRetrievalController`** ticket policy: when verifier reports missing case evidence, emit **one** subquery (symptom paraphrase or **`FRU-E###`** extraction) and re-search — same **one-loop** budget as manual ( **R4** ).
-- [ ] No merge with manual Lance index; no ticket index rebuild.
+- [X] **`TicketAgenticController`** (`evidence/ticket_agentic.py`) — one subquery (**FRU-E** code or model+query); **R4** budget.
+- [X] No manual Lance merge; no ticket index rebuild.
 
 <h3 id="gpt-p2-5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">11.5 P2.5 — Eval integration</h3>
 
-- [ ] Extend **`eval_ticket_search.py`** (or sibling **`eval_ticket_evidence.py`**) with **`--evidence-path`**: baseline pg_search vs retriever+verifier vs +rerank vs +agentic.
-- [ ] Persist per-row ranks + verifier JSON under `ops/runs/fru-ticket-evidence/<run_id>/`.
+- [X] **`eval_ticket_search.py --evidence-path`** + **`ticket_evidence_eval.py`** — baseline / retriever / rerank / agentic.
+- [X] Persist rows under `ops/runs/fru-ticket-evidence/<run_id>/evidence_rows.jsonl`.
 - [ ] **§17.6:** `FRU_TICKET_EVIDENCE` neat_logger + `progress.jsonl` on eval path.
 - [ ] **Governance:** do not edit **`ticket_retrieval.jsonl`** and ranker in one PR without override (see FRU retail plan V4).
 
 <h3 id="gpt-p2-6" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">11.6 P2.6 — Operator runs + analysis</h3>
 
-- [ ] **§17.2:** smoke ticket eval → full **T100** + **`05_run_abc_postgres.sh`** → **`TEST_ANALYSIS_A3_TICKET_RAG.md`** vs prior **D3.T-C** profile.
+- [ ] **§17.2:** smoke ticket eval → full **T100** + **`05_run_abc_postgres.sh`** → fill metrics in **`TEST_ANALYSIS_A3_TICKET_RAG.md`** (stub created; operator run pending).
 
 **Phase 2 exit (HG-P2):** **`check_abc_ladder.py`** green on default modes **and** either (a) **paraphrase** stratum recall@1 improves **≥ +0.05** absolute vs mode **C** baseline with rerank and/or agentic, **or** (b) overall recall@1 **≥ +0.03** with no stratum dropping **> 0.02**. If rerank fails, ship verifier-only path for **`retail_answer.v1`** ticket leg metadata.
 
@@ -654,12 +654,12 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 
 **Phase 2 — A3** (after **HG-P1**)
 
-- [ ] P2.1 Ticket retriever adapter
-- [ ] P2.2 Ticket applicability verifier
-- [ ] P2.3 Optional ticket rerank
-- [ ] P2.4 Agentic ticket controller
-- [ ] P2.5 Eval integration
-- [ ] P2.6 ABC regression + TEST_ANALYSIS_A3_TICKET_RAG.md
+- [X] P2.1 Ticket retriever adapter
+- [X] P2.2 Ticket applicability verifier
+- [X] P2.3 Optional ticket rerank
+- [X] P2.4 Agentic ticket controller
+- [X] P2.5 Eval integration
+- [ ] P2.6 ABC regression + TEST_ANALYSIS_A3 metrics (operator T100)
 
 **Phase 3 — A1** (after **HG-P1**; exit **HG-P3**)
 
