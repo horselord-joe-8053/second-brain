@@ -86,3 +86,15 @@ python scripts/retail/eval/check_abc_ladder.py --reports-dir ops/runs/fru-ticket
 ```
 
 **Related:** [`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`](./TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md) (B20 uses mode **C** ticket leg).
+
+---
+
+<h2 id="a3-evo18" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. EVO18-T0 regression (2026-10-28)</h2>
+
+Manual-leg T0 (SQL pool + Tantivy) does **not** change ticket retrieval. Mode **C** re-run after manual index rebuild:
+
+| Run | recall@1 | vs PRE-T0 (`fru-ticket-brand-model-20261027`) |
+|-----|----------|--------------------------------------------------|
+| `fru-ticket-evo18-t0-20261028/c.json` | **0.54** | **=** (non-worse per **E18-D7**) |
+
+Artifact: `ops/runs/fru-ticket-evo18-t0-20261028/c.json`

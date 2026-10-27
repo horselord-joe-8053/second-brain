@@ -79,7 +79,7 @@
 
 - [X] Author this minor (**M10**) + main hierarchy row.
 - [X] Freeze PRE-T0 baseline table (§2).
-- [ ] **`resolved_run_profile`**: emit **evo18** dimension fields on M90 + B20 result rows.
+- [X] **`resolved_run_profile`**: emit **evo18** dimension fields on M90 + B20 result rows (`config_snapshot.evo18`).
 - [ ] **Neatlog** paths documented for long runs (`logs/ops/retail-*`).
 
 ---
@@ -97,24 +97,24 @@
 
 <h2 id="evo18-p2" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Phase P2 — D2 chunk re-ingest</h2>
 
-- [ ] **`raw_chunking`**: implement **`page_heading`** policy (page/heading boundaries from Markdown structure).
-- [ ] Ingest flag **`manual_d2_chunk=policy`**: re-embed Lane B; version **`manual_index_meta`**.
-- [ ] Profile **EVO18-D2-PAGE** in run-config; operator **M90 + B20** (T100 unchanged if retrieval-only unaffected).
-- [ ] Update **TEST_ANALYSIS** comparison vs **EVO18-T0** and PRE-T0.
+- [X] **`raw_chunking`**: implement **`page_heading`** policy (page/heading boundaries from Markdown structure).
+- [X] Ingest flag **`RETAIL_MANUAL_D2_CHUNK`**: re-embed Lane B (**592** chunks); version **`v2-page-heading-max2000`**.
+- [X] Operator **M90 + B20** — `m90-evo18-d2-page-20261028`, `b20-evo18-d2-page-20261028`.
+- [X] Update **TEST_ANALYSIS** comparison vs **EVO18-T0** and PRE-T0.
 
 ---
 
 <h2 id="evo18-p3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Phase P3 — D2.page_pack</h2>
 
-- [ ] When **D2=page_heading**, fusion step **`global_top5`** vs **`page_top5`** (cap chunks per source page before RRF).
-- [ ] Profile **EVO18-D2-PAGE-PACK-PAGE**; operator M90 + B20; analysis vs **EVO18-D2-PAGE**.
+- [X] When **D2=page_heading**, fusion step **`global_top5`** vs **`page_top5`** (cap chunks per source page before RRF).
+- [X] Operator **`m90-evo18-d2-pack-page-20261028`**, **`b20-evo18-d2-pack-page-20261028`** (page_top5 wins M90 vs global).
 
 ---
 
 <h2 id="evo18-p4" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Phase P4 — D7 decomposition</h2>
 
-- [ ] Wire **`TODO_MULTI_SUBQUERY_RAG_DECOMPOSITION.md`** minimal path: manual leg only, **`d7=decompose`** in resolved profile.
-- [ ] Run **b20-customer-six** + full trio; analysis vs promoted D2 profile.
+- [X] Wire minimal **D7** path: **`RETAIL_D7=decompose`** + `manual_query_decompose.split_query_units` on manual hybrid leg.
+- [X] **b20-evo18-d7-six-20261028** **3/6** judge (was **0/6** PRE-T0 six); full **`b20-evo18-d7-20261028`**, **`m90-evo18-d7-20261028`** recorded.
 
 ---
 
@@ -129,9 +129,9 @@
 | **EVO18-D2-PAGE-PACK-PAGE** | — | `m90-evo18-d2-pack-page-*` | `b20-evo18-d2-pack-page-*` | `evo18-d2-pack-page` |
 | **EVO18-D7-DECOMPOSE** | optional | `m90-evo18-d7-*` | `b20-evo18-d7-*` + **six** | `evo18-d7` |
 
-- [ ] **EVO18-T0** trio recorded + TEST_ANALYSIS § comparison.
-- [ ] **D2 / page_pack / D7** rows per promotion order.
-- [ ] Tick checklist; set **`last_aligned`** on this plan.
+- [X] **EVO18-T0** trio recorded + TEST_ANALYSIS § comparison.
+- [X] **D2 / page_pack / D7** rows per promotion order (registry §11 updated).
+- [X] **`last_aligned`** 2026-10-28 — promote **page_heading + page_top5 + Tantivy**; keep **T0** ticket path; B20 full best **14/20** on D2 (matches PRE-T0).
 
 ---
 
@@ -162,13 +162,13 @@
 
 <h2 id="evo18-checklist" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Execution checklist</h2>
 
-- [ ] P0 logging contract
-- [ ] P1 T0 SQL + manual Tantivy
-- [ ] P5 EVO18-T0 operator trio + TEST_ANALYSIS deltas
-- [ ] P2 D2 page_heading + P5 run
-- [ ] P3 page_pack + P5 run
-- [ ] P4 D7 + P5 run (incl. customer-six)
-- [ ] Main plan M10 row + REALIGNMENT experiment registry complete
+- [X] P0 logging contract
+- [X] P1 T0 SQL + manual Tantivy
+- [X] P5 EVO18-T0 operator trio + TEST_ANALYSIS deltas
+- [X] P2 D2 page_heading + P5 run
+- [X] P3 page_pack + P5 run
+- [X] P4 D7 + P5 run (incl. customer-six)
+- [X] Main plan M10 row + REALIGNMENT experiment registry complete
 
 ---
 

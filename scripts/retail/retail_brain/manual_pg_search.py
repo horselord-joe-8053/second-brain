@@ -25,6 +25,12 @@ from retail_brain.product_scope import ProductFilter  # noqa: E402
 from retail_brain.sku_scope import filter_chunks_by_model, filter_chunks_by_product  # noqa: E402
 
 from retail_brain.manual_pg_ingest import ensure_manual_pg_fresh  # noqa: E402
+from retail_brain.manual_page_pack import apply_page_pack_to_ranked_rows  # noqa: E402
+from tests.retail_multi_profiles.lib.raw_policy import (  # noqa: E402
+    d7_query_mode,
+    manual_d2_chunk_policy,
+    manual_d2_page_pack_mode,
+)
 
 
 def manual_lexical_backend_name() -> str:
@@ -146,6 +152,15 @@ def _vector_rank_ids_knn(
     return [str(r["chunk_id"]) for r in ranked if r.get("chunk_id")]
 
 
+def _maybe_page_pack(ranked: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Apply D2.page_pack when chunk policy is page_heading."""
+    if manual_d2_chunk_policy() != "page_heading":
+        return ranked
+    return apply_page_pack_to_ranked_rows(
+        ranked, mode=manual_d2_page_pack_mode(), per_page_k=5
+    )
+
+
 def hybrid_pg_rrf_search(
     dsn: str,
     lane: Lane,
@@ -161,8 +176,48 @@ def hybrid_pg_rrf_search(
     embed_fn: Any | None = None,
     force_reindex: bool = False,
     skip_index_check: bool = False,
+    _skip_d7_decompose: bool = False,
 ) -> list[dict[str, Any]]:
     """Product-scoped PG hybrid: Tantivy+KNN when filtered, else pool overlap+vector RRF."""
+    if not _skip_d7_decompose and d7_query_mode() == "decompose":
+        from retail_brain.manual_query_decompose import split_query_units
+
+        units = split_query_units(query)
+        if len(units) > 1:
+            id_lists: list[list[str]] = []
+            by_id: dict[str, dict[str, Any]] = {}
+            for unit in units:
+                sub = hybrid_pg_rrf_search(
+                    dsn,
+                    lane,
+                    unit,
+                    model_id=model_id,
+                    product_filter=product_filter,
+                    ingest_key=ingest_key,
+                    embed_cfg=embed_cfg,
+                    top_k=top_k,
+                    rrf_k=rrf_k,
+                    pool_limit=pool_limit,
+                    embed_fn=embed_fn,
+                    force_reindex=force_reindex,
+                    skip_index_check=skip_index_check,
+                    _skip_d7_decompose=True,
+                )
+                ids = [str(h["chunk_id"]) for h in sub if h.get("chunk_id")]
+                id_lists.append(ids)
+                for h in sub:
+                    by_id[str(h["chunk_id"])] = h
+            fused = reciprocal_rank_fusion(id_lists, k=rrf_k)
+            out: list[dict[str, Any]] = []
+            for cid, score in fused[:top_k]:
+                row = dict(by_id.get(cid) or {})
+                if not row:
+                    continue
+                row["rrf_score"] = float(score)
+                row["d7_decompose"] = True
+                out.append(row)
+            return out
+
     brand, oem = _product_sql_filters(product_filter)
     use_sql_product = bool((oem or "").strip())
     backend = manual_lexical_backend_name()
@@ -179,6 +234,22 @@ def hybrid_pg_rrf_search(
         vec_ids = _vector_rank_ids_knn(
             dsn, lane, qvec, brand=brand, oem_model=oem, top_n=cand_n
         )
+        import psycopg2  # type: ignore
+
+        conn = psycopg2.connect(dsn)
+        try:
+            with conn.cursor() as cur:
+                union_ids = list(dict.fromkeys(lex_ids + vec_ids))
+                pool_rows = fetch_manual_chunks_by_ids(
+                    cur, lane_id=lane.lane_id, chunk_ids=union_ids
+                )
+        finally:
+            conn.close()
+        by_cid = {str(r["chunk_id"]): r for r in pool_rows}
+        lex_ranked = _maybe_page_pack([by_cid[c] for c in lex_ids if c in by_cid])
+        vec_ranked = _maybe_page_pack([by_cid[c] for c in vec_ids if c in by_cid])
+        lex_ids = [str(r["chunk_id"]) for r in lex_ranked]
+        vec_ids = [str(r["chunk_id"]) for r in vec_ranked]
         fused = reciprocal_rank_fusion([lex_ids, vec_ids], k=rrf_k, lexical_rank_order=lex_ids)
         import psycopg2  # type: ignore
 
@@ -224,6 +295,8 @@ def hybrid_pg_rrf_search(
         lex_ranked = rank_chunks_lexical(query, pool, top_n=min(len(pool), cand_n))
 
     vec_ranked = rank_chunks_vector(qvec, pool, top_n=min(len(pool), cand_n))
+    lex_ranked = _maybe_page_pack(lex_ranked)
+    vec_ranked = _maybe_page_pack(vec_ranked)
 
     lex_ids = [str(r["chunk_id"]) for r in lex_ranked if r.get("chunk_id")]
     vec_ids = [str(r["chunk_id"]) for r in vec_ranked if r.get("chunk_id")]

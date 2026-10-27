@@ -185,3 +185,18 @@ python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_PG_HYBRID_RE
 ```
 
 **Related:** [`TEST_ANALYSIS_A2_MANUAL_RAG.md`](./TEST_ANALYSIS_A2_MANUAL_RAG.md) · [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](../ref_plan/completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md) (minor **M3**).
+
+---
+
+<h2 id="a2-pg-evo18" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. EVO18-T0 — manual Tantivy + SQL scope (2026-10-28)</h2>
+
+Profile **`MANUAL_B_RAW_PG_HYBRID`** · `RETAIL_MANUAL_LEXICAL_BACKEND=tantivy` · run **`m90-evo18-t0-20261028`**.
+
+| Metric | PRE-T0 `m90-brand-model-20261027` | EVO18-T0 | Δ |
+|--------|-----------------------------------|----------|---|
+| Overall judge pass | **63/90** | **65/90** | **+2** |
+| Answerable (60) | **33/60** | **35/60** | **+2** |
+| Median retrieval ms | **444** | **269** | faster |
+| Median answer / judge ms | 1131 / 1282 | 1045 / 1081 | slightly faster |
+
+Bundled B20 judge **regressed** 14→11 while M90 improved — see bundled analysis §8 (answer/judge variance + manual rank shifts, not empty legs).

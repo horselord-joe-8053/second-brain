@@ -70,7 +70,25 @@ class ResolvedRunProfile:
                 },
             },
             "manual_d3_backend": self.manual_d3_backend,
+            "evo18": _evo18_snapshot(),
         }
+
+
+def _evo18_snapshot() -> dict[str, str]:
+    """Dimension knobs for M10 experiment registry (env-driven)."""
+    from tests.retail_multi_profiles.lib.raw_policy import (
+        d7_query_mode,
+        manual_d2_chunk_policy,
+        manual_d2_page_pack_mode,
+        manual_lexical_backend_name,
+    )
+
+    return {
+        "d2_chunk": manual_d2_chunk_policy(),
+        "d2_page_pack": manual_d2_page_pack_mode(),
+        "d7": d7_query_mode(),
+        "manual_lexical_backend": manual_lexical_backend_name(),
+    }
 
 
 def _d5_block(prof: dict[str, Any], raw_rag: dict[str, Any]) -> dict[str, Any]:

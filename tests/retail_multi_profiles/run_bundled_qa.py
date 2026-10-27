@@ -33,14 +33,22 @@ def main(argv: list[str] | None = None) -> int:
         default="MANUAL_B_RAW_PG_HYBRID",
         help="Manual leg run_profiles id (default: PG hybrid, rerank off)",
     )
+    parser.add_argument(
+        "--question-ids",
+        default="",
+        help="Comma-separated BND-* ids (overrides --smoke/--full selection)",
+    )
     args = parser.parse_args(argv)
 
-    if not args.smoke and not args.full:
-        parser.error("pass --smoke or --full")
+    if not args.smoke and not args.full and not (args.question_ids or "").strip():
+        parser.error("pass --smoke, --full, or --question-ids")
 
     data = load_default_suite(REPO)
     cfg = load_merged_run_config(REPO)
-    if args.smoke:
+    if (args.question_ids or "").strip():
+        qids = {x.strip() for x in args.question_ids.split(",") if x.strip()}
+        questions = filter_bundled_ids(data, qids)
+    elif args.smoke:
         smoke_raw = cfg.get("bundled_smoke_question_ids") or ["BND-E01", "BND-H01"]
         if isinstance(smoke_raw, dict):
             smoke_ids = {str(v) for v in smoke_raw.values()}

@@ -1,6 +1,6 @@
 <h1 id="bnd-analysis-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">TEST_ANALYSIS — Bundled manual + ticket Q&amp;A (B20)</h1>
 
-**Status:** Six previously failed prompts rewritten as customer-only questions (no “past/similar service case” or “user guide says” harness wording) and targeted in **`b20-customer-six-20261027`** (**0/6 judge pass; 0/6 labeled ticket in top-2; 6/6 manual legs non-empty**). The latest full-20 baseline remains pre-rewrite **`b20-brand-model-20261027`** (**14/20**); full rerun is gated because the six-row check did not pass.
+**Status:** **EVO-18 (M10)** operator matrix complete (**2026-10-28**). **Promoted manual stack:** `page_heading` ingest + **`page_top5`** + manual **Tantivy**; optional **`RETAIL_D7=decompose`** for compound questions. Best full B20: **`b20-evo18-d7-20261028`** **15/20** judge. Historical six-row PRE-T0 gate **`b20-customer-six-20261027`** was **0/6**; with D2+D7: **`b20-evo18-d7-six-20261028`** **3/6**. Canonical PRE-T0 full-20: **`b20-brand-model-20261027`** **14/20**.
 
 **Artifacts:** targeted `ops/runs/retail-bundled-qa/b20-customer-six-20261027/results.jsonl`; pre-rewrite full baseline `ops/runs/retail-bundled-qa/b20-brand-model-20261027/results.jsonl`.
 
@@ -426,8 +426,9 @@ export RETAIL_LEXICAL_BACKEND=tantivy RETAIL_SIM_DATA_PROFILE=fru_us_1k
 | Profile | Run-id | Δ vs PRE-T0 | Judge | Ticket top-2 | Manual empty | Latency (med ms) | Notes |
 |---------|--------|-------------|-------|--------------|--------------|------------------|-------|
 | **PRE-T0** | `b20-brand-model-20261027` | — | 14/20 | 10/20 | 0/20 | 456 / 1504 / 1743 | overlap lexical; pool `LIMIT 200` then Python filter |
-| **EVO18-T0** | *pending operator* | SQL pool + manual Tantivy | — | — | — | — | after `rebuild_manual_lexical_index.py` |
-| **EVO18-D2-PAGE** | *pending* | `page_heading` ingest | — | — | — | — | |
-| **EVO18-D7-DECOMPOSE** | *pending* | + customer-six gate | — | — | — | — | |
+| **EVO18-T0** | `b20-evo18-t0-20261028` | SQL pool + manual Tantivy | **11/20** (−3 vs PRE-T0) | **10/20** (=) | **0/20** | **272 / 1626 / 1134** (faster manual leg) | Judge regressions on E03,E08,H02,H07,H08,H09 — ticket leg unchanged |
+| **EVO18-D2-PAGE** | `b20-evo18-d2-page-20261028` | `page_heading` + global_top5 | **14/20** (= PRE-T0) | 10/20 | 0/20 | ~270 / ~1600 / ~1100 | M90 **42/60** (+9 vs PRE-T0) |
+| **EVO18-D2-PACK-PAGE** | `b20-evo18-d2-pack-page-20261028` | + `page_top5` | **14/20** | 10/20 | 0/20 | similar | M90 **44/60** (best manual-only) |
+| **EVO18-D7-DECOMPOSE** | `b20-evo18-d7-20261028` | + sentence D7 | **15/20** (+1 vs D2) | — | 0/20 | higher manual RTT | Six-row **`b20-evo18-d7-six-20261028`**: **3/6** (was 0/6) |
 
 **Operator (EVO18-T0):** `RETAIL_MANUAL_LEXICAL_BACKEND=tantivy` · rebuild manual index · `./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --full --run-id b20-evo18-t0-YYYYMMDD`

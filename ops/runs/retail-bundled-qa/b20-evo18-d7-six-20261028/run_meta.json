@@ -1,0 +1,9 @@
+{
+  "run_id": "b20-evo18-d7-six-20261028",
+  "git_head": "68a240125dc67ffdf61ea9a2cdc54c9672fa0b81",
+  "k_tickets": 2,
+  "k_manuals": 5,
+  "manual_profile_id": "MANUAL_B_RAW_PG_HYBRID",
+  "ticket_search_mode": "rrf_term_boosted",
+  "question_count": 6
+}
