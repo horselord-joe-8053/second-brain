@@ -642,7 +642,7 @@ python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_PG_HYBRID_RE
 ./scripts/py docs_manual_gen/artifacts/_build_pg_vs_lance_flip_tables.py
 ```
 
-**Related:** [`TEST_ANALYSIS_A2_MANUAL_RAG.md`](./TEST_ANALYSIS_A2_MANUAL_RAG.md) · [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](../ref_plan/new/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md).
+**Related:** [`TEST_ANALYSIS_A2_MANUAL_RAG.md`](./TEST_ANALYSIS_A2_MANUAL_RAG.md) · [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](../ref_plan/completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md).
 """
 
 

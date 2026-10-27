@@ -35,8 +35,7 @@ from .manual_raw_pipeline import build_manual_raw_pipeline
 from .resolved_run_profile import ResolvedRunProfile
 from retail_brain.manual_pg_ingest import ensure_manual_pg_fresh  # noqa: E402
 
-from .raw_rag_index import ensure_index_fresh
-from .raw_rag_search import concat_top_k_raw_chunks, retrieve_raw_context
+from .raw_rag_context import concat_top_k_raw_chunks
 from .sku_scope import SkuScopeError, resolve_retrieval_sku, sku_scope_to_dict
 from .eval_models import resolve_eval_llms
 from .lanes import Lane, load_lanes
@@ -173,8 +172,11 @@ def _run_one_row(
         return
 
     query = scoped_query(template, model_id=q.model_id, question=q.question)
-    sku_scope = resolve_retrieval_sku(query, suite_model_id=q.model_id or None)
-    retrieval_filter_id = sku_scope.filter_model_id or ""
+    from retail_brain.product_scope import resolve_product_scope
+
+    product_scope = resolve_product_scope(query, suite_model=q.model_id or None)
+    retrieval_product = product_scope.manual_filter
+    retrieval_filter_id = product_scope.ingest_key or q.model_id or ""
     _emit_progress(
         ctx,
         step="row_start",
@@ -208,77 +210,65 @@ def _run_one_row(
                 raw_mode=mode,
                 profile_id=resolved.profile_id,
             )
-            if mode in ("hybrid_rrf", "hybrid_rrf_rerank") or resolved.d5_verifier_enabled or resolved.d5_agentic_enabled:
-                answer_cfg = ctx.cfg.get("answer") or {}
-                pipeline = build_manual_raw_pipeline(
-                    lane,
-                    resolved,
-                    embed_cfg=embed_cfg,
-                    top_k=top_k,
-                    page_prefix_chars=page_prefix,
-                    max_chars_per_chunk=chunk_max_per,
-                    raw_rag_cfg=raw_cfg,
-                    answer_llm_cfg=answer_cfg,
-                )
-                if pipeline.rank_fn_active:
-                    _emit_progress(ctx, step="rerank_start", lane=lane.lane_id, question_id=q.question_id, index=index)
-                if pipeline.agentic is not None:
-                    agent_out = pipeline.agentic.retrieve_with_verifier(
-                        query,
-                        q.question,
-                        model_id=retrieval_filter_id,
-                        force_reindex=ctx.force_reindex,
-                        skip_index_check=ctx.skip_index_check,
-                    )
-                    pkg = agent_out.package
-                    verifier_summary = agent_out.verifier.to_dict()
-                    agentic_meta = {
-                        "subquery_used": agent_out.subquery_used,
-                        "loops": agent_out.loops,
-                    }
-                else:
-                    pkg = pipeline.retriever.retrieve(
-                        query,
-                        model_id=retrieval_filter_id,
-                        force_reindex=ctx.force_reindex,
-                        skip_index_check=ctx.skip_index_check,
-                    )
-                    if resolved.d5_verifier_enabled:
-                        verifier_summary = verify_manual_coverage(pkg, q.question).to_dict()
-                if pipeline.rank_fn_active:
-                    _emit_progress(ctx, step="rerank_done", lane=lane.lane_id, question_id=q.question_id, index=index)
-                if verifier_summary is not None:
-                    _emit_progress(
-                        ctx,
-                        step="verifier_done",
-                        lane=lane.lane_id,
-                        question_id=q.question_id,
-                        index=index,
-                        sufficient=verifier_summary.get("sufficient"),
-                    )
-                retrieval_ms = pkg.latency_ms
-                hits = [
-                    {
-                        "chunk_id": c.chunk_id,
-                        "source_relpath": c.source_relpath,
-                        "model_id": c.model_id,
-                        "text": c.text,
-                        **c.scores,
-                    }
-                    for c in pkg.chunks
-                ]
-            else:
-                hits, context, retrieval_ms = retrieve_raw_context(
-                    lane,
+            answer_cfg = ctx.cfg.get("answer") or {}
+            pipeline = build_manual_raw_pipeline(
+                lane,
+                resolved,
+                embed_cfg=embed_cfg,
+                top_k=top_k,
+                page_prefix_chars=page_prefix,
+                max_chars_per_chunk=chunk_max_per,
+                raw_rag_cfg=raw_cfg,
+                answer_llm_cfg=answer_cfg,
+            )
+            if pipeline.rank_fn_active:
+                _emit_progress(ctx, step="rerank_start", lane=lane.lane_id, question_id=q.question_id, index=index)
+            if pipeline.agentic is not None:
+                agent_out = pipeline.agentic.retrieve_with_verifier(
                     query,
-                    embed_cfg=embed_cfg,
-                    top_k=top_k,
-                    page_prefix_chars=page_prefix,
-                    max_chars_per_chunk=chunk_max_per,
+                    q.question,
+                    model_id=q.model_id or retrieval_filter_id,
                     force_reindex=ctx.force_reindex,
                     skip_index_check=ctx.skip_index_check,
-                    model_id=retrieval_filter_id,
                 )
+                pkg = agent_out.package
+                verifier_summary = agent_out.verifier.to_dict()
+                agentic_meta = {
+                    "subquery_used": agent_out.subquery_used,
+                    "loops": agent_out.loops,
+                }
+            else:
+                pkg = pipeline.retriever.retrieve(
+                    query,
+                    model_id=q.model_id or retrieval_filter_id,
+                    product_filter=retrieval_product,
+                    force_reindex=ctx.force_reindex,
+                    skip_index_check=ctx.skip_index_check,
+                )
+                if resolved.d5_verifier_enabled:
+                    verifier_summary = verify_manual_coverage(pkg, q.question).to_dict()
+            if pipeline.rank_fn_active:
+                _emit_progress(ctx, step="rerank_done", lane=lane.lane_id, question_id=q.question_id, index=index)
+            if verifier_summary is not None:
+                _emit_progress(
+                    ctx,
+                    step="verifier_done",
+                    lane=lane.lane_id,
+                    question_id=q.question_id,
+                    index=index,
+                    sufficient=verifier_summary.get("sufficient"),
+                )
+            retrieval_ms = pkg.latency_ms
+            hits = [
+                {
+                    "chunk_id": c.chunk_id,
+                    "source_relpath": c.source_relpath,
+                    "model_id": c.model_id,
+                    "text": c.text,
+                    **c.scores,
+                }
+                for c in pkg.chunks
+            ]
             if not context:
                 context = concat_top_k_raw_chunks(
                     hits,
@@ -383,7 +373,8 @@ def _run_one_row(
             search_meta = {
                 "mode": f"raw_rag_{resolved.d3_engine}",
                 "resolved_d5": (resolved.to_dict().get("d5") or {}),
-                "sku_scope": sku_scope_to_dict(sku_scope),
+                "product_scope": product_scope.to_metadata(),
+                "sku_scope": product_scope.to_metadata(),
                 "context_max_chars_per_chunk": chunk_max_per,
             }
             if verifier_summary is not None:
@@ -501,33 +492,21 @@ def _run_rows(ctx: _RunContext, *, lanes: list[Lane], questions: list[SuiteQuest
                 question_id="*",
                 index=index,
             )
-            with ctx.log.heartbeat(f"{lane.lane_id} raw index preflight"):
-                use_pg = (
-                    ctx.resolved is not None
-                    and ctx.resolved.manual_d3_backend == "pg"
-                )
-                if use_pg:
-                    import os
+            with ctx.log.heartbeat(f"{lane.lane_id} manual PG preflight"):
+                import os
 
-                    dsn = os.environ.get("RETAIL_DATABASE_URL")
-                    if not dsn:
-                        raise RuntimeError(
-                            "manual_d3_backend=pg requires RETAIL_DATABASE_URL"
-                        )
-                    ensure_manual_pg_fresh(
-                        dsn,
-                        lane,
-                        embed_cfg,
-                        force=ctx.force_reindex,
-                        skip_check=ctx.skip_index_check,
+                dsn = os.environ.get("RETAIL_DATABASE_URL")
+                if not dsn:
+                    raise RuntimeError(
+                        "raw_rag manual lanes require RETAIL_DATABASE_URL"
                     )
-                else:
-                    ensure_index_fresh(
-                        lane,
-                        embed_cfg,
-                        force=ctx.force_reindex,
-                        skip_check=ctx.skip_index_check,
-                    )
+                ensure_manual_pg_fresh(
+                    dsn,
+                    lane,
+                    embed_cfg,
+                    force=ctx.force_reindex,
+                    skip_check=ctx.skip_index_check,
+                )
             _emit_progress(
                 ctx,
                 step="index_preflight_done",

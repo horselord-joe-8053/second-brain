@@ -52,7 +52,18 @@ def _parser() -> argparse.ArgumentParser:
     p.add_argument("--skip-manual", action="store_true", help="Skip manual leg (no wiki or .txt search)")
     p.add_argument("--no-wiki", action="store_true", help="Skip LLM Wiki; manual leg uses raw .txt search only")
     p.add_argument("--wiki-project", default=None, help="LLM Wiki project id or path (default: $BRAIN_ROOT)")
-    p.add_argument("--k-manuals", type=int, default=3)
+    p.add_argument(
+        "--k-manuals",
+        type=int,
+        default=5,
+        help="Manual leg hit count (bundled default 5; legacy callers may pass 3)",
+    )
+    p.add_argument(
+        "--k-tickets",
+        type=int,
+        default=2,
+        help="Ticket leg hit count (matches build_answer_bundle default)",
+    )
     fmt = p.add_mutually_exclusive_group()
     fmt.add_argument("--json", dest="fmt", action="store_const", const="json")
     fmt.add_argument("--md", dest="fmt", action="store_const", const="md")
@@ -96,6 +107,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         txt_index=load_txt_docs(brain),
         wiki=wiki,
         model=args.model,
+        k_tickets=args.k_tickets,
         k_manuals=args.k_manuals,
         corpus_profile=sim.profile_id,
         skip_ticket_leg=args.skip_tickets,

@@ -9,6 +9,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from retail_brain.manual_pg_search import hybrid_pg_rrf_search
+from retail_brain.product_scope import ProductFilter
 from tests.retail_multi_profiles.lib.lanes import Lane
 
 
@@ -31,18 +32,23 @@ def lane(tmp_path: Path) -> Lane:
     )
 
 
-def test_hybrid_pg_rrf_respects_sku_filter(lane: Lane, monkeypatch: pytest.MonkeyPatch) -> None:
-    """PG hybrid path filters pool by model_id like Lance hybrid."""
+def test_hybrid_pg_rrf_respects_product_filter(lane: Lane, monkeypatch: pytest.MonkeyPatch) -> None:
+    """PG hybrid path filters pool by brand + OEM model."""
+    monkeypatch.setenv("RETAIL_MANUAL_LEXICAL_BACKEND", "overlap")
     pool = [
         {
             "chunk_id": "a",
             "model_id": "ge_GNE27JYMFS",
+            "brand": "GE",
+            "oem_model": "GNE27JYMFS",
             "text": "door alarm reset GE",
             "vector": _fake_embed(["door alarm"])[0],
         },
         {
             "chunk_id": "b",
             "model_id": "samsung_RF28K9070SG",
+            "brand": "Samsung",
+            "oem_model": "RF28K9070SG",
             "text": "ice maker samsung",
             "vector": _fake_embed(["ice maker"])[0],
         },
@@ -67,9 +73,17 @@ def test_hybrid_pg_rrf_respects_sku_filter(lane: Lane, monkeypatch: pytest.Monke
         def close(self) -> None:
             return None
 
+    def _list_filtered(_cur, *, lane_id, limit, brand=None, oem_model=None):
+        rows = list(pool)
+        if brand:
+            rows = [r for r in rows if r.get("brand") == brand]
+        if oem_model:
+            rows = [r for r in rows if r.get("oem_model") == oem_model]
+        return rows
+
     monkeypatch.setattr(
         "retail_brain.manual_pg_search.list_manual_chunks",
-        lambda _cur, *, lane_id, limit: list(pool),
+        _list_filtered,
     )
     import psycopg2
 
@@ -80,11 +94,12 @@ def test_hybrid_pg_rrf_respects_sku_filter(lane: Lane, monkeypatch: pytest.Monke
         "postgresql://fake",
         lane,
         "samsung_RF28K9070SG ice maker",
-        model_id="samsung_RF28K9070SG",
+        product_filter=ProductFilter("Samsung", "RF28K9070SG"),
+        ingest_key="samsung_RF28K9070SG",
         embed_cfg=embed_cfg,
         top_k=3,
         embed_fn=_fake_embed,
     )
     assert hits
     for h in hits:
-        assert str(h.get("model_id") or "").lower() == "samsung_rf28k9070sg"
+        assert str(h.get("oem_model") or "") == "RF28K9070SG"

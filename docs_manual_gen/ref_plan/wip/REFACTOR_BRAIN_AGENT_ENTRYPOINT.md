@@ -1,5 +1,7 @@
 <h1 id="doc-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — brain agent single entry (`agent.sh`)</h1>
 
+**Plan role:** **minor** (child).  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — Phase **4** operator entry (main plan [§0 minor **M8**](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
 **Status:** **wip** — P1–P7 on branch **`feature/bootstrap-rrf-evolve-10-agent-entrypoint`** (P7 gateway lifecycle landed; not yet merged).  
 **Scope:** Second Brain harness operator UX — one idempotent entry for setup / start / stop / restart; docs + call-stack clarity; trim duplicate glue (not merge adapter setup steps).
 

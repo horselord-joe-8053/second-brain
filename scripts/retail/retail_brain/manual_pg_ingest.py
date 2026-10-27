@@ -83,14 +83,19 @@ def _collect_chunk_rows(
         vectors = embed_fn(texts)
     else:
         vectors = embed_texts_batch(texts, embed_cfg)
+    from retail_brain.product_scope import product_for_ingest_key
+
     rows: list[dict[str, Any]] = []
     for chunk, vec in zip(all_chunks, vectors):
+        pf = product_for_ingest_key(chunk.model_id)
         rows.append(
             {
                 "chunk_id": chunk.chunk_id,
                 "lane_id": lane.lane_id,
                 "source_relpath": chunk.source_relpath,
                 "model_id": chunk.model_id,
+                "brand": (pf.brand if pf else "") or "",
+                "oem_model": (pf.oem_model if pf else "") or "",
                 "chunk_index": chunk.chunk_index,
                 "text": chunk.text,
                 "content_hash": chunk.content_hash,

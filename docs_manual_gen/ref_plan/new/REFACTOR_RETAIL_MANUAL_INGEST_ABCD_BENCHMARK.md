@@ -1,5 +1,7 @@
 <h1 id="abcd-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — retail manual ingest A/B/C/D benchmark</h1>
 
+**Plan role:** **minor** (child).  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — Phase **1** (M90 harness; main plan [§0 minor **M1**](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
 **Status:** **in progress** — P0 + **P0.5** done (2026-10-20); full **90×4** via **`--full`**.  
 **Chain:** **`aciubtdd`** / **`qimpltdd`** on this file.  
 **Goal:** Automate a **four-lane** comparison (`retail`, `retail-md`, `retail-txt`, `retail-md-learned`) on the **same 90-question retail manual QA suite**, score answers against gold, and publish reproducible metrics to choose a **best practice** for LLM Wiki + product Q&A from long PDF manuals.  
@@ -364,7 +366,9 @@ Deliverables:
 
 | Plan | Relationship |
 |------|----------------|
-| [`REFACTOR_MULTI_PROFILE_AGENT_OPS.md`](./REFACTOR_MULTI_PROFILE_AGENT_OPS.md) | Future: rescan/compile any lane without UI focus |
+| [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) | **Main plan** — this file is minor **M1** |
+| [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | Sibling **M2** — raw RAG on same M90 suite |
+| [`REFACTOR_MULTI_PROFILE_AGENT_OPS.md`](./REFACTOR_MULTI_PROFILE_AGENT_OPS.md) | Sibling **M∥** — rescan/compile any lane without UI focus |
 | [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](../wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) | Production `retail_answer.v1` path; orthogonal to ABCD eval |
 | [`RETAIL_LLM_WIKI_TXT_COMPILE.md`](../artifacts/RETAIL_LLM_WIKI_TXT_COMPILE.md) | Historical txt compile notes; lane C aligns |
 | `pdf_proc/docling/` | External MD for lane B (operator tooling) |

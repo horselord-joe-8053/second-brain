@@ -2,7 +2,7 @@
 
 **Type:** benchmark post-mortem (retrieval + Q&A).  
 **Wiki run:** `ops/runs/retail-lane-abcd/abcd-full-openai-v2/` · **Raw run:** `ops/runs/retail-lane-abcd-raw/abcd-raw-full-openai-v1/` · **90 questions × 3 lanes** · same answer/judge, top-k=5, 8000-char prefix.  
-**Related:** [`ABOUT_FOUR_LANE_TEST_ANALYSIS.md`](./ABOUT_FOUR_LANE_TEST_ANALYSIS.md) · plan [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../ref_plan/wip/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) · **Last updated:** 2026-10-21 (accuracy + performance + MRKD samples).
+**Related:** [`ABOUT_FOUR_LANE_TEST_ANALYSIS.md`](./ABOUT_FOUR_LANE_TEST_ANALYSIS.md) · plan [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../ref_plan/completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) (minor **M2**) · **Last updated:** 2026-10-21 (accuracy + performance + MRKD samples).
 
 <h2 id="test-wr-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 

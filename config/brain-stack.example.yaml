@@ -67,7 +67,12 @@ hermes:
 # Benchmark harness adds a closed-world answer LLM step via tests/.../run-config.yaml → retail_eval only.
 second_brain:
   retail_evidence:
+    # M90 manual-only harness: top manual hits for judged raw/wiki runs (not the bundle knob).
     search_top_k: 5
+    # Bundled retail_answer / B20: manual hits copied into one answer prompt (fixed-k concat).
+    k_manuals: 5
+    # Bundled: ticket hits copied into the same prompt (build_answer_bundle default is 2).
+    k_tickets: 2
     query_template: "{model_id} {question}"
     page_prefix_chars: 8000
     insufficient_literal: Insufficient_Information_Based_On_Given_PDF

@@ -49,7 +49,11 @@ def build_manual_raw_pipeline(
     )
     assert_rerank_preflight(resolved, rank_fn)
 
-    pg_dsn = os.environ.get("RETAIL_DATABASE_URL") if resolved.manual_d3_backend == "pg" else None
+    pg_dsn = os.environ.get("RETAIL_DATABASE_URL")
+    if not pg_dsn:
+        raise RuntimeError(
+            f"profile {resolved.profile_id!r} requires RETAIL_DATABASE_URL for manual raw RAG"
+        )
     retriever = ManualEvidenceRetriever(
         lane,
         embed_cfg=embed_cfg,
@@ -58,7 +62,6 @@ def build_manual_raw_pipeline(
         page_prefix_chars=page_prefix_chars,
         max_chars_per_chunk=max_chars_per_chunk,
         rank_fn=rank_fn,
-        backend=resolved.manual_d3_backend,
         pg_dsn=pg_dsn,
     )
 

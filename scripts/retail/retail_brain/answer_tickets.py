@@ -26,7 +26,14 @@ FUSED_DP = 6  # RRF scores are ~1/60; 4 dp would collapse distinct ranks.
 class TicketSource(Protocol):
     """Backend that returns ranked, hydrated ticket hits for a query."""
 
-    def hits(self, query: str, *, model: Optional[str], limit: int) -> Tuple[str, List[Dict[str, Any]]]:
+    def hits(
+        self,
+        query: str,
+        *,
+        model: Optional[str],
+        brand: Optional[str] = None,
+        limit: int,
+    ) -> Tuple[str, List[Dict[str, Any]]]:
         """Return ``(search_mode, hits)`` with ticket fields, ``cosine_similarity``, ``fused_score``."""
         ...
 
@@ -52,7 +59,14 @@ class InMemoryTicketSource:
         self.issue_keys = dict(issue_keys or {})
         self._by_id = {r.ticket_id: r for r in self.rows}
 
-    def hits(self, query: str, *, model: Optional[str], limit: int) -> Tuple[str, List[Dict[str, Any]]]:
+    def hits(
+        self,
+        query: str,
+        *,
+        model: Optional[str],
+        brand: Optional[str] = None,
+        limit: int,
+    ) -> Tuple[str, List[Dict[str, Any]]]:
         """Rank with ``search_ticket_scored`` then attach cosine + row fields."""
         mode = resolve_ticket_search_mode()
         scored = search_ticket_scored(query, self.rows, model_filter=model, limit=limit)
@@ -78,7 +92,14 @@ class EmptyTicketSource:
 
     issue_keys: Dict[str, str] = {}
 
-    def hits(self, query: str, *, model: Optional[str], limit: int) -> Tuple[str, List[Dict[str, Any]]]:
+    def hits(
+        self,
+        query: str,
+        *,
+        model: Optional[str],
+        brand: Optional[str] = None,
+        limit: int,
+    ) -> Tuple[str, List[Dict[str, Any]]]:
         """Return no hits without touching Postgres or Gemini."""
         return "skipped", []
 
@@ -91,19 +112,35 @@ class PgTicketSource:
         self.dsn = dsn
         self.issue_keys = dict(issue_keys or {})
 
-    def hits(self, query: str, *, model: Optional[str], limit: int) -> Tuple[str, List[Dict[str, Any]]]:
+    def hits(
+        self,
+        query: str,
+        *,
+        model: Optional[str],
+        brand: Optional[str] = None,
+        limit: int,
+    ) -> Tuple[str, List[Dict[str, Any]]]:
         """Delegate to ``pg_search.search_ticket_hits_pg`` (already resolved-only)."""
         from retail_brain.pg_search import search_ticket_hits_pg
 
-        mode, hits = search_ticket_hits_pg(self.dsn, query, model_filter=model, limit=limit)
+        mode, hits = search_ticket_hits_pg(
+            self.dsn, query, model_filter=model, brand_filter=brand, limit=limit
+        )
         for h in hits:
             h.setdefault("status", RESOLVED)
         return mode, hits
 
 
-def ticket_leg(query: str, source: TicketSource, *, model: Optional[str] = None, k: int = 2) -> Dict[str, Any]:
+def ticket_leg(
+    query: str,
+    source: TicketSource,
+    *,
+    model: Optional[str] = None,
+    brand: Optional[str] = None,
+    k: int = 2,
+) -> Dict[str, Any]:
     """Build ``{"search_mode", "hits": [...]}`` — ≤k resolved hits, ranked, rounded, hydrated."""
-    mode, raw = source.hits(query, model=model, limit=max(k * 2, k))
+    mode, raw = source.hits(query, model=model, brand=brand, limit=max(k * 2, k))
     issue_keys = getattr(source, "issue_keys", {}) or {}
     hits: List[Dict[str, Any]] = []
     for h in raw:

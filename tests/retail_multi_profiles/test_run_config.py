@@ -15,6 +15,8 @@ def test_merged_config_includes_evidence_from_brain_stack_example() -> None:
 
     cfg = load_merged_run_config(REPO)
     assert cfg["search_top_k"] == 5
+    assert cfg["k_manuals"] == 5
+    assert cfg["k_tickets"] == 2
     assert cfg["page_prefix_chars"] == 8000
     assert cfg["context_max_chars_per_chunk"] == 2000
     assert "{model_id}" in cfg["query_template"]

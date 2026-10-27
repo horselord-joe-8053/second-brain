@@ -205,7 +205,7 @@ Before promoting any multi-subquery path to a run profile:
 | **D-MSQ-1** | Sentence split vs LLM intent decomposition? | **Intent decomposition** (or verifier-triggered legs); sentence split is baseline ablation only. |
 | **D-MSQ-2** | Fusion: RRF vs top‑2/leg + promote? | **RRF + full-query rerank** first; user heuristic as labeled ablation. |
 | **D-MSQ-3** | Default on vs adaptive? | **Adaptive** (agentic/verifier or complexity classifier). |
-| **D-MSQ-4** | Plan home if implemented? | Extend **REFACTOR_FURTHER_ENHANCEMENT_GPT.md** Phase 1.x or A2 spec; new run profile e.g. `MANUAL_B_RAW_HYBRID_DECOMPOSE`. |
+| **D-MSQ-4** | Plan home if implemented? | Extend **REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md** Phase 1.x or A2 spec; new run profile e.g. `MANUAL_B_RAW_HYBRID_DECOMPOSE`. |
 | **D-MSQ-5** | Relation to D5.A budget (**R4** one loop)? | Multi-intent may need **≤2 retrieve legs** cap, not unbounded M sentences. |
 
 ---

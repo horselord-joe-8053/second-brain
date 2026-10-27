@@ -1,7 +1,9 @@
 <h1 id="fru-product-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: FRU US retail service Second Brain (product path)</h1>
 
+**Plan role:** **minor** (child).  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — Phase **4** product path (main plan [§0 minor **M7**](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
 **Status:** **wip** — V3 prep docs **`[X]`**; V2 / platform / V4 / V5 **`[ ]`**  
-**Execute order:** (1) [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) **P11–P16** via `qimpltdd` on that plan (platform + answer bundle); (2) operator gates on **that plan** [§7](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-7-gates) (**HG-P2**, **HG-TXT-1/2** — not duplicated here); (3) `qimpltdd` **this** plan for V2 → V4 → V5.
+**Execute order:** (1) sibling **M6** [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) **P11–P16** via `qimpltdd` on that plan; (2) operator gates on **M6** [§7](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-7-gates) (**HG-P2**, **HG-TXT-1/2** — not duplicated here); (3) `qimpltdd` **this** plan for V2 → V4 → V5.
 
 **Goal:** **New aftersales ticket** → historical **resolved ticket** (Postgres + hybrid search) **and** manual evidence **always together** ([brain-profiles **E2**](./REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md#bp-2-decisions)) as **`retail_answer.v1`**. Manual citations, corpus layout, wiki ingest, and E2E gold are **defined only** in the brain-profiles plan (**P11–P16**, doc-level `.txt` + optional archive PDFs) — this plan does not restate them.
 

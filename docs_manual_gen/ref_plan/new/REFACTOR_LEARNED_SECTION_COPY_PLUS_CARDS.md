@@ -1,6 +1,8 @@
 <h1 id="lsc-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — external shards, full-copy ingest, service-manual cards</h1>
 
-**Status:** **wip** — P1–P4, P7 + settings implemented in `nu_llm_wiki` (2026-10-20). **Last aligned:** 2026-10-20 (external-shard + full-copy; service-manual profile; Prompt C v3; UI-only flags).
+**Plan role:** **minor** (child).  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — Phase **3** A1 / Lane D compile (main plan [§0 minor **M5**](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
+**Status:** **wip** — P1–P4, P7 + settings implemented in `nu_llm_wiki` (2026-10-20). **Last aligned:** 2026-10-20 (external-shard + full-copy; service-manual profile; Prompt C v3; UI-only flags).  
 **Chain:** **`onlyref`**. Implement with **`implref`** (`.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`).
 **Code repo:** `/Users/jjw8053/projects/nu_llm_wiki`. Plan file: `second_brain/docs_manual_gen/ref_plan/new/`.
 **Goal:** **`raw/sources`** holds **one Markdown file per handbook section** (from [Prompt C v3 split](../../../brain/retail/archive/fridge_prompts_pdf_or_zip_updated/Prompt_C_v3_split.md)). LLM Wiki **`full-copy`** maps each raw file → one **`wiki/sources`** page (bytes + frontmatter). A **cards-only** model pass reads **`raw/sources`** (not wiki pages) under **`ingestProfile: service-manual`**. No in-app `##` splitting.

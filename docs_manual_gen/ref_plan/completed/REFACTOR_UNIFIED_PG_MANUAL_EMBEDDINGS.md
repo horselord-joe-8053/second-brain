@@ -1,9 +1,10 @@
 <h1 id="pg-manual-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — unified Postgres embeddings for manual chunks (Lance A/B → cutover)</h1>
 
+**Plan role:** **minor** (child) — **completed**.  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — Phase **1** (main plan [§0 minor **M3**](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
 **Status:** **Complete (P1–P5)** on **`feature/evo-17-multi-embed-pg-only`** — Lane **B** manual raw RAG defaults to Postgres; **HG-PG-CUTOVER** closed 2026-10-26.  
-**Execute:** **`aciubtdd`** / **`qimpltdd`** on **P5** checklist below; Lance A/B delivered on **evo-16**.  
-**Branch target:** `feature/evo-17-multi-embed-pg-only` (cutover); implementation landed on **`feature/evo-16-multi-embed-unified-pg`** first.  
-**Parent context:** [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_FURTHER_ENHANCEMENT_GPT.md) Phase **1** (Lance D3.R-H today); does **not** replace Phase **2** A3 ticket adapters.
+**Execute:** Historical — resume only for doc fixes. Lance A/B delivered on **evo-16**; cutover on **evo-17**.  
+**Branch target:** `feature/evo-17-multi-embed-pg-only` (cutover); implementation landed on **`feature/evo-16-multi-embed-unified-pg`** first.
 
 **Problem:** Manual raw RAG stores **chunk text + vectors** in **Lance** under `brain/<lane>/.retail-raw-rag/`; tickets store **embeddings in Postgres** (`service_queries.query_embedding`). Ops wants **one always-on PG** stack and optional **shared embed pipeline**, with **A/B** against Lance before removal.
 
@@ -27,15 +28,15 @@
 
 ---
 
-<h2 id="pg-manual-lance-sync" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Current Lance sync (baseline)</h2>
+<h2 id="pg-manual-lance-sync" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Manual freshness (Postgres; Lance removed evo-17)</h2>
 
-Manual index freshness today (`tests/retail_multi_profiles/lib/raw_rag_index.py`):
+**Current path** (`manual_pg_index_runner.py`, `ensure_manual_pg_fresh` in runner):
 
-- **When:** Before each **raw_rag** harness run (`ensure_index_fresh` in runner); or **`--index-raw`** / **`--force-reindex`**.
-- **How:** Re-scan lane raw glob → **manifest** (path, **SHA-256**, mtime, size) → **fingerprint** compared to `index_meta.json` + **chunk policy** + **embed model id**.
-- **On drift:** Full **re-chunk → re-embed → replace Lance table** (not incremental per file).
+- **When:** Before each **raw_rag** harness run; or **`--ingest-manual-pg`** / **`--force-reindex`**.
+- **How:** Re-scan lane raw glob → **manifest** (path, **SHA-256**, mtime, size) → **fingerprint** compared to `manual_pg_meta.json` + **chunk policy** + **embed model id**.
+- **On drift:** Full **re-chunk → re-embed → replace `manual_chunks` rows** for that lane (same semantics as former Lance index).
 
-**PG ingest must mirror:** same manifest/fingerprint semantics; stale → rebuild lane rows (full or upsert-by-`chunk_id` — see Phase 2).
+**Historical Lance baseline** (branch **`feature/evo-16-multi-embed-unified-pg`**): `raw_rag_index.py`, `.retail-raw-rag/lancedb`, `--index-raw`.
 
 ---
 
@@ -48,7 +49,7 @@ Manual index freshness today (`tests/retail_multi_profiles/lib/raw_rag_index.py`
 <tbody>
 <tr><td style="background:#e3f2fd"><strong>Tickets (unchanged D3)</strong></td><td><code>service_queries.query_embedding</code></td><td>Tantivy / existing</td><td><code>pg_search</code> + <code>rrf.py</code></td></tr>
 <tr><td style="background:#e8f5e9"><strong>Manuals (new D3.PG-H)</strong></td><td><code>manual_chunks.embedding</code></td><td>PG <code>tsvector</code> **or** sidecar Tantivy (A/B)</td><td>Same <code>rrf.py</code> weights as Lance hybrid</td></tr>
-<tr><td style="background:#fff3e0"><strong>Lance (legacy until P5)</strong></td><td><code>.retail-raw-rag/lancedb</code></td><td>In-memory over Lance rows</td><td><code>raw_hybrid_search.py</code></td></tr>
+<tr><td style="background:#fff3e0"><strong>Lance (removed evo-17)</strong></td><td><em>backup branch only</em></td><td>—</td><td>—</td></tr>
 </tbody>
 </table>
 
@@ -110,7 +111,7 @@ Phase **2** ticket work on **evo-15** may continue in parallel; do **not** block
 <h2 id="pg-manual-p3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Phase 3 — Retrieval D3.PG-H</h2>
 
 - [X] **`manual_pg_search.py`**: dense KNN + in-process lexical + **`reciprocal_rank_fusion`** + SKU filter.
-- [X] **`ManualEvidenceRetriever`** `backend=lance|pg`; **`manual_d3_backend`** on resolved profile.
+- [X] **`ManualEvidenceRetriever`** Postgres-only; **`manual_d3_backend: pg`** enforced in resolved profile.
 - [X] Parity tests: top-5 overlap vs Lance fixture (**`test_manual_pg_parity.py`**).
 - [X] **`run_profiles`**: `MANUAL_B_RAW_PG_HYBRID`, `MANUAL_B_RAW_PG_HYBRID_RERANK`.
 
@@ -153,11 +154,11 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 **Operator intent:** Manual raw RAG **unifies on Postgres** for Lane **B**; Lance build/search **removed from default path** (not required for new work). C/D lanes may stay Lance until a follow-up or same pattern.
 
 - [X] Set **`default_run_profile`** to **`MANUAL_B_RAW_PG_HYBRID_RERANK`**; Lane B profiles use **`manual_d3_backend: pg`**.
-- [X] Lance gated for Lane B default (env **`RETAIL_MANUAL_D3_BACKEND=lance`**); C/D still use **`--index-raw`**.
+- [X] Lance code removed from product tree (backup branch **`feature/evo-16-multi-embed-unified-pg`**).
 - [X] Update **`RAW_RAG.md`**, **`RUN_PROFILES.md`**.
 - [X] **`smoke-after-delete`:** `./scripts/verify.sh` green (2026-10-26).
 
-**Exit:** Lane **B** operational path is PG-only; Lance retained for C/D and explicit legacy compare. **HG-PG-CUTOVER** closed.
+**Exit:** Manual raw RAG is Postgres-only on **evo-17** (all enabled lanes). **HG-PG-CUTOVER** closed.
 
 ---
 
@@ -240,7 +241,7 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 **Phase 5 — Cutover (evo-17)**
 
 - [X] P5.1 Default profile **`MANUAL_B_RAW_PG_HYBRID_RERANK`**; Lane B **`MANUAL_B_RAW_HYBRID*`** → **`manual_d3_backend: pg`**; docs updated
-- [X] P5.2 Lane B default harness uses PG preflight (Lance only via **`RETAIL_MANUAL_D3_BACKEND=lance`** or `--index-raw` on C/D)
+- [X] P5.2 Lance removed from harness (**evo-17**): deleted `raw_rag_index.py`, `--index-raw`; all raw_rag lanes use PG ingest + search
 - [X] P5.3 **HG-PG-CUTOVER** closed — `./scripts/verify.sh` green (2026-10-26)
 
 ---
@@ -249,12 +250,12 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 
 | Link | Role |
 |------|------|
-| [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_FURTHER_ENHANCEMENT_GPT.md) | Parent phases; Phase **1** Lance baseline |
+| [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) | **Main plan** — minor **M3**; Phase **1** PG cutover |
 | [`TEST_ANALYSIS_A2_MANUAL_RAG.md`](../../artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md) | Lance M90 promotion numbers |
 | [`TEST_ANALYSIS_A2_MANUAL_RAG_PG.md`](../../artifacts/TEST_ANALYSIS_A2_MANUAL_RAG_PG.md) | PG vs Lance A/B + **U8** / **U9** sign-off read |
 | [`_build_pg_vs_lance_flip_tables.py`](../../artifacts/_build_pg_vs_lance_flip_tables.py) | Regenerate PG analysis artifact |
 | [`REALIGNMENT_DIMENSIONS.md`](../../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) | D3 / D4 vocabulary |
-| `tests/retail_multi_profiles/lib/raw_rag_index.py` | Lance freshness reference |
+| `tests/retail_multi_profiles/lib/manual_pg_index_runner.py` | Operator PG ingest + neatlog |
 | `scripts/retail/schema/001_retail.sql` | Ticket pgvector schema |
 | [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md) | Profile SSOT |
 

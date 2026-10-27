@@ -1,7 +1,7 @@
 <h1 id="run-profiles-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Run profiles — dimensions, config, and terminology</h1>
 
 **Canonical dimension definitions:** [`REALIGNMENT_DIMENSIONS.md`](../../../../docs_manual_gen/artifacts/aggregated/REALIGNMENT_DIMENSIONS.md).  
-**Implementation plan:** [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../../../../docs_manual_gen/ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md) Phase 1 (P1.0b–P1.5b).
+**Implementation plan:** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../../../docs_manual_gen/ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) Phase 1 (P1.0b–P1.5b).
 
 <h2 id="run-profiles-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -64,7 +64,7 @@ graph LR
 
 **Runner rule:** `runner.py` must **not** re-interpret YAML strings with `bool("false")` or OR together global agentic + CLI; it only reads **`ResolvedRunProfile`**.
 
-**HG-P1 default (when CLI omits `--profile`):** If **`--retrieval-mode raw_rag`**, the harness resolves **`run-config.yaml` → `default_run_profile`** (currently **`MANUAL_B_RAW_PG_HYBRID_RERANK`** with **`manual_d3_backend: pg`**). Lane **B** profile ids **`MANUAL_B_RAW_HYBRID*`** also set **`manual_d3_backend: pg`** after cutover. Wiki runs (`llm_wiki`, the CLI default) are **unchanged**. **Eval anchor** for vector baseline remains **`MANUAL_B_RAW_VECTOR`** / **`abcd-raw-full-openai-v1`**. Lance A/B on B: env **`RETAIL_MANUAL_D3_BACKEND=lance`** + Lance index.
+**HG-P1 default (when CLI omits `--profile`):** If **`--retrieval-mode raw_rag`**, the harness resolves **`run-config.yaml` → `default_run_profile`** (currently **`MANUAL_B_RAW_PG_HYBRID_RERANK`**). Manual D3 is **Postgres-only** (`manual_d3_backend: pg`; Lance removed on **evo-17**). Wiki runs (`llm_wiki`, the CLI default) are **unchanged**. **Eval anchor** for vector baseline remains **`MANUAL_B_RAW_VECTOR`** / **`abcd-raw-full-openai-v1`**.
 
 ---
 
@@ -128,7 +128,7 @@ Document any override in **`results.json`** → **`config_snapshot.resolved_prof
 | **`MANUAL_B_RAW_PG_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **0** |
 | **`MANUAL_B_RAW_PG_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **R+V+A** |
 
-**PG path:** requires **`RETAIL_DATABASE_URL`**; preflight **`ensure_manual_pg_fresh`** (or **`--ingest-manual-pg --lanes B`**). Lance index is not rebuilt when profile sets **`manual_d3_backend: pg`**.
+**Manual raw path:** requires **`RETAIL_DATABASE_URL`**; preflight **`ensure_manual_pg_fresh`** (or **`--ingest-manual-pg --lanes B`**).
 
 **Fair compare (Phase 1 exit):** run **`MANUAL_B_RAW_HYBRID`** vs **`MANUAL_B_RAW_HYBRID_RERANK`** with **only D5** changing; D3 engine for both should be **`hybrid_rrf`** once resolver removes the misleading `hybrid_rrf_rerank` D3-only mode (or alias with explicit D5).
 

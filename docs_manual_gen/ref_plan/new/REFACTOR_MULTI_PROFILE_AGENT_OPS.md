@@ -1,5 +1,7 @@
 <h1 id="mp-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — agent ops across brain profiles</h1>
 
+**Plan role:** **minor** (child).  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — **cross-cutting** (main plan [§0 minor **M∥**](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
 **Status:** **new** — plan only (2026-10-18). All implementable items **`[ ]`**.  
 **Chain:** **`onlyreftdd`**. Implement later with **`aciubtdd`** on this file (not plain **`aciub`** / **`implref`**).  
 **Goal:** Hermes (or the same MCP tools) can search, add, compile, delete, and rename in `brain/personal` or `brain/retail` one after another. The desktop app must be running. The folder on screen does not have to be the folder being compiled.  

@@ -17,6 +17,8 @@ from .config_coerce import coerce_bool, coerce_int  # noqa: E402
 
 _DEFAULT_EVIDENCE: dict[str, Any] = {
     "search_top_k": 5,
+    "k_manuals": 5,
+    "k_tickets": 2,
     "query_template": "{model_id} {question}",
     "page_prefix_chars": 8000,
     "context_max_chars_per_chunk": 2000,
@@ -83,6 +85,10 @@ def _coerce_evidence_scalars(evidence: dict[str, Any]) -> dict[str, Any]:
     out = dict(evidence)
     if "search_top_k" in out:
         out["search_top_k"] = int(out["search_top_k"])
+    if "k_manuals" in out:
+        out["k_manuals"] = int(out["k_manuals"])
+    if "k_tickets" in out:
+        out["k_tickets"] = int(out["k_tickets"])
     if "page_prefix_chars" in out:
         out["page_prefix_chars"] = int(out["page_prefix_chars"])
     if "context_max_chars_per_chunk" in out:
@@ -126,6 +132,8 @@ def load_merged_run_config(
     # Legacy harness file: top-level retrieval keys override brain-stack until removed.
     for key in (
         "search_top_k",
+        "k_manuals",
+        "k_tickets",
         "query_template",
         "page_prefix_chars",
         "context_max_chars_per_chunk",
@@ -158,6 +166,9 @@ def load_merged_run_config(
         "answer": eval_cfg["answer"],
         "judge": eval_cfg["judge"],
         "smoke_question_ids": _smoke_question_ids(run_raw),
+        "bundled_smoke_question_ids": _smoke_question_ids(
+            {"smoke_question_ids": run_raw.get("bundled_smoke_question_ids")}
+        ),
         "retail_raw_rag": raw_rag_cfg,
         "run_profiles": run_profiles,
         "default_run_profile": default_run_profile,

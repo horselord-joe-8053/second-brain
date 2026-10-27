@@ -10,21 +10,33 @@ Retail and Samsung service-brain plans live here instead of scattered under `doc
 | [`wip/`](./wip/) | **`implref`** / **`resumimpl`** — some **`[X]`**, not finished. |
 | [`completed/`](./completed/) | All implementable phases **`[X]`** (or waived). |
 
-**Execute:** `qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_….md` (or **`wip/`** path when resuming).
+<h2 id="main-vs-minor" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Main vs minor (single umbrella)</h2>
 
-| Active plan | Folder | Role |
-|-------------|--------|------|
-| [`REFACTOR_MULTI_PROFILE_AGENT_OPS.md`](./new/REFACTOR_MULTI_PROFILE_AGENT_OPS.md) | **new** | Hermes compile, delete, and rename on either brain profile without that project on screen |
-| [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](./new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) | **new** | A/B/C/D retail manual ingest lanes + 90-Q benchmark harness (`eval/retail_manual_qa/`), tiered scoring, industry scan |
-| [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](./wip/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | **wip** | Raw `sources/**` vector-only RAG (lanes B/C/D) vs LLM Wiki baseline; extend `tests/retail_multi_profiles/` |
-| [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](./new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md) | **new** | A2→A3→A1→B COS; **§7–10** full checklists; **Lane B** primary benchmark; code gated HG-P1… |
-| [`REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md`](./new/REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md) | **wip** | Prompt C **v4** shards + `full-copy` + service-manual cards (`nu_llm_wiki`); P6 operator doc done |
-| [`REFACTOR_BRAIN_AGENT_ENTRYPOINT.md`](./wip/REFACTOR_BRAIN_AGENT_ENTRYPOINT.md) | **wip** | Single **`scripts/brain/agent.sh`** entry; docs + delegate call stacks |
-| [`REFACTOR_FRU_US_SERVICE_BRAIN.md`](./completed/REFACTOR_FRU_US_SERVICE_BRAIN.md) | **completed** | FRU corpus + ABC (1k / Tantivy ladder) |
-| [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](./wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md) | **wip** | Product path: wiki + operator + agent loop (V2–V5) |
-| [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) | **wip** | `brain/personal` + `brain/retail` profiles; `retail_answer.v1` JSON + E2E tests |
-| [`REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md`](./completed/REFACTOR_SAMSUNG_RETAIL_SERVICE_BRAIN.md) | **completed** | Phone-era master (phases 0–7); reference for V2–V5 |
-| [`REFACTOR_RETAIL_SIM_DATA_SCALE_1K.md`](./completed/REFACTOR_RETAIL_SIM_DATA_SCALE_1K.md) | **completed** | Phone 60/10 → 1000/100 archive |
+**Naming:** main plans → **`REFACTOR_PLAN_MAIN_<seq>_<slug>.md`** (retail umbrella = **seq 1**). Minors → **`REFACTOR_<topic>.md`** with **`Parent (only):`** pointing at the main file.
+
+| Role | Plan | Path |
+|------|------|------|
+| **Main (only one)** | [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) | `new/` |
+| **Minor execution order** | [§0 in main plan](./new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy) | M1 → M8 + cross-cutting **M∥** |
+
+Every **minor** declares **`Parent (only):`** → the main plan. **No dual parents.** Completed minors remain children of the main plan for history.
+
+**Execute main phases:** `qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`  
+**Execute a minor:** `qimpltdd` on that minor’s path (see §0 table for sequence).
+
+<h2 id="active-index" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Active minors (by main-plan sequence)</h2>
+
+| Seq | Plan | Folder | Notes |
+|-----|------|--------|--------|
+| **M1** | [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](./new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) | **new** | M90 four-lane wiki benchmark |
+| **M2** | [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](./completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | **completed** | Raw vector baseline |
+| **M3** | [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](./completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md) | **completed** | PG manual cutover |
+| **M4** | [`REFACTOR_BUNDLED_MANUAL_TICKET_QA.md`](./new/REFACTOR_BUNDLED_MANUAL_TICKET_QA.md) | **new** | B0 bundled 5+2 concat + B20 |
+| **M5** | [`REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md`](./new/REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md) | **new** | Lane D `nu_llm_wiki` |
+| **M6** | [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) | **wip** | `retail_answer.v1` |
+| **M7** | [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](./wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md) | **wip** | Product V2–V5 after M6 |
+| **M8** | [`REFACTOR_BRAIN_AGENT_ENTRYPOINT.md`](./wip/REFACTOR_BRAIN_AGENT_ENTRYPOINT.md) | **wip** | `scripts/brain/agent.sh` |
+| **M∥** | [`REFACTOR_MULTI_PROFILE_AGENT_OPS.md`](./new/REFACTOR_MULTI_PROFILE_AGENT_OPS.md) | **new** | Hermes multi-profile compile |
 
 **Articles (not plans):** [`../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md`](../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) (D1–D6 benchmarks) · [`../artifacts/ABOUT_SEARCH_RRF_FRU.md`](../artifacts/ABOUT_SEARCH_RRF_FRU.md) · [`../artifacts/aggregated/REALIGNMENT_REFACTOR_GOALS.md`](../artifacts/aggregated/REALIGNMENT_REFACTOR_GOALS.md) · [`../artifacts/aggregated/ABOUT_FURTHER_ENHANCEMENT_GPT.md`](../artifacts/aggregated/ABOUT_FURTHER_ENHANCEMENT_GPT.md).
 

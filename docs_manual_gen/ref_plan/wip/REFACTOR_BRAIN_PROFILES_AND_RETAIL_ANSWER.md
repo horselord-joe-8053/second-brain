@@ -1,8 +1,10 @@
 <h1 id="bp-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor: brain-profiles (personal | retail) + retail answer bundle E2E</h1>
 
+**Plan role:** **minor** (child).  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — Phase **4** <code>retail_answer.v1</code> (main plan [§0 minor **M6**](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
 **Status:** **wip** — P1–P18 **`[X]`**; **P19** doc/operator **`[X]`**; **HG-TXT-3 acceptance failed** (repair-guide wiki still summary-only after forced re-ingest); live E2E on **`raw_txt`**; **P10** superseded  
-**Execute:** operator **HG-TXT-3** + optional **`nu_llm_wiki`** manual profile; parent plan unchanged  
-**Parent product plan:** [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](../wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md) (this plan **replaces** its *Platform* phase and **supersedes** decision **P2** routing)
+**Execute:** operator **HG-TXT-3** + optional **`nu_llm_wiki`** manual profile.  
+**Sibling (not parent):** [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](./REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md) — product V2–V5 after this plan’s platform work (**M7**).
 
 **Goal:** (1) `brain/` holds exactly two **brain-profiles** — `brain/personal/` and `brain/retail/` — with one active at a time (`BRAIN_PROFILE`, default **retail**). (2) A FRU ticket produces **`retail_answer.v1`**: top-2 historical tickets with similarity **and** manual evidence cited to a **compiled manual document** (`raw/sources/.../*.txt` via wiki, or direct `.txt` search when wiki misses). **Page numbers are out of scope for P11–P16** (deferred Phase 2). (3) LLM Wiki ingests **`.txt` extracts** in `raw/sources/`; **PDFs + optional page index JSONL** live under **`brain/retail/archive/`** (committed), not watched by Source Watch.
 

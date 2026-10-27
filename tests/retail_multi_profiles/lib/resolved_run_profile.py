@@ -26,7 +26,7 @@ class ResolvedRunProfile:
     d5_verifier_enabled: bool = False
     d5_agentic_enabled: bool = False
     d5_agentic_max_loops: int = 1
-    manual_d3_backend: str = "lance"
+    manual_d3_backend: str = "pg"
 
     def dimension_tuple(self) -> str:
         """Informal profile_id string for analysis docs (D1.M manual raw)."""
@@ -155,10 +155,11 @@ def resolve_effective_profile(
         prof, raw_rag, cli_raw_agentic=raw_agentic, env=env
     )
 
-    env_map = env if env is not None else os.environ
-    manual_backend = str(prof.get("manual_d3_backend") or "lance").strip().lower()
-    if env_map.get("RETAIL_MANUAL_D3_BACKEND"):
-        manual_backend = env_map["RETAIL_MANUAL_D3_BACKEND"].strip().lower()
+    manual_backend = str(prof.get("manual_d3_backend") or "pg").strip().lower()
+    if manual_backend != "pg":
+        raise ValueError(
+            f"manual_d3_backend={manual_backend!r} is removed; use Postgres (evo-16 branch kept Lance)"
+        )
 
     return ResolvedRunProfile(
         profile_id=profile_id,

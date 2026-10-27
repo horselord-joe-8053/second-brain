@@ -19,7 +19,6 @@ from tests.retail_multi_profiles.lib.compare_wiki_raw import (  # noqa: E402
     compare_runs,
     write_compare_markdown,
 )
-from tests.retail_multi_profiles.lib.raw_index_runner import run_index_raw  # noqa: E402
 from tests.retail_multi_profiles.lib.runner import run_full, run_smoke  # noqa: E402
 from tests.retail_multi_profiles.lib.sources_only_replay import run_sources_only_replay  # noqa: E402
 
@@ -50,7 +49,7 @@ def main(argv: list[str] | None = None) -> int:
         "--retrieval-mode",
         choices=("llm_wiki", "raw_rag"),
         default="llm_wiki",
-        help="llm_wiki (default) or raw_rag on raw/sources Lance index",
+        help="llm_wiki (default) or raw_rag on Postgres manual_chunks",
     )
     parser.add_argument(
         "--raw-retrieval",
@@ -69,13 +68,8 @@ def main(argv: list[str] | None = None) -> int:
         help=(
             "Named run_profiles id from run-config.yaml (overrides mode/lanes when set). "
             "When omitted and --retrieval-mode raw_rag, harness uses run-config default_run_profile "
-            "(HG-P1: MANUAL_B_RAW_HYBRID_RERANK)."
+            "(default: MANUAL_B_RAW_PG_HYBRID_RERANK)."
         ),
-    )
-    parser.add_argument(
-        "--index-raw",
-        action="store_true",
-        help="Build raw-sources vector index for --lanes (no Q&A)",
     )
     parser.add_argument(
         "--ingest-manual-pg",
@@ -85,7 +79,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--force-reindex",
         action="store_true",
-        help="With raw_rag: rebuild Lance index even if manifest matches",
+        help="With raw_rag: rebuild Postgres manual_chunks even if manifest matches",
     )
     parser.add_argument(
         "--skip-index-check",
@@ -128,20 +122,6 @@ def main(argv: list[str] | None = None) -> int:
         out_dir = raw_path.parent
         md = write_compare_markdown(payload, out_dir / "compare_wiki_vs_raw.md")
         print(f"Wrote {md}")
-        return 0
-
-    if args.index_raw:
-        lane_ids = [x.strip() for x in args.lanes.split(",") if x.strip()]
-        if args.lanes == "A,B,C,D":
-            lane_ids = ["B", "C", "D"]
-        out = run_index_raw(
-            REPO,
-            lane_ids=lane_ids,
-            run_id=args.run_id or None,
-            force_reindex=args.force_reindex,
-            skip_index_check=args.skip_index_check,
-        )
-        print(f"Wrote {out}")
         return 0
 
     if args.ingest_manual_pg:

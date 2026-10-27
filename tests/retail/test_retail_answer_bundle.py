@@ -109,7 +109,7 @@ def test_ticket_leg_failure_is_isolated() -> None:
 
         issue_keys: dict = {}
 
-        def hits(self, query: str, *, model: object, limit: int) -> tuple:
+        def hits(self, query: str, *, model: object, brand: object = None, limit: int) -> tuple:
             """Simulate a connection failure."""
             raise ConnectionError("pg down")
 

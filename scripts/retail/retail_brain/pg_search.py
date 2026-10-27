@@ -43,6 +43,7 @@ def vector_ids(
     query: str,
     *,
     model_filter: Optional[str],
+    brand_filter: Optional[str] = None,
     limit: int,
     query_embedding: Optional[List[float]] = None,
 ) -> List[str]:
@@ -52,7 +53,18 @@ def vector_ids(
     """
     emb = query_embedding or embed_text(query, task_type="RETRIEVAL_QUERY")
     emb_literal = _vector_literal(emb)
-    if model_filter:
+    brand = (brand_filter or "").strip()
+    if model_filter and brand:
+        cur.execute(
+            """
+            SELECT ticket_id FROM service_queries
+            WHERE status = 'resolved' AND brand = %s AND model = %s
+            ORDER BY query_embedding <-> %s::vector
+            LIMIT %s
+            """,
+            (brand, model_filter, emb_literal, limit),
+        )
+    elif model_filter:
         cur.execute(
             """
             SELECT ticket_id FROM service_queries
@@ -195,6 +207,7 @@ def search_ticket_hits_pg(
     query: str,
     *,
     model_filter: Optional[str] = None,
+    brand_filter: Optional[str] = None,
     limit: int = 2,
 ) -> tuple[str, List[Dict[str, Any]]]:
     """Ranked hits for the answer bundle: ``(mode, [{ticket_id, fused_score, cosine_similarity, …}])``."""
@@ -204,10 +217,24 @@ def search_ticket_hits_pg(
     try:
         with conn.cursor() as cur:
             if mode == "vector_only":
-                ids = vector_ids(cur, query, model_filter=model_filter, limit=limit, query_embedding=q_emb)
+                ids = vector_ids(
+                    cur,
+                    query,
+                    model_filter=model_filter,
+                    brand_filter=brand_filter,
+                    limit=limit,
+                    query_embedding=q_emb,
+                )
                 scored: List[tuple[str, Optional[float]]] = [(tid, None) for tid in ids]
             else:
-                v = vector_ids(cur, query, model_filter=model_filter, limit=limit * 2, query_embedding=q_emb)
+                v = vector_ids(
+                    cur,
+                    query,
+                    model_filter=model_filter,
+                    brand_filter=brand_filter,
+                    limit=limit * 2,
+                    query_embedding=q_emb,
+                )
                 l = lexical_ids(cur, query, model_filter=model_filter, limit=limit * 2)
                 scored = list(_fuse_pg_scored(cur, query, v, l, mode=mode, limit=limit))
             fields = hydrate_with_cosine(cur, q_emb, [tid for tid, _ in scored])
@@ -222,6 +249,7 @@ def search_ticket_ids_pg(
     query: str,
     *,
     model_filter: Optional[str] = None,
+    brand_filter: Optional[str] = None,
     limit: int = 10,
 ) -> List[str]:
     """Top ticket ids from PG: vector-only or hybrid RRF per ``RETAIL_TICKET_SEARCH_MODE``."""
@@ -230,9 +258,13 @@ def search_ticket_ids_pg(
     try:
         with conn.cursor() as cur:
             if mode == "vector_only":
-                return vector_ids(cur, query, model_filter=model_filter, limit=limit)
+                return vector_ids(
+                    cur, query, model_filter=model_filter, brand_filter=brand_filter, limit=limit
+                )
             # Prefetch 2× final k so RRF has depth before truncation (matches offline hybrid_search).
-            v = vector_ids(cur, query, model_filter=model_filter, limit=limit * 2)
+            v = vector_ids(
+                cur, query, model_filter=model_filter, brand_filter=brand_filter, limit=limit * 2
+            )
             l = lexical_ids(cur, query, model_filter=model_filter, limit=limit * 2)
             return _fuse_pg(cur, query, v, l, mode=mode, limit=limit)
     finally:

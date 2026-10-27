@@ -2,7 +2,7 @@
 
 **Source:** [ChatGPT share](https://chatgpt.com/share/6adb338c-a8e0-83ec-88aa-f633463cb70e) from user message *“I am trying hard to make what we want to refactor/improve more concrete and clear…”* (2026-10-23).  
 **Transcript:** `utils/chatgpt/transcripts/refactor_three_tracks_cos_6adb338c-a8e0-83ec-88aa-f633463cb70e.txt` (from line ~3157).  
-**Executable plan:** [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md).
+**Executable plan:** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md).
 
 <h2 id="realign-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -94,4 +94,4 @@ Chat sequence (adopted in refactor plan):
 | Wiki `sources_rerank` vs raw hybrid in one promotion bar | **A1** vs **A2** scoreboards |
 | Ticket index changes | **Phase 2 (A3)** only |
 
-**Dimensions:** [`REALIGNMENT_DIMENSIONS.md`](./REALIGNMENT_DIMENSIONS.md) (D1–D6, run profiles). **Plan:** [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md) §1–3 + phases §10–13. **Code:** **`implref` Phase 1 first**; **HG-P*** in plan §14.
+**Dimensions:** [`REALIGNMENT_DIMENSIONS.md`](./REALIGNMENT_DIMENSIONS.md) (D1–D6, run profiles). **Plan:** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) §1–3 + phases §10–13. **Code:** **`implref` Phase 1 first**; **HG-P*** in plan §14.

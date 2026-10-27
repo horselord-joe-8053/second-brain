@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from tests.retail_multi_profiles.lib.raw_rag_search import concat_top_k_raw_chunks
+from tests.retail_multi_profiles.lib.raw_rag_context import concat_top_k_raw_chunks
 
 
 def test_concat_respects_total_budget() -> None:

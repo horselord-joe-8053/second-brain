@@ -12,6 +12,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "retail"))
 
+from retail_brain.product_scope import product_for_oem  # noqa: E402
+
 
 def _ts(value: str | None) -> str | None:
     """CSV may use '' for nullable timestamptz (e.g. open tickets without closed_at)."""
@@ -43,13 +45,16 @@ def main() -> None:
                 state = (r.get("state") or "").strip()
                 if not state:
                     raise ValueError(f"missing state for ticket {r['ticket_id']}")
+                oem = r["model"]
+                pf = product_for_oem(oem)
+                brand = (r.get("brand") or "").strip() or (pf.brand if pf else "") or ""
                 cur.execute(
                     """
                     INSERT INTO service_queries (
-                      ticket_id, customer_id, item_number, store_id, city, state, model,
+                      ticket_id, customer_id, item_number, store_id, city, state, brand, model,
                       status, customer_query_text, resolution_text,
                       opened_at, updated_at, closed_at
-                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (ticket_id) DO NOTHING
                     """,
                     (
@@ -59,7 +64,8 @@ def main() -> None:
                         r["store_id"],
                         r["city"],
                         state,
-                        r["model"],
+                        brand,
+                        oem,
                         r["status"],
                         r["customer_query_text"],
                         r.get("resolution_text") or None,

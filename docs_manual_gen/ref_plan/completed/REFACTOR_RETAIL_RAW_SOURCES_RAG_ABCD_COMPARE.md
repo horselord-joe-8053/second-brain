@@ -1,10 +1,12 @@
 <h1 id="raw-rag-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — raw-sources RAG vs LLM Wiki (lanes B/C/D)</h1>
 
-**Status:** **wip** — P0–P8 operator run **`abcd-raw-full-openai-v1`** complete (2026-10-21); optional scoreboard badge + live smoke sign-off remain.  
-**Chain:** **`qimpltdd`** / **`implref`** on this file after approval.  
+**Plan role:** **minor** (child) — **completed** (optional scoreboard badge remains).  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — Phase **1** raw vector baseline (main plan [§0 minor **M2**](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
+**Prerequisite sibling (not parent):** [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](../new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) (M90 wiki baseline).  
+**Status:** **completed** — P0–P8 operator run **`abcd-raw-full-openai-v1`** (2026-10-21). Superseded for production retrieval by PG hybrid (**M3**).  
+**Chain:** Historical — **`implref`** only for doc/checklist touch-ups.  
 **Branch context:** `feature/evo-13-multi-retail-test-rag`.  
 **Goal:** Run the **same 90-question retail manual QA suite** on **pure dense RAG** over each lane’s **`raw/sources/**`** tree (not `wiki/**`), reuse the existing **`tests/retail_multi_profiles/`** harness for answer + judge, and publish a **Wiki vs raw-RAG** comparison per lane alongside the completed LLM Wiki baseline (`abcd-full-openai-v2`).  
-**Parent experiment:** [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](./REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) (LLM Wiki path).  
 **Out of scope:** changing `nu_llm_wiki` hybrid RRF weights in production; Hermes agent eval; ticket Postgres leg; public article.
 
 <h2 id="raw-rag-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
@@ -424,7 +426,7 @@ Deliverables:
 | Item | Why deferred |
 |------|----------------|
 | **Lane A raw RAG** | PDF extraction; B/C cover converted text arms |
-| **Raw hybrid RRF + lexical** | Follow-up is [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md) (SKU filter, fusion, listwise rerank). This plan stays the vector-only baseline. |
+| **Raw hybrid RRF + lexical** | Follow-up is [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) (SKU filter, fusion, listwise rerank). This plan stays the vector-only baseline. |
 | **Identical chunk boundaries to wiki_chunks_v2** | Requires porting page split from `page_embedding.rs` / search chunker |
 | **Tier B — wiki-matched embedding config** | User chose Tier C to avoid `nu_llm_wiki` changes; revisit if vector-score parity matters |
 | **Reuse wiki Lance file in read-only mode** | Wiki vectors index **wiki** text only—not `raw/sources` |
@@ -443,4 +445,4 @@ Deliverables:
 | [`../artifacts/ABOUT_LANE_B_D_DETAILED_ANALYSIS.md`](../artifacts/ABOUT_LANE_B_D_DETAILED_ANALYSIS.md) | Retrieval mechanics reference |
 | `nu_llm_wiki/src-tauri/src/commands/vectorstore.rs` | Wiki Lance layout reference |
 
-**Execute:** `qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md` or **`implref`** on this path.
+**Execute:** Historical — `docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md` for doc-only **`implref`** touch-ups.

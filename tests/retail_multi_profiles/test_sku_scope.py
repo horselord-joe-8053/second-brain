@@ -23,6 +23,12 @@ def test_suite_fallback_when_query_has_no_sku_token() -> None:
     assert scope.source == "suite_fallback"
 
 
+def test_suite_oem_fallback_maps_to_catalog() -> None:
+    scope = resolve_retrieval_sku("door alarm reset", suite_model_id="GNE27JYMFS")
+    assert scope.filter_model_id == "ge_GNE27JYMFS"
+    assert scope.source == "suite_oem_fallback"
+
+
 def test_multi_sku_query_opens_pool() -> None:
     q = "Compare samsung_RF28K9070SG and kitchenaid_KRFF507HPS ice makers"
     scope = resolve_retrieval_sku(q, suite_model_id="ge_GNE27JYMFS")

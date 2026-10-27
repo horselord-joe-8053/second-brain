@@ -15,6 +15,8 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 9. [Story 8 — Long ticket text found no manual page: score only matchable words](#war-story-8)
 10. [Story 9 — "Garbage" PDF text was a shifted font, not noise](#war-story-9)
 11. [Story 10 — An inherited env default silently disabled the fault-code boost](#war-story-10)
+12. [Story 11 — Three lexical arms: overlap, Postgres FTS, Tantivy](#war-story-11)
+13. [Story 12 — Bundled answers keep separate legs](#war-story-12)
 
 ---
 
@@ -35,6 +37,8 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 <tr><td style="background:#e3f2fd">8</td><td><a href="#war-story-8">Long ticket text found no manual page: score only words the pages can match</a></td><td>Unseen words got max IDF and zeroed every page; gold from author anchors, not the scorer.</td></tr>
 <tr><td style="background:#e3f2fd">9</td><td><a href="#war-story-9">"Garbage" PDF text was a shifted font, not noise</a></td><td>GE glyphs sit 29 code points low; decode before collapsing whitespace.</td></tr>
 <tr><td style="background:#e3f2fd">10</td><td><a href="#war-story-10">An inherited env default silently disabled the fault-code boost</a></td><td>Phone-era SAM-E prefix default; new entry points read the domain config.</td></tr>
+<tr><td style="background:#e3f2fd">11</td><td><a href="#war-story-11">Three lexical arms: overlap, Postgres FTS, Tantivy</a></td><td>Cheap overlap stayed fast but failed relevance: common words supplied 66% of a gold chunk’s score.</td></tr>
+<tr><td style="background:#e3f2fd">12</td><td><a href="#war-story-12">Bundled answers keep separate legs</a></td><td>Manuals and past tickets stay different indexes; concat a fixed top-k, do not pretend chunks share one score.</td></tr>
 </tbody>
 </table>
 
@@ -562,3 +566,176 @@ The answer CLI and live test default the prefix from the company profile (`fault
 <h3 id="war-story-10-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">10.4 Takeaway</h3>
 
 When a domain moves (phones → fridges), grep every env default for the old domain; a new entry point must take domain constants from the domain config, not from whatever the shell happened to export.
+
+---
+
+<h2 id="war-story-11" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">11. Three lexical arms: overlap, Postgres FTS, Tantivy</h2>
+
+**creation:** 261026-201800  
+**last_updated:** 261027-172100  
+**keywords:** design, system design, bm25, tantivy, tsvector, lexical search, rrf, postgres  
+**difficulty:** 6  
+**significance:** 8  
+
+<h3 id="war-story-11-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">11.1 Context</h3>
+
+Hybrid search always has a **keyword leg** beside vectors. Story 4 already says that leg should be an inverted index, not a scan of every row. This stack then grew **two** keyword implementations at once:
+
+- Manual chunks (about **200** rows per lane after SKU filter) score tokens in Python (`raw_lexical.py`).
+- Historical tickets (**1000** rows, FRU profile) score keywords with **Tantivy** on disk, then fuse with pgvector using reciprocal rank fusion. Mode C also boosts fault codes such as `FRU-E###`.
+
+Postgres already stores `tsvector` columns (`manual_chunks.chunk_tsv`, ticket `query_tsv`) but the live rankers do not use them for the hybrid keyword list. A restest on 2026-10-26 of the 100-row FRU eval reproduced the published ladder: **recall@1 0.25 → 0.44 → 0.54** for vector-only, normal fusion, and term-boosted fusion. The lexical leg was nonempty on **100/100** hybrid rows. Dropping Tantivy “to match the manuals” would throw away that ladder without a new measurement.
+
+The small-pool exception then failed on a bundled Samsung question. The expected page-27 installation chunk really contained **50–110°F (10–43°C)** as searchable text, but ranked **48th of 59** lexically. Its fused full-pool diagnostic rank was **45**; production admitted only the top 20 lexical and vector candidates, so the gold chunk never reached reciprocal rank fusion.
+
+<h3 id="war-story-11-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">11.2 Root Cause</h3>
+
+The manual pool is small enough that an O(pool) overlap score is cheap and easy to debug. Ticket search was tuned against a **BM25-class** index plus a code boost. Those constraints are different. Treating “we already wrote a Python scorer” as a reason to delete Tantivy confuses **implementation convenience** with **the metric the ticket contract cares about** (strict top-1 ticket id, especially `code_in_query`, which only moves under the boost: **0.15 → 0.65**).
+
+The Python scorer is not BM25. It sums, per query token, `1 + log(1 + hits − 1)` inside one chunk. It does **not** divide by document length, use inverse document frequency across the corpus, remove stop words, or deduplicate repeated query tokens. Rare codes and common words compete on the same scale.
+
+For the failed Samsung chunk, **`the` contributed 18.20 points**, **`a` 5.89**, and **`and` 5.58**: those three words supplied about **66%** of its 44.68-point lexical score. The loop visits every occurrence in the query, so five copies of `the` score the same chunk term five times. A troubleshooting chunk containing repeated common words plus `food`, `warm`, `room`, and `temperature` reached **60.54** and ranked first, even though it did not contain the requested operating range.
+
+**second_brain** · `tests/retail_multi_profiles/lib/raw_lexical.py`
+
+```python
+def lexical_score(query: str, chunk_text: str) -> float:
+    """Sum of query term hits in chunk (log-damped repeat hits)."""
+    # Repeated query terms score repeatedly; there is no IDF, stop-list, or length norm.
+    q_tokens = tokenize(query)
+    c_tokens = tokenize(chunk_text)
+    freq: dict[str, int] = {}
+    for t in c_tokens:
+        freq[t] = freq.get(t, 0) + 1
+    score = 0.0
+    for qt in q_tokens:
+        hits = freq.get(qt, 0)
+        if hits:
+            score += 1.0 + math.log1p(hits - 1)
+    return score
+```
+
+<h3 id="war-story-11-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">11.3 Key Insight</h3>
+
+Pick the lexical arm from **ranking quality, token rarity, corpus size, and the eval you refuse to regress**—not from how many services you wish you had.
+
+<span style="background:#ffebee;padding:2px 4px">A small pool makes an O(n) scan cheap; it does not make naive relevance scoring correct.</span>
+<span style="background:#fff3e0;padding:2px 4px">One database, need SQL filters → Postgres full-text is the middle step.</span>
+<span style="background:#e3f2fd;padding:2px 4px">Proven BM25 + field boosts on a larger set → keep the sidecar until an A/B replaces it.</span>
+
+<h3 id="war-story-11-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">11.4 Resolution</h3>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Arm</th><th>What it computes</th><th>Where this repo uses it</th><th>Keep when</th><th>Risk</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>In-process overlap</strong></td><td>Token hits inside one string, log-damped repeats</td><td style="background:#ffebee">Current manual PG hybrid (`rank_chunks_lexical`)</td><td>Only deterministic fixtures where ranking quality is not being evaluated</td><td style="background:#ffebee">Common and repeated words dominate even in a 59-chunk product pool</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Postgres <code>tsvector</code></strong></td><td>Document vectors + <code>tsquery</code>, optional <code>ts_rank</code>, GIN index ([Postgres text search](https://www.postgresql.org/docs/current/textsearch-intro.html))</td><td style="background:#fff3e0">Columns exist; hybrid rank path does not read them</td><td>You want keyword search in the same database as vectors and row filters, and you will retune</td><td style="background:#fff3e0">English config, ranking defaults, and phrase behavior differ from Tantivy BM25</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Tantivy</strong></td><td>On-disk inverted index, BM25-class scores ([Tantivy](https://github.com/quickwit-oss/tantivy))</td><td style="background:#e8f5e9">Ticket keyword leg; recommended manual keyword leg</td><td>The ABC ladder (0.25 / 0.44 / 0.54) must stay and manuals need real relevance scoring</td><td style="background:#fff3e0">Separate ticket/manual indexes must be rebuilt and synchronized from Postgres</td></tr>
+</tbody>
+</table>
+
+```mermaid
+graph TD
+  Q[Query tokens] --> M{Which corpus?}
+  M -->|Manual chunks| P[Tantivy BM25 manual index]
+  M -->|1000 tickets| T[Tantivy BM25 plus optional FRU-E boost]
+  P --> R[RRF with vector ranks]
+  T --> R
+  R --> H[Top hits]
+  style Q fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style P fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style T fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style R fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
+  style H fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+```
+
+**Updated decision after the Samsung failure:** keep separate physical indexes but reuse one Tantivy backend contract. The ticket index stores `ticket_id`, model, and ticket text. The manual index stores **`manual_chunk_id`**, brand, OEM model, source path, and chunk text. Postgres remains authoritative; each disposable index rebuilds from its own rows. This unifies BM25 behavior without pretending tickets and manual passages share one schema or one score.
+
+Background on why fusion uses ranks rather than raw scores: [Cormack, Clarke, and Büttcher, Reciprocal Rank Fusion (SIGIR 2009)](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf). Story 4 covers the empty-lexical-leg failure mode; this story covers **which index** is allowed to be “simple.”
+
+<h3 id="war-story-11-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">11.5 Takeaway</h3>
+
+A cheap token-overlap loop can prove wiring, but it cannot stand in for relevance: even 59 filtered chunks need rarity weighting, length normalization, and a measured BM25 regression.
+
+---
+
+<h2 id="war-story-12" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">12. Bundled answers keep separate legs</h2>
+
+**creation:** 261026-201800  
+**last_updated:** 261026-201800  
+**keywords:** design, system design, rag, hybrid search, orchestration, eval  
+**difficulty:** 7  
+**significance:** 9  
+
+<h3 id="war-story-12-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">12.1 Context</h3>
+
+A support question often needs **two kinds of evidence**: what the **manual** says (temperatures, pressures, button sequences) and what a **past ticket** actually did (which part was replaced). The product already runs those as separate searches and stores both hit lists in one JSON document (`retail_answer.v1` from `build_answer_bundle`). It does **not** yet generate one judged answer from both lists, and it does **not** put manual chunks and ticket rows in one ranked index.
+
+Two designs compete:
+
+- **Separate legs.** Each corpus keeps its own ingest, filters, and ranker. An orchestrator takes a fixed top-k from each leg and builds one prompt.
+- **One chunk index.** Convert every source to chunks in Postgres and run one hybrid query, hoping scores are comparable.
+
+Vendor write-ups of multi-source assistants describe the first shape: route or fan out to **specialized stores**, then synthesize. Examples: [LangChain multi-source router](https://docs.langchain.com/oss/python/langchain/multi-agent/router-knowledge-base), [Azure agentic RAG](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-agentic) (the agent chooses indexes instead of one fixed corpus), [AWS Bedrock multi knowledge-base routing](https://aws.amazon.com/blogs/machine-learning/build-observable-enterprise-agentic-retrieval-using-managed-amazon-bedrock-knowledge-base-with-aws-cloudformation/), and [Pinecone multi-knowledge-base orchestration](https://docs.pinecone.io/guides/marketplace/kat-overview).
+
+<h3 id="war-story-12-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">12.2 Root Cause</h3>
+
+Chunks from different legs are **not** interchangeable units:
+
+| Difference | Manual chunk | Historical ticket |
+|------------|--------------|-------------------|
+| Source | PDF or markdown guide | A closed service row |
+| Text | Procedure prose | Customer wording plus a short resolution |
+| Filter | Model / SKU on the file | `model_filter` plus optional fault-code boost |
+| Success metric | Judge pass on a gold sentence (M90) | recall@1 on a ticket id (T100 / ABC) |
+| Score meaning | Rank inside the manual pool | Rank inside the ticket pool |
+
+A single reciprocal-rank list across both pools would compare those ranks as if they were the same kind of relevance. They are not. A shared embedding dimension does not fix that.
+
+Per-leg LLM listwise rerank made this worse for manuals: three M90 reruns of the same Postgres hybrid-plus-rerank profile scored **36, 34, then 35** out of 60 answerable questions, with retrieval sets often identical and only order or judge text moving. That is a poor control for a bundled experiment.
+
+<h3 id="war-story-12-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">12.3 Key Insight</h3>
+
+Unify at **context assembly**, not at **the index**. Keep leg-specific scoring (including a fault-code boost that manuals do not need). Send a **boring, fixed packet** to the answer model: top **5** manual hits (same as the manual benchmark) and top **2** ticket hits (the bundle default already in code).
+
+<span style="background:#e8f5e9;padding:2px 4px">Same math (RRF) may be reused. Same index must not be.</span>
+
+<h3 id="war-story-12-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">12.4 Resolution</h3>
+
+```mermaid
+graph TD
+  Q[One question] --> ML[Manual leg: PG hybrid RRF top 5]
+  Q --> TL[Ticket leg: vector plus Tantivy top 2]
+  ML --> C[Labeled concat]
+  TL --> C
+  C --> A[One answer call]
+  A --> J[Judge vs gold that cites both sources]
+  style Q fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style ML fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+  style TL fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
+  style C fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
+  style A fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+  style J fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+```
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Choice</th><th>Separate legs + fixed concat</th><th>One homogeneous chunk index</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>Leg-specific rules</strong></td><td style="background:#e8f5e9">Fault-code boost, SKU filter, wiki vs raw manuals stay local</td><td style="background:#ffebee">Boosts and filters become special cases inside one ranker</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Regression</strong></td><td style="background:#e8f5e9">M90 and ticket recall@1 stay valid controls</td><td style="background:#fff3e0">A blended score hides which corpus regressed</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Later rerank</strong></td><td style="background:#e8f5e9">Optional profiles: inside one leg, on the merged packet, or both — after a baseline</td><td style="background:#fff3e0">Rerank has nothing stable to compare against</td></tr>
+<tr><td style="background:#e3f2fd"><strong>Industry fit</strong></td><td style="background:#e8f5e9">Matches multi-knowledge-base orchestration in the references above</td><td style="background:#fff3e0">Fits when every document is the same genre</td></tr>
+</tbody>
+</table>
+
+What “deterministic merge” means **today** is narrower than an answer. `bundle_to_json` sorts keys so the **evidence** document is stable. It does not write the customer-facing paragraph. The next implementation step is the concat prompt and a 20-row gold file whose answers each require **one ticket resolution and one manual fact**. That file is `tests/retail_multi_profiles/data/retail-bundled-qa-b20.json`. Per-leg LLM rerank stays off for that baseline. Unified rerank of the merged packet is a later profile, not the first one.
+
+Wiki-based manual retrieval remains a **different manual engine** (compiled pages over HTTP). It is another manual leg, not a reason to chunk tickets into the wiki.
+
+<h3 id="war-story-12-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">12.5 Takeaway</h3>
+
+Bundle search by concatenating fixed tops from separate indexes; do not rank a manual paragraph against a ticket resolution on one fused list until each leg has its own regression score.

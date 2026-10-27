@@ -1,16 +1,18 @@
-<h1 id="gpt-enh-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — three Q&amp;A tracks, then Chief of Staff (realigned)</h1>
+<h1 id="gpt-enh-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — three Q&amp;A tracks, then Chief of Staff (main plan)</h1>
 
+**Plan role:** **main** (**seq 1**) — the **only** umbrella refactor plan for retail Q&amp;A + COS. **Filename:** `REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md` (pattern `REFACTOR_PLAN_MAIN_<seq>_<slug>.md`). Every other active `REFACTOR_*.md` under [`docs_manual_gen/ref_plan/`](../) is a **minor** (child) plan with **exactly one** parent: **this file**.  
 **Status:** **wip** — Phase **1 complete** (hard exit + **HG-P1** default profile); Phase **2** unblocked. Phases **2–4** gated by **HG-P2** onward.  
 **Execute:** **`qimpltdd`** this file → **`aciubtdd`** / **`implreftdd`** (Phase **2+** after **HG-P1**). Plain **`implref`** without TDD table is legacy.  
-**last_aligned:** 2026-10-25 — **R25** A3 before A1 (non-wiki search depth); **HG-P1** (**R23**); Phase **2** scope **R24**.
+**last_aligned:** 2026-10-26 — main filename (**R27**); hierarchy (**R26**); prior **R25** A3 before A1; **HG-P1** (**R23**); Phase **2** scope **R24**.
 
-**Branch:** `feature/evo-14-multi-retail-gpt-rerank`.  
+**Branch:** `feature/evo-18-multi-various-new-combos` (active); prior `feature/evo-14-multi-retail-gpt-rerank`.  
 **Realignment source:** ChatGPT share from user diagrams — [refactor three tracks](https://chatgpt.com/share/6adb338c-a8e0-83ec-88aa-f633463cb70e) (from *“I am trying hard to make what we want to refactor/improve more concrete…”*). Transcript: `utils/chatgpt/transcripts/refactor_three_tracks_cos_6adb338c-a8e0-83ec-88aa-f633463cb70e.txt`.  
 **Earlier chat (background only):** [LLM Wiki RAG Advice](https://chatgpt.com/share/6ada2c90-9160-83ec-b331-2e999fea8431) · [`ABOUT_FURTHER_ENHANCEMENT_GPT.md`](../../artifacts/aggregated/ABOUT_FURTHER_ENHANCEMENT_GPT.md).  
 **Benchmark anchor:** [`AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md`](../../artifacts/aggregated/AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md). **Primary lane:** **B** (`brain/retail-md`) for A2/A1 judged runs (**R10**). Lane D scores (wiki **31/60**, raw **~29/60**) remain a **later** comparison track.
 
 <h2 id="gpt-enh-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
+0. [Plan hierarchy (main vs minor)](#gpt-hierarchy) — **minor execution order**; one parent each.
 1. [Dimension model](#gpt-dim) — D1–D6; canonical vocabulary.
 2. [Measured baselines](#gpt-measured) — what Part 1 already ran.
 3. [Dimension-led phase map](#gpt-dim-map) — phases as Δ on dimensions.
@@ -33,6 +35,46 @@
 20. [Related](#gpt-related).
 
 Phase 1 TDD table: [§17.1](#gpt-tdd).
+
+---
+
+<h2 id="gpt-hierarchy" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">0. Plan hierarchy (main vs minor)</h2>
+
+**Rules**
+
+- **Main:** this file only (`REFACTOR_PLAN_MAIN_1_*`). Roadmap phases **1–4** (A2 → A3 → A1 → B) live here. Future mains (if ever needed) use **`REFACTOR_PLAN_MAIN_2_*`**, etc.; retail work stays under **seq 1** until explicitly split.
+- **Minor:** scoped deliverables with their own TDD tables. Each minor declares **`Parent (only):`** → this plan (phase anchor below). **No dual parents.**
+- **Completed minors** stay under [`completed/`](../completed/) for history; they still count as children of this main plan.
+- **Execute minors** with **`qimpltdd`** / **`aciubtdd`** on the **minor file path** unless the minor says to resume on the main checklist only.
+
+**Minor execution order** (run or finish in this sequence; cross-cutting items may overlap when unblocked):
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Seq</th><th>Minor plan</th><th>Main phase</th><th>Location</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>M1</strong></td><td><a href="./REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md">RETAIL_MANUAL_INGEST_ABCD_BENCHMARK</a></td><td>Phase <strong>1</strong> — M90 harness + four wiki lanes</td><td><code>new/</code></td><td style="background:#fff3e0">in progress</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M2</strong></td><td><a href="../completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md">RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE</a></td><td>Phase <strong>1</strong> — raw vector baseline (D3.R-V)</td><td><code>completed/</code></td><td style="background:#e8f5e9">done</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M3</strong></td><td><a href="../completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md">UNIFIED_PG_MANUAL_EMBEDDINGS</a></td><td>Phase <strong>1</strong> — Postgres manual chunks (D3 PG cutover)</td><td><code>completed/</code></td><td style="background:#e8f5e9">done (HG-PG-CUTOVER)</td></tr>
+<tr><td style="background:#fff9c4"><strong>—</strong></td><td colspan="4"><strong>Main Phase 1 checklist</strong> [§10](#gpt-phase1) — hybrid + rerank + M90 (Lane B primary)</td></tr>
+<tr><td style="background:#fff9c4"><strong>—</strong></td><td colspan="4"><strong>Main Phase 2 checklist</strong> [§11](#gpt-phase2) — ticket adapters + T100 (**active:** P2.6)</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M4</strong></td><td><a href="./REFACTOR_BUNDLED_MANUAL_TICKET_QA.md">BUNDLED_MANUAL_TICKET_QA</a></td><td>Phase <strong>4</strong> prelude <strong>B0</strong> — fixed-k manual+ticket concat + B20 judge</td><td><code>new/</code></td><td style="background:#e8f5e9">B20 baseline run</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M9</strong></td><td><a href="./REFACTOR_RETAIL_PRODUCT_SCOPE_BRAND_MODEL.md">RETAIL_PRODUCT_SCOPE_BRAND_MODEL</a></td><td><strong>Cross-cutting D1</strong> — brand+OEM model filters; T100 / M90 / B20 regression</td><td><code>new/</code></td><td style="background:#e8f5e9">P5 baselines recorded</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M10</strong></td><td><a href="./REFACTOR_EVO18_MULTI_VARIOUS_NEW_COMBOS.md">EVO18_MULTI_VARIOUS_NEW_COMBOS</a></td><td><strong>Phase 1</strong> — T0 manual SQL+Tantivy; D2/D7 run-profile matrix vs PRE-T0</td><td><code>new/</code></td><td style="background:#fff3e0">wip (qimpltdd)</td></tr>
+<tr><td style="background:#fff9c4"><strong>—</strong></td><td colspan="4"><strong>Main Phase 3 checklist</strong> [§12](#gpt-phase3) — A1 wiki audit + harness</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M5</strong></td><td><a href="./REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md">LEARNED_SECTION_COPY_PLUS_CARDS</a></td><td>Phase <strong>3</strong> — Lane D compile (`nu_llm_wiki`)</td><td><code>new/</code></td><td style="background:#fff3e0">partial (P1–P4, P7)</td></tr>
+<tr><td style="background:#fff9c4"><strong>—</strong></td><td colspan="4"><strong>Main Phase 4 checklist</strong> [§13](#gpt-phase4) — COS router + API</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M6</strong></td><td><a href="../wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md">BRAIN_PROFILES_AND_RETAIL_ANSWER</a></td><td>Phase <strong>4</strong> — <code>retail_answer.v1</code> production bundle</td><td><code>wip/</code></td><td style="background:#fff3e0">wip (HG-TXT-3)</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M7</strong></td><td><a href="../wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md">FRU_RETAIL_SERVICE_BRAIN</a></td><td>Phase <strong>4</strong> — product ops V2–V5 after M6</td><td><code>wip/</code></td><td style="background:#fff3e0">wip</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M8</strong></td><td><a href="../wip/REFACTOR_BRAIN_AGENT_ENTRYPOINT.md">BRAIN_AGENT_ENTRYPOINT</a></td><td>Phase <strong>4</strong> — single <code>scripts/brain/agent.sh</code> entry</td><td><code>wip/</code></td><td style="background:#fff3e0">wip</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M∥</strong></td><td><a href="./REFACTOR_MULTI_PROFILE_AGENT_OPS.md">MULTI_PROFILE_AGENT_OPS</a></td><td><strong>Cross-cutting</strong> — Hermes compile/delete any profile</td><td><code>new/</code></td><td style="background:#fff3e0">new</td></tr>
+</tbody>
+</table>
+
+**M4 timing:** Start **B0 bundled** after **P2.6** ticket ABC metrics are recorded and manual PG hybrid is the regression anchor (M3 complete). **M4** does **not** replace Phase **4** COS — it adds a **judged** two-leg concat profile before full management routing.
+
+**Historical (not minors of this main plan):** Samsung / phone-era completed plans under [`completed/`](../completed/) (e.g. `REFACTOR_SAMSUNG_*`, early ticket search). Use them as reference only.
 
 ---
 
@@ -200,7 +242,7 @@ Wiki may **lead** searches (context) but **important facts** default to verified
 | **3** | **A1 LLM Wiki** | **After A3 (R25):** different **D3.W-H** path (compiled wiki + harness); claim audit + wiki Q&amp;A modes; reuses verifier **patterns** from Phases 1–2 |
 | **4** | **B COS + API** | Integrate measured components only |
 
-**Conscious sequencing (R25):** Ticket cases are **grounded in manual/product context**, like A1’s corpus — but **implementation order** is **A2 → A3 → A1** so we finish hardening **classic hybrid retrieval** (Lance raw manuals, then Postgres tickets) before the **LLM-Wiki** compile/harness track. Not “tickets unrelated to manuals”; “same retrieval **style**, different **D1** store.”
+**Conscious sequencing (R25):** Ticket cases are **grounded in manual/product context**, like A1’s corpus — but **implementation order** is **A2 → A3 → A1** so we finish hardening **classic hybrid retrieval** (Postgres manual chunks per **M3**, then Postgres tickets) before the **LLM-Wiki** compile/harness track. Not “tickets unrelated to manuals”; “same retrieval **style**, different **D1** store.”
 
 Phases **2–4** are fully specified below for roadmap clarity. **HG-P1 closed (R23):** **`aciubtdd` / `implreftdd`** Phase **2** may proceed; Phase **3+** still gated by **HG-P2** / **HG-P3** per [§14](#gpt-gates).
 
@@ -475,7 +517,9 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 | **R22** | **H08 v3 regression (2026-10-25):** `ge_GNE27JYMFS-H08` hybrid **v2 pass → v3 fail** with **identical** `top_hits` chunk ids; answer LLM said **~5 min** vs gold **3 min** (v2 **“few minutes”** passed judge). Not SKU filter or **context_max_chars_per_chunk** — treat as **judge/answer variance** unless context logging shows a diff. |
 | **R23** | **HG-P1 default profile (2026-10-25):** When harness CLI omits **`--profile`** and uses **`--retrieval-mode raw_rag`**, resolve **`run-config.yaml` → `default_run_profile`** = **`MANUAL_B_RAW_HYBRID_RERANK`**. **Eval comparison anchor** unchanged: raw vector **`abcd-raw-full-openai-v1`** — use explicit **`--profile MANUAL_B_RAW_*`** for ladder arms. |
 | **R24** | **Phase 2 qimpltdd scope (2026-10-25):** **`aciubtdd`** through **P2.6** + **`TEST_ANALYSIS_A3_TICKET_RAG.md`** (full Phase 2). CI stays **mock/fixture** for ticket evidence tests; **optional live Postgres smoke** documented + skipped when DB env absent. |
-| **R25** | **A3 before A1 (2026-10-25):** Implement **Phase 2 (tickets)** before **Phase 3 (LLM Wiki)** even though ticket content is manual-adjacent. **Rationale:** A2 and A3 both use **non–LLM-Wiki hybrid retrieval** (dense + lexical / RRF-style fusion, optional D5 rerank·verifier·agentic on a **search index** — Lance manuals vs Postgres tickets). Prefer a **deep grip on that retrieval family** across two **D1** corpora before A1’s **D3.W-H** (compiled wiki HTTP, claim audit, harness-only ranking per **R6**). |
+| **R25** | **A3 before A1 (2026-10-25):** Implement **Phase 2 (tickets)** before **Phase 3 (LLM Wiki)** even though ticket content is manual-adjacent. **Rationale:** A2 and A3 both use **non–LLM-Wiki hybrid retrieval** (dense + lexical / RRF-style fusion, optional D5 rerank·verifier·agentic on a **search index** — Postgres manual chunks vs Postgres tickets). Prefer a **deep grip on that retrieval family** across two **D1** corpora before A1’s **D3.W-H** (compiled wiki HTTP, claim audit, harness-only ranking per **R6**). |
+| **R26** | **Plan hierarchy (2026-10-26):** Exactly **one main** plan — **this file** (`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`). All scoped retail Q&amp;A refactors are **minors** with **`Parent (only):`** here and execution order in [§0](#gpt-hierarchy). Completed work moves to **`completed/`** but stays a minor (e.g. **M2**, **M3**). **B0 bundled** Q&amp;A is minor **M4**, not a second umbrella. |
+| **R27** | **Main filename (2026-10-26):** Main plans use **`REFACTOR_PLAN_MAIN_<seq>_<slug>.md`**. Retail umbrella is **seq 1**; slug keeps **`FURTHER_ENHANCEMENT_GPT`** for grep/history. Minors keep **`REFACTOR_<topic>.md`** (no `PLAN_MAIN` prefix). |
 | **R15** | **Phase exit trio:** smoke → full benchmark (**D6**) → analysis vs prior **profile_id** — [§17.2](#gpt-phase-exit); required at end of **each** phase before **HG-P*** unlock. |
 | **R16** | **`onlyreftdd` Phases 2–4 (2026-10-24):** TDD tables in [§17.3–17.5](#gpt-tdd-p2); plan is **paper-ready** for multi-phase **`qimpltdd`**; **execution** order unchanged (**HG-P***). |
 | **R17** | **Operator logging:** all new runners/CLIs follow [§17.6](#gpt-neatlog) + **neatlog** rule; logging ships **in the same phase** as the feature (qimpl/aciub bar). |
@@ -659,7 +703,7 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 - [X] P2.3 Optional ticket rerank
 - [X] P2.4 Agentic ticket controller
 - [X] P2.5 Eval integration
-- [ ] P2.6 ABC regression + TEST_ANALYSIS_A3 metrics (operator T100)
+- [X] P2.6 ABC regression + TEST_ANALYSIS_A3 metrics (operator T100 — `ops/runs/fru-ticket-abc-p26-20261026`, ladder OK)
 
 **Phase 3 — A1** (after **HG-P1**; exit **HG-P3**)
 
@@ -686,7 +730,7 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 |------|--------|
 | Combined wiki+raw / COS routing | **B — Phase 4** |
 | Cross-encoder rerank | A2 after listwise measured |
-| **Unified PG manual embeddings (Lance A/B)** | [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](./REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md) — **evo-16**; parallel to Phase **2** |
+| **Unified PG manual embeddings** | **Done** — minor **M3** [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](../completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md) |
 | Canonical MD pipeline | A1/A2 — separate plan if needed |
 | nu_llm_wiki internal changes | A1 — external audit first |
 | Ticket→wiki KCS | B / product policy |
@@ -701,6 +745,9 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 | [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md) | Operator + implementer: **D3/D5**, config SSOT, backends |
 | [`REALIGNMENT_REFACTOR_GOALS.md`](../../artifacts/aggregated/REALIGNMENT_REFACTOR_GOALS.md) | One-page A/B summary from diagram chat |
 | [`ABOUT_FURTHER_ENHANCEMENT_GPT.md`](../../artifacts/aggregated/ABOUT_FURTHER_ENHANCEMENT_GPT.md) | First long chat digestion |
-| [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../wip/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | Vector baseline done |
-| [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](../wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) | Phase 4 consumer |
+| [§0 Plan hierarchy](#gpt-hierarchy) | **Minor execution order** (M1–M8) |
+| [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | Minor **M2** — vector baseline (completed) |
+| [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](../completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md) | Minor **M3** — PG cutover (completed) |
+| [`REFACTOR_BUNDLED_MANUAL_TICKET_QA.md`](./REFACTOR_BUNDLED_MANUAL_TICKET_QA.md) | Minor **M4** — B0 bundled Q&amp;A |
+| [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](../wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) | Minor **M6** — Phase 4 consumer |
 | [`utils/neat_logger/HOWTO_USE_NEAT_LOGGER.md`](../../../utils/neat_logger/HOWTO_USE_NEAT_LOGGER.md) | neat_logger factory + DEBUG |

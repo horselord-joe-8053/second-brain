@@ -1,7 +1,7 @@
 # Lane A–D harness eval overrides → tests/retail_multi_profiles/lib/runner.py
 #
 # Run profiles (D3/D5 dimensions): tests/retail_multi_profiles/docs/RUN_PROFILES.md
-# Plan: docs_manual_gen/ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md Phase 1 (P1.0b adds d5: on profiles)
+# Plan: docs_manual_gen/ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md Phase 1 (P1.0b adds d5: on profiles)
 #
 # Retrieval scalars: config/brain-stack.yaml → second_brain.retail_evidence
 #
@@ -24,6 +24,9 @@ retail_eval:
 
 smoke_question_ids: [samsung_RF28K9070SG-E01, samsung_RF28K9070SG-H01]
 
+# B20 bundled Q&A smoke (M4): two ids — one easy, one hard.
+bundled_smoke_question_ids: [BND-E01, BND-H01]
+
 retail_raw_rag:
   embedding:
     provider: openai
@@ -38,7 +41,6 @@ retail_raw_rag:
     max_loops: 1
 
 # HG-P1 default when CLI omits --profile and --retrieval-mode raw_rag (Lane B PG hybrid + D5 R+V+A).
-# Lance manual path: set RETAIL_MANUAL_D3_BACKEND=lance or use explicit legacy compare runs.
 default_run_profile: MANUAL_B_RAW_PG_HYBRID_RERANK
 
 # run_profiles: informal ids → harness flags. Target: each block also carries d5: (rerank/verifier/agentic).

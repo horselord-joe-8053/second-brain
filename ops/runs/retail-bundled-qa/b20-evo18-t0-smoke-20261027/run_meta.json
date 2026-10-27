@@ -1,0 +1,9 @@
+{
+  "run_id": "b20-evo18-t0-smoke-20261027",
+  "git_head": "277b0f2bcdffb945e063ee783ac33bf41ae27f0f",
+  "k_tickets": 2,
+  "k_manuals": 5,
+  "manual_profile_id": "MANUAL_B_RAW_PG_HYBRID",
+  "ticket_search_mode": "rrf_term_boosted",
+  "question_count": 2
+}

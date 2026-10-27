@@ -1,7 +1,7 @@
 <h1 id="dim-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Benchmark dimensions — FRU Second Brain search &amp; Q&amp;A</h1>
 
 **Purpose:** Name **orthogonal knobs** so each implementation (done or planned) is one **run profile**, comparable on the **same test contract** when dimensions match.  
-**Companion plans:** [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md) · [`REALIGNMENT_REFACTOR_GOALS.md`](./REALIGNMENT_REFACTOR_GOALS.md) · [`AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md`](./AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md).
+**Companion plans:** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) · [`REALIGNMENT_REFACTOR_GOALS.md`](./REALIGNMENT_REFACTOR_GOALS.md) · [`AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md`](./AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md).
 
 <h2 id="dim-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -276,7 +276,7 @@ Before more modes proliferate, add **`run_profiles.yaml`** (or extend `run-confi
 
 Then analysis docs reference **profile_id**, not ad-hoc run names only.
 
-**Related refactor plan section:** [Dimension-led map](../../ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md#gpt-dim-map).
+**Related refactor plan section:** [Dimension-led map](../../ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-dim-map).
 
 ---
 
@@ -288,3 +288,24 @@ Then analysis docs reference **profile_id**, not ad-hoc run names only.
 4. **Register every run** — `profile_id` in ops JSONL even before YAML automation (Phase **P1.0**).
 5. **Separate optimum per D1** — ticket best ≠ manual best ≠ COS route.
 6. **Phase exit trio** (plan **R15**): smoke → full **D6** benchmark → analysis doc with **profile_id** + delta vs last comparable run.
+
+---
+
+<h2 id="dim-experiment-registry" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">11. Experiment registry (evo-18 / M10)</h2>
+
+**Plan:** [`REFACTOR_EVO18_MULTI_VARIOUS_NEW_COMBOS.md`](../../ref_plan/new/REFACTOR_EVO18_MULTI_VARIOUS_NEW_COMBOS.md). **Baseline label:** **PRE-T0** (`MANUAL_B_RAW_PG_HYBRID`, overlap lexical, Python pool filter after `LIMIT 200`).
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Δ</th><th>profile_id</th><th>D2 chunk</th><th>D2.page_pack</th><th>D7</th><th>Manual lexical</th><th>B20 run-id</th><th>T100 run-id</th><th>M90 run-id</th><th>B20 judge</th><th>T100 r@1</th><th>M90 ans/60</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>PRE-T0</strong></td><td><code>MANUAL_B_RAW_PG_HYBRID</code></td><td><code>fixed_2k</code></td><td>—</td><td><code>none</code></td><td>overlap</td><td><code>b20-brand-model-20261027</code></td><td><code>fru-ticket-brand-model-20261027/c.json</code></td><td><code>m90-brand-model-20261027</code></td><td><strong>14/20</strong></td><td><strong>0.54</strong></td><td><strong>33/60</strong></td></tr>
+<tr><td style="background:#fff3e0"><strong>EVO18-T0</strong></td><td><code>EVO18-T0</code></td><td><code>fixed_2k</code></td><td>—</td><td><code>none</code></td><td>tantivy</td><td><em>TBD</em></td><td><em>TBD</em></td><td><em>TBD</em></td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td style="background:#fff3e0"><strong>EVO18-D2-PAGE</strong></td><td><code>EVO18-D2-PAGE</code></td><td><code>page_heading</code></td><td><code>global_top5</code></td><td><code>none</code></td><td>tantivy</td><td><em>TBD</em></td><td><em>TBD</em></td><td><em>TBD</em></td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td style="background:#fff3e0"><strong>EVO18-D2-PAGE-PACK-PAGE</strong></td><td><code>EVO18-D2-PAGE-PACK-PAGE</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>none</code></td><td>tantivy</td><td><em>TBD</em></td><td>—</td><td><em>TBD</em></td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td style="background:#fff3e0"><strong>EVO18-D7-DECOMPOSE</strong></td><td><code>EVO18-D7-DECOMPOSE</code></td><td><em>promoted D2</em></td><td><em>promoted pack</em></td><td><code>decompose</code></td><td>tantivy</td><td><em>TBD</em></td><td><em>TBD</em></td><td><em>TBD</em></td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
+</table>
+
+**Performance columns (append per run):** B20 medians — `manual_retrieval_ms`, `answer_ms`, `judge_ms`; M90 medians — `latency_ms.retrieval|answer|judge`. See PRE-T0 row in evo-18 plan §2.

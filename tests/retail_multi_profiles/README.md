@@ -55,7 +55,7 @@ tests/retail_multi_profiles/
 
 **DRY:** Wiki HTTP client wraps `retail_brain.answer_manuals.LlmWikiHttpClient`; raw RAG reuses the same answer/judge pipeline with `--retrieval-mode raw_rag`.
 
-**Raw RAG plan:** [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../../docs_manual_gen/ref_plan/wip/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) · operator doc: [`docs/RAW_RAG.md`](./docs/RAW_RAG.md)
+**Main plan:** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../docs_manual_gen/ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) · **Raw RAG (M2, completed):** [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](../../docs_manual_gen/ref_plan/completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) · operator doc: [`docs/RAW_RAG.md`](./docs/RAW_RAG.md)
 
 ---
 
@@ -66,7 +66,7 @@ tests/retail_multi_profiles/
 | CI | `pytest -q tests/retail_multi_profiles` | Fixture wiki + mocked LLM |
 | Live smoke | `python -m tests.retail_multi_profiles --smoke --lanes A,B,C,D` | LLM Wiki, `OPENAI_API_KEY` (answer), `GEMINI_API_KEY` (judge) |
 | Live full | `python -m tests.retail_multi_profiles --full --lanes A,B,C,D` | Same; 90×4 LLM calls (use `--limit 3` to dry-run) |
-| Raw RAG | `--retrieval-mode raw_rag --lanes B,C,D` | `pip install lancedb`; `OPENAI_API_KEY` for embeddings + answer; see [`docs/RAW_RAG.md`](./docs/RAW_RAG.md) |
+| Raw RAG | `--retrieval-mode raw_rag --lanes B,C,D` | `RETAIL_DATABASE_URL`; `OPENAI_API_KEY` for embeddings + answer; see [`docs/RAW_RAG.md`](./docs/RAW_RAG.md) |
 | Resume | `--full --run-id abcd-full-openai --resume` | Skips rows in `ops/runs/…/results.jsonl` |
 | Ops tail | `tail -f logs/ops/retail-lane-abcd-<run_id>.log` | Per-step progress; on crash grep `judge_start` in `results.jsonl` for last ticket |
 

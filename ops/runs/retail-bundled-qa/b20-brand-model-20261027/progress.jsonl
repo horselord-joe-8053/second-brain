@@ -1,0 +1,160 @@
+{"ts": "2026-10-26T14:51:26.483529+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-26T14:51:27.987398+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-26T14:51:28.515694+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E01", "index": 0, "retrieval_ms": 527}
+{"ts": "2026-10-26T14:51:28.516080+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-26T14:51:30.519086+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E01", "index": 0, "answer_ms": 2002}
+{"ts": "2026-10-26T14:51:30.519773+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-26T14:51:32.483878+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E01", "index": 0, "judge_ms": 1963}
+{"ts": "2026-10-26T14:51:32.485683+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E01", "index": 0, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:51:32.487015+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E02", "index": 1}
+{"ts": "2026-10-26T14:51:33.852053+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E02", "index": 1}
+{"ts": "2026-10-26T14:51:34.276823+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E02", "index": 1, "retrieval_ms": 424}
+{"ts": "2026-10-26T14:51:34.277209+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E02", "index": 1}
+{"ts": "2026-10-26T14:51:35.572902+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E02", "index": 1, "answer_ms": 1295}
+{"ts": "2026-10-26T14:51:35.573172+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E02", "index": 1}
+{"ts": "2026-10-26T14:51:37.583826+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E02", "index": 1, "judge_ms": 2010}
+{"ts": "2026-10-26T14:51:37.585740+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E02", "index": 1, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:51:37.588319+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E03", "index": 2}
+{"ts": "2026-10-26T14:51:38.966789+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E03", "index": 2}
+{"ts": "2026-10-26T14:51:39.698101+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E03", "index": 2, "retrieval_ms": 730}
+{"ts": "2026-10-26T14:51:39.698535+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E03", "index": 2}
+{"ts": "2026-10-26T14:51:41.107962+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E03", "index": 2, "answer_ms": 1409}
+{"ts": "2026-10-26T14:51:41.108267+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E03", "index": 2}
+{"ts": "2026-10-26T14:51:42.278212+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E03", "index": 2, "judge_ms": 1169}
+{"ts": "2026-10-26T14:51:42.279015+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E03", "index": 2, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:51:42.279778+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E04", "index": 3}
+{"ts": "2026-10-26T14:51:43.066657+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E04", "index": 3}
+{"ts": "2026-10-26T14:51:43.677523+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E04", "index": 3, "retrieval_ms": 610}
+{"ts": "2026-10-26T14:51:43.678284+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E04", "index": 3}
+{"ts": "2026-10-26T14:51:45.196120+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E04", "index": 3, "answer_ms": 1517}
+{"ts": "2026-10-26T14:51:45.196403+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E04", "index": 3}
+{"ts": "2026-10-26T14:51:47.183747+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E04", "index": 3, "judge_ms": 1986}
+{"ts": "2026-10-26T14:51:47.184762+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E04", "index": 3, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:51:47.185597+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E05", "index": 4}
+{"ts": "2026-10-26T14:51:48.576266+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E05", "index": 4}
+{"ts": "2026-10-26T14:51:49.091725+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E05", "index": 4, "retrieval_ms": 514}
+{"ts": "2026-10-26T14:51:49.092380+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E05", "index": 4}
+{"ts": "2026-10-26T14:51:50.965092+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E05", "index": 4, "answer_ms": 1872}
+{"ts": "2026-10-26T14:51:50.966361+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E05", "index": 4}
+{"ts": "2026-10-26T14:51:52.729997+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E05", "index": 4, "judge_ms": 1762}
+{"ts": "2026-10-26T14:51:52.732508+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E05", "index": 4, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:51:52.733920+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E06", "index": 5}
+{"ts": "2026-10-26T14:51:54.118584+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E06", "index": 5}
+{"ts": "2026-10-26T14:51:54.626194+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E06", "index": 5, "retrieval_ms": 506}
+{"ts": "2026-10-26T14:51:54.626543+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E06", "index": 5}
+{"ts": "2026-10-26T14:51:55.799483+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E06", "index": 5, "answer_ms": 1172}
+{"ts": "2026-10-26T14:51:55.799871+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E06", "index": 5}
+{"ts": "2026-10-26T14:51:57.758332+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E06", "index": 5, "judge_ms": 1958}
+{"ts": "2026-10-26T14:51:57.760097+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E06", "index": 5, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:51:57.761785+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E07", "index": 6}
+{"ts": "2026-10-26T14:51:58.760228+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E07", "index": 6}
+{"ts": "2026-10-26T14:51:59.163035+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E07", "index": 6, "retrieval_ms": 402}
+{"ts": "2026-10-26T14:51:59.163381+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E07", "index": 6}
+{"ts": "2026-10-26T14:52:00.922534+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E07", "index": 6, "answer_ms": 1758}
+{"ts": "2026-10-26T14:52:00.923236+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E07", "index": 6}
+{"ts": "2026-10-26T14:52:02.743169+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E07", "index": 6, "judge_ms": 1819}
+{"ts": "2026-10-26T14:52:02.744092+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E07", "index": 6, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:52:02.744813+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E08", "index": 7}
+{"ts": "2026-10-26T14:52:04.103339+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E08", "index": 7}
+{"ts": "2026-10-26T14:52:04.560034+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E08", "index": 7, "retrieval_ms": 455}
+{"ts": "2026-10-26T14:52:04.560352+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E08", "index": 7}
+{"ts": "2026-10-26T14:52:06.553314+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E08", "index": 7, "answer_ms": 1992}
+{"ts": "2026-10-26T14:52:06.553909+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E08", "index": 7}
+{"ts": "2026-10-26T14:52:07.778166+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E08", "index": 7, "judge_ms": 1223}
+{"ts": "2026-10-26T14:52:07.778908+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E08", "index": 7, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:52:07.779565+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E09", "index": 8}
+{"ts": "2026-10-26T14:52:09.193103+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E09", "index": 8}
+{"ts": "2026-10-26T14:52:09.658473+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E09", "index": 8, "retrieval_ms": 464}
+{"ts": "2026-10-26T14:52:09.658782+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E09", "index": 8}
+{"ts": "2026-10-26T14:52:12.900835+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E09", "index": 8, "answer_ms": 3241}
+{"ts": "2026-10-26T14:52:12.901326+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E09", "index": 8}
+{"ts": "2026-10-26T14:52:14.175992+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E09", "index": 8, "judge_ms": 1274}
+{"ts": "2026-10-26T14:52:14.176709+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E09", "index": 8, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:52:14.177323+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-E10", "index": 9}
+{"ts": "2026-10-26T14:52:15.551722+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-E10", "index": 9}
+{"ts": "2026-10-26T14:52:16.000040+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-E10", "index": 9, "retrieval_ms": 447}
+{"ts": "2026-10-26T14:52:16.000447+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-E10", "index": 9}
+{"ts": "2026-10-26T14:52:18.033523+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-E10", "index": 9, "answer_ms": 2032}
+{"ts": "2026-10-26T14:52:18.034150+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-E10", "index": 9}
+{"ts": "2026-10-26T14:52:20.055747+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-E10", "index": 9, "judge_ms": 2021}
+{"ts": "2026-10-26T14:52:20.057952+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-E10", "index": 9, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:52:20.059812+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H01", "index": 10}
+{"ts": "2026-10-26T14:52:20.844287+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H01", "index": 10}
+{"ts": "2026-10-26T14:52:21.314455+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H01", "index": 10, "retrieval_ms": 469}
+{"ts": "2026-10-26T14:52:21.314802+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H01", "index": 10}
+{"ts": "2026-10-26T14:52:22.704886+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H01", "index": 10, "answer_ms": 1389}
+{"ts": "2026-10-26T14:52:22.705171+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H01", "index": 10}
+{"ts": "2026-10-26T14:52:24.341384+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H01", "index": 10, "judge_ms": 1635}
+{"ts": "2026-10-26T14:52:24.342420+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H01", "index": 10, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:52:24.343112+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H02", "index": 11}
+{"ts": "2026-10-26T14:52:25.703142+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H02", "index": 11}
+{"ts": "2026-10-26T14:52:26.472359+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H02", "index": 11, "retrieval_ms": 768}
+{"ts": "2026-10-26T14:52:26.472728+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H02", "index": 11}
+{"ts": "2026-10-26T14:52:27.713652+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H02", "index": 11, "answer_ms": 1240}
+{"ts": "2026-10-26T14:52:27.714037+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H02", "index": 11}
+{"ts": "2026-10-26T14:52:29.530839+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H02", "index": 11, "judge_ms": 1816}
+{"ts": "2026-10-26T14:52:29.532809+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H02", "index": 11, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:52:29.534447+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H03", "index": 12}
+{"ts": "2026-10-26T14:52:30.383906+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H03", "index": 12}
+{"ts": "2026-10-26T14:52:30.796785+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H03", "index": 12, "retrieval_ms": 412}
+{"ts": "2026-10-26T14:52:30.797388+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H03", "index": 12}
+{"ts": "2026-10-26T14:52:32.060796+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H03", "index": 12, "answer_ms": 1263}
+{"ts": "2026-10-26T14:52:32.061100+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H03", "index": 12}
+{"ts": "2026-10-26T14:52:33.474205+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H03", "index": 12, "judge_ms": 1412}
+{"ts": "2026-10-26T14:52:33.474939+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H03", "index": 12, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:52:33.475571+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H04", "index": 13}
+{"ts": "2026-10-26T14:52:34.227253+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H04", "index": 13}
+{"ts": "2026-10-26T14:52:34.660243+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H04", "index": 13, "retrieval_ms": 432}
+{"ts": "2026-10-26T14:52:34.660675+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H04", "index": 13}
+{"ts": "2026-10-26T14:52:36.362091+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H04", "index": 13, "answer_ms": 1701}
+{"ts": "2026-10-26T14:52:36.362357+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H04", "index": 13}
+{"ts": "2026-10-26T14:52:37.486253+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H04", "index": 13, "judge_ms": 1123}
+{"ts": "2026-10-26T14:52:37.487129+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H04", "index": 13, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:52:37.487829+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H05", "index": 14}
+{"ts": "2026-10-26T14:52:38.857096+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H05", "index": 14}
+{"ts": "2026-10-26T14:52:39.307168+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H05", "index": 14, "retrieval_ms": 449}
+{"ts": "2026-10-26T14:52:39.307531+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H05", "index": 14}
+{"ts": "2026-10-26T14:52:41.441625+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H05", "index": 14, "answer_ms": 2133}
+{"ts": "2026-10-26T14:52:41.442079+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H05", "index": 14}
+{"ts": "2026-10-26T14:52:43.316728+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H05", "index": 14, "judge_ms": 1874}
+{"ts": "2026-10-26T14:52:43.317792+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H05", "index": 14, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:52:43.318805+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H06", "index": 15}
+{"ts": "2026-10-26T14:52:44.699783+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H06", "index": 15}
+{"ts": "2026-10-26T14:52:45.191268+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H06", "index": 15, "retrieval_ms": 491}
+{"ts": "2026-10-26T14:52:45.191618+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H06", "index": 15}
+{"ts": "2026-10-26T14:52:47.175835+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H06", "index": 15, "answer_ms": 1983}
+{"ts": "2026-10-26T14:52:47.176523+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H06", "index": 15}
+{"ts": "2026-10-26T14:52:48.901160+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H06", "index": 15, "judge_ms": 1724}
+{"ts": "2026-10-26T14:52:48.902651+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H06", "index": 15, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:52:48.903882+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H07", "index": 16}
+{"ts": "2026-10-26T14:52:50.335531+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H07", "index": 16}
+{"ts": "2026-10-26T14:52:50.762614+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H07", "index": 16, "retrieval_ms": 426}
+{"ts": "2026-10-26T14:52:50.763024+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H07", "index": 16}
+{"ts": "2026-10-26T14:52:52.254467+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H07", "index": 16, "answer_ms": 1490}
+{"ts": "2026-10-26T14:52:52.254733+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H07", "index": 16}
+{"ts": "2026-10-26T14:52:53.444598+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H07", "index": 16, "judge_ms": 1189}
+{"ts": "2026-10-26T14:52:53.445254+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H07", "index": 16, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:52:53.445924+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H08", "index": 17}
+{"ts": "2026-10-26T14:52:54.215214+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H08", "index": 17}
+{"ts": "2026-10-26T14:52:54.627131+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H08", "index": 17, "retrieval_ms": 411}
+{"ts": "2026-10-26T14:52:54.627561+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H08", "index": 17}
+{"ts": "2026-10-26T14:52:55.701696+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H08", "index": 17, "answer_ms": 1073}
+{"ts": "2026-10-26T14:52:55.702294+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H08", "index": 17}
+{"ts": "2026-10-26T14:52:56.953622+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H08", "index": 17, "judge_ms": 1250}
+{"ts": "2026-10-26T14:52:56.954526+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H08", "index": 17, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-26T14:52:56.955289+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H09", "index": 18}
+{"ts": "2026-10-26T14:52:57.935296+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H09", "index": 18}
+{"ts": "2026-10-26T14:52:58.369966+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H09", "index": 18, "retrieval_ms": 434}
+{"ts": "2026-10-26T14:52:58.370308+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H09", "index": 18}
+{"ts": "2026-10-26T14:52:59.618413+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H09", "index": 18, "answer_ms": 1247}
+{"ts": "2026-10-26T14:52:59.618687+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H09", "index": 18}
+{"ts": "2026-10-26T14:53:01.103638+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H09", "index": 18, "judge_ms": 1484}
+{"ts": "2026-10-26T14:53:01.104382+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H09", "index": 18, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-26T14:53:01.105096+00:00", "run_id": "b20-brand-model-20261027", "step": "row_start", "question_id": "BND-H10", "index": 19}
+{"ts": "2026-10-26T14:53:02.514130+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_start", "question_id": "BND-H10", "index": 19}
+{"ts": "2026-10-26T14:53:02.971151+00:00", "run_id": "b20-brand-model-20261027", "step": "manual_retrieve_done", "question_id": "BND-H10", "index": 19, "retrieval_ms": 456}
+{"ts": "2026-10-26T14:53:02.971506+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_start", "question_id": "BND-H10", "index": 19}
+{"ts": "2026-10-26T14:53:04.112244+00:00", "run_id": "b20-brand-model-20261027", "step": "answer_done", "question_id": "BND-H10", "index": 19, "answer_ms": 1140}
+{"ts": "2026-10-26T14:53:04.112728+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_start", "question_id": "BND-H10", "index": 19}
+{"ts": "2026-10-26T14:53:06.078870+00:00", "run_id": "b20-brand-model-20261027", "step": "judge_done", "question_id": "BND-H10", "index": 19, "judge_ms": 1965}
+{"ts": "2026-10-26T14:53:06.079729+00:00", "run_id": "b20-brand-model-20261027", "step": "row_done", "question_id": "BND-H10", "index": 19, "judge_pass": false, "ticket_hit_in_packet": false}

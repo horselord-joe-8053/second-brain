@@ -1,7 +1,7 @@
 <h1 id="about-gpt-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Further enhancement notes — ChatGPT “LLM Wiki RAG Advice”</h1>
 
 **Type:** knowledge note, not a refactor plan.  
-**Plan that uses this note:** [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md) (updated 2026-10-23 after user review: **both** raw and wiki tracks + shared evidence libs + FastAPI stub).  
+**Plan that uses this note:** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) (updated 2026-10-23 after user review: **both** raw and wiki tracks + shared evidence libs + FastAPI stub).  
 **Share:** [https://chatgpt.com/share/6ada2c90-9160-83ec-b331-2e999fea8431](https://chatgpt.com/share/6ada2c90-9160-83ec-b331-2e999fea8431) (title: LLM Wiki RAG Advice, 21 October 2026 in the chat).  
 **Transcript:** `utils/chatgpt/transcripts/llm_wiki_rag_advice_6ada2c90-9160-83ec-b331-2e999fea8431.txt`.  
 **How to read this:** the chat did not see our code. Its “Pass 3” letters A–E are recipes, similar in spirit to our ingest lanes A–D, not a replacement for them. Prompt names in the chat are the prompts we gave a GPT-class model, together with a zip of `brain/retail/archive/pdf/fridge-docs`, to produce Markdown we then put in `raw/sources` for LLM Wiki.
@@ -431,7 +431,7 @@ These are the questions worth a scoreboard. They are not settled by the chat.
 
 <h2 id="about-gpt-diagram" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">18. Diagram → repo mapping</h2>
 
-See refactor plan [Part A / shared components](../../ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md#gpt-part-a). The attached screenshot is the chat’s **target production shape**, not a requirement to skip the benchmark.
+See refactor plan [Part A / shared components](../../ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-part-a). The attached screenshot is the chat’s **target production shape**, not a requirement to skip the benchmark.
 
 | Diagram box | Plan phase | Repo (target) |
 |-------------|------------|----------------|
@@ -469,4 +469,4 @@ The **first** long thread ([§1–16](#about-gpt-why)) is still the design pantr
 | **A3** | Tickets — reuse hybrid; optional rerank + agentic + applicability verifier |
 | **B** | COS — wiki provisional vs evidence-backed; **after** A is measured |
 
-**Plan file** [`REFACTOR_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_FURTHER_ENHANCEMENT_GPT.md) now implements **Phase 1 = A2 only**. Combined wiki+raw and COS are **out of Phase 1** (Part B / Phase 4).
+**Plan file** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) now implements **Phase 1 = A2 only**. Combined wiki+raw and COS are **out of Phase 1** (Part B / Phase 4).
