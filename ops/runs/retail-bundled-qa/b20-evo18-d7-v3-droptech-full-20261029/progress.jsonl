@@ -1,0 +1,160 @@
+{"ts": "2026-10-28T16:06:10.852965+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-28T16:06:10.890330+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-28T16:06:17.440916+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E01", "index": 0, "retrieval_ms": 2225}
+{"ts": "2026-10-28T16:06:17.441724+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-28T16:06:19.934531+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E01", "index": 0, "answer_ms": 2492}
+{"ts": "2026-10-28T16:06:19.934825+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-28T16:06:21.068513+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E01", "index": 0, "judge_ms": 1133}
+{"ts": "2026-10-28T16:06:21.069342+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E01", "index": 0, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-28T16:06:21.069988+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E02", "index": 1}
+{"ts": "2026-10-28T16:06:21.076578+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E02", "index": 1}
+{"ts": "2026-10-28T16:06:25.830527+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E02", "index": 1, "retrieval_ms": 639}
+{"ts": "2026-10-28T16:06:25.830931+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E02", "index": 1}
+{"ts": "2026-10-28T16:06:27.935101+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E02", "index": 1, "answer_ms": 2103}
+{"ts": "2026-10-28T16:06:27.935621+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E02", "index": 1}
+{"ts": "2026-10-28T16:06:29.080566+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E02", "index": 1, "judge_ms": 1144}
+{"ts": "2026-10-28T16:06:29.081831+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E02", "index": 1, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:06:29.082666+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E03", "index": 2}
+{"ts": "2026-10-28T16:06:29.089070+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E03", "index": 2}
+{"ts": "2026-10-28T16:06:33.932382+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E03", "index": 2, "retrieval_ms": 659}
+{"ts": "2026-10-28T16:06:33.932734+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E03", "index": 2}
+{"ts": "2026-10-28T16:06:38.390458+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E03", "index": 2, "answer_ms": 4457}
+{"ts": "2026-10-28T16:06:38.390794+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E03", "index": 2}
+{"ts": "2026-10-28T16:06:39.662398+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E03", "index": 2, "judge_ms": 1271}
+{"ts": "2026-10-28T16:06:39.663342+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E03", "index": 2, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:06:39.664072+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E04", "index": 3}
+{"ts": "2026-10-28T16:06:39.670748+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E04", "index": 3}
+{"ts": "2026-10-28T16:06:43.953294+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E04", "index": 3, "retrieval_ms": 958}
+{"ts": "2026-10-28T16:06:43.954331+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E04", "index": 3}
+{"ts": "2026-10-28T16:06:45.571576+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E04", "index": 3, "answer_ms": 1616}
+{"ts": "2026-10-28T16:06:45.572204+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E04", "index": 3}
+{"ts": "2026-10-28T16:06:46.753708+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E04", "index": 3, "judge_ms": 1181}
+{"ts": "2026-10-28T16:06:46.754492+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E04", "index": 3, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-28T16:06:46.755120+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E05", "index": 4}
+{"ts": "2026-10-28T16:06:46.762214+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E05", "index": 4}
+{"ts": "2026-10-28T16:06:51.618676+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E05", "index": 4, "retrieval_ms": 661}
+{"ts": "2026-10-28T16:06:51.619331+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E05", "index": 4}
+{"ts": "2026-10-28T16:06:53.065410+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E05", "index": 4, "answer_ms": 1445}
+{"ts": "2026-10-28T16:06:53.065735+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E05", "index": 4}
+{"ts": "2026-10-28T16:06:54.190236+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E05", "index": 4, "judge_ms": 1124}
+{"ts": "2026-10-28T16:06:54.191227+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E05", "index": 4, "judge_pass": false, "ticket_hit_in_packet": true}
+{"ts": "2026-10-28T16:06:54.192132+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E06", "index": 5}
+{"ts": "2026-10-28T16:06:54.198988+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E06", "index": 5}
+{"ts": "2026-10-28T16:06:58.263082+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E06", "index": 5, "retrieval_ms": 690}
+{"ts": "2026-10-28T16:06:58.263937+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E06", "index": 5}
+{"ts": "2026-10-28T16:06:59.720590+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E06", "index": 5, "answer_ms": 1456}
+{"ts": "2026-10-28T16:06:59.720967+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E06", "index": 5}
+{"ts": "2026-10-28T16:07:00.860899+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E06", "index": 5, "judge_ms": 1139}
+{"ts": "2026-10-28T16:07:00.861686+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E06", "index": 5, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-28T16:07:00.862589+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E07", "index": 6}
+{"ts": "2026-10-28T16:07:00.870938+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E07", "index": 6}
+{"ts": "2026-10-28T16:07:05.453928+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E07", "index": 6, "retrieval_ms": 597}
+{"ts": "2026-10-28T16:07:05.454278+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E07", "index": 6}
+{"ts": "2026-10-28T16:07:06.805161+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E07", "index": 6, "answer_ms": 1350}
+{"ts": "2026-10-28T16:07:06.805434+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E07", "index": 6}
+{"ts": "2026-10-28T16:07:07.914016+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E07", "index": 6, "judge_ms": 1108}
+{"ts": "2026-10-28T16:07:07.914862+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E07", "index": 6, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:07:07.915550+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E08", "index": 7}
+{"ts": "2026-10-28T16:07:07.922427+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E08", "index": 7}
+{"ts": "2026-10-28T16:07:11.968499+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E08", "index": 7, "retrieval_ms": 647}
+{"ts": "2026-10-28T16:07:11.983372+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E08", "index": 7}
+{"ts": "2026-10-28T16:07:12.827450+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E08", "index": 7, "answer_ms": 842}
+{"ts": "2026-10-28T16:07:12.828313+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E08", "index": 7}
+{"ts": "2026-10-28T16:07:13.913618+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E08", "index": 7, "judge_ms": 1084}
+{"ts": "2026-10-28T16:07:13.916026+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E08", "index": 7, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:07:13.917630+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E09", "index": 8}
+{"ts": "2026-10-28T16:07:13.934607+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E09", "index": 8}
+{"ts": "2026-10-28T16:07:18.413984+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E09", "index": 8, "retrieval_ms": 903}
+{"ts": "2026-10-28T16:07:18.414373+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E09", "index": 8}
+{"ts": "2026-10-28T16:07:19.791524+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E09", "index": 8, "answer_ms": 1376}
+{"ts": "2026-10-28T16:07:19.791792+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E09", "index": 8}
+{"ts": "2026-10-28T16:07:21.020539+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E09", "index": 8, "judge_ms": 1228}
+{"ts": "2026-10-28T16:07:21.021272+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E09", "index": 8, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-28T16:07:21.021908+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-E10", "index": 9}
+{"ts": "2026-10-28T16:07:21.027966+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-E10", "index": 9}
+{"ts": "2026-10-28T16:07:25.015039+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-E10", "index": 9, "retrieval_ms": 638}
+{"ts": "2026-10-28T16:07:25.015600+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-E10", "index": 9}
+{"ts": "2026-10-28T16:07:26.516242+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-E10", "index": 9, "answer_ms": 1500}
+{"ts": "2026-10-28T16:07:26.516504+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-E10", "index": 9}
+{"ts": "2026-10-28T16:07:27.675602+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-E10", "index": 9, "judge_ms": 1158}
+{"ts": "2026-10-28T16:07:27.676415+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-E10", "index": 9, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:07:27.677125+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H01", "index": 10}
+{"ts": "2026-10-28T16:07:27.683442+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H01", "index": 10}
+{"ts": "2026-10-28T16:07:32.749054+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H01", "index": 10, "retrieval_ms": 1066}
+{"ts": "2026-10-28T16:07:32.749681+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H01", "index": 10}
+{"ts": "2026-10-28T16:07:36.379830+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H01", "index": 10, "answer_ms": 3629}
+{"ts": "2026-10-28T16:07:36.380162+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H01", "index": 10}
+{"ts": "2026-10-28T16:07:37.675681+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H01", "index": 10, "judge_ms": 1295}
+{"ts": "2026-10-28T16:07:37.676493+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H01", "index": 10, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:07:37.677084+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H02", "index": 11}
+{"ts": "2026-10-28T16:07:37.683031+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H02", "index": 11}
+{"ts": "2026-10-28T16:07:41.931771+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H02", "index": 11, "retrieval_ms": 598}
+{"ts": "2026-10-28T16:07:41.932349+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H02", "index": 11}
+{"ts": "2026-10-28T16:07:43.435918+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H02", "index": 11, "answer_ms": 1503}
+{"ts": "2026-10-28T16:07:43.436183+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H02", "index": 11}
+{"ts": "2026-10-28T16:07:44.539422+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H02", "index": 11, "judge_ms": 1102}
+{"ts": "2026-10-28T16:07:44.540984+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H02", "index": 11, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:07:44.542459+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H03", "index": 12}
+{"ts": "2026-10-28T16:07:44.554505+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H03", "index": 12}
+{"ts": "2026-10-28T16:07:48.450131+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H03", "index": 12, "retrieval_ms": 667}
+{"ts": "2026-10-28T16:07:48.450951+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H03", "index": 12}
+{"ts": "2026-10-28T16:07:49.908342+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H03", "index": 12, "answer_ms": 1456}
+{"ts": "2026-10-28T16:07:49.908602+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H03", "index": 12}
+{"ts": "2026-10-28T16:07:50.951558+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H03", "index": 12, "judge_ms": 1042}
+{"ts": "2026-10-28T16:07:50.954164+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H03", "index": 12, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:07:50.955997+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H04", "index": 13}
+{"ts": "2026-10-28T16:07:50.968780+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H04", "index": 13}
+{"ts": "2026-10-28T16:07:56.128601+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H04", "index": 13, "retrieval_ms": 943}
+{"ts": "2026-10-28T16:07:56.129198+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H04", "index": 13}
+{"ts": "2026-10-28T16:07:57.441174+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H04", "index": 13, "answer_ms": 1311}
+{"ts": "2026-10-28T16:07:57.441443+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H04", "index": 13}
+{"ts": "2026-10-28T16:07:58.366434+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H04", "index": 13, "judge_ms": 924}
+{"ts": "2026-10-28T16:07:58.369507+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H04", "index": 13, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-28T16:07:58.371661+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H05", "index": 14}
+{"ts": "2026-10-28T16:07:58.384070+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H05", "index": 14}
+{"ts": "2026-10-28T16:08:03.618913+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H05", "index": 14, "retrieval_ms": 910}
+{"ts": "2026-10-28T16:08:03.619825+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H05", "index": 14}
+{"ts": "2026-10-28T16:08:05.080635+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H05", "index": 14, "answer_ms": 1460}
+{"ts": "2026-10-28T16:08:05.080924+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H05", "index": 14}
+{"ts": "2026-10-28T16:08:06.290428+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H05", "index": 14, "judge_ms": 1209}
+{"ts": "2026-10-28T16:08:06.291174+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H05", "index": 14, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:08:06.291801+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H06", "index": 15}
+{"ts": "2026-10-28T16:08:06.298196+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H06", "index": 15}
+{"ts": "2026-10-28T16:08:10.087741+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H06", "index": 15, "retrieval_ms": 648}
+{"ts": "2026-10-28T16:08:10.088268+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H06", "index": 15}
+{"ts": "2026-10-28T16:08:12.184176+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H06", "index": 15, "answer_ms": 2095}
+{"ts": "2026-10-28T16:08:12.184652+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H06", "index": 15}
+{"ts": "2026-10-28T16:08:13.130857+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H06", "index": 15, "judge_ms": 945}
+{"ts": "2026-10-28T16:08:13.132859+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H06", "index": 15, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-28T16:08:13.133976+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H07", "index": 16}
+{"ts": "2026-10-28T16:08:13.143730+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H07", "index": 16}
+{"ts": "2026-10-28T16:08:17.287087+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H07", "index": 16, "retrieval_ms": 653}
+{"ts": "2026-10-28T16:08:17.287898+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H07", "index": 16}
+{"ts": "2026-10-28T16:08:18.878666+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H07", "index": 16, "answer_ms": 1590}
+{"ts": "2026-10-28T16:08:18.878962+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H07", "index": 16}
+{"ts": "2026-10-28T16:08:20.511034+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H07", "index": 16, "judge_ms": 1631}
+{"ts": "2026-10-28T16:08:20.512995+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H07", "index": 16, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:08:20.514465+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H08", "index": 17}
+{"ts": "2026-10-28T16:08:20.526546+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H08", "index": 17}
+{"ts": "2026-10-28T16:08:24.878320+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H08", "index": 17, "retrieval_ms": 621}
+{"ts": "2026-10-28T16:08:24.878988+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H08", "index": 17}
+{"ts": "2026-10-28T16:08:26.493558+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H08", "index": 17, "answer_ms": 1614}
+{"ts": "2026-10-28T16:08:26.493911+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H08", "index": 17}
+{"ts": "2026-10-28T16:08:27.681194+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H08", "index": 17, "judge_ms": 1186}
+{"ts": "2026-10-28T16:08:27.681935+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H08", "index": 17, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:08:27.682563+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H09", "index": 18}
+{"ts": "2026-10-28T16:08:27.688424+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H09", "index": 18}
+{"ts": "2026-10-28T16:08:32.744391+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H09", "index": 18, "retrieval_ms": 893}
+{"ts": "2026-10-28T16:08:32.745235+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H09", "index": 18}
+{"ts": "2026-10-28T16:08:34.086950+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H09", "index": 18, "answer_ms": 1341}
+{"ts": "2026-10-28T16:08:34.087215+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H09", "index": 18}
+{"ts": "2026-10-28T16:08:35.565201+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H09", "index": 18, "judge_ms": 1477}
+{"ts": "2026-10-28T16:08:35.566121+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H09", "index": 18, "judge_pass": true, "ticket_hit_in_packet": false}
+{"ts": "2026-10-28T16:08:35.566792+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_start", "question_id": "BND-H10", "index": 19}
+{"ts": "2026-10-28T16:08:35.575519+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_start", "question_id": "BND-H10", "index": 19}
+{"ts": "2026-10-28T16:08:40.174041+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "manual_retrieve_done", "question_id": "BND-H10", "index": 19, "retrieval_ms": 611}
+{"ts": "2026-10-28T16:08:40.174364+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_start", "question_id": "BND-H10", "index": 19}
+{"ts": "2026-10-28T16:08:42.761464+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "answer_done", "question_id": "BND-H10", "index": 19, "answer_ms": 2586}
+{"ts": "2026-10-28T16:08:42.761754+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_start", "question_id": "BND-H10", "index": 19}
+{"ts": "2026-10-28T16:08:43.864868+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "judge_done", "question_id": "BND-H10", "index": 19, "judge_ms": 1102}
+{"ts": "2026-10-28T16:08:43.865942+00:00", "run_id": "b20-evo18-d7-v3-droptech-full-20261029", "step": "row_done", "question_id": "BND-H10", "index": 19, "judge_pass": false, "ticket_hit_in_packet": false}

@@ -1,0 +1,9 @@
+{
+  "run_id": "b20-evo18-d7-v3-droptech-full-20261029",
+  "git_head": "5703772ea286bc1056906345b09141a21d98230c",
+  "k_tickets": 2,
+  "k_manuals": 5,
+  "manual_profile_id": "MANUAL_B_RAW_PG_HYBRID",
+  "ticket_search_mode": "rrf_term_boosted",
+  "question_count": 20
+}

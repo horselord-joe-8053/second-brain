@@ -443,7 +443,7 @@ export RETAIL_LEXICAL_BACKEND=tantivy RETAIL_SIM_DATA_PROFILE=fru_us_1k
 <tr><td style="background:#fff3e0"><strong>EVO18-D7 v2 (legacy)</strong></td><td><code>b20-evo18-d7-v2-20261028</code></td><td>D2-PACK-PAGE · D7 v2 orchestrator (4–6 tickets to answer · cosine merge only)</td><td>16/20</td><td>7/20</td><td>659 / 1859 / 1131</td><td><code>m90-evo18-d7-v2-20261028</code></td><td>74/90</td><td>44/60</td><td>322 / 1170 / 1027</td><td>—</td><td>Six-row <strong>2/6</strong></td></tr>
 <tr><td style="background:#fff3e0"><strong>EVO18-D7 v3</strong></td><td><code>b20-evo18-d7-v3-20261028</code></td><td>PFDA · <span style="background:#ffcdd2;padding:1px 4px">open gold labels</span> on 6 rows</td><td>16/20</td><td>7/20</td><td>658 / 1589 / 1108</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Six <strong>3/6</strong> · superseded</td></tr>
 <tr><td style="background:#c8e6c9"><strong>EVO18-D7 v3 goldfix</strong></td><td><code>b20-evo18-d7-v3-goldfix-20261028</code></td><td>PFDA + B20 <strong>resolved</strong> retrieval gold (<code>REFACTOR_B20_RESOLVED_GOLD_LABELS</code>)</td><td><strong>16/20</strong></td><td>7/20</td><td>718 / 1466 / 1276</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Six <code>…-goldfix-six-…</code> <strong>3/6</strong> · §8.3</td></tr>
-<tr><td style="background:#e8eaf6"><strong>EVO18-D7 v3 droptech</strong></td><td><code>b20-evo18-d7-v3-droptech-20261029</code></td><td>Same stack as goldfix · B20 copy edit on <strong>3 rows</strong> — remove “technician …” phrasing (<code>feature/evo-19-query-remove-tech</code>)</td><td><strong>1/3</strong> <small>(slice only)</small></td><td>0/3</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>§8.4 · projected full B20 <strong>17/20</strong> if only H08 flips</td></tr>
+<tr><td style="background:#e8eaf6"><strong>EVO18-D7 v3 droptech</strong></td><td><code>b20-evo18-d7-v3-droptech-full-20261029</code></td><td>Same stack as goldfix · B20 copy edit on <strong>3 rows</strong> — remove “technician …” phrasing (<code>feature/evo-19-query-remove-tech</code>)</td><td><strong>17/20</strong></td><td>7/20</td><td>660 / 1501 / 1141</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>§8.4 · vs goldfix <strong>+1</strong> (<strong>BND-H08</strong> pass)</td></tr>
 </tbody>
 </table>
 
@@ -667,9 +667,13 @@ Insufficient_Information_Based_On_Given_PDF</pre></td></tr>
 </tbody></table>
 
 
-<h3 id="bnd-evo18-d7-droptech" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.4 EVO18-D7 v3 droptech (query edit — 3 rows)</h3>
+<h3 id="bnd-evo18-d7-droptech" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">8.4 EVO18-D7 v3 droptech (query edit — full B20)</h3>
 
-**Branch:** <code>feature/evo-19-query-remove-tech</code> · **Run:** <code>b20-evo18-d7-v3-droptech-20261029</code> · JSONL: <code>ops/runs/retail-bundled-qa/b20-evo18-d7-v3-droptech-20261029/results.jsonl</code>
+**Branch:** <code>feature/evo-19-query-remove-tech</code> · **Canonical full run:** <code>b20-evo18-d7-v3-droptech-full-20261029</code> · JSONL: <code>ops/runs/retail-bundled-qa/b20-evo18-d7-v3-droptech-full-20261029/results.jsonl</code> · **Judge 17/20** (goldfix 16/20) · ticket-in-packet **7/20** (unchanged) · med latency **660 / 1501 / 1141** ms (manual / answer / judge).
+
+<p><strong>Judge fails (3):</strong> <code>BND-E05</code>, <code>BND-E08</code>, <code>BND-H10</code> — same manual/ticket retrieval gaps as goldfix except <code>BND-H08</code> no longer fails.</p>
+
+<p><strong>3-row smoke:</strong> <code>b20-evo18-d7-v3-droptech-20261029</code> (same three ids, pre-full-run check).</p>
 
 **Intent:** Drop unnatural “technician check/replace …” clauses from customer wording on rows that had compound technician + second ask (room temp / freezer button). <strong>Gold unchanged:</strong> same <code>expected_ticket_ids</code>, <code>manual_anchor_question_id</code>, and bundled <code>answer</code> prose — retrieval labels and judge target stay valid; symptom unit still carries ticket leg.
 
@@ -684,8 +688,8 @@ Insufficient_Information_Based_On_Given_PDF</pre></td></tr>
 </tbody>
 </table>
 
-<p><strong>Operator (3-row slice):</strong> <code>./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --question-ids BND-E08,BND-H08,BND-H10 --run-id b20-evo18-d7-v3-droptech-YYYYMMDD</code></p>
+<p><strong>Operator (full droptech B20):</strong> <code>./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --full --run-id b20-evo18-d7-v3-droptech-full-YYYYMMDD</code></p>
 
-**Operator (D7 v3 B20):** same env as §8 table · `./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --full --run-id b20-evo18-d7-v3-YYYYMMDD`
+**Operator (D7 v3 B20 goldfix baseline):** same env as §8 table · `./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --full --run-id b20-evo18-d7-v3-goldfix-YYYYMMDD`
 
 **Operator (EVO18-T0):** `RETAIL_MANUAL_LEXICAL_BACKEND=tantivy` · rebuild manual index · `./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --full --run-id b20-evo18-t0-YYYYMMDD`
