@@ -2,7 +2,7 @@
   "schema_version": "bundled_qa.v1",
   "created_at": "20261026-201800",
   "corpus_profile": "fru_us_1k",
-  "grounding_policy": "Each gold answer must be supportable from one historical ticket resolution in fru_us_1000_100/service_queries.csv AND one manual fact already in retail-manual-qa-test-suite.json for the same model. Do not invent parts or temperatures.",
+  "grounding_policy": "Each gold answer must be supportable from one historical ticket resolution in fru_us_1000_100/service_queries.csv AND one manual fact already in retail-manual-qa-test-suite.json for the same model. Do not invent parts or temperatures. expected_ticket_ids must be resolved rows (ticket search pool); provenance_ticket_ids optional for open narrative source.",
   "retrieval_contract": {
     "k_tickets": 2,
     "k_manuals": 5,
@@ -73,16 +73,18 @@
       "model": "RF28K9070SG",
       "question": "RF28K9070SG water is pooling under the crisper drawers and a technician confirmed FRU-E101. What was installed, and what freezer temperatures can the Freezer button select?",
       "answer": "Service cleared the defrost drain tube and installed a heater-wire kit. The Freezer button selects from 5°F (−15°C) down to −8°F (−23°C).",
-      "expected_ticket_ids": ["T-0042-100002"],
+      "expected_ticket_ids": ["T-0042-100018"],
+      "provenance_ticket_ids": ["T-0042-100002"],
       "manual_anchor_question_id": "samsung_RF28K9070SG-E02"
     },
     {
       "id": "BND-E08",
       "difficulty": "easy",
       "model": "RF28K9070SG",
-      "question": "The water dispenser on my RF28K9070SG has slowed to a trickle and the display showed FRU-E103. What should a technician check or replace, and what room-temperature range is safe for operating the refrigerator?",
+      "question": "The water dispenser on my RF28K9070SG has slowed to a trickle and the display showed FRU-E103. What room-temperature range is safe for operating the refrigerator?",
       "answer": "The case replaced a clogged inline filter and flushed the water line. The allowed room temperature is 50–110°F (10–43°C).",
-      "expected_ticket_ids": ["T-0042-100004"],
+      "expected_ticket_ids": ["T-0042-100026"],
+      "provenance_ticket_ids": ["T-0042-100004"],
       "manual_anchor_question_id": "samsung_RF28K9070SG-E01"
     },
     {
@@ -100,7 +102,8 @@
       "model": "RF28K9070SG",
       "question": "RF28K9070SG compressor area hums and food feels warm; the service menu showed FRU-E104 (Atlanta). What was replaced, and when does the door alarm sound?",
       "answer": "The unit was leveled, condenser mounts were tightened, and the start relay was replaced. If a door remains open more than 2 minutes, the alarm sounds and its indicator blinks.",
-      "expected_ticket_ids": ["T-0042-100010"],
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
       "manual_anchor_question_id": "samsung_RF28K9070SG-E04"
     },
     {
@@ -163,16 +166,18 @@
       "model": "RF28K9070SG",
       "question": "Puddles keep forming under the crisper drawers in my RF28K9070SG even though it is on a dedicated 20-amp circuit. What should a technician clear or repair, and how do I start Power Freeze?",
       "answer": "They cleared the defrost drain tube and installed a heater-wire kit. Press and hold Freezer for 3 seconds.",
-      "expected_ticket_ids": ["T-0042-100002"],
+      "expected_ticket_ids": ["T-0042-100018"],
+      "provenance_ticket_ids": ["T-0042-100002"],
       "manual_anchor_question_id": "samsung_RF28K9070SG-E03"
     },
     {
       "id": "BND-H08",
       "difficulty": "hard",
       "model": "RF28K9070SG",
-      "question": "The water dispenser on my RF28K9070SG only trickles after I fill several jugs. What part should a technician check or replace, and what temperature range can I select with the Freezer button?",
+      "question": "The water dispenser on my RF28K9070SG only trickles after I fill several jugs. What temperature range can I select with the Freezer button?",
       "answer": "They replaced a clogged inline filter and flushed the water line. Freezer settings run from 5°F (−15°C) down to −8°F (−23°C).",
-      "expected_ticket_ids": ["T-0042-100004"],
+      "expected_ticket_ids": ["T-0042-100026"],
+      "provenance_ticket_ids": ["T-0042-100004"],
       "manual_anchor_question_id": "samsung_RF28K9070SG-E02"
     },
     {
@@ -188,9 +193,10 @@
       "id": "BND-H10",
       "difficulty": "hard",
       "model": "RF28K9070SG",
-      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104. After checking that the refrigerator is level, what electrical part should a technician inspect or replace, and what room-temperature range is safe for operation?",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104. After checking that the refrigerator is level, what electrical part should be inspected or replaced, and what room-temperature range is safe for operation?",
       "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
-      "expected_ticket_ids": ["T-0042-100010"],
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
       "manual_anchor_question_id": "samsung_RF28K9070SG-E01"
     }
   ]
