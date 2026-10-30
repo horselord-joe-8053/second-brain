@@ -21,7 +21,7 @@ def manual_d2_page_pack_mode() -> str:
 
 
 def d7_query_mode() -> str:
-    """D7 orchestration: ``none`` or ``decompose`` (multi-unit manual retrieval)."""
+    """D7 orchestration: ``none`` or ``decompose`` (bundled outer split → both legs per unit)."""
     return (os.environ.get("RETAIL_D7") or "none").strip().lower()
 
 

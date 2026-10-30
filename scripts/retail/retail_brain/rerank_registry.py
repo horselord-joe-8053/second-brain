@@ -1,4 +1,4 @@
-"""Build D5.R rank_fn callables from harness config (llm_listwise default)."""
+"""Build D5.R rank_fn callables from harness config (llm_listwise or cross_encoder)."""
 
 from __future__ import annotations
 
@@ -50,6 +50,22 @@ def build_rank_fn(
 ) -> RankFn | None:
     """Return rank_fn for D5.R backend, or None when rerank is off / unsupported."""
     b = (backend or "llm_listwise").strip().lower()
+    if b == "cross_encoder":
+        from retail_brain.rerank import (
+            CROSS_ENCODER_MODEL,
+            build_cross_encoder_score_fn,
+            cross_encoder_rerank,
+        )
+
+        model_name = str(llm_cfg.get("cross_encoder_model") or CROSS_ENCODER_MODEL)
+
+        def _cross_rank(query: str, candidates: Sequence[dict[str, Any]]) -> str:
+            """Score each candidate with the local cross-encoder and return ordered ids."""
+            score_fn = build_cross_encoder_score_fn(model_name)
+            ordered = cross_encoder_rerank(query, candidates, score_fn=score_fn)
+            return json.dumps([candidate_row_id(row) for row in ordered])
+
+        return _cross_rank
     if b != "llm_listwise":
         return None
 

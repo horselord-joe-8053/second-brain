@@ -194,12 +194,11 @@ def resolve_effective_profile(
 
 
 def assert_rerank_preflight(resolved: ResolvedRunProfile, rank_fn: Any) -> None:
-    """P1.2d — refuse full runs when D5.R is on but rank_fn is missing."""
+    """Refuse a run when D5 rerank is on but no rank_fn was built."""
     if not resolved.d5_rerank_enabled:
         return
-    if resolved.d5_rerank_backend == "cross_encoder":
-        raise RuntimeError("d5.rerank.backend cross_encoder is not implemented in Phase 1")
     if rank_fn is None:
         raise RuntimeError(
-            f"profile {resolved.profile_id!r} has d5.rerank.enabled but no rank_fn (llm_listwise)"
+            f"profile {resolved.profile_id!r} has d5.rerank.enabled "
+            f"({resolved.d5_rerank_backend}) but no rank_fn"
         )

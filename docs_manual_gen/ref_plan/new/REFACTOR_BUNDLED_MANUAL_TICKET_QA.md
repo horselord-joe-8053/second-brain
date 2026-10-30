@@ -5,7 +5,8 @@
 **Prerequisites (not parents):** main **P2.6** ticket metrics; minor **M3** PG manual cutover [`completed`](../completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md).  
 **Status:** **implemented** — P1–P3 code + unit tests; operator full B20 **`b20-full-20261026`** (**2026-10-26**).  
 **Analysis:** [`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`](../../artifacts/TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md).  
-**Next:** Improve manual recall (PG hybrid tuning) or ticket top-2 before merged-packet rerank experiments.
+**Next:** Improve manual recall (PG hybrid tuning) or ticket top-2 before merged-packet rerank experiments.  
+**Child plan:** [`REFACTOR_B20_RESOLVED_GOLD_LABELS.md`](../completed/REFACTOR_B20_RESOLVED_GOLD_LABELS.md) — align B20 **`expected_ticket_ids`** with resolved-only ticket search.
 
 <h2 id="bnd-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 

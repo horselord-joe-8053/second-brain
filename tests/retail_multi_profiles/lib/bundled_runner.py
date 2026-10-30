@@ -32,6 +32,24 @@ from retail_brain.bundle_context import (  # noqa: E402
     format_ticket_hits_for_context,
 )
 from retail_brain.product_scope import resolve_product_scope  # noqa: E402
+from retail_brain.query_unit_orchestrator import (  # noqa: E402
+    DecomposedRetrievalTrace,
+    UnitManualTrace,
+    UnitTicketTrace,
+    merge_ticket_hits_gated,
+    select_manual_packet,
+    pfda_pick_tickets,
+    plan_query_units,
+    should_run_decomposed,
+)
+from retail_brain.rerank import (  # noqa: E402
+    MANUAL_RERANK_CANDIDATE_N,
+    MANUAL_RERANK_CONTEXT_CHARS,
+    MANUAL_RERANK_KEEP,
+    rerank_manual_candidates,
+)
+from retail_brain.rerank_registry import build_rank_fn  # noqa: E402
+from tests.retail_multi_profiles.lib.raw_policy import d7_query_mode  # noqa: E402
 from retail_brain.sim_data_profile import resolve_sim_data_profile  # noqa: E402
 from utils.neat_logger.neat_logger_instance import NeatLoggerFactory  # noqa: E402
 
@@ -119,15 +137,6 @@ def run_one_bundled_row(ctx: BundledRunContext, q: BundledQuestion, *, index: in
         manual_anchor_question_id=q.manual_anchor_question_id,
     )
     pf = product.ticket_filter
-    tickets = ticket_leg(
-        q.question,
-        ticket_source,
-        model=pf.oem_model or q.model_id or None,
-        brand=pf.brand,
-        k=ctx.k_tickets,
-    )
-    ticket_hits = tickets.get("hits") or []
-
     lanes = load_lanes(ctx.repo)
     lane = lanes["B"]
     resolved = resolve_effective_profile(
@@ -137,12 +146,34 @@ def run_one_bundled_row(ctx: BundledRunContext, q: BundledQuestion, *, index: in
         retrieval_mode="raw_rag",
     )
     template = str(ctx.cfg.get("query_template") or "{model_id} {question}")
-    query = template.format(model_id=q.model_id, question=q.question)
     top_k = ctx.k_manuals
     page_prefix = int(ctx.cfg.get("page_prefix_chars") or 8000)
     chunk_max = int(ctx.cfg.get("context_max_chars_per_chunk") or 2000)
     embed_cfg = (ctx.cfg.get("retail_raw_rag") or {}).get("embedding") or {}
     raw_cfg = ctx.cfg.get("retail_raw_rag") or {}
+
+    d7_trace: DecomposedRetrievalTrace | None = None
+    units = plan_query_units(q.question)
+    use_d7 = d7_query_mode() == "decompose" and should_run_decomposed(units)
+    manual_rerank = (q.manual_rerank or "").strip().lower()
+    probe_rank_fn = None
+    probe_model = ""
+    if manual_rerank == "llm_listwise":
+        answer_llm_probe, _ = resolve_eval_llms(ctx.cfg)
+        probe_model = answer_llm_probe.model
+        probe_rank_fn = build_rank_fn(
+            "llm_listwise",
+            llm_cfg={
+                "provider": answer_llm_probe.provider,
+                "model": answer_llm_probe.model,
+                "temperature": answer_llm_probe.temperature,
+            },
+        )
+    elif manual_rerank == "cross_encoder":
+        from retail_brain.rerank import CROSS_ENCODER_MODEL
+
+        probe_model = CROSS_ENCODER_MODEL
+    rerank_ms_total = 0
 
     _emit_progress(ctx, step="manual_retrieve_start", question_id=q.question_id, index=index)
     pipeline = build_manual_raw_pipeline(
@@ -155,32 +186,186 @@ def run_one_bundled_row(ctx: BundledRunContext, q: BundledQuestion, *, index: in
         raw_rag_cfg=raw_cfg,
         answer_llm_cfg=ctx.cfg.get("answer") or {},
     )
-    pkg = pipeline.retriever.retrieve(
-        query,
-        model_id=q.model_id,
-        product_filter=product.manual_filter,
-        skip_index_check=True,
-    )
-    manual_hits = [
-        {
-            "source_relpath": c.source_relpath,
-            "text": c.text,
-            "chunk_id": c.chunk_id,
+
+    if use_d7:
+        from retail_brain.query_unit_orchestrator import d7_min_ticket_cosine
+
+        d7_trace = DecomposedRetrievalTrace(
+            enabled=True,
+            units=units,
+            min_ticket_cosine=d7_min_ticket_cosine(),
+        )
+        ticket_unit_hits: list[list[dict[str, Any]]] = []
+        manual_unit_rows: list[list[dict[str, Any]]] = []
+        manual_ms_total = 0
+        ticket_mode = "rrf_term_boosted"
+
+        for ui, unit in enumerate(units):
+            tickets = ticket_leg(
+                unit,
+                ticket_source,
+                model=pf.oem_model or q.model_id or None,
+                brand=pf.brand,
+                k=ctx.k_tickets,
+            )
+            ticket_mode = str(tickets.get("search_mode") or ticket_mode)
+            thits = list(tickets.get("hits") or [])
+            floor = d7_min_ticket_cosine()
+            kept_ids: list[str] = []
+            for h in thits:
+                if float(h.get("cosine_similarity") or 0.0) < floor:
+                    continue
+                tid = str(h.get("ticket_id") or "")
+                if tid and tid not in kept_ids:
+                    kept_ids.append(tid)
+                if len(kept_ids) >= ctx.k_tickets:
+                    break
+            d7_trace.ticket_units.append(
+                UnitTicketTrace(unit_index=ui, query=unit, hits=thits, kept_ticket_ids=kept_ids)
+            )
+            ticket_unit_hits.append(thits)
+
+            retrieve_q = template.format(model_id=q.model_id, question=unit)
+            saved_top_k = pipeline.retriever.top_k
+            if manual_rerank:
+                pipeline.retriever.top_k = MANUAL_RERANK_CANDIDATE_N
+            try:
+                pkg = pipeline.retriever.retrieve(
+                    retrieve_q,
+                    model_id=q.model_id,
+                    product_filter=product.manual_filter,
+                    skip_index_check=True,
+                )
+            finally:
+                pipeline.retriever.top_k = saved_top_k
+            manual_ms_total += int(pkg.latency_ms or 0)
+            rows = [
+                {
+                    "source_relpath": c.source_relpath,
+                    "text": c.text,
+                    "chunk_id": c.chunk_id,
+                }
+                for c in pkg.chunks
+            ]
+            rerank_meta: dict[str, Any] = {}
+            if manual_rerank:
+                rows, rerank_meta = rerank_manual_candidates(
+                    retrieve_q,
+                    rows,
+                    backend=manual_rerank,
+                    keep=MANUAL_RERANK_KEEP,
+                    rank_fn=probe_rank_fn,
+                    model_id=probe_model,
+                )
+                rerank_ms_total += int(rerank_meta["rerank_ms"])
+                ctx.log.info(
+                    f"manual_rerank {q.question_id} unit {ui} "
+                    f"backend={manual_rerank} candidates={rerank_meta['candidate_count']} "
+                    f"rerank_ms={rerank_meta['rerank_ms']}"
+                )
+            manual_unit_rows.append(rows)
+            d7_trace.manual_units.append(
+                UnitManualTrace(
+                    unit_index=ui,
+                    customer_unit=unit,
+                    retrieve_query=retrieve_q,
+                    chunk_ids=[str(r["chunk_id"]) for r in rows],
+                    latency_ms=int(pkg.latency_ms or 0),
+                    rerank_backend=str(rerank_meta.get("rerank_backend") or ""),
+                    rerank_model=str(rerank_meta.get("rerank_model") or ""),
+                    candidate_count=int(rerank_meta.get("candidate_count") or 0),
+                    rerank_ms=int(rerank_meta.get("rerank_ms") or 0),
+                    pre_rerank_chunk_ids=list(rerank_meta.get("pre_rerank_chunk_ids") or []),
+                    post_rerank_chunk_ids=list(rerank_meta.get("post_rerank_chunk_ids") or []),
+                )
+            )
+
+        decomposed_ticket_hits = merge_ticket_hits_gated(
+            ticket_unit_hits, k_per_unit=ctx.k_tickets
+        )
+        anchor_pkg = ticket_leg(
+            q.question,
+            ticket_source,
+            model=pf.oem_model or q.model_id or None,
+            brand=pf.brand,
+            k=ctx.k_tickets,
+        )
+        anchor_hits = list(anchor_pkg.get("hits") or [])
+        answer_llm, _ = resolve_eval_llms(ctx.cfg)
+        pfda_llm_cfg = {
+            "provider": answer_llm.provider,
+            "model": answer_llm.model,
+            "temperature": answer_llm.temperature,
         }
-        for c in pkg.chunks
-    ]
+        pfda_rank_fn = build_rank_fn("llm_listwise", llm_cfg=pfda_llm_cfg)
+        ticket_hits, pfda_trace = pfda_pick_tickets(
+            q.question,
+            decomposed_hits=decomposed_ticket_hits,
+            anchor_hits=anchor_hits,
+            k=ctx.k_tickets,
+            rank_fn=pfda_rank_fn,
+        )
+        d7_trace.d7_version = "v3"
+        d7_trace.pfda = pfda_trace
+        tickets = {"search_mode": ticket_mode, "hits": ticket_hits}
+        merged_manual = select_manual_packet(
+            manual_unit_rows, manual_rerank=manual_rerank, top_k=top_k
+        )
+        manual_hits = [
+            {
+                "source_relpath": r.get("source_relpath"),
+                "text": r.get("text"),
+                "chunk_id": r.get("chunk_id"),
+            }
+            for r in merged_manual
+        ]
+        d7_trace.merged_ticket_ids = [
+            str(h.get("ticket_id") or "") for h in decomposed_ticket_hits
+        ]
+        d7_trace.merged_manual_chunk_ids = [str(h.get("chunk_id") or "") for h in manual_hits]
+        manual_retrieval_ms = manual_ms_total
+    else:
+        query = template.format(model_id=q.model_id, question=q.question)
+        tickets = ticket_leg(
+            q.question,
+            ticket_source,
+            model=pf.oem_model or q.model_id or None,
+            brand=pf.brand,
+            k=ctx.k_tickets,
+        )
+        ticket_hits = tickets.get("hits") or []
+        pkg = pipeline.retriever.retrieve(
+            query,
+            model_id=q.model_id,
+            product_filter=product.manual_filter,
+            skip_index_check=True,
+        )
+        manual_hits = [
+            {
+                "source_relpath": c.source_relpath,
+                "text": c.text,
+                "chunk_id": c.chunk_id,
+            }
+            for c in pkg.chunks
+        ]
+        manual_retrieval_ms = int(pkg.latency_ms or 0)
+
     _emit_progress(
         ctx,
         step="manual_retrieve_done",
         question_id=q.question_id,
         index=index,
-        retrieval_ms=pkg.latency_ms,
+        retrieval_ms=manual_retrieval_ms,
+        rerank_backend=manual_rerank or None,
+        rerank_ms=rerank_ms_total,
+        candidate_count=MANUAL_RERANK_CANDIDATE_N if manual_rerank else top_k,
     )
 
+    manual_budget = MANUAL_RERANK_CONTEXT_CHARS if manual_rerank else page_prefix
     context = build_bundled_context(
         ticket_hits,
         manual_hits,
-        page_prefix_chars=page_prefix,
+        page_prefix_chars=manual_budget,
         max_chars_per_chunk=chunk_max,
     )
     literal = str(ctx.cfg.get("insufficient_literal") or "Insufficient_Information_Based_On_Given_PDF")
@@ -223,6 +408,10 @@ def run_one_bundled_row(ctx: BundledRunContext, q: BundledQuestion, *, index: in
         "ticket_search_mode": tickets.get("search_mode"),
         "ticket_hit_in_packet": ticket_hit,
         "expected_ticket_id": expected,
+        # Narrative source row (may be open); retrieval scored against expected_ticket_id only.
+        "provenance_ticket_ids": list(q.provenance_ticket_ids)
+        if q.provenance_ticket_ids
+        else None,
         "ticket_ids_returned": [h.get("ticket_id") for h in ticket_hits],
         "manual_profile_id": ctx.manual_profile_id,
         "manual_lane_id": "B",
@@ -234,14 +423,15 @@ def run_one_bundled_row(ctx: BundledRunContext, q: BundledQuestion, *, index: in
         "ticket_leg_context": format_ticket_hits_for_context(ticket_hits),
         "manual_leg_context": format_manual_hits_for_context(
             manual_hits,
-            page_prefix_chars=page_prefix,
+            page_prefix_chars=manual_budget,
             max_chars_per_chunk=chunk_max,
         ),
         "candidate_answer": candidate,
         "gold_answer": q.gold_answer,
         "answer_ms": answer_ms,
         "judge_ms": judge_ms,
-        "manual_retrieval_ms": pkg.latency_ms,
+        "manual_retrieval_ms": manual_retrieval_ms,
+        **({"d7_trace": d7_trace.to_dict()} if d7_trace is not None else {}),
     }
 
 

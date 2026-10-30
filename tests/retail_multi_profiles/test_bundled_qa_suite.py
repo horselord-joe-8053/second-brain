@@ -10,16 +10,16 @@ B20 = REPO / "tests" / "retail_multi_profiles" / "data" / "retail-bundled-qa-b20
 
 
 def test_bundled_b20_shape_and_ticket_ids_in_corpus() -> None:
-    """Twenty rows, 10 easy / 10 hard; every expected ticket id exists in FRU CSV."""
+    """Twenty-six rows (prior 24 + H10N-alt rerank arms), 12 easy / 14 hard; expected tickets in FRU CSV."""
     from tests.retail_multi_profiles.lib.load_bundled_suite import iter_bundled_questions, load_bundled_suite
 
     data = load_bundled_suite(B20)
     rows = list(iter_bundled_questions(data))
-    assert len(rows) == 20
+    assert len(rows) == 26
     easy = sum(1 for r in rows if r.difficulty == "easy")
     hard = sum(1 for r in rows if r.difficulty == "hard")
-    assert easy == 10
-    assert hard == 10
+    assert easy == 12
+    assert hard == 14
 
     import sys
 
@@ -37,11 +37,21 @@ def test_bundled_b20_shape_and_ticket_ids_in_corpus() -> None:
             if tid:
                 ticket_ids.add(str(tid))
 
+    from tests.retail_multi_profiles.lib.bundled_gold_contract import (
+        assert_expected_tickets_resolved,
+        load_ticket_status_by_id,
+    )
+
+    status_by_id = load_ticket_status_by_id(fru_csv)
+
     for q in rows:
         assert q.model_id, q.question_id
         assert q.expected_ticket_ids, q.question_id
         for tid in q.expected_ticket_ids:
             assert tid in ticket_ids, f"{q.question_id} unknown ticket {tid}"
+        assert_expected_tickets_resolved(
+            q.expected_ticket_ids, status_by_id, question_id=q.question_id
+        )
 
 
 def test_rewritten_failure_questions_do_not_reveal_repairs() -> None:
@@ -63,3 +73,45 @@ def test_rewritten_failure_questions_do_not_reveal_repairs() -> None:
             assert phrase not in question, f"{question_id} leaks gold phrase: {phrase}"
         for harness_phrase in ("past service", "similar case", "resolved case", "user guide says"):
             assert harness_phrase not in question, f"{question_id} exposes harness wording: {harness_phrase}"
+
+
+def test_ambient_alt_tickets_share_parent_gold() -> None:
+    """E08N-alt / H10N-alt are query-only variants; labels match BND-E08 / BND-H10."""
+    from tests.retail_multi_profiles.lib.load_bundled_suite import load_bundled_suite
+
+    data = load_bundled_suite(B20)
+    by_id = {q["id"]: q for q in data["questions"]}
+    pairs = (
+        ("BND-E08N-alt", "BND-E08"),
+        ("BND-H10N-alt", "BND-H10"),
+        ("BND-H10N-site", "BND-H10"),
+        ("BND-H10N-alt-rr-xenc", "BND-H10"),
+        ("BND-H10N-alt-rr-llm", "BND-H10"),
+    )
+    for alt_id, parent_id in pairs:
+        alt = by_id[alt_id]
+        parent = by_id[parent_id]
+        assert alt["expected_ticket_ids"] == parent["expected_ticket_ids"]
+        assert alt["manual_anchor_question_id"] == parent["manual_anchor_question_id"]
+        assert alt["answer"] == parent["answer"]
+        assert alt["model"] == parent["model"]
+        assert alt["question"] != parent["question"]
+
+
+def test_h10n_rerank_arms_copy_alt_question() -> None:
+    """Rerank probe rows keep the H10N-alt question and name their manual rerank arm."""
+    from tests.retail_multi_profiles.lib.load_bundled_suite import load_bundled_suite
+
+    data = load_bundled_suite(B20)
+    by_id = {q["id"]: q for q in data["questions"]}
+    base = by_id["BND-H10N-alt"]
+    assert "manual_rerank" not in base
+    expected = {
+        "BND-H10N-alt-rr-xenc": "cross_encoder",
+        "BND-H10N-alt-rr-llm": "llm_listwise",
+    }
+    for qid, backend in expected.items():
+        row = by_id[qid]
+        assert row["question"] == base["question"]
+        assert row["manual_rerank"] == backend
+        assert row["difficulty"] == "hard"

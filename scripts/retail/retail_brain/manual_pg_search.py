@@ -27,7 +27,6 @@ from retail_brain.sku_scope import filter_chunks_by_model, filter_chunks_by_prod
 from retail_brain.manual_pg_ingest import ensure_manual_pg_fresh  # noqa: E402
 from retail_brain.manual_page_pack import apply_page_pack_to_ranked_rows  # noqa: E402
 from tests.retail_multi_profiles.lib.raw_policy import (  # noqa: E402
-    d7_query_mode,
     manual_d2_chunk_policy,
     manual_d2_page_pack_mode,
 )
@@ -176,48 +175,8 @@ def hybrid_pg_rrf_search(
     embed_fn: Any | None = None,
     force_reindex: bool = False,
     skip_index_check: bool = False,
-    _skip_d7_decompose: bool = False,
 ) -> list[dict[str, Any]]:
     """Product-scoped PG hybrid: Tantivy+KNN when filtered, else pool overlap+vector RRF."""
-    if not _skip_d7_decompose and d7_query_mode() == "decompose":
-        from retail_brain.manual_query_decompose import split_query_units
-
-        units = split_query_units(query)
-        if len(units) > 1:
-            id_lists: list[list[str]] = []
-            by_id: dict[str, dict[str, Any]] = {}
-            for unit in units:
-                sub = hybrid_pg_rrf_search(
-                    dsn,
-                    lane,
-                    unit,
-                    model_id=model_id,
-                    product_filter=product_filter,
-                    ingest_key=ingest_key,
-                    embed_cfg=embed_cfg,
-                    top_k=top_k,
-                    rrf_k=rrf_k,
-                    pool_limit=pool_limit,
-                    embed_fn=embed_fn,
-                    force_reindex=force_reindex,
-                    skip_index_check=skip_index_check,
-                    _skip_d7_decompose=True,
-                )
-                ids = [str(h["chunk_id"]) for h in sub if h.get("chunk_id")]
-                id_lists.append(ids)
-                for h in sub:
-                    by_id[str(h["chunk_id"])] = h
-            fused = reciprocal_rank_fusion(id_lists, k=rrf_k)
-            out: list[dict[str, Any]] = []
-            for cid, score in fused[:top_k]:
-                row = dict(by_id.get(cid) or {})
-                if not row:
-                    continue
-                row["rrf_score"] = float(score)
-                row["d7_decompose"] = True
-                out.append(row)
-            return out
-
     brand, oem = _product_sql_filters(product_filter)
     use_sql_product = bool((oem or "").strip())
     backend = manual_lexical_backend_name()

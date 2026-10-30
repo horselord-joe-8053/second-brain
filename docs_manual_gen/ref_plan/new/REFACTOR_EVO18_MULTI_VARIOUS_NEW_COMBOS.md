@@ -4,7 +4,7 @@
 **Depends on:** [`REFACTOR_RETAIL_PRODUCT_SCOPE_BRAND_MODEL.md`](./REFACTOR_RETAIL_PRODUCT_SCOPE_BRAND_MODEL.md) (**M9**) — brand + OEM filters on both legs (code landed; this minor adds **SQL-first pool** + **manual Tantivy** + chunk/orchestration experiments).  
 **Branch:** `feature/evo-18-multi-various-new-combos`.  
 **Status:** **wip** — **`qimpltdd`** / **`aciubtdd`** / **`implreftdd`**.  
-**last_aligned:** 2026-10-27 — user: one-Δ combos; **k_tickets=2** fixed; **D2.page_pack** only when **D2=page_heading**; promote **T0 → D2 page_heading → page_pack A/B → D7**; record **B20 + T100 + M90** + latency per combo vs frozen baseline.
+**last_aligned:** 2026-10-28 — **D7 v3 promoted:** **`b20-evo18-d7-v3-20261028`** **16/20**, six **3/6**; v2 legacy; **M90/T100 D7 deferred**.
 
 **Goal:** Ship **T0 baseline fixes** (not A/B), then add **run profiles** for **D2 chunk policy**, **D2.page_pack**, and **D7 query decomposition**, each with operator **regression trio** and **`TEST_ANALYSIS_*`** comparison to the **20261027 baseline**.
 
@@ -33,7 +33,11 @@
 | **E18-D1** | **Baseline label** = **PRE-T0** profile **`MANUAL_B_RAW_PG_HYBRID`**: M9 brand+OEM filter **in Python after `LIMIT 200` pool**, manual lexical = **in-process overlap** (`raw_lexical.rank_chunks_lexical`). Frozen run-ids **20261027** (table §2). |
 | **E18-D2** | **T0** (merge without A/B): **SQL `WHERE lane_id AND brand AND oem_model`** before pool cap; manual lexical = **Tantivy BM25** index keyed by **`manual_chunk_id`** (separate directory from ticket Tantivy). |
 | **E18-D3** | **D2** top-level: **`fixed_2k`** (current) vs **`page_heading`** (re-ingest). **D2.page_pack** only when **D2=page_heading**: **`global_top5`** (default) vs **`page_top5`**. |
-| **E18-D4** | **D7**: **`none`** vs **`decompose`** (sub-queries for manual leg; ticket leg unchanged in P4). |
+| **E18-D4** | **D7**: **`none`** vs **`decompose`** — **bundled-only outer orchestrator** (`query_unit_orchestrator.py` + `bundled_runner.py`); legs remain single-query APIs. |
+| **E18-D9** | **Split surface:** `split_query_units` on raw bundled **`question`** only; manual leg prepends `{model_id}` per unit; ticket leg uses the same customer unit text. |
+| **E18-D10** | **Ticket merge (decompose):** per unit retrieve **`k_tickets`**; keep hits with **`cosine_similarity ≥ RETAIL_D7_MIN_TICKET_COSINE`** (default **0.28**), up to **`k_tickets` per unit**, dedupe by **`ticket_id`**; **empty ticket packet allowed** when no unit passes gate. |
+| **E18-D11** | **Manual merge (decompose):** per unit hybrid **`k_manuals`**, then **RRF** chunk ids across units → final **`k_manuals`**. Log **`d7_trace`** on each B20 **`results.jsonl`** row. |
+| **E18-D12** | **D7 v3 PFDA (pick from decomposed answers):** after per-unit ticket merge, **union** full-question **`ticket_leg`** hits; **dedupe by ticket_id** (keep max cosine row); **listwise LLM rerank** on bundled **`question`** (`rerank_registry` + answer LLM cfg); send **top `k_tickets`** to answer only. Trace **`d7_version=v3`** + **`pfda`** ids in **`d7_trace`**. Replaces v2 “send full merged packet”. |
 | **E18-D5** | **k_tickets=2**, **k_manuals=5** — not matrix dimensions. |
 | **E18-D6** | **One-Δ per operator run:** change exactly one of {T0 lexical/SQL, D2, D2.page_pack, D7} vs previous promoted profile; log **`resolved_run_profile`** JSON on every harness row. |
 | **E18-D7** | **Acceptance (non-worse vs PRE-T0):** T100 mode **C** recall@1 **≥ 0.54**; M90 **`MANUAL_B_RAW_PG_HYBRID`** answerable **≥ 33/60**; B20 **≥ 14/20** judge and **0** empty manual legs — unless analysis doc records **intentional trade** with manual-leg recall gain on **b20-customer-six**. |
@@ -113,8 +117,11 @@
 
 <h2 id="evo18-p4" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Phase P4 — D7 decomposition</h2>
 
-- [X] Wire minimal **D7** path: **`RETAIL_D7=decompose`** + `manual_query_decompose.split_query_units` on manual hybrid leg.
-- [X] **b20-evo18-d7-six-20261028** **3/6** judge (was **0/6** PRE-T0 six); full **`b20-evo18-d7-20261028`**, **`m90-evo18-d7-20261028`** recorded.
+- [X] ~~Manual-only D7 inside `hybrid_pg_rrf_search`~~ **removed** (misaligned with product intent).
+- [X] **D7 v2:** `retail_brain/query_unit_orchestrator.py` + **`bundled_runner`** fan-out (E18-D9–D11).
+- [X] Re-run **`b20-evo18-d7-v2-20261028`** full B20 (**16/20**) + six-row (**2/6**); §8.3 from **`d7_trace`** JSONL.
+- [X] Historical runs **`b20-evo18-d7-20261028`** (manual-only D7) retained for comparison only.
+- [X] **D7 v3 PFDA** (**E18-D12**); canonical **`b20-evo18-d7-v3-goldfix-20261028`** after [`REFACTOR_B20_RESOLVED_GOLD_LABELS.md`](../completed/REFACTOR_B20_RESOLVED_GOLD_LABELS.md) (**16/20**, top-2 **7/20**, six **3/6**).
 
 ---
 
@@ -145,7 +152,7 @@
 <tr><td style="background:#e3f2fd">P1 T0</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail/test_manual_pg_db_product_sql.py</code>, <code>tests/retail/test_manual_tantivy_lexical.py</code></td><td><code>pytest tests/retail/test_manual_pg*.py tests/retail/test_manual_tantivy_lexical.py</code></td></tr>
 <tr><td style="background:#e3f2fd">P2 D2</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail_multi_profiles/test_raw_chunking_page_heading.py</code></td><td>chunk boundary unit tests + ingest smoke</td></tr>
 <tr><td style="background:#e3f2fd">P3 page_pack</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail/test_manual_page_pack.py</code></td><td>fusion cap tests</td></tr>
-<tr><td style="background:#e3f2fd">P4 D7</td><td style="background:#e8f5e9">strict-TDD</td><td>decomposition contract tests (manual leg)</td><td>pytest + bundled smoke</td></tr>
+<tr><td style="background:#e3f2fd">P4 D7</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail/test_query_unit_orchestrator.py</code></td><td>pytest + bundled smoke with <code>d7_trace</code></td></tr>
 <tr><td style="background:#e3f2fd">P5 Operator</td><td style="background:#fff8e1">smoke-after-delete</td><td>—</td><td>E18-D7 metrics + analysis docs</td></tr>
 </tbody>
 </table>

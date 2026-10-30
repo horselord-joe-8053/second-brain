@@ -18,7 +18,9 @@ class BundledQuestion:
     question: str
     gold_answer: str
     expected_ticket_ids: tuple[str, ...]
+    provenance_ticket_ids: tuple[str, ...]
     manual_anchor_question_id: str
+    manual_rerank: str = ""
 
 
 def load_bundled_suite(path: Path) -> dict[str, Any]:
@@ -36,6 +38,7 @@ def iter_bundled_questions(data: dict[str, Any]) -> Iterator[BundledQuestion]:
     """Yield each bundled question in file order."""
     for q in data.get("questions") or []:
         ids = q.get("expected_ticket_ids") or []
+        prov = q.get("provenance_ticket_ids") or []
         yield BundledQuestion(
             question_id=str(q["id"]),
             difficulty=str(q.get("difficulty") or ""),
@@ -43,7 +46,9 @@ def iter_bundled_questions(data: dict[str, Any]) -> Iterator[BundledQuestion]:
             question=str(q.get("question") or ""),
             gold_answer=str(q.get("answer") or ""),
             expected_ticket_ids=tuple(str(x) for x in ids),
+            provenance_ticket_ids=tuple(str(x) for x in prov),
             manual_anchor_question_id=str(q.get("manual_anchor_question_id") or ""),
+            manual_rerank=str(q.get("manual_rerank") or ""),
         )
 
 

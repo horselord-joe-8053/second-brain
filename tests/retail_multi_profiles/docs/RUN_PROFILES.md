@@ -28,7 +28,7 @@ Use these terms **consistently** in code comments, logs, YAML, and analysis docs
 | **`listwise_rerank`** | D5.R implementation | Function in `retail_brain/rerank.py` that reorders rows given a **`rank_fn`**. Not a backend name. |
 | **`rank_fn`** | D5.R hook | Callable: `(query, candidates) → LLM text` parsed into ordered chunk ids. Required for **`llm_listwise`** backend. |
 | **`llm_listwise`** | D5.R **backend** | Listwise LLM rerank (**R5** default for manual raw). |
-| **`cross_encoder`** | D5.R **backend** | Cross-encoder / bi-encoder rerank (e.g. BERT-style); **deferred** until listwise is measured. |
+| **`cross_encoder`** | D5.R **backend** | Local MiniLM cross-encoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`). B20 hybrid profile stays off; a bundled row opts in with `manual_rerank`. |
 | **`ResolvedRunProfile`** | harness | Immutable struct after merge: profile YAML + env + CLI; sole input to retrieval pipeline factory. |
 
 **Do not** use env names like `LIST_WISE_RANK_FN` vs `LLM_RANK_FN` — both describe the same **llm_listwise** backend. Use **`d5.rerank.enabled`** (boolean) and **`d5.rerank.backend`** (enum).
@@ -76,14 +76,14 @@ graph LR
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd"><code>d5.rerank.enabled</code></td><td>boolean (YAML <code>true</code>/<code>false</code>, coerced at load)</td><td><strong>Off switch.</strong> When false, skip rerank; <code>backend</code> is ignored.</td></tr>
-<tr><td style="background:#e3f2fd"><code>d5.rerank.backend</code></td><td>string enum (only when enabled)</td><td><code>llm_listwise</code> (default if omitted) · <code>cross_encoder</code> (deferred). No <code>none</code> — use <code>enabled: false</code>.</td></tr>
+<tr><td style="background:#e3f2fd"><code>d5.rerank.backend</code></td><td>string enum (only when enabled)</td><td><code>llm_listwise</code> (default if omitted) · <code>cross_encoder</code> (<code>cross-encoder/ms-marco-MiniLM-L-6-v2</code>, local). No <code>none</code> — use <code>enabled: false</code>.</td></tr>
 </tbody>
 </table>
 
 **Rules:**
 
 - If **`enabled: true`**, default **`backend`** to **`llm_listwise`** when unset; harness must wire **`rank_fn`**. **Pre-flight:** abort if `rank_fn` would be no-op.
-- If **`backend: cross_encoder`**, Phase 1 **must not** silently no-op — either stub raises “not implemented” or profile is disallowed until Phase 1+ defer exit.
+- If **`backend: cross_encoder`**, the harness builds a local MiniLM rank_fn. Preflight still aborts when that rank_fn is missing. B20 profile `MANUAL_B_RAW_PG_HYBRID` leaves rerank off; the bundled probe selects the backend per row via `manual_rerank`.
 - **`d3_engine: hybrid_rrf_rerank`** alone is **not** sufficient for D5.R; prefer explicit **`d5.rerank`** on the profile (legacy alias may map `hybrid_rrf_rerank` → `enabled: true`, `backend: llm_listwise` once resolver lands).
 
 **Factory:** `retail_brain/rerank_registry.py` (planned) — **`build_rank_fn(backend, cfg) -> RankFn | None`**.

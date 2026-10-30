@@ -59,6 +59,16 @@
       "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E01"
     },
     {
+      "id": "BND-E21",
+      "difficulty": "easy",
+      "model": "KRFF507HPS",
+      "question": "A KRFF507HPS in Kansas City stopped making cubes and showed FRU-E109. How do I fix it? What outlet and circuit are required?",
+      "answer": "Clear the jammed auger and reset the ice maker module. The refrigerator needs a grounded 3-prong outlet on 115 V, 60 Hz AC with a fused 15- or 20-amp circuit, and must not use an extension cord or adapter.",
+      "expected_ticket_ids": ["T-0042-100024"],
+      "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E01",
+      "provenance_note": "Natural customer wording (21st row); same retrieval/manual gold as BND-E05."
+    },
+    {
       "id": "BND-E06",
       "difficulty": "easy",
       "model": "KRFF507HPS",
@@ -86,6 +96,17 @@
       "expected_ticket_ids": ["T-0042-100026"],
       "provenance_ticket_ids": ["T-0042-100004"],
       "manual_anchor_question_id": "samsung_RF28K9070SG-E01"
+    },
+    {
+      "id": "BND-E08N-alt",
+      "difficulty": "easy",
+      "model": "RF28K9070SG",
+      "question": "The water dispenser on my RF28K9070SG has slowed to a trickle and the display showed FRU-E103. When I pick the install location, what temperature range should the site stay within?",
+      "answer": "The case replaced a clogged inline filter and flushed the water line. The allowed room temperature is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100026"],
+      "provenance_ticket_ids": ["T-0042-100004"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "provenance_note": "Alt customer U2 (install-site wording); same gold as BND-E08."
     },
     {
       "id": "BND-E09",
@@ -198,6 +219,52 @@
       "expected_ticket_ids": ["T-0042-100132"],
       "provenance_ticket_ids": ["T-0042-100010"],
       "manual_anchor_question_id": "samsung_RF28K9070SG-E01"
+    },
+    {
+      "id": "BND-H10N-alt",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104, and I already leveled it. What ambient temperature range is allowed where the refrigerator is installed?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "provenance_note": "Alt customer U2 (ambient-only); leveling in U1; same gold as BND-H10."
+    },
+    {
+      "id": "BND-H10N-site",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104, and I already leveled it. When I pick the install location, what temperature range should the installation site stay within?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "provenance_note": "H10N-alt symptom unit; U2 uses installation-site wording like BND-E08N-alt. Same gold as BND-H10."
+    },
+    {
+      "id": "BND-H10N-alt-rr-xenc",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104, and I already leveled it. What ambient temperature range is allowed where the refrigerator is installed?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "manual_rerank": "cross_encoder",
+      "provenance_note": "Same question and gold as BND-H10N-alt. Manual leg: top 20 per unit, MiniLM cross-encoder, keep 5 per unit."
+    },
+    {
+      "id": "BND-H10N-alt-rr-llm",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104, and I already leveled it. What ambient temperature range is allowed where the refrigerator is installed?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "manual_rerank": "llm_listwise",
+      "provenance_note": "Same question and gold as BND-H10N-alt. Manual leg: top 20 per unit, llm_listwise, keep 5 per unit."
     }
   ]
 }

@@ -17,6 +17,7 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 11. [Story 10 — An inherited env default silently disabled the fault-code boost](#war-story-10)
 12. [Story 11 — Three lexical arms: overlap, Postgres FTS, Tantivy](#war-story-11)
 13. [Story 12 — Bundled answers keep separate legs](#war-story-12)
+14. [Story 13 — Rerank the deep list, then keep five per ask](#war-story-13)
 
 ---
 
@@ -39,6 +40,7 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 <tr><td style="background:#e3f2fd">10</td><td><a href="#war-story-10">An inherited env default silently disabled the fault-code boost</a></td><td>Phone-era SAM-E prefix default; new entry points read the domain config.</td></tr>
 <tr><td style="background:#e3f2fd">11</td><td><a href="#war-story-11">Three lexical arms: overlap, Postgres FTS, Tantivy</a></td><td>Cheap overlap stayed fast but failed relevance: common words supplied 66% of a gold chunk’s score.</td></tr>
 <tr><td style="background:#e3f2fd">12</td><td><a href="#war-story-12">Bundled answers keep separate legs</a></td><td>Manuals and past tickets stay different indexes; concat a fixed top-k, do not pretend chunks share one score.</td></tr>
+<tr><td style="background:#e3f2fd">13</td><td><a href="#war-story-13">Rerank the deep list, then keep five per ask</a></td><td>A reranker that only sees the already-cut top 5 cannot recover a hit at fused rank 12.</td></tr>
 </tbody>
 </table>
 
@@ -739,3 +741,31 @@ Wiki-based manual retrieval remains a **different manual engine** (compiled page
 <h3 id="war-story-12-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">12.5 Takeaway</h3>
 
 Bundle search by concatenating fixed tops from separate indexes; do not rank a manual paragraph against a ticket resolution on one fused list until each leg has its own regression score.
+
+---
+
+<h2 id="war-story-13" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">13. Rerank the deep list, then keep five per ask</h2>
+
+**Payoff (read this first):** If the right manual chunk is fused rank 12, a reranker that only reads the top 5 never sees it. Retrieve about 20, rerank that list, keep 5 for that subquery, and do not fuse those keeps back into one global 5.
+
+**creation:** 261030-033700  
+**last_updated:** 261030-033700  
+**keywords:** rerank, cross-encoder, listwise, rrf, manual-rag, second-brain  
+**difficulty:** 4  
+**significance:** 7  
+
+<h3 id="war-story-13-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">13.1 Context</h3>
+
+A Samsung user-guide sentence (“Select a site … 50 °F … 110 °F”) sat at fused rank 12 for an ambient-temperature paraphrase. Production kept 5 chunks per file-capped hybrid list, then RRF-merged subqueries down to 5 again.
+
+<h3 id="war-story-13-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">13.2 Root Cause</h3>
+
+The listwise helper can read the question and the snippets, but the manual caller invoked it only after `top_k` had already dropped rank 12. A second global merge then let the other subquery’s chunks crowd the temperature hit out of the answer packet.
+
+<h3 id="war-story-13-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">13.3 Resolution</h3>
+
+For a probe row, hybrid search uses depth 20, then either a local cross-encoder or the existing listwise chat call reorders that 20, and each subquery keeps its own 5. Those lists are unioned. The default bundled profile still searches at depth 5 with no manual rerank.
+
+<h3 id="war-story-13-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">13.4 Takeaway</h3>
+
+Rerank the candidate pool you hope contains the answer. A second cutoff after that can delete the win. On the 2026-10-30 probe, listwise moved page 27 from rank 12 to rank 1, and the MiniLM cross-encoder left it outside the five. The answer packet still missed the sentence because an 8000-character manual budget filled first.
