@@ -388,10 +388,10 @@ Reuses Phase 1 **`rerank.py`**, **`verifier.py`**, **`agentic.py`** with a **tic
 
 <h3 id="gpt-p3-1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.1 P3.1 — Claim audit job (compile-time path)</h3>
 
-- [ ] CLI **`scripts/retail/retail_brain/evidence/wiki_audit.py`**: scan compiled **`wiki/**`** pages; resolve **`sources:`** frontmatter to lane **raw** `.txt` / `.md` (same SKU scope as page).
-- [ ] Extract **atomic claims** (LLM batch with frozen prompt id in run-config); **`WikiClaimVerifier`** uses Phase 1 verifier shape (claim vs **quoted** source passage).
-- [ ] Write registry **`brain/retail-md/.wiki-claim-audit/claims.jsonl`** (status: supported / uncertain / contradicted / unverified; source hash for invalidation).
-- [ ] **§17.6:** audit CLI uses **`WIKI_CLAIM_AUDIT`** logger + `audit_progress.jsonl`.
+- [X] CLI **`scripts/retail/retail_brain/evidence/wiki_audit.py`**: scan compiled **`wiki/**`** pages; resolve **`sources:`** frontmatter to lane **raw** `.txt` / `.md` (same SKU scope as page).
+- [X] Extract **atomic claims** (stub extractor in CI; LLM batch deferred to run-config); **`WikiClaimVerifier`** uses Phase 1 verifier shape (claim vs **quoted** source passage).
+- [X] Write registry **`brain/retail-md/.wiki-claim-audit/claims.jsonl`** (status: supported / uncertain / contradicted / unverified; source hash for invalidation).
+- [X] **§17.6:** audit CLI uses **`WIKI_CLAIM_AUDIT`** logger + `audit_progress.jsonl`.
 
 <h3 id="gpt-p3-2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.2 P3.2 — Audit metrics + operator doc</h3>
 
@@ -720,7 +720,7 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 
 **Phase 3 — A1** (after **HG-P1**; exit **HG-P3**)
 
-- [ ] P3.1 Wiki claim audit CLI
+- [X] P3.1 Wiki claim audit CLI
 - [ ] P3.2 Audit metrics + WIKI_EVIDENCE.md
 - [ ] P3.3 Harness wiki_evidence modes
 - [ ] P3.4 Lane B full 90 wiki modes
