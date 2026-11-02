@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How five search profiles traded accuracy, recall, and cost</title>
+<style>
+  :root {
+    --bg: #f3f0e8;
+    --paper: #fffcf7;
+    --ink: #1c1916;
+    --muted: #5e584f;
+    --line: #e3dbd0;
+    --accent: #1e4d8c;
+    --accent-soft: #e7eef7;
+    --good: #1b6b45;
+    --good-soft: #e5f4ec;
+    --warn: #8a5a12;
+    --warn-soft: #f8efdf;
+    --bad: #8e2f2f;
+    --bad-soft: #f8e8e8;
+    --bar-judge: #1e4d8c;
+    --bar-ticket: #2f6f4e;
+    --bar-manual: #3d6b8a;
+    --bar-time: #8a5a12;
+    --code: #efeae2;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121418;
+      --paper: #1b1e24;
+      --ink: #ece7df;
+      --muted: #b3ab9f;
+      --line: #2e333c;
+      --accent: #9ec0ef;
+      --accent-soft: #243044;
+      --good: #8ed4ae;
+      --good-soft: #1c3328;
+      --warn: #e2b56a;
+      --warn-soft: #332916;
+      --bad: #f0a8a8;
+      --bad-soft: #3a2222;
+      --bar-judge: #8eb4e6;
+      --bar-ticket: #8ed4ae;
+      --bar-manual: #9ec4d6;
+      --bar-time: #e2b56a;
+      --code: #262b33;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121418;
+    --paper: #1b1e24;
+    --ink: #ece7df;
+    --muted: #b3ab9f;
+    --line: #2e333c;
+    --accent: #9ec0ef;
+    --accent-soft: #243044;
+    --good: #8ed4ae;
+    --good-soft: #1c3328;
+    --warn: #e2b56a;
+    --warn-soft: #332916;
+    --bad: #f0a8a8;
+    --bad-soft: #3a2222;
+    --bar-judge: #8eb4e6;
+    --bar-ticket: #8ed4ae;
+    --bar-manual: #9ec4d6;
+    --bar-time: #e2b56a;
+    --code: #262b33;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] { color-scheme: light; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.55 "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 20px 72px; }
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .kicker {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+  button.theme {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  h1 {
+    font-size: 2.05rem;
+    line-height: 1.15;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  h2 {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 650;
+    margin: 2.2rem 0 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 1rem;
+    font-weight: 650;
+    margin: 0 0 8px;
+  }
+  p { margin: 0 0 0.9rem; }
+  a { color: var(--accent); }
+  .lede { font-size: 1.12rem; }
+  .muted { color: var(--muted); }
+  .sans { font-family: ui-sans-serif, system-ui, sans-serif; }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.86em;
+    background: var(--code);
+    padding: 0.05em 0.35em;
+    border-radius: 4px;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 18px 0 8px;
+  }
+  .step {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 10px 12px;
+    min-height: 132px;
+  }
+  .step strong {
+    display: block;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .step span {
+    display: block;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+  .step em {
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .callout {
+    background: var(--warn-soft);
+    border-left: 3px solid var(--warn);
+    padding: 12px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+  .callout.good {
+    background: var(--good-soft);
+    border-left-color: var(--good);
+  }
+  .callout p:last-child { margin: 0; }
+  figure {
+    margin: 18px 0 28px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 14px 8px;
+  }
+  figcaption {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  svg.chart { width: 100%; height: auto; display: block; }
+  svg.chart text { font-family: ui-sans-serif, system-ui, sans-serif; fill: var(--muted); }
+  svg.chart .val { fill: var(--ink); font-size: 12px; }
+  svg.chart .axis { stroke: var(--line); }
+  svg.chart .bar-judge { fill: var(--bar-judge); }
+  svg.chart .bar-ticket { fill: var(--bar-ticket); }
+  svg.chart .bar-manual { fill: var(--bar-manual); }
+  svg.chart .bar-time { fill: var(--bar-time); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13.5px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; letter-spacing: 0.02em; color: var(--muted); font-weight: 650; background: var(--accent-soft); }
+  tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pick { background: var(--good-soft); }
+  .dip { background: var(--bad-soft); }
+  ul { margin: 0.2rem 0 1rem; padding-left: 1.2rem; }
+  li { margin: 0.25rem 0; }
+  .charts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  footer.note {
+    margin-top: 28px;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  @media (max-width: 720px) {
+    .steps { grid-template-columns: 1fr; }
+    h1 { font-size: 1.65rem; }
+    table { display: block; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <p class="kicker">Retail search · five run profiles · Oct 2026</p>
+    <button class="theme" id="theme" type="button">Theme</button>
+  </header>
+
+  <h1>Five ways to fuse keyword and embedding search</h1>
+  <p class="lede">We changed one search setting at a time and scored the same questions on accuracy, recall, time, and chat-model calls. The manual hybrid is best when each file can contribute at most five chunks. Splitting the question raises bundled-answer accuracy and spends an extra chat call. It does not find the labeled ticket more often.</p>
+  <p class="muted sans">Numbers are medians and pass counts from section 8 of the bundled manual-and-ticket analysis. <strong>RRF</strong> (reciprocal rank fusion) is the step that turns a keyword ranking and an embedding ranking into one list: each list adds <code>1 / (60 + rank)</code>.</p>
+
+  <h2>Ticket search already had a third signal</h2>
+  <p>Before those five profiles, past-ticket search was compared three ways on the same 100 questions over 1,000 closed tickets. The question each time was whether the right old ticket came back first. Two of the ways are the usual pair: an embedding list (similar meaning) and a BM25 list (shared words, including the odd fault code). The third is a small specialized bump on top of fusing those two lists.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Mode</th>
+        <th>What is combined</th>
+        <th>Right ticket first</th>
+        <th>When the question contains a fault code (20)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A · embeddings only</td>
+        <td>One meaning list. No keyword list.</td>
+        <td class="num">0.25</td>
+        <td class="num">0.15</td>
+      </tr>
+      <tr>
+        <td>B · embeddings + BM25</td>
+        <td>Fuse the two rankings by position. The raw scores are not added.</td>
+        <td class="num">0.44</td>
+        <td class="num">0.15</td>
+      </tr>
+      <tr class="pick">
+        <td><strong>C · B, plus a code bump</strong></td>
+        <td>After the fuse, add weight when the question’s <code>FRU-E###</code> code is on that ticket.</td>
+        <td class="num"><strong>0.54</strong></td>
+        <td class="num"><strong>0.65</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Fusing keywords with embeddings is what moved everyday wording (0.25 to 0.44). It did nothing for the fault-code questions: those stayed at 0.15. The code bump is what moved them, from 0.15 to 0.65, and that is the whole of the step from 0.44 to 0.54. Paraphrases and mixed-wording questions did not change between B and C. So the bump is not a smarter embedding. It is a third signal for an identifier the two general lists treat like any other token.</p>
+  <p>Every profile below holds ticket search on mode C. The profiles change the manual index and, in the last step, how the question is split.</p>
+
+  <h2>What each profile changed</h2>
+  <p>The ticket index and ticket mode C stayed put through the first four profiles. Only the manual leg, and then the way a question is split, moved.</p>
+  <div class="steps">
+    <div class="step">
+      <strong>1 · PRE-T0</strong>
+      <span>Filter the model after a 200-row pool. Keyword score is in-process word overlap. Chunks are fixed 2,000-character windows.</span>
+      <em>Baseline</em>
+    </div>
+    <div class="step">
+      <strong>2 · T0</strong>
+      <span>Filter brand and model inside the database. Keyword leg becomes Tantivy BM25. Chunks stay fixed windows.</span>
+      <em>Faster search, weaker answers</em>
+    </div>
+    <div class="step">
+      <strong>3 · D2 page</strong>
+      <span>Re-chunk manuals on headings, 592 chunks. No cap on how many chunks one file may send into the fuse.</span>
+      <em>Judge returns to baseline</em>
+    </div>
+    <div class="step">
+      <strong>4 · Pack page</strong>
+      <span>Same chunks. Before the fuse, keep at most five chunks from each manual file.</span>
+      <em>Best manual-fact recall</em>
+    </div>
+    <div class="step">
+      <strong>5 · D7 v3</strong>
+      <span>Same manual fuse. Split the customer question. One chat call reorders the ticket list, then two tickets go to the answer.</span>
+      <em>Original run, questions unchanged</em>
+    </div>
+  </div>
+  <p class="muted sans">Step 5 is <code>b20-evo18-d7-v3-20261028</code>. Later runs rewrote gold ticket labels or three questions. Those are outside this comparison.</p>
+  <div class="callout">
+    <p>Six rows in that original D7 v3 run still pointed at open tickets rather than the resolved ticket. The 16 of 20 judge score is the published number for this profile. It is not a clean comparison against the earlier 14 of 20, because those six labels differ.</p>
+  </div>
+
+  <h2>Accuracy of the bundled answer</h2>
+  <p>Accuracy here is the judge: did the written answer contain the required ticket resolution and the required manual fact. Twenty questions.</p>
+  <figure>
+    <svg class="chart" viewBox="0 0 680 248" role="img" aria-labelledby="cap-judge">
+      <title>Bundled judge passes out of 20</title>
+      <line class="axis" x1="48" y1="200" x2="650" y2="200"/>
+      <line class="axis" x1="48" y1="28" x2="48" y2="200"/>
+      <text x="8" y="36" font-size="11">20</text>
+      <text x="8" y="204" font-size="11">0</text>
+      <rect x="86" y="80" width="44" height="120" class="bar-judge"/>
+      <rect x="206" y="105" width="44" height="95" class="bar-judge"/>
+      <rect x="326" y="80" width="44" height="120" class="bar-judge"/>
+      <rect x="446" y="80" width="44" height="120" class="bar-judge"/>
+      <rect x="566" y="62" width="44" height="138" class="bar-judge"/>
+      <text class="val" x="108" y="74" text-anchor="middle">14</text>
+      <text class="val" x="228" y="99" text-anchor="middle">11</text>
+      <text class="val" x="348" y="74" text-anchor="middle">14</text>
+      <text class="val" x="468" y="74" text-anchor="middle">14</text>
+      <text class="val" x="588" y="56" text-anchor="middle">16</text>
+      <text x="108" y="220" text-anchor="middle" font-size="12">PRE-T0</text>
+      <text x="228" y="220" text-anchor="middle" font-size="12">T0</text>
+      <text x="348" y="220" text-anchor="middle" font-size="12">D2 page</text>
+      <text x="468" y="220" text-anchor="middle" font-size="12">Pack page</text>
+      <text x="588" y="220" text-anchor="middle" font-size="12">D7 v3</text>
+    </svg>
+    <figcaption id="cap-judge">Judge passes out of 20 bundled questions. Bar height is the count. Source: section 8, runs of 27–28 Oct 2026.</figcaption>
+  </figure>
+  <p>T0 made the keyword leg a real BM25 index and filtered the model in SQL. Manual search got faster. Bundled answers got worse, 11 of 20. Heading-sized chunks brought the judge back to 14. The question split then reached 16, with the label caveat above.</p>
+
+  <h2>Recall</h2>
+  <p>Two different recalls. The ticket recall is whether the labeled past ticket was one of the two tickets shown to the answer. The manual recall is how many of 60 manual-only questions could be answered from the retrieved chunks. A separate 100-question ticket probe, recall at rank 1, stayed at 0.54. It was not re-run after T0, because the ticket index did not change.</p>
+  <figure>
+    <svg class="chart" viewBox="0 0 680 248" role="img" aria-labelledby="cap-ticket">
+      <title>Labeled ticket in the top 2, out of 20</title>
+      <line class="axis" x1="48" y1="200" x2="650" y2="200"/>
+      <line class="axis" x1="48" y1="28" x2="48" y2="200"/>
+      <text x="8" y="36" font-size="11">20</text>
+      <text x="8" y="204" font-size="11">0</text>
+      <rect x="86" y="114" width="44" height="86" class="bar-ticket"/>
+      <rect x="206" y="114" width="44" height="86" class="bar-ticket"/>
+      <rect x="326" y="114" width="44" height="86" class="bar-ticket"/>
+      <rect x="446" y="114" width="44" height="86" class="bar-ticket"/>
+      <rect x="566" y="140" width="44" height="60" class="bar-ticket"/>
+      <text class="val" x="108" y="108" text-anchor="middle">10</text>
+      <text class="val" x="228" y="108" text-anchor="middle">10</text>
+      <text class="val" x="348" y="108" text-anchor="middle">10</text>
+      <text class="val" x="468" y="108" text-anchor="middle">10</text>
+      <text class="val" x="588" y="134" text-anchor="middle">7</text>
+      <text x="108" y="220" text-anchor="middle" font-size="12">PRE-T0</text>
+      <text x="228" y="220" text-anchor="middle" font-size="12">T0</text>
+      <text x="348" y="220" text-anchor="middle" font-size="12">D2 page</text>
+      <text x="468" y="220" text-anchor="middle" font-size="12">Pack page</text>
+      <text x="588" y="220" text-anchor="middle" font-size="12">D7 v3</text>
+    </svg>
+    <figcaption id="cap-ticket">Questions, out of 20, where the labeled ticket id was in the two tickets passed to the answer.</figcaption>
+  </figure>
+  <figure>
+    <svg class="chart" viewBox="0 0 680 248" role="img" aria-labelledby="cap-m90">
+      <title>Manual questions answerable, out of 60</title>
+      <line class="axis" x1="48" y1="200" x2="650" y2="200"/>
+      <line class="axis" x1="48" y1="28" x2="48" y2="200"/>
+      <text x="4" y="36" font-size="11">60</text>
+      <text x="8" y="204" font-size="11">0</text>
+      <rect x="86" y="105" width="44" height="95" class="bar-manual"/>
+      <rect x="206" y="100" width="44" height="100" class="bar-manual"/>
+      <rect x="326" y="79" width="44" height="121" class="bar-manual"/>
+      <rect x="446" y="74" width="44" height="126" class="bar-manual"/>
+      <text class="val" x="108" y="99" text-anchor="middle">33</text>
+      <text class="val" x="228" y="94" text-anchor="middle">35</text>
+      <text class="val" x="348" y="73" text-anchor="middle">42</text>
+      <text class="val" x="468" y="68" text-anchor="middle">44</text>
+      <text class="val" x="588" y="118" text-anchor="middle">—</text>
+      <text x="108" y="220" text-anchor="middle" font-size="12">PRE-T0</text>
+      <text x="228" y="220" text-anchor="middle" font-size="12">T0</text>
+      <text x="348" y="220" text-anchor="middle" font-size="12">D2 page</text>
+      <text x="468" y="220" text-anchor="middle" font-size="12">Pack page</text>
+      <text x="588" y="220" text-anchor="middle" font-size="12">D7 v3</text>
+    </svg>
+    <figcaption id="cap-m90">Manual-only questions, out of 60, that were answerable from retrieved chunks. D7 v3 did not re-run this suite. Pass counts on the wider 90-question manual set were 63, 65, 72, and 74.</figcaption>
+  </figure>
+  <p>Heading chunks are what moved manual recall, from 33 of 60 to 42. Capping each file at five chunks added two more, to 44, without giving up the bundled judge. The ticket top-two rate did not move until D7 v3, and then it fell from 10 of 20 to 7 of 20. The chat reorder is a different picker. It is not a stronger ticket search.</p>
+
+  <h2>Time</h2>
+  <p>Time is the median milliseconds for one question. The chart is the manual search only. Answer writing and judging stay in a band of about 1.1 to 1.8 seconds on every profile, so they do not decide the comparison.</p>
+  <figure>
+    <svg class="chart" viewBox="0 0 680 248" role="img" aria-labelledby="cap-time">
+      <title>Median manual retrieval time in milliseconds</title>
+      <line class="axis" x1="48" y1="200" x2="650" y2="200"/>
+      <line class="axis" x1="48" y1="28" x2="48" y2="200"/>
+      <text x="4" y="36" font-size="11">800</text>
+      <text x="8" y="204" font-size="11">0</text>
+      <rect x="86" y="102" width="44" height="98" class="bar-time"/>
+      <rect x="206" y="141" width="44" height="59" class="bar-time"/>
+      <rect x="326" y="132" width="44" height="68" class="bar-time"/>
+      <rect x="446" y="129" width="44" height="71" class="bar-time"/>
+      <rect x="566" y="58" width="44" height="142" class="bar-time"/>
+      <text class="val" x="108" y="96" text-anchor="middle">456</text>
+      <text class="val" x="228" y="135" text-anchor="middle">272</text>
+      <text class="val" x="348" y="126" text-anchor="middle">318</text>
+      <text class="val" x="468" y="123" text-anchor="middle">331</text>
+      <text class="val" x="588" y="52" text-anchor="middle">658</text>
+      <text x="108" y="220" text-anchor="middle" font-size="12">PRE-T0</text>
+      <text x="228" y="220" text-anchor="middle" font-size="12">T0</text>
+      <text x="348" y="220" text-anchor="middle" font-size="12">D2 page</text>
+      <text x="468" y="220" text-anchor="middle" font-size="12">Pack page</text>
+      <text x="588" y="220" text-anchor="middle" font-size="12">D7 v3</text>
+    </svg>
+    <figcaption id="cap-time">Median manual-leg milliseconds. The axis runs to 800 so the D7 v3 bar is not clipped. D7 v3 searches once per clause, so the manual leg is about twice pack-page.</figcaption>
+  </figure>
+
+  <h2>Chat-model calls</h2>
+  <p>These runs did not record dollars. Cost here is how many chat calls one question makes. Search itself is not a chat call. Embedding the query is a separate small API call and is not in this count.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Profile</th>
+        <th class="num">Answer</th>
+        <th class="num">Judge</th>
+        <th class="num">Ticket reorder</th>
+        <th class="num">Calls / question</th>
+        <th class="num">Calls / 20 questions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PRE-T0 through pack page</td>
+        <td class="num">1</td>
+        <td class="num">1</td>
+        <td class="num">0</td>
+        <td class="num">2</td>
+        <td class="num">40</td>
+      </tr>
+      <tr>
+        <td>D7 v3</td>
+        <td class="num">1</td>
+        <td class="num">1</td>
+        <td class="num">1</td>
+        <td class="num">3</td>
+        <td class="num">60</td>
+      </tr>
+      <tr>
+        <td>Depth-20 manual rerank, later</td>
+        <td class="num">1</td>
+        <td class="num">1</td>
+        <td class="num">1</td>
+        <td class="num">5</td>
+        <td class="num">100</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="muted sans">The later row adds two manual reorder calls, one per clause. It was measured on a single question, about 3.9 seconds plus 5.1 seconds, and is not part of the five-profile decision.</p>
+
+  <h2>The full scoreboard</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Profile</th>
+        <th class="num">Judge</th>
+        <th class="num">Ticket top 2</th>
+        <th class="num">Manual facts</th>
+        <th class="num">Manual ms</th>
+        <th class="num">Answer / judge ms</th>
+        <th class="num">Chat calls</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PRE-T0</td>
+        <td class="num">14/20</td>
+        <td class="num">10/20</td>
+        <td class="num">33/60</td>
+        <td class="num">456</td>
+        <td class="num">1504 / 1743</td>
+        <td class="num">2</td>
+      </tr>
+      <tr class="dip">
+        <td>T0</td>
+        <td class="num">11/20</td>
+        <td class="num">10/20</td>
+        <td class="num">35/60</td>
+        <td class="num">272</td>
+        <td class="num">1626 / 1134</td>
+        <td class="num">2</td>
+      </tr>
+      <tr>
+        <td>D2 page</td>
+        <td class="num">14/20</td>
+        <td class="num">10/20</td>
+        <td class="num">42/60</td>
+        <td class="num">318</td>
+        <td class="num">1805 / 1273</td>
+        <td class="num">2</td>
+      </tr>
+      <tr class="pick">
+        <td>Pack page</td>
+        <td class="num">14/20</td>
+        <td class="num">10/20</td>
+        <td class="num">44/60</td>
+        <td class="num">331</td>
+        <td class="num">1772 / 1220</td>
+        <td class="num">2</td>
+      </tr>
+      <tr>
+        <td>D7 v3</td>
+        <td class="num">16/20</td>
+        <td class="num">7/20</td>
+        <td class="num">—</td>
+        <td class="num">658</td>
+        <td class="num">1589 / 1108</td>
+        <td class="num">3</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="muted sans">Green is the manual-search pick. Red is the accuracy dip. Ticket recall at rank 1 on the 100-question probe is 0.54 for PRE-T0 and T0, and was not re-measured afterward.</p>
+
+  <h2>What to keep</h2>
+  <div class="callout good">
+    <p>Use pack page for the manual hybrid: heading chunks, Tantivy keyword leg, database model filter, and at most five chunks from each file before RRF. That is the best manual-fact recall in this set, the bundled judge is back to the baseline 14 of 20, and manual time stays near 330 milliseconds.</p>
+  </div>
+  <ul>
+    <li><strong>Ticket hybrid.</strong> Leave it on the same ranked-list fuse used from PRE-T0 through pack page. Labeled-ticket recall did not improve when the manual leg changed, and the D7 v3 chat reorder made it worse, 7 of 20.</li>
+    <li><strong>Question split.</strong> D7 v3 is the highest bundled judge here, 16 of 20, at about twice the manual time and one extra chat call per question. Treat that gain as provisional until the six open ticket labels are aligned with the earlier runs.</li>
+    <li><strong>Do not ship T0 alone.</strong> It is the fastest manual leg and the worst bundled judge.</li>
+  </ul>
+
+  <h2>Deferred: reorder a deeper manual list</h2>
+  <p>A later probe, on one hard question, retrieved 20 fused chunks per clause and asked a chat model to reorder them, then kept two chunks from each clause. That passed when the right manual paragraph was already rank 12. The same depth did not contain the missing paragraph for the other two failures in the full suite. Running it on all 20 questions would add two chat calls and several seconds per question. That profile is not in the decision above.</p>
+
+  <h2>Run ids</h2>
+  <table>
+    <thead>
+      <tr><th>Profile</th><th>Bundled run</th><th>Manual-only run</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>PRE-T0</td><td><code>b20-brand-model-20261027</code></td><td><code>m90-brand-model-20261027</code></td></tr>
+      <tr><td>T0</td><td><code>b20-evo18-t0-20261028</code></td><td><code>m90-evo18-t0-20261028</code></td></tr>
+      <tr><td>D2 page</td><td><code>b20-evo18-d2-page-20261028</code></td><td><code>m90-evo18-d2-page-20261028</code></td></tr>
+      <tr><td>Pack page</td><td><code>b20-evo18-d2-pack-page-20261028</code></td><td><code>m90-evo18-d2-pack-page-20261028</code></td></tr>
+      <tr><td>D7 v3</td><td><code>b20-evo18-d7-v3-20261028</code></td><td>not re-run</td></tr>
+    </tbody>
+  </table>
+
+  <footer class="note">
+    Source: <code>docs_manual_gen/artifacts/TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md</code>, section 8. Latency is the median per question from each run log. This page is the draft spine for a technical article.
+  </footer>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById("theme");
+  var saved = localStorage.getItem("rrp-theme");
+  function current() {
+    var set = root.getAttribute("data-theme");
+    if (set === "light" || set === "dark") return set;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  function paint() {
+    btn.textContent = current() === "dark" ? "Light theme" : "Dark theme";
+  }
+  if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+  paint();
+  btn.addEventListener("click", function () {
+    var next = current() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    localStorage.setItem("rrp-theme", next);
+    paint();
+  });
+})();
+</script>
+</body>
+</html>
