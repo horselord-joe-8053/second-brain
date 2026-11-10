@@ -18,6 +18,7 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 12. [Story 11 — Three lexical arms: overlap, Postgres FTS, Tantivy](#war-story-11)
 13. [Story 12 — Bundled answers keep separate legs](#war-story-12)
 14. [Story 13 — Rerank the deep list, then keep five per ask](#war-story-13)
+15. [Story 14 — Rust “fearless concurrency” still needs PDFium fences](#war-story-14)
 
 ---
 
@@ -41,6 +42,7 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 <tr><td style="background:#e3f2fd">11</td><td><a href="#war-story-11">Three lexical arms: overlap, Postgres FTS, Tantivy</a></td><td>Cheap overlap stayed fast but failed relevance: common words supplied 66% of a gold chunk’s score.</td></tr>
 <tr><td style="background:#e3f2fd">12</td><td><a href="#war-story-12">Bundled answers keep separate legs</a></td><td>Manuals and past tickets stay different indexes; concat a fixed top-k, do not pretend chunks share one score.</td></tr>
 <tr><td style="background:#e3f2fd">13</td><td><a href="#war-story-13">Rerank the deep list, then keep five per ask</a></td><td>A reranker that only sees the already-cut top 5 cannot recover a hit at fused rank 12.</td></tr>
+<tr><td style="background:#e3f2fd">14</td><td><a href="#war-story-14">Rust “fearless concurrency” still needs PDFium fences</a></td><td>LLM Wiki Tauri backend: `spawn_blocking`, global PDFium mutex, `catch_unwind`, per-project queue locks—Java analogues named.</td></tr>
 </tbody>
 </table>
 
@@ -769,3 +771,290 @@ For a probe row, hybrid search uses depth 20, then either a local cross-encoder 
 <h3 id="war-story-13-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">13.4 Takeaway</h3>
 
 Rerank the candidate pool you hope contains the answer. A second cutoff after that can delete the win. On the 2026-10-30 probe, listwise moved page 27 from rank 12 to rank 1, and the MiniLM cross-encoder left it outside the five. The answer packet still missed the sentence because an 8000-character manual budget filled first.
+
+---
+
+<h2 id="war-story-14" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">14. Rust “fearless concurrency” still needs PDFium fences</h2>
+
+**Payoff (read this first):** Memory-safe Rust does not make PDFium thread-safe. After Tauri commands went `async` on Tokio’s multi-thread runtime, concurrent `read_file` calls could interleave in C and crash with `EXC_BAD_ACCESS`; the fix is explicit fences—`spawn_blocking`, a global PDFium mutex, panic guards, and per-wiki queue locks—not the slogan.
+
+**creation:** 261018-194500  
+**last_updated:** 261018-201200  
+**keywords:** rust, concurrency, tauri, tokio, pdfium, mutex, spawn_blocking, panic, java, ffi, design, llm-wiki, nu_llm_wiki  
+**difficulty:** 6  
+**significance:** 8  
+
+<h3 id="war-story-14-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">14.1 Context</h3>
+
+**LLM Wiki** (`nu_llm_wiki`) is the React ingest wiki in this ecosystem; its **desktop shell** is **Tauri 2** with a **Rust** backend (`nu_llm_wiki/src-tauri/`) that reads PDFs, watches `raw/sources/`, runs subprocess CLIs, and serves a local API. Python eval and Second Brain RAG live elsewhere—this story is about the **process boundary** where native I/O meets a multi-threaded async runtime.
+
+**Java mapping (where this code would live):** Think **Electron/Swing UI + a local Spring Boot or embedded Jetty** sidecar, except the “sidecar” is one OS process: the WebView is the frontend, Rust is the **controller/service layer**, and PDFium is **JNI into a vendor `.dylib`**. You would not run `Files.readAllBytes` + PDF parse on a **Netty event-loop thread**; you would not share one JNI handle across threads without a lock; you would register **WatchService** listeners that enqueue work instead of doing disk writes in the callback.
+
+Rust’s **fearless concurrency** is often misread as “concurrency is easy.” For a Java reader the accurate reading is: **`Send` / `Sync` + ownership** catch many bugs the JVM only catches at runtime (or never, with data races on non-`volatile` fields). **`unsafe` C**, **`Executor` vs event loop**, and **`Error` you cannot catch** (native crash) still need the same fences you already use—`synchronized`, bounded pools, poison handling, generation counters—not a different religion.
+
+<h3 id="war-story-14-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">14.2 Root Cause</h3>
+
+Three forces collided in production-shaped dev on macOS ARM64—each has a direct Java-shaped reading:
+
+1. **Tauri commands became `async fn`** on Tokio’s **multi-thread** runtime → like marking a **Spring `@Async` or WebFlux** handler async but still running a **blocking** `PDDocument.load` on the **same worker pool** that serves other requests. Two concurrent `read_file` calls can land on **different threads** (not the old “single command thread” mental model).
+2. **PDFium via `pdfium-render`** → same class of bug as a **non-thread-safe JNI wrapper** around a C PDF library: two `synchronized`-free calls from different threads → **SIGSEGV** / **`EXC_BAD_ACCESS`**, not a tidy `IOException`.
+3. **Parser panics** on bad bytes → morally similar to native code faulting, or to a library throwing **`AssertionError`** / **`OutOfMemoryError`** you did not anticipate: if it escapes the RPC boundary, the **whole JVM** (here: whole desktop app) is at risk unless you **isolate** or **fence**.
+
+None of that is fixed by “Rust is memory safe.” **Safe Rust cannot make unsafe C thread-safe**—exactly as **the JVM cannot make a broken JNI library thread-safe** without your lock discipline.
+
+<h3 id="war-story-14-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">14.3 Key Insight</h3>
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Java habit</th><th>What Rust adds in LLM Wiki</th><th>Where</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><code>ExecutorService.submit()</code> for blocking work</td><td><strong><code>spawn_blocking</code></strong></td><td><code>read_file</code>, writes in <code>fs.rs</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>synchronized(pdfium)</code></td><td>Global <code>Mutex&lt;()&gt;</code> + poison recovery</td><td><code>lock_pdfium()</code> in <code>fs.rs</code></td></tr>
+<tr><td style="background:#e3f2fd">Per-tenant <code>ReentrantLock</code></td><td><code>OnceLock&lt;BTreeMap&lt;…, Arc&lt;Mutex&lt;()&gt;&gt;&gt;&gt;</code></td><td><code>with_queue_lock</code> in <code>file_sync.rs</code></td></tr>
+<tr><td style="background:#e3f2fd"><code>ConcurrentHashMap&lt;String, Process&gt;</code></td><td><code>Arc&lt;Mutex&lt;HashMap&lt;…, Child&gt;&gt;&gt;</code> + <code>tokio::spawn</code></td><td><code>ClaudeCliState</code> in <code>claude_cli.rs</code></td></tr>
+<tr><td style="background:#e3f2fd">Fence around JNI</td><td><code>catch_unwind</code> → <code>Err(String)</code></td><td><code>panic_guard.rs</code>, watcher worker</td></tr>
+<tr><td style="background:#e3f2fd"><code>volatile</code> generation stamp</td><td><code>AtomicU64</code> watcher generation</td><td><code>file_sync.rs</code></td></tr>
+</tbody>
+</table>
+
+**Mental model for Java readers:**
+
+- **`Arc<Mutex<T>>`** ≈ shared object behind a **`ReentrantLock`** (or `Collections.synchronizedMap` when the critical section is tiny)—`Arc` is reference counting like **many handles to one heap object**; the mutex is still yours to order correctly.
+- **`spawn_blocking`** ≈ **`executor.submit(Runnable)`** on a **fixed blocking pool**, while the “reactor” thread goes back to polling I/O—same reason Netty uses **`BlockingTaskExecutor`** or you offload to **`ForkJoinPool.commonPool()`** for CPU/blocking work (with care).
+- **`OnceLock`** ≈ **`static volatile boolean initialized` + `synchronized` init-once** (safe publication of the PDFium bind)—like **double-checked locking done once** for a native library handle.
+- **`catch_unwind` → `Result::Err`** ≈ there is **no** `catch (Throwable)` that saves you from JNI segfault; this is the closest Rust gets to turning **unexpected failure** into an **API error string**—still weaker than **`ProcessBuilder` in a child JVM** for untrusted PDFs.
+
+Ownership is **compile-time thread confinement**: sharing mutable state without `Arc<Mutex<_>>` / channels usually **does not compile**—where Java might let you pass the same `ArrayList` into two threads and fail later at runtime.
+
+```mermaid
+flowchart TB
+  subgraph ui [WebView React]
+    A[Ingest / Sources UI]
+  end
+  subgraph tokio [Tokio async runtime]
+    B[Tauri command async fn]
+  end
+  subgraph blocking [Blocking thread pool]
+    C[run_guarded + PDF/Office extract]
+    D[lock_pdfium Mutex]
+    E[PDFium C library]
+  end
+  subgraph os_thread [Dedicated OS thread]
+    F[notify watcher recv loop]
+    G[with_queue_lock per project]
+  end
+  A -->|IPC| B
+  B -->|spawn_blocking| C
+  C --> D --> E
+  F --> G
+```
+
+Read the diagram left-to-right like a **Java desktop app**: UI thread posts to a **service**; the service must **`executor.submit`** blocking JNI work; file events go to a **queue + worker**, not the `WatchService` callback thread.
+
+<h3 id="war-story-14-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">14.4 Resolution</h3>
+
+Each subsection below is **Rust mechanism → Java habit you already know**. Snippets add `// Java:` comments at the decision points.
+
+#### 14.4.1 Async surface, blocking guts (`read_file`)
+
+**Pattern:** public API stays **non-blocking** (`async` / `Future`); heavy I/O runs on a **blocking pool**. In Java you would write `return CompletableFuture.supplyAsync(() -> parsePdf(path), blockingExecutor);` and never touch PDF bytes on the thread that runs **WebSocket ping/pong** or **SSE flush**.
+
+```rust
+// nu_llm_wiki/src-tauri/src/commands/fs.rs (opening of read_file)
+#[tauri::command]
+pub async fn read_file(path: String, extract_images: Option<bool>) -> Result<String, String> {
+    // Java: same reason you don't call PDDocument.load on the Netty EventLoop —
+    // async fn only *looks* non-blocking; the body still runs on a tokio worker.
+    tauri::async_runtime::spawn_blocking(move || {
+        // Java: like wrapping the whole service method in try/catch for
+        // AssertionError from a bad library — see panic_guard (14.4.3).
+        run_guarded("read_file", || {
+            let p = Path::new(&path);
+            // Java: Optional cache → ifPresent return; else switch on extension.
+            // ... cache hit, then match ext: "pdf" => extract_pdf_text(...), etc.
+        })
+    })
+    .await // Java: future.get() / join() — wait for blocking pool, not for PDF on event loop
+    .map_err(|e| format!("read_file blocking task join error: {e}"))? // pool/task failed to run
+}
+```
+
+#### 14.4.2 Serialize every PDFium entry (C rules beat the type system)
+
+**Pattern:** one **static native binding** + **one monitor** for all JNI/C entry. Java would use `private static final Object PDFIUM_LOCK = new Object();` and `synchronized (PDFIUM_LOCK) { nativeExtract(...); }` around **every** call—including page loops—because the vendor library documents **no concurrent use**.
+
+Why **`std::sync::Mutex`** here and **`tokio::sync::Mutex`** elsewhere: this lock is taken **only inside `spawn_blocking`**, never held while **awaiting** I/O—Java equivalent: **never call `wait()` while holding a lock** you need for another thread’s JNI call.
+
+```rust
+// nu_llm_wiki/src-tauri/src/commands/fs.rs
+// Java: static native library handle — initialize once (Initialization-on-demand holder idiom).
+static PDFIUM: OnceLock<Result<Pdfium, String>> = OnceLock::new();
+
+// Java: global monitor for all pdfium JNI — without it, two @Async workers = segfault.
+static PDFIUM_LOCK: Mutex<()> = Mutex::new(());
+
+pub(crate) fn lock_pdfium() -> MutexGuard<'static, ()> {
+    // Java: ReentrantLock after unexpected Error — here "poisoned" mutex after panic.
+    // Team judged pdfium has no cross-call Java-style static mutable state to corrupt.
+    PDFIUM_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+}
+```
+
+```rust
+// nu_llm_wiki/src-tauri/src/commands/extract_images.rs (extract_pdf_images)
+pub fn extract_pdf_images(path: &str, options: &ExtractOptions)
+    -> Result<Vec<ExtractedImage>, String>
+{
+    // Java: synchronized (PDFIUM_LOCK) { try (PDDocument doc = load...) { iterate pages } }
+    // Guard must cover *entire* native session, not just load_pdf_from_file().
+    let _guard = crate::commands::fs::lock_pdfium();
+    let pdfium = crate::commands::fs::pdfium()?;
+    let doc = pdfium.load_pdf_from_file(path, None)
+        .map_err(|e| format!("Failed to open PDF '{path}': {e}"))?;
+    // ... walk pages / image objects ...
+}
+```
+
+#### 14.4.3 Panic fence at the Tauri command boundary
+
+**Pattern:** turn **Rust panic** (unwind) into **`Result::Err`** at the RPC edge—closest Java analogy is catching **`Exception`** at the controller and returning **400/500 JSON**, **not** catching **`Error`** from broken JNI (segfault still kills the process).
+
+```rust
+// nu_llm_wiki/src-tauri/src/panic_guard.rs
+pub fn run_guarded<T, F>(label: &str, f: F) -> Result<T, String>
+where
+    F: FnOnce() -> Result<T, String>,
+{
+    match catch_unwind(AssertUnwindSafe(f)) {
+        Ok(r) => r, // Java: normal return or thrown IOException → handled Result::Err
+        Err(payload) => Err(report(label, payload)), // Java: catch (Exception e) → error DTO
+    }
+}
+
+fn report(label: &str, payload: Box<dyn Any + Send>) -> String {
+    // Java: e.getMessage() when panic payload is a String; else generic error id.
+    let msg = if let Some(s) = payload.downcast_ref::<String>() {
+        s.clone()
+    } else if let Some(s) = payload.downcast_ref::<&str>() {
+        (*s).to_string()
+    } else {
+        "(non-string panic payload)".to_string()
+    };
+    eprintln!("[panic_guard] command '{label}' panicked: {msg}"); // Java: log.error + MDC
+    format!("Internal error in {label}: {msg}") // Java: ProblemDetail / @ControllerAdvice body
+}
+```
+
+**Limitation (honest “fearless”):** `AssertUnwindSafe` is a **team assertion** the closure leaves no broken **Rust** invariants—like documenting “this `synchronized` block is re-entrant safe.” Panic **inside PDFium FFI** can still corrupt C heaps (**JNI segfault class**). Stronger Java pattern: **spawn a short-lived child process** to parse untrusted PDFs; LLM Wiki chose in-process fences for desktop latency.
+
+#### 14.4.4 Source watch: channel, OS thread, per-project locks, generation stamp
+
+**Pattern:** **WatchService / inotify callback thread** does almost nothing—`try_send` into a **bounded queue**; one **consumer thread** batches paths and writes queue JSON under a **per-tenant lock**. **Generation stamp** ≈ `volatile long listenerEpoch` checked before commit so a **restarted watcher** does not apply stale events (like invalidating an old `Future` after `shutdownNow()`).
+
+```rust
+// nu_llm_wiki/src-tauri/src/commands/file_sync.rs (abbreviated)
+// Java: private static final AtomicLong WATCHER_EPOCH = new AtomicLong();
+static WATCHER_GENERATION: AtomicU64 = AtomicU64::new(0);
+
+let watcher_generation = WATCHER_GENERATION.fetch_add(1, Ordering::SeqCst) + 1;
+// Java: synchronized(projectRootLock) { reset queue state } before registering new WatchKey
+with_queue_lock(&root, || reset_processing_tasks(&root, &project_id))?;
+
+// Java: new ArrayBlockingQueue<>(8192) — drop/backpressure if UI saves flood the watcher
+let (tx, rx) = mpsc::sync_channel::<PathBuf>(8_192);
+std::thread::spawn(move || {
+    // Java: single-threaded consumer Runnable — NOT the WatchService callback thread
+    let mut pending = BTreeSet::<PathBuf>::new();
+    loop {
+        match rx.recv_timeout(Duration::from_millis(700)) {
+            Ok(path) => { pending.insert(path); /* coalesce burst like draining queue.drainTo */ }
+            Err(RecvTimeoutError::Timeout) => { /* idle: periodic full rescan */ }
+            Err(RecvTimeoutError::Disconnected) => break,
+        }
+        // Java: try { handleChanges(); } catch (Throwable t) { log; keep consumer alive; }
+        let result = catch_unwind(AssertUnwindSafe(|| {
+            handle_changed_paths(/* … */, watcher_generation, paths)
+        }));
+    }
+});
+
+fn is_active_watcher_generation(generation: u64) -> bool {
+    // Java: if (epoch != WATCHER_EPOCH.get()) return; // stale watch registration
+    WATCHER_GENERATION.load(Ordering::SeqCst) == generation
+}
+```
+
+```rust
+// nu_llm_wiki/src-tauri/src/commands/file_sync.rs
+fn queue_lock_for(root: &Path) -> Arc<Mutex<()>> {
+    let key = path_key(root); // Java: tenantId = canonicalPath.toString()
+    let mut locks = QUEUE_LOCKS
+        .get_or_init(|| Mutex::new(BTreeMap::new()))
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    // Java: short synchronized(registry) { locks.computeIfAbsent(tenantId, k -> new ReentrantLock()) }
+    locks.entry(key).or_insert_with(|| Arc::new(Mutex::new(()))).clone()
+}
+
+fn with_queue_lock<T>(root: &Path, f: impl FnOnce() -> Result<T, String>) -> Result<T, String> {
+    let lock = queue_lock_for(root);
+    let _guard = lock.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+    // Java: lock.lock(); try { readJsonQueue(); mutate(); writeJsonQueue(); } finally { unlock }
+    f()
+}
+```
+
+#### 14.4.5 Async subprocess registry (Claude CLI)
+
+**Pattern:** **`ProcessBuilder` + `ConcurrentHashMap<String, Process>`** for cancel-by-id; **async stdout** on helper tasks (like **`process.getInputStream()` on an executor**). Critical detail: **do not hold the map lock across `Process.waitFor()`**—same as not holding `synchronized(children)` while blocking on exit, or **`claude_cli_kill`** cannot remove the process.
+
+```rust
+// nu_llm_wiki/src-tauri/src/commands/claude_cli.rs (abbreviated)
+#[derive(Default)]
+pub struct ClaudeCliState {
+    // Java: ConcurrentHashMap<String, Process> but async: lock().await = await mutex
+    children: Arc<Mutex<HashMap<String, Child>>>,
+}
+
+state.children.lock().await.insert(stream_id.clone(), child);
+// Java: executor.submit(() -> IOUtils.lineIterator(stdout, UTF_8).forEachRemaining(emit))
+
+tokio::spawn(async move {
+    // … emit stdout lines to webview …
+    // Java: Process p = map.remove(id); then p.waitFor() — never waitFor inside map sync
+    let child_opt = children.lock().await.remove(&stream_id_task);
+    let exit_code = if let Some(mut child) = child_opt {
+        child.wait().await.ok().and_then(|s| s.code())
+    } else {
+        None // claude_cli_kill won the race — like destroyForcibly() already called
+    };
+});
+```
+
+#### 14.4.6 What Rust did not solve in this app
+
+| Problem | Rust fence | Java-shaped equivalent |
+| --- | --- | --- |
+| PDFium thread safety | Global `lock_pdfium` | `synchronized(PDFIUM_MONITOR)` on every JNI call |
+| Parser panics | `run_guarded` / watcher `catch_unwind` | `@ControllerAdvice` for `Exception`; child process for untrusted parse |
+| Stale watcher after rebind | `WATCHER_GENERATION` | `AtomicLong epoch` checked before applying events |
+| Disk-full failed rebuild | Ops / monitoring | Same — no language fixes full disk |
+| TS ingest orchestration | `withProjectLock` in JS | Per-tenant `Lock` in JavaScript — same idea, no `Send`/`Sync` |
+
+<h3 id="war-story-14-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">14.5 Takeaway</h3>
+
+For a Java reader auditing **`nu_llm_wiki`’s Rust`, read it as **a desktop service layer you already know**, with sharper compile-time rules:
+
+| If you see… | Think Java… |
+| --- | --- |
+| `async fn` + `spawn_blocking` | WebFlux/Netty handler + `supplyAsync` on blocking executor |
+| `lock_pdfium` | Global monitor around non-thread-safe JNI |
+| `run_guarded` | Controller boundary catching `Exception` → error JSON (not segfault) |
+| `with_queue_lock` | Per-tenant `ReentrantLock` around queue file |
+| `WATCHER_GENERATION` | Invalidation generation on listener re-register |
+| `ClaudeCliState` | `ConcurrentHashMap` of `Process` + stream pump executors |
+
+**Fearless concurrency** = fewer **silent shared-mutation** bugs at compile time. **Fearful concurrency** = still yours wherever **C, blocking, and panics** meet **many threads**—document the fences in `spawn_blocking`, `lock_pdfium`, `panic_guard`, and `with_queue_lock` instead of hiding behind the slogan. Eval/RAG concurrency stays in **Python**; this story is only the **desktop native** layer.
