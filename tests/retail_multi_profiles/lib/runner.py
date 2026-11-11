@@ -287,8 +287,24 @@ def _run_one_row(
             if wiki is None:
                 raise RuntimeError("wiki client required for llm_wiki retrieval_mode")
             hits, context, retrieval_ms = retrieve_context(
-                wiki, query, top_k=top_k, page_prefix_chars=page_prefix
+                wiki,
+                query,
+                top_k=top_k,
+                page_prefix_chars=page_prefix,
+                wiki_evidence=ctx.cfg.get("wiki_evidence"),
             )
+            wiki_answer = ctx.cfg.get("wiki_answer") or {}
+            from tests.retail_multi_profiles.lib.wiki_uncertainty import uncertainty_label_for_hits
+
+            brain_rel = Path(str(lane.brain_relpath or "brain/retail-md"))
+            registry = (ctx.repo_root / brain_rel / ".wiki-claim-audit" / "claims.jsonl").resolve()
+            paths = [str(h.get("path") or "") for h in hits]
+            unc = uncertainty_label_for_hits(
+                paths,
+                registry_path=registry,
+                enabled=bool(wiki_answer.get("uncertainty_enabled", True)),
+            )
+            setattr(ctx, "wiki_preamble", unc or "")
         ctx.log.debug(
             f"retrieve done paths={hits[:3]!r} context_chars={len(context)} ms={retrieval_ms}"
         )
@@ -305,12 +321,19 @@ def _run_one_row(
             f"answer LLM provider={answer_llm.provider} model={answer_llm.model}"
         )
         with ctx.log.heartbeat(f"{lane.lane_id} {q.question_id} answer LLM"):
+            wiki_answer = ctx.cfg.get("wiki_answer") or {}
+            pre = str(getattr(ctx, "wiki_preamble", "") or "")
+            prov_label = str(wiki_answer.get("provisional_label") or "").strip()
+            if ctx.retrieval_mode == "llm_wiki" and prov_label:
+                pre = f"{prov_label}\n{pre}".strip()
             candidate, answer_ms = answer_from_context(
                 q.question,
                 context,
                 provider=answer_llm.provider,
                 model=answer_llm.model,
                 temperature=answer_llm.temperature,
+                preamble=pre,
+                insight_mode=ctx.retrieval_mode == "llm_wiki" and bool(prov_label),
             )
         _emit_progress(
             ctx,

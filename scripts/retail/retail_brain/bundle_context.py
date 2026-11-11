@@ -29,7 +29,7 @@ def format_manual_hits_for_context(
     page_prefix_chars: int,
     max_chars_per_chunk: int = 0,
 ) -> str:
-    """Render manual excerpts with source paths (same caps as M90 raw RAG)."""
+    """Render manual excerpts with source paths (same caps as TYPE_A_M90 raw RAG)."""
     parts: list[str] = []
     used = 0
     per_cap = max(0, int(max_chars_per_chunk or 0))
@@ -78,7 +78,7 @@ def bundled_answer_prompt(
     *,
     insufficient_literal: str,
 ) -> str:
-    """System-style prompt for B20: both ticket resolutions and manual facts may be required."""
+    """System-style prompt for TYPE_B_B20: ticket resolutions and manual facts may both be required."""
     return (
         "Answer using ONLY the past tickets and manual excerpts below. "
         "Combine relevant ticket resolution steps with manual facts when both apply. "

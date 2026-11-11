@@ -21,6 +21,7 @@ class Lane:
 
     lane_id: str
     project_path: Path
+    brain_relpath: str
     ingest_kind: str
     raw_rag_enabled: bool = False
     raw_glob: str = ""
@@ -37,6 +38,7 @@ def load_lanes(repo_root: Path, config_path: Path | None = None) -> dict[str, La
         out[str(lane_id)] = Lane(
             lane_id=str(lane_id),
             project_path=(repo_root / rel).resolve(),
+            brain_relpath=rel,
             ingest_kind=str(entry.get("ingest_kind") or ""),
             raw_rag_enabled=bool(raw_enabled) if raw_enabled is not None else False,
             raw_glob=str(entry.get("raw_glob") or ""),

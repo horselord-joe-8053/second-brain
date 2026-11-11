@@ -229,3 +229,9 @@
 ## [2026-10-19] ingest | fridge-docs_md/samsung_RF28K9070SG/repair-guide.md
 
 ## [2026-10-19] ingest | fridge-docs_md/samsung_RF28K9070SG/user-guide.md
+
+## [2026-11-12] ingest | fridge-news_md/GE_GNE27JYMFS_news.md
+
+## [2026-11-12] ingest | fridge-news_md/KitchenAid_KRFF507HPS_news.md
+
+## [2026-11-12] ingest | fridge-news_md/Samsung_RF28K9070SG_news.md

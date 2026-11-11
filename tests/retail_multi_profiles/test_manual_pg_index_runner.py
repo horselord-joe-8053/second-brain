@@ -20,6 +20,7 @@ def test_run_ingest_manual_pg_writes_progress_jsonl(
     fake_lane = Lane(
         lane_id="B",
         project_path=REPO / "brain" / "retail-md",
+        brain_relpath="brain/retail-md",
         ingest_kind="raw_md",
         raw_rag_enabled=True,
         raw_glob="**/*.md",

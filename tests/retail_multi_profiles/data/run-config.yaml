@@ -1,3 +1,4 @@
+# D6 suites: TYPE_A_M90 (M90-technical-singlefact) · TYPE_B_B20 (B20-technical-compound) · TYPE_C_C20 (C20-insight-orientation)
 # Lane A–D harness eval overrides → tests/retail_multi_profiles/lib/runner.py
 #
 # Run profiles (D3/D5 dimensions): tests/retail_multi_profiles/docs/RUN_PROFILES.md
@@ -19,13 +20,26 @@ retail_eval:
     temperature: 0
   judge:
     provider: gemini
-    model: gemini-3.1-flash-lite # override: RETAIL_JUDGE_MODEL (else GEMINI_MODEL)
+    model: gemini-4-carbon # independent strong judge; override: RETAIL_JUDGE_MODEL
     temperature: 0
 
 smoke_question_ids: [samsung_RF28K9070SG-E01, samsung_RF28K9070SG-H01]
 
-# B20 bundled Q&A smoke (M4): two ids — one easy, one hard.
+# TYPE_B_B20 bundled Q&A smoke (minor M4): two ids — one easy, one hard.
 bundled_smoke_question_ids: [BND-E01, BND-H01]
+
+# TYPE_C_C20 insight suite smoke (M11 P3.4)
+cos_insight_smoke_question_ids: [COS-C01, COS-H01]
+cos_insight_bundled_profile_id: MANUAL_B_RAW_PG_HYBRID
+
+wiki_evidence:
+  mode: full
+  sources_prefix: wiki/sources/
+  rerank: false
+
+wiki_answer:
+  provisional_label: "[provisional insight]"
+  uncertainty_enabled: true
 
 retail_raw_rag:
   embedding:

@@ -124,7 +124,23 @@
 
 
 
+
+
+
 ## Recently Updated
+- [[sources/13-fridge-newsmd--22-samsungrf28k9070sgnews--1vtdbi6]] — Samsung RF28K9070SG — Recent News and Consumer Trends
+- [[concepts/ai-software-updates]] — AI Software Updates
+- [[concepts/consumer-sentiment-analysis]] — Consumer Sentiment Analysis
+- [[sources/13-fridge-newsmd--24-kitchenaidkrff507hpsnews--1f4ab6n]] — KitchenAid KRFF507HPS — Recent News and Consumer Trends
+- [[entities/kitchenaid]] — KitchenAid
+- [[concepts/intelligent-auto-fill]] — Intelligent Auto Fill
+- [[sources/13-fridge-newsmd--16-gegne27jymfsnews--1j33fyx]] — GE GNE27JYMFS — Recent News and Consumer Trends
+- [[entities/ge-gne27jymfs]] — GE GNE27JYMFS
+- [[entities/rtings]] — RTINGS
+- [[entities/ge-profile-smart-4-door-refrigerator]] — GE Profile Smart 4-Door Refrigerator
+- [[concepts/product-lifecycle-management]] — Product Lifecycle Management
+- [[concepts/independent-product-review]] — Independent Product Review
+- [[concepts/smart-refrigerator-technology]] — Smart Refrigerator Technology
 - [[sources/13-fridge-docsmd--18-samsungrf28k9070sg--10-user-guide--1a8ymzx]] — Manuel d'utilisation du réfrigérateur Samsung RF28K9070SG
 - [[concepts/security-warnings]] — Avertissements de sécurité
 - [[concepts/installation]] — Installation
@@ -312,16 +328,3 @@
 - [[concepts/normal-operating-conditions]] — Normal Operating Conditions
 - [[sources/13-fridge-docsmd--12-gegne27jymfs--6-assets--10-user-guide--7-page043--v98sik]] — GE GNE27JYMFS User Guide - Page 043
 - [[sources/13-fridge-docsmd--12-gegne27jymfs--6-assets--10-user-guide--7-page042--11emk33]] — GE GNE27JYMFS User Guide - Page 042
-- [[entities/ge-appliances]] — GE Appliances
-- [[concepts/water-line-installation-instructions]] — Water Line Installation Instructions
-- [[sources/13-fridge-docsmd--12-gegne27jymfs--6-assets--10-user-guide--7-page041--pbfx1e]] — GE GNE27JYMFS User Guide - Page 041
-- [[concepts/water-line-connection-instructions]] — Water Line Connection Instructions
-- [[concepts/potable-water-supply]] — Potable Water Supply
-- [[sources/13-fridge-docsmd--12-gegne27jymfs--6-assets--10-user-guide--7-page040--pew20l]] — GE GNE27JYMFS User Guide - Page 040
-- [[concepts/shelf-assembly-for-energy-efficiency]] — Shelf Assembly for Energy Efficiency
-- [[concepts/icemaker-availability]] — Icemaker Availability
-- [[sources/13-fridge-docsmd--12-gegne27jymfs--6-assets--10-user-guide--7-page039--1bl8v6p]] — GE GNE27JYMFS User Guide - Page 039
-- [[concepts/leveling-the-refrigerator]] — Leveling the Refrigerator
-- [[concepts/assembly-of-shelves]] — Assembly of Shelves
-- [[sources/13-fridge-docsmd--12-gegne27jymfs--6-assets--10-user-guide--7-page038--1d2a3hq]] — GE GNE27JYMFS User Guide - Page 038
-- [[concepts/refrigerator-water-line-connection]] — Refrigerator Water Line Connection

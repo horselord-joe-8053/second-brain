@@ -95,6 +95,7 @@ This refactor does **not** repair layers 1–4. It freezes both systems and repl
 | **W20-D10** | The same answer model and settings serve A1 and A3. The primary outcome is a 0–100 semantic score plus judge-estimated correctness confidence; binary pass is derived only for historical comparison. |
 | **W20-D11** | LLM confidence is not a calibrated probability. Human review all low-confidence, borderline, malformed, and surprising rows before interpreting the result. |
 | **W20-D12** | Alignment answers: Q1 → graded semantic scoring; Q2 → automated API authoring plus human approval; Q3 → evaluation-only with both systems frozen. |
+| **W20-D13** | 2026-11-11 grill: do not promote from the current 20. Keep that frozen file unchanged. Author a new 20-row briefing suite before either arm runs: every question is cross-manual, gold scores a pattern, tradeoff, or taxonomy, and an exact page fact is optional rather than critical. Approved and frozen 2026-11-12 as `tests/retail_multi_profiles/data/retail-w20-briefing-v3.json` by `jjw8053-chat-approval-20261112`; SHA-256 `ca51baaff16c21d171fb92270306ce6f502982e61ecd34cff2747b91b4167631`. |
 
 ---
 
@@ -116,7 +117,7 @@ graph LR
  style F fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
 ```
 
-<h3 id="w20-recovery-p0" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.1 P0 — Freeze the experiment contract</h3>
+<h3 id="w20-recovery-p0" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.1 [X] P0 — Freeze the experiment contract</h3>
 
 Define the contract before authoring or running either arm:
 
@@ -136,13 +137,18 @@ Define the contract before authoring or running either arm:
 
 **P0 exit:** schema and validation tests encode the contract, while both current retrieval stacks remain byte-for-byte untouched.
 
-<h3 id="w20-recovery-p1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.2 P1 — Author W20 v2 from the PDFs</h3>
+**P0 verification:** `python3 -m pytest -q tests/retail_multi_profiles/test_w20_authoring.py` → 6 passed. Exwar: skip duplicate of portable story **#2**, which already requires an independently authored, frozen answer key before comparing arms.
+
+<h3 id="w20-recovery-p1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.2 [X] P1 — Author W20 v2 from the PDFs</h3>
 
 Replace the current validator-only `author_cos_insight_gold.py` with a reproducible authoring command:
 
 1. Accept the four original PDF paths and fail if any is missing.
 2. Require an explicit strong OpenAI model through `--model` or `RETAIL_W20_AUTHOR_MODEL`; do not inherit the mini answer-model default.
-3. Submit the PDF contents plus a versioned prompt and strict JSON schema to LLM 1.
+3. Use a bounded map/reduce authoring flow:
+   - four separate LLM 1 calls extract compact evidence packets from one original PDF each;
+   - one final LLM 1 call generates W20 v2 from those four packets;
+   - never submit all four complete PDFs in one context window.
 4. Require exactly 20 rows in the 12/4/4 distribution.
 5. Persist:
    - raw provider response;
@@ -155,7 +161,9 @@ Replace the current validator-only `author_cos_insight_gold.py` with a reproduci
 
 **P1 exit:** a mocked API test creates a schema-valid candidate and proves malformed/model-missing/overwrite paths fail safely. The live command is an operator gate requiring `OPENAI_API_KEY`.
 
-<h3 id="w20-recovery-p2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.3 P2 — Validate and human-freeze W20 v2</h3>
+**P1 verification:** the initial all-PDF call failed with `context_length_exceeded`; the bounded four-extraction-plus-synthesis design passed 16 authoring tests and generated a valid 12/4/4 candidate with `gpt-6.1-sol`. `--resume` reused saved packets after a validator correction. Exwar: appended portable story **#15**.
+
+<h3 id="w20-recovery-p2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.3 [X] P2 — Validate and human-freeze W20 v2</h3>
 
 Add a freeze command that:
 
@@ -170,7 +178,9 @@ Human review checks factual support, useful big-picture framing, answer complete
 
 **P2 exit:** W20 v2 is frozen only after all 20 rows pass validation and human review. Until then, the full benchmark refuses to run it.
 
-<h3 id="w20-recovery-p3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.4 P3 — Add graded, blinded judging</h3>
+**P2 verification:** user approval was recorded as `jjw8053-chat-approval-20261111`; all 20 rows are verified and frozen with author provenance at SHA-256 `14bcfa25430db7e02edc29b76ad8e1f5dc9c073620a53450fa67d5bfb70ec8a1`. Exwar: skip duplicate of stories **#2** and **#15** (independent frozen gold plus authoring provenance).
+
+<h3 id="w20-recovery-p3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.4 [X] P3 — Add graded, blinded judging</h3>
 
 Replace binary-first judging with one strict JSON result:
 
@@ -203,6 +213,8 @@ Scoring policy:
 - Flag malformed responses, confidence below the frozen threshold, score near the decision threshold, and surprising arm deltas for human review.
 
 **P3 exit:** tests prove non-critical omissions reduce rather than zero a score, critical contradictions cap it, citation absence remains separate, arm labels never enter the prompt, and same-provider author/judge configuration is rejected.
+
+**P3 verification:** 26 targeted tests passed. `gpt-6.1-sol` authors; independent `gemini-4-carbon` judges. A live gold-equals-candidate smoke scored 100 with confidence 1.0 and no review flags. Exwar: appended portable story **#16**.
 
 <h3 id="w20-recovery-p4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">4.5 P4 — Run and report the frozen comparison</h3>
 
@@ -288,10 +300,10 @@ Explicitly untouched: `sku_scope.py`, `query_unit_orchestrator.py`, `wiki_eviden
 
 Execution:
 
-- [ ] P0 freeze schema, score weights, thresholds, and experiment boundaries.
-- [ ] P1 implement reproducible LLM 1 PDF authoring with provenance, safe writes, neat logging, and checkpoints.
-- [ ] P2 implement validation/freeze workflow and complete human review.
-- [ ] P3 implement independent LLM 2 graded judging, deterministic blinding, derived compatibility pass, and review flags.
+- [X] P0 freeze schema, score weights, thresholds, and experiment boundaries.
+- [X] P1 implement reproducible LLM 1 PDF authoring with provenance, safe writes, neat logging, and checkpoints.
+- [X] P2 implement validation/freeze workflow and complete human review.
+- [X] P3 implement independent LLM 2 graded judging, deterministic blinding, derived compatibility pass, and review flags.
 - [ ] P4 run frozen W20 v2, update analysis, and preserve canonical B20 provenance.
 - [ ] Record outcome without post-run question edits.
 - [ ] Run `./scripts/verify.sh`.

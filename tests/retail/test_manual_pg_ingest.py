@@ -31,6 +31,7 @@ def tiny_lane(tmp_path: Path) -> Lane:
     return Lane(
         lane_id="B",
         project_path=tmp_path,
+        brain_relpath="brain/retail-md",
         ingest_kind="external_markdown",
         raw_rag_enabled=True,
         raw_glob="raw/sources/fridge-docs_md/**/*.md",

@@ -1,0 +1,8 @@
+{
+  "reviewer": "jjw8053-chat-approval-20261111",
+  "reviewed_at": "2026-11-11T12:24:51.394003+00:00",
+  "candidate_path": "ops/runs/retail-w20-author/w20-v2-gpt61-20261111/candidate.json",
+  "candidate_sha256": "ac6e757b2aca2f7e5163e2341540b2fdef9e3bd8cd9769f13af15c0b59793f99",
+  "frozen_path": "tests/retail_multi_profiles/data/retail-w20-focused-synthesis-v2.json",
+  "frozen_sha256": "14bcfa25430db7e02edc29b76ad8e1f5dc9c073620a53450fa67d5bfb70ec8a1"
+}

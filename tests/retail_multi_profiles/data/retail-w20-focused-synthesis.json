@@ -1,0 +1,458 @@
+{
+  "eval_suite_id": "TYPE_W_W20",
+  "eval_suite_long_name": "W20-focused-multi-section-synthesis",
+  "schema_version": "cos_insight_qa.v1",
+  "created_at": "20261110-145603",
+  "corpus_profile": "fru_us_1k",
+  "grounding_policy": "Focused lead-facing gold answers, at most 60 words each. Claims cite only the reopened source PDFs; no invented rates, repairs, or external knowledge.",
+  "sources_opened": [
+    "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+    "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+    "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+    "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf"
+  ],
+  "questions": [
+    {
+      "id": "W01",
+      "difficulty": "not_applicable",
+      "audience": "training_lead",
+      "question": "How should a training lead distinguish GE TurboCool from KitchenAid Max Cool when explaining why a temporary cooling mode is not a permanent temperature adjustment?",
+      "answer": "GE TurboCool rapidly cools fresh food but does not change freezer temperature (ge_GNE27JYMFS/user-guide.pdf, Controls). KitchenAid Max Cool supports heavy use or warm conditions and ends after 24 hours unless stopped (kitchenaid_KRFF507HPS/user-guide.pdf, Max Cool). KitchenAid treats setpoint changes separately from Max Cool (kitchenaid_KRFF507HPS/user-guide.pdf, Using the Controls).",
+      "rubric": [
+        "Separates temporary boosts from ordinary setpoint adjustments",
+        "Correctly limits GE TurboCool to fresh-food cooling",
+        "States KitchenAid Max Cool duration",
+        "Uses both brands without claiming equal controls"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Controls",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Max Cool",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Using the Controls"
+        ]
+      }
+    },
+    {
+      "id": "W02",
+      "difficulty": "not_applicable",
+      "audience": "training_lead",
+      "question": "For Samsung RF28K9070SG, what should a training lead clarify if an owner believes choosing FlexZone Freezer also changes the main freezer setting?",
+      "answer": "FlexZone Freezer mode sets the lower-right convertible compartment to the freezer temperature (samsung_RF28K9070SG/user-guide.pdf, FlexZone). The main freezer temperature is selected separately with the Freezer control (samsung_RF28K9070SG/user-guide.pdf, Feature panel). The two selections concern different compartments, not a single shared setpoint (samsung_RF28K9070SG/user-guide.pdf, FlexZone).",
+      "rubric": [
+        "Identifies the lower-right FlexZone compartment",
+        "Separates its mode from main freezer settings",
+        "Does not invent a temperature adjustment effect",
+        "Cites both FlexZone and panel guidance"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#FlexZone",
+          "samsung_RF28K9070SG/user-guide.pdf#Feature panel"
+        ]
+      }
+    },
+    {
+      "id": "W03",
+      "difficulty": "not_applicable",
+      "audience": "service_lead",
+      "question": "Why should a KitchenAid service lead check for a blocked air vent before advising an owner to lower the temperature setpoint further?",
+      "answer": "KitchenAid says a colder-than-recommended setpoint does not cool compartments faster and advises checking vents first (kitchenaid_KRFF507HPS/user-guide.pdf, Using the Controls). Its troubleshooting material associates a blocked fresh-food vent with a compartment becoming too cold (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). Lowering the setpoint could therefore miss the stated cause (kitchenaid_KRFF507HPS/user-guide.pdf, Using the Controls).",
+      "rubric": [
+        "Mentions checking air vents before resetting temperature",
+        "Rejects faster cooling from unnecessarily colder setpoints",
+        "Recognizes blocked vents may make food too cold",
+        "Uses controls and troubleshooting evidence"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Using the Controls",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING"
+        ]
+      }
+    },
+    {
+      "id": "W04",
+      "difficulty": "not_applicable",
+      "audience": "ops_lead",
+      "question": "When briefing initial ice use, what should an ops lead distinguish between GE and KitchenAid instructions on discarded batches and a full ice bin?",
+      "answer": "GE advises discarding the first few ice batches to clear the water line (ge_GNE27JYMFS/user-guide.pdf, Automatic Icemaker). KitchenAid specifies discarding the first three batches and allowing two to three days for the bin to fill (kitchenaid_KRFF507HPS/user-guide.pdf, Ice Maker and Ice Storage Bin (on some models)).",
+      "rubric": [
+        "States GE first-few-batches advice",
+        "States KitchenAid first-three-batches guidance",
+        "Does not promise an immediately full ice bin",
+        "Cites both manufacturers ice sections"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Automatic Icemaker",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Ice Maker and Ice Storage Bin (on some models)"
+        ]
+      }
+    },
+    {
+      "id": "W05",
+      "difficulty": "not_applicable",
+      "audience": "service_lead",
+      "question": "If Samsung indicates a full ice bucket but dispensing stops with the door open, what should a service lead distinguish before blaming the ice maker?",
+      "answer": "The Samsung technician sheet has a load indication for a full ice bucket (samsung_RF28K9070SG/repair-guide.pdf, Load Mode). The user guide says opening a door disables the ice-maker auger motor through a safety interlock (samsung_RF28K9070SG/user-guide.pdf, Refrigerator at a glance). Bucket-full status therefore does not establish that dispensing should run with the door open (samsung_RF28K9070SG/user-guide.pdf, Refrigerator at a glance).",
+      "rubric": [
+        "Distinguishes stored-ice state from dispensing permission",
+        "Identifies the door-open auger interlock",
+        "Uses consumer and technician documents",
+        "Avoids diagnosing a failed motor"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/repair-guide.pdf#Load Mode",
+          "samsung_RF28K9070SG/user-guide.pdf#Refrigerator at a glance"
+        ]
+      }
+    },
+    {
+      "id": "W06",
+      "difficulty": "not_applicable",
+      "audience": "ops_lead",
+      "question": "Why should an ops lead not equate Samsung cubed-ice selection with KitchenAid Max Ice when briefing customers who want more ice?",
+      "answer": "Samsung Cubed Ice selects a dispensing type, while Ice Maker Off independently disables new ice production (samsung_RF28K9070SG/user-guide.pdf, Feature panel). KitchenAid Max Ice temporarily increases production (kitchenaid_KRFF507HPS/user-guide.pdf, Max Ice). KitchenAid also stops production automatically when its bin is full or a relevant door is open (kitchenaid_KRFF507HPS/user-guide.pdf, Ice Maker and Ice Storage Bin (on some models)).",
+      "rubric": [
+        "Separates ice type selection from production",
+        "Describes Samsung Ice Maker Off independently",
+        "Identifies KitchenAid Max Ice as a boost",
+        "Notes automatic KitchenAid stopping conditions"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#Feature panel",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Max Ice",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Ice Maker and Ice Storage Bin (on some models)"
+        ]
+      }
+    },
+    {
+      "id": "W07",
+      "difficulty": "not_applicable",
+      "audience": "service_lead",
+      "question": "When a Samsung owner reports the Showcase door rubbing another door, what two physical conditions should a service lead ask about?",
+      "answer": "Samsung says the applicable Showcase door should close with a click and the vertical hinged section must be correctly positioned (samsung_RF28K9070SG/user-guide.pdf, Refrigerator at a glance). The installation instructions separately cover door alignment (samsung_RF28K9070SG/user-guide.pdf, Step-by-step installation). A closing sound alone is therefore not evidence that hinge orientation and alignment are both correct (samsung_RF28K9070SG/user-guide.pdf, Refrigerator at a glance).",
+      "rubric": [
+        "Mentions Showcase click only when fitted",
+        "Checks vertical hinged section position",
+        "Recognizes alignment as a separate issue",
+        "Does not prescribe hardware repair steps"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#Refrigerator at a glance",
+          "samsung_RF28K9070SG/user-guide.pdf#Step-by-step installation"
+        ]
+      }
+    },
+    {
+      "id": "W08",
+      "difficulty": "not_applicable",
+      "audience": "regional_lead",
+      "question": "When a GE door sits unevenly and frost appears on frozen food, which two manual sections should a regional lead connect before speculating about components?",
+      "answer": "GE installation instructions address leveling and door alignment (ge_GNE27JYMFS/user-guide.pdf, INSTALLING THE REFRIGERATOR). Its troubleshooting table associates frost with a door left open or openings that admit moist air (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). Review physical closure and installation fit before assigning a specific component failure (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service).",
+      "rubric": [
+        "Links drawer fit to potential air entry",
+        "Uses installation and troubleshooting sections",
+        "Avoids declaring a failed cooling component",
+        "Keeps guidance at owner-briefing level"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#INSTALLING THE REFRIGERATOR",
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service"
+        ]
+      }
+    },
+    {
+      "id": "W09",
+      "difficulty": "not_applicable",
+      "audience": "training_lead",
+      "question": "How should a training lead contrast KitchenAid and Samsung center-door seals when an owner thinks both hinged strips are meant to move identically?",
+      "answer": "KitchenAid describes a left-door hinged seal that folds inward when opened and seals between closed doors (kitchenaid_KRFF507HPS/user-guide.pdf, Opening and Closing Doors). Samsung instead warns that its vertical hinged section must be positioned correctly before closure to avoid scratching the other door (samsung_RF28K9070SG/user-guide.pdf, Refrigerator at a glance).",
+      "rubric": [
+        "Explains KitchenAid automatic hinged-seal movement",
+        "Explains Samsung positioning caution",
+        "Does not generalize one mechanism across brands",
+        "Cites both door sections"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Opening and Closing Doors",
+          "samsung_RF28K9070SG/user-guide.pdf#Refrigerator at a glance"
+        ]
+      }
+    },
+    {
+      "id": "W10",
+      "difficulty": "not_applicable",
+      "audience": "ops_lead",
+      "question": "If a KitchenAid dispenser screen goes dark after inactivity, how can an ops lead distinguish normal Sleep mode from actual Cooling Off?",
+      "answer": "KitchenAid says the dispenser display enters Sleep mode after two minutes without panel or paddle use and can be reawakened (kitchenaid_KRFF507HPS/user-guide.pdf, Using the Controls). Its separate Cooling Off setting stops both refrigerator and freezer cooling (kitchenaid_KRFF507HPS/user-guide.pdf, Cooling On/Off). A sleeping display alone is not evidence that cooling was disabled (kitchenaid_KRFF507HPS/user-guide.pdf, Using the Controls).",
+      "rubric": [
+        "Reports display sleep separately from cooling",
+        "Includes two-minute inactivity condition",
+        "Identifies Cooling Off impact on both compartments",
+        "Avoids inferring power failure from darkness"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Using the Controls",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Cooling On/Off"
+        ]
+      }
+    },
+    {
+      "id": "W11",
+      "difficulty": "not_applicable",
+      "audience": "regional_lead",
+      "question": "What should a regional lead warn GE and KitchenAid owners not to infer from missing alarms or indicators while Sabbath Mode is enabled?",
+      "answer": "On applicable GE models, Sabbath Mode suppresses advanced functions including the door alarm (ge_GNE27JYMFS/user-guide.pdf, Sabbath Modes (on some models)). KitchenAid states a power outage is not indicated on the display if it occurs during Sabbath Mode (kitchenaid_KRFF507HPS/user-guide.pdf, Sabbath Mode). Missing indications in these modes do not prove those events never occurred (kitchenaid_KRFF507HPS/user-guide.pdf, Sabbath Mode).",
+      "rubric": [
+        "Identifies GE door-alarm limitation",
+        "Identifies KitchenAid power-outage indication limitation",
+        "Avoids claiming every model has identical Sabbath features",
+        "States silence is not proof of no event"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Sabbath Modes (on some models)",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Sabbath Mode"
+        ]
+      }
+    },
+    {
+      "id": "W12",
+      "difficulty": "not_applicable",
+      "audience": "service_lead",
+      "question": "When Samsung lights and fans run but compartments do not cool, what distinction between retail display mode and technician fault assessment should a service lead make?",
+      "answer": "Samsung Cooling Off or Shop mode leaves fans and lights operating while compressors stop (samsung_RF28K9070SG/user-guide.pdf, Cooling Off). The technician sheet lists Demo Mode separately from diagnostic assessment (samsung_RF28K9070SG/repair-guide.pdf, Demo MODE / Cooling off Mode). These observations justify checking the operating mode before treating a lit panel as proof of normal refrigeration (samsung_RF28K9070SG/user-guide.pdf, Cooling Off).",
+      "rubric": [
+        "Describes Cooling Off without calling it a fault",
+        "Notes fans and lights can still operate",
+        "Distinguishes demo from diagnostic assessment",
+        "Does not instruct technician repair procedures"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#Cooling Off",
+          "samsung_RF28K9070SG/repair-guide.pdf#Demo MODE / Cooling off Mode"
+        ]
+      }
+    },
+    {
+      "id": "W13",
+      "difficulty": "not_applicable",
+      "audience": "training_lead",
+      "question": "Can a training lead promise that KitchenAid or Samsung refrigerator filtration makes microbiologically unsafe incoming water safe to drink?",
+      "answer": "KitchenAid warns against using its filtration system with microbiologically unsafe or unknown-quality water without adequate disinfection (kitchenaid_KRFF507HPS/user-guide.pdf, Water Filtration System). Samsung says its filter removes unwanted particles but does not sterilize or destroy microorganisms (samsung_RF28K9070SG/user-guide.pdf, Step-by-step installation). Neither guide supports a blanket safety promise for unsafe source water (kitchenaid_KRFF507HPS/user-guide.pdf, Water Filtration System).",
+      "rubric": [
+        "Rejects a universal disinfection promise",
+        "Includes KitchenAid unsafe-water warning",
+        "Includes Samsung non-sterilization statement",
+        "Cites both manuals"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Water Filtration System",
+          "samsung_RF28K9070SG/user-guide.pdf#Step-by-step installation"
+        ]
+      }
+    },
+    {
+      "id": "W14",
+      "difficulty": "not_applicable",
+      "audience": "ops_lead",
+      "question": "If a KitchenAid Measured Fill volume looks inaccurate after installation, what should an ops lead separate from the water-filter replacement schedule?",
+      "answer": "KitchenAid provides a separate Measured Fill calibration process in the dispenser section (kitchenaid_KRFF507HPS/user-guide.pdf, Water and Ice Dispensers). Its water-filter status and replacement intervals concern the filter rather than volume calibration (kitchenaid_KRFF507HPS/user-guide.pdf, Water Filtration System). A volume discrepancy should not automatically be reported as an expired filter (kitchenaid_KRFF507HPS/user-guide.pdf, Water and Ice Dispensers).",
+      "rubric": [
+        "Distinguishes calibration from filter age",
+        "Identifies Measured Fill as its own function",
+        "Avoids diagnosing a blocked filter without evidence",
+        "Cites dispenser and filtration sections"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Water and Ice Dispensers",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Water Filtration System"
+        ]
+      }
+    },
+    {
+      "id": "W15",
+      "difficulty": "not_applicable",
+      "audience": "service_lead",
+      "question": "When GE water spurts after a filter change but Samsung water briefly looks cloudy, what different manual-backed explanations should a service lead give?",
+      "answer": "GE associates spurting with a newly installed filter and recommends flushing the dispenser (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). Samsung explains temporary cloudy water as dissolved oxygen and nitrogen during filtration, normally clearing within seconds (samsung_RF28K9070SG/user-guide.pdf, Water clouding). These are distinct observations; neither alone proves a defective filter (samsung_RF28K9070SG/user-guide.pdf, Water clouding).",
+      "rubric": [
+        "Connects GE spurting to new-filter flushing",
+        "Explains Samsung transient cloudiness with gas",
+        "Does not conflate spurting and cloudiness",
+        "Avoids claiming confirmed filter damage"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service",
+          "samsung_RF28K9070SG/user-guide.pdf#Water clouding"
+        ]
+      }
+    },
+    {
+      "id": "W16",
+      "difficulty": "not_applicable",
+      "audience": "training_lead",
+      "question": "What counterintuitive cooling risk should a training lead identify when comparing KitchenAid and Samsung warnings about food blocking internal air vents?",
+      "answer": "KitchenAid troubleshooting says blocked fresh-food vents can make the refrigerator too cold (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). Samsung warns that blocked vents can cause overcooling and, if prolonged, possible filter damage and leakage (samsung_RF28K9070SG/user-guide.pdf, Usage cautions). Obstruction therefore is not limited to insufficient cooling (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING).",
+      "rubric": [
+        "Recognizes overcooling rather than only warming",
+        "Includes KitchenAid vent warning",
+        "Includes Samsung possible filter-leak consequence",
+        "Does not invent a fan failure"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING",
+          "samsung_RF28K9070SG/user-guide.pdf#Usage cautions"
+        ]
+      }
+    },
+    {
+      "id": "W17",
+      "difficulty": "not_applicable",
+      "audience": "service_lead",
+      "question": "For GE GNE27JYMFS, how should a service lead distinguish erratic temperatures caused by blocked air outlets from warmth associated with doors left open?",
+      "answer": "GE control instructions warn against placing food directly against an air outlet because temperatures may become erratic (ge_GNE27JYMFS/user-guide.pdf, Controls). Its troubleshooting table separately cites frequent openings or a door left open when compartments are warm (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service).",
+      "rubric": [
+        "Identifies air-outlet obstruction warning",
+        "Identifies door-opening warmth as separate",
+        "Avoids asserting a defective temperature sensor",
+        "Uses GE controls and troubleshooting"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Controls",
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service"
+        ]
+      }
+    },
+    {
+      "id": "W18",
+      "difficulty": "not_applicable",
+      "audience": "regional_lead",
+      "question": "Why should a regional lead avoid describing KitchenAid dual evaporators and Samsung FlexZone as interchangeable compartment-control features in a customer briefing?",
+      "answer": "KitchenAid describes optional dual evaporators as maintaining separate refrigerator and freezer climates (kitchenaid_KRFF507HPS/user-guide.pdf, Dual Evaporator (on some models)). Samsung FlexZone instead lets users select a storage temperature mode for its lower-right compartment (samsung_RF28K9070SG/user-guide.pdf, FlexZone). One description concerns compartment climate separation; the other concerns selectable use of a compartment (samsung_RF28K9070SG/user-guide.pdf, FlexZone).",
+      "rubric": [
+        "Describes KitchenAid evaporator separation correctly",
+        "Describes Samsung lower-right FlexZone control",
+        "Treats optional features cautiously",
+        "Does not promise equivalent settings or hardware"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Dual Evaporator (on some models)",
+          "samsung_RF28K9070SG/user-guide.pdf#FlexZone"
+        ]
+      }
+    },
+    {
+      "id": "W19",
+      "difficulty": "not_applicable",
+      "audience": "service_lead",
+      "question": "If Samsung makes noise while producing ice and refuses to dispense with a door open, which two distinct normal behaviors should a service lead explain?",
+      "answer": "Samsung calls ice-production noise normal (samsung_RF28K9070SG/user-guide.pdf, Handle and care). The guide separately says opening the door disables the auger motor through a safety interlock (samsung_RF28K9070SG/user-guide.pdf, Refrigerator at a glance). Normal production sounds and door-open dispensing restrictions should not be combined into a claim that the ice maker is broken (samsung_RF28K9070SG/user-guide.pdf, Handle and care).",
+      "rubric": [
+        "Acknowledges normal ice-production noise",
+        "Identifies door-open auger inhibition",
+        "Avoids inventing defective dispenser components",
+        "Cites both user-guide passages"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#Handle and care",
+          "samsung_RF28K9070SG/user-guide.pdf#Refrigerator at a glance"
+        ]
+      }
+    },
+    {
+      "id": "W20",
+      "difficulty": "not_applicable",
+      "audience": "ops_lead",
+      "question": "When a refrigerator makes rattling sounds, how should an ops lead contrast GE leveling guidance with KitchenAid water-line vibration guidance?",
+      "answer": "GE troubleshooting links slight vibration or rattling to leveling-leg adjustment (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). KitchenAid also identifies water lines moving against the cabinet or items on top as causes of rattling (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). A rattling complaint alone cannot establish the same cause across both refrigerators (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING).",
+      "rubric": [
+        "Notes GE leveling possibility",
+        "Notes KitchenAid water-line or top-item vibration",
+        "Avoids a universal diagnosis",
+        "Cites each brand’s troubleshooting guidance"
+      ],
+      "authoring": {
+        "prompt_id": "cos_focused_synthesis_gold.v2",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING"
+        ]
+      }
+    }
+  ]
+}
