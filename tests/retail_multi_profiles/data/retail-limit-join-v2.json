@@ -1,0 +1,290 @@
+{
+  "schema_version": "cos_insight_qa.v1",
+  "construct": "limit_join_v2",
+  "status": "locked_before_scores",
+  "gold_max_words": 75,
+  "answer_max_words": 150,
+  "pattern": "One model per question. Bare model codes only. Gold states the limit in 75 words or fewer. Both arms may use up to 150 words.",
+  "questions": [
+    {
+      "id": "V01",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Can a GNE27JYMFS owner turn on FridgeFocus crisper camera checks from the 2026 GE Profile Kitchen Assistant announcement?",
+      "answer": "No. FridgeFocus and the interior inventory camera belong to the announced GE Profile four-door refrigerator. They are not on the GNE27JYMFS and cannot be added by an update.",
+      "criteria": [
+        {
+          "text": "FridgeFocus and the inventory camera cannot be added to the GNE27JYMFS.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V02",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Does GE ending manufacture of GNE27JYMFS cancel the limited warranty on refrigerators already sold?",
+      "answer": "No. Ending manufacture is not the same as canceling warranty. Warranty coverage, parts availability, and recalls are separate questions that each need their own evidence.",
+      "criteria": [
+        {
+          "text": "Ending manufacture does not cancel the limited warranty on units already sold.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V03",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "KitchenAid advertised the MindFULLness Fridge with Corkcicle. Does that add Intelligent Auto Fill or meditation dispensing to KRFF507HPS?",
+      "answer": "No. MindFULLness is a promotional experience on newer Intelligent Auto Fill models. The KRFF507HPS has a standard through-the-door dispenser only.",
+      "criteria": [
+        {
+          "text": "MindFULLness does not add Intelligent Auto Fill to the KRFF507HPS.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V04",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "A GNE27JYMFS owner asks whether GE's Scan-to-List barcode scanner in the dispenser can be enabled through SmartHQ on their unit.",
+      "answer": "No. Scan-to-List and the exterior barcode scanner are on the new GE Profile refrigerator line. GE's release does not offer them as a retrofit for GNE27JYMFS owners.",
+      "criteria": [
+        {
+          "text": "Scan-to-List cannot be enabled on the GNE27JYMFS through SmartHQ.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V05",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Can Sphere Ice or the dual automatic ice makers from the 2026 Bespoke announcement be installed on an existing RF28K9070SG?",
+      "answer": "No. Sphere Ice and the tall dispenser options belong to new three-door Bespoke models. Samsung's announcement does not add them to the four-door RF28K9070SG.",
+      "criteria": [
+        {
+          "text": "Sphere Ice and the dual ice makers are not an install option on the RF28K9070SG.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V06",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "An RF28K9070SG owner wants the Family Hub screen and Gemini food recognition from Samsung's September 2026 software news. Will this model receive that update?",
+      "answer": "No. The September 2026 update targets selected newer Family Hub models with compatible screens and cameras. It does not name the RF28K9070SG as eligible.",
+      "criteria": [
+        {
+          "text": "The RF28K9070SG is not named as eligible for the Family Hub Gemini update.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V07",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Retailer reviews for RF28K9070SG mention ice-maker problems. May support quote those review percentages as an official failure rate?",
+      "answer": "No. Best Buy and Home Depot review percentages reflect posted owner sentiment, not measured failure rates and not a recall. Symptom wording still matters for triage.",
+      "criteria": [
+        {
+          "text": "Review percentages are not an official failure rate or a recall.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V08",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Does the GNE27JYMFS user guide's Turbo Cool button prove the model is still in current GE production?",
+      "answer": "No. Turbo Cool is documented for installed units. GE's listing separately says GNE27JYMFS is no longer being manufactured, which is not a recall.",
+      "criteria": [
+        {
+          "text": "Turbo Cool in the guide does not prove the GNE27JYMFS is still in current production.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V09",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Lowe's shows 4.3/5 for KRFF507HPS with ice-maker complaints in the text. Does that score prove KitchenAid added Intelligent Auto Fill to this model?",
+      "answer": "No. The Lowe's score summarizes owner sentiment about KRFF507HPS. It is not a product announcement, and KRFF507HPS does not include Intelligent Auto Fill.",
+      "criteria": [
+        {
+          "text": "The Lowe's score does not prove Intelligent Auto Fill was added to KRFF507HPS.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V10",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "RTINGS notes the GNE27JYMFS ice bin uses noticeable freezer-drawer space. Should staff treat that as proof the freezer failed?",
+      "answer": "No. RTINGS scored ice making 8.4/10 while noting bin space trade-offs. That is not automatic proof of a failed freezer or a cooling defect.",
+      "criteria": [
+        {
+          "text": "Ice bin space use is not automatic proof of a failed freezer.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V11",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "A GNE27JYMFS owner asks whether the Instacart-linked grocery list from GE's Kitchen Assistant announcement can be turned on through SmartHQ on their refrigerator.",
+      "answer": "No. Instacart-linked Scan-to-List grocery features belong to the announced GE Profile refrigerator line. GE's release does not offer them as a SmartHQ enablement on the GNE27JYMFS.",
+      "criteria": [
+        {
+          "text": "Instacart-linked Scan-to-List cannot be enabled on the GNE27JYMFS through SmartHQ.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V12",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "GE's listing shows GNE27JYMFS as temporarily unavailable online. Does that prove every retailer has zero units in stock nationwide?",
+      "answer": "No. One seller's online unavailability is not proof that all retail inventory is gone. Stock depends on seller, location, and time. Confirm with the specific retailer or store.",
+      "criteria": [
+        {
+          "text": "Online unavailability on one listing does not prove zero nationwide retail stock.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V13",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "KitchenAid's Corkcicle MindFULLness sweepstakes awards five special refrigerators. Does that mean Intelligent Auto Fill is now standard on every KRFF507HPS sold at Lowe's?",
+      "answer": "No. The sweepstakes awards five promotional units. It does not retrofit or upgrade KRFF507HPS models already in stores. KRFF507HPS still lacks Intelligent Auto Fill.",
+      "criteria": [
+        {
+          "text": "The sweepstakes does not make Intelligent Auto Fill standard on KRFF507HPS.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V14",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "KitchenAid's KBIS 2026 counter-depth French-door line advertises Intelligent Auto Fill. Can that dispenser be field-installed on an existing KRFF507HPS?",
+      "answer": "No. KBIS 2026 Auto Fill belongs to newly announced counter-depth models. KitchenAid has not announced a field retrofit that adds it to the KRFF507HPS.",
+      "criteria": [
+        {
+          "text": "KBIS 2026 Intelligent Auto Fill is not a field retrofit for KRFF507HPS.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V15",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Samsung's September 2026 software news omits RF28K9070SG. May staff still tell owners the update might arrive later if they wait?",
+      "answer": "No. Staff must not promise a future Family Hub or Gemini update for RF28K9070SG. The announcement targets selected newer models and does not name this unit as eligible.",
+      "criteria": [
+        {
+          "text": "Staff must not promise a future Family Hub or Gemini update for RF28K9070SG.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V16",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Best Buy says 84% of RF28K9070SG reviewers would recommend the model. May support treat that as Samsung's official reliability certification?",
+      "answer": "No. Eighty-four percent recommending is posted reviewer sentiment, not an official Samsung reliability certification. It is not a measured failure rate or a recall.",
+      "criteria": [
+        {
+          "text": "84% recommending is not an official reliability certification.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V17",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "GE's Kitchen Assistant announcement highlights an eight-inch display. Can a GNE27JYMFS owner buy that display as an accessory and mount it on their refrigerator?",
+      "answer": "No. The eight-inch display is part of the announced GE Profile smart refrigerator, not an accessory for the GNE27JYMFS. GE's release does not offer it as a retrofit.",
+      "criteria": [
+        {
+          "text": "The eight-inch display is not an accessory retrofit for the GNE27JYMFS.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V18",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "A KRFF507HPS owner equates Measured Fill with Corkcicle's guided meditation under the MindFULLness Fridge story. Are those the same feature on this model?",
+      "answer": "No. Measured Fill is a calibrated door dispenser on the KRFF507HPS. MindFULLness pairs Intelligent Auto Fill on newer promotional units with meditation, not with Measured Fill on this model.",
+      "criteria": [
+        {
+          "text": "Measured Fill on KRFF507HPS is not the MindFULLness meditation experience.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V19",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "GE's model page says GNE27JYMFS is no longer manufactured. Does that statement alone prove parts and factory service are permanently unavailable for installed units?",
+      "answer": "No. Ending manufacture is not proof that parts or service are unavailable. Parts access, warranty, and recalls are separate questions that need their own evidence.",
+      "criteria": [
+        {
+          "text": "Discontinuation alone does not prove parts or service are permanently unavailable.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "V20",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join_v2",
+      "question": "Samsung's April 2026 Bespoke line advertises Zero Clearance Fit hinges for flush cabinetry. Can those hinges be installed on an existing RF28K9070SG four-door unit?",
+      "answer": "No. Zero Clearance Fit hinges belong to newly announced three-door Bespoke models. Samsung's announcement does not describe retrofitting them onto the four-door RF28K9070SG.",
+      "criteria": [
+        {
+          "text": "Zero Clearance Fit hinges are not a retrofit for the RF28K9070SG.",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}

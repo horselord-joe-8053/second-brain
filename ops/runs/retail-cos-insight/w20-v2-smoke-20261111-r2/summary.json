@@ -1,0 +1,15 @@
+{
+  "run_id": "w20-v2-smoke-20261111-r2",
+  "arms": [
+    "wiki",
+    "bundled"
+  ],
+  "question_count": 2,
+  "suite_sha256": "14bcfa25430db7e02edc29b76ad8e1f5dc9c073620a53450fa67d5bfb70ec8a1",
+  "author_provider": "openai",
+  "answer_provider": "openai",
+  "answer_model": "gpt-4o-mini",
+  "judge_provider": "gemini",
+  "judge_model": "gemini-4-carbon",
+  "completed_at": "2026-11-11T12:34:53.340085+00:00"
+}

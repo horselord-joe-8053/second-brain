@@ -1,0 +1,48 @@
+{"ts": "2026-10-27T04:14:33.551544+00:00", "run_id": "b20-customer-six-20261027", "step": "row_start", "question_id": "BND-E03", "index": 0}
+{"ts": "2026-10-27T04:14:34.508676+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_start", "question_id": "BND-E03", "index": 0}
+{"ts": "2026-10-27T04:14:35.402585+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_done", "question_id": "BND-E03", "index": 0, "retrieval_ms": 893}
+{"ts": "2026-10-27T04:14:35.402927+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_start", "question_id": "BND-E03", "index": 0}
+{"ts": "2026-10-27T04:14:38.779242+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_done", "question_id": "BND-E03", "index": 0, "answer_ms": 3375}
+{"ts": "2026-10-27T04:14:38.779723+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_start", "question_id": "BND-E03", "index": 0}
+{"ts": "2026-10-27T04:14:39.949060+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_done", "question_id": "BND-E03", "index": 0, "judge_ms": 1168}
+{"ts": "2026-10-27T04:14:39.951474+00:00", "run_id": "b20-customer-six-20261027", "step": "row_done", "question_id": "BND-E03", "index": 0, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-27T04:14:39.953074+00:00", "run_id": "b20-customer-six-20261027", "step": "row_start", "question_id": "BND-E08", "index": 1}
+{"ts": "2026-10-27T04:14:40.761182+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_start", "question_id": "BND-E08", "index": 1}
+{"ts": "2026-10-27T04:14:41.454356+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_done", "question_id": "BND-E08", "index": 1, "retrieval_ms": 692}
+{"ts": "2026-10-27T04:14:41.454723+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_start", "question_id": "BND-E08", "index": 1}
+{"ts": "2026-10-27T04:14:44.055972+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_done", "question_id": "BND-E08", "index": 1, "answer_ms": 2600}
+{"ts": "2026-10-27T04:14:44.056664+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_start", "question_id": "BND-E08", "index": 1}
+{"ts": "2026-10-27T04:14:45.324560+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_done", "question_id": "BND-E08", "index": 1, "judge_ms": 1267}
+{"ts": "2026-10-27T04:14:45.325950+00:00", "run_id": "b20-customer-six-20261027", "step": "row_done", "question_id": "BND-E08", "index": 1, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-27T04:14:45.327224+00:00", "run_id": "b20-customer-six-20261027", "step": "row_start", "question_id": "BND-H02", "index": 2}
+{"ts": "2026-10-27T04:14:46.091235+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_start", "question_id": "BND-H02", "index": 2}
+{"ts": "2026-10-27T04:14:46.534023+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_done", "question_id": "BND-H02", "index": 2, "retrieval_ms": 442}
+{"ts": "2026-10-27T04:14:46.534406+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_start", "question_id": "BND-H02", "index": 2}
+{"ts": "2026-10-27T04:14:48.710707+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_done", "question_id": "BND-H02", "index": 2, "answer_ms": 2175}
+{"ts": "2026-10-27T04:14:48.711321+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_start", "question_id": "BND-H02", "index": 2}
+{"ts": "2026-10-27T04:14:49.769763+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_done", "question_id": "BND-H02", "index": 2, "judge_ms": 1057}
+{"ts": "2026-10-27T04:14:49.770891+00:00", "run_id": "b20-customer-six-20261027", "step": "row_done", "question_id": "BND-H02", "index": 2, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-27T04:14:49.772105+00:00", "run_id": "b20-customer-six-20261027", "step": "row_start", "question_id": "BND-H07", "index": 3}
+{"ts": "2026-10-27T04:14:50.460194+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_start", "question_id": "BND-H07", "index": 3}
+{"ts": "2026-10-27T04:14:50.906671+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_done", "question_id": "BND-H07", "index": 3, "retrieval_ms": 445}
+{"ts": "2026-10-27T04:14:50.907002+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_start", "question_id": "BND-H07", "index": 3}
+{"ts": "2026-10-27T04:14:53.259104+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_done", "question_id": "BND-H07", "index": 3, "answer_ms": 2351}
+{"ts": "2026-10-27T04:14:53.259789+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_start", "question_id": "BND-H07", "index": 3}
+{"ts": "2026-10-27T04:14:54.332617+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_done", "question_id": "BND-H07", "index": 3, "judge_ms": 1072}
+{"ts": "2026-10-27T04:14:54.334051+00:00", "run_id": "b20-customer-six-20261027", "step": "row_done", "question_id": "BND-H07", "index": 3, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-27T04:14:54.335622+00:00", "run_id": "b20-customer-six-20261027", "step": "row_start", "question_id": "BND-H08", "index": 4}
+{"ts": "2026-10-27T04:14:55.076095+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_start", "question_id": "BND-H08", "index": 4}
+{"ts": "2026-10-27T04:14:55.707382+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_done", "question_id": "BND-H08", "index": 4, "retrieval_ms": 630}
+{"ts": "2026-10-27T04:14:55.707762+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_start", "question_id": "BND-H08", "index": 4}
+{"ts": "2026-10-27T04:14:57.259835+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_done", "question_id": "BND-H08", "index": 4, "answer_ms": 1551}
+{"ts": "2026-10-27T04:14:57.260127+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_start", "question_id": "BND-H08", "index": 4}
+{"ts": "2026-10-27T04:14:58.436578+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_done", "question_id": "BND-H08", "index": 4, "judge_ms": 1176}
+{"ts": "2026-10-27T04:14:58.437436+00:00", "run_id": "b20-customer-six-20261027", "step": "row_done", "question_id": "BND-H08", "index": 4, "judge_pass": false, "ticket_hit_in_packet": false}
+{"ts": "2026-10-27T04:14:58.438074+00:00", "run_id": "b20-customer-six-20261027", "step": "row_start", "question_id": "BND-H10", "index": 5}
+{"ts": "2026-10-27T04:14:59.156019+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_start", "question_id": "BND-H10", "index": 5}
+{"ts": "2026-10-27T04:14:59.571323+00:00", "run_id": "b20-customer-six-20261027", "step": "manual_retrieve_done", "question_id": "BND-H10", "index": 5, "retrieval_ms": 414}
+{"ts": "2026-10-27T04:14:59.571770+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_start", "question_id": "BND-H10", "index": 5}
+{"ts": "2026-10-27T04:15:01.166731+00:00", "run_id": "b20-customer-six-20261027", "step": "answer_done", "question_id": "BND-H10", "index": 5, "answer_ms": 1594}
+{"ts": "2026-10-27T04:15:01.167020+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_start", "question_id": "BND-H10", "index": 5}
+{"ts": "2026-10-27T04:15:02.746276+00:00", "run_id": "b20-customer-six-20261027", "step": "judge_done", "question_id": "BND-H10", "index": 5, "judge_ms": 1578}
+{"ts": "2026-10-27T04:15:02.747191+00:00", "run_id": "b20-customer-six-20261027", "step": "row_done", "question_id": "BND-H10", "index": 5, "judge_pass": false, "ticket_hit_in_packet": false}

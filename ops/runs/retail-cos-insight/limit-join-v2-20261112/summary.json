@@ -1,0 +1,15 @@
+{
+  "run_id": "limit-join-v2-20261112",
+  "arms": [
+    "wiki",
+    "bundled"
+  ],
+  "question_count": 10,
+  "suite_sha256": "b840236935b7974b9ad70127ba7d5bd0ca55dd2f29b9e326f2a0a4389967aa8a",
+  "author_provider": "",
+  "answer_provider": "openai",
+  "answer_model": "gpt-4o-mini",
+  "judge_provider": "gemini",
+  "judge_model": "gemini-4-carbon",
+  "completed_at": "2026-11-12T10:56:21.110095+00:00"
+}

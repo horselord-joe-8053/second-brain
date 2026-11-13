@@ -63,7 +63,7 @@ Before plan or code work:
 |------|-------------|
 | **Context** | Read applicable existing refactor plans, READMEs, and domain docs; cross-link sources; avoid duplicating completed work. |
 | **Phases** | Sensible numbered stages; each phase ends with **verifiable** deliverables. |
-| **Quality bar** | Per phase: code changes, **tests**, **comments** (file headers where touched), **doc updates**; keep **DRY** (extract shared helpers/components before a third copy). |
+| **Quality bar** | Per phase: code changes, **tests**, and the **implref** comments-and-docs gate (**cdcm**: file headers; **≥1 doc line per class and per function/method** in touched files; non-obvious inline notes; README / spec / `.env.example` — implref step 2 and §3.2b). Keep **DRY** (extract shared helpers/components before a third copy). **Operator logging:** CLIs/harnesses → **neat_logger** default (**neatlog** rule); JSONL checkpoint + **DEBUG** (`NEAT_LOGGER_DEBUG`). |
 | **Tests per stage** | Name **concrete** test files/commands at phase end: unit, integration, Vitest, Playwright **mocked `test:e2e`**, and **real/mock LLM e2e** when behavior crosses LM or live tiers (see **`.cursor/rules/project_specific/eellm-e2e-real-llm-runner.mdc`** when applicable). |
 | **Location** | New plans: **`cursor_gen/refactor_plans/new/REFACTOR_*.md`** only (**onlyref** folder rule). |
 
@@ -82,6 +82,7 @@ against **every** plan produced or updated in step 2 (named path(s)).
 | Rule | Behavior |
 |------|----------|
 | **Continuous** | Run **`aciub <plan.md>`** through **all** phases and open sidetracks — **no** mid-plan permission prompts. |
+| **Long-run Exit** | **implref [§3.1h](implref-resumimpl-refactor-plan-followthrough.mdc#ir-s3-1h)** (via **aciub**; no handoff on green path). |
 | **Delegate** | **aciub** pulls in **implref** / **resumimpl** per classic chain ([§6](#qimpl-chain)). |
 | **Tests** | Honor each phase’s Quality bar; fix failures before marking `[X]`. |
 | **Exwar** | Mandatory per **aciub** after each phase — not optional under **`qimpl`**. |
@@ -101,6 +102,7 @@ When step 3 completes or hits a stop condition, reply with a **SUPER concise lay
 | **Tests** | What ran green (brief) |
 | **War stories** | New **#N** or explicit skip per **aciub** |
 | **Blockers** | None, or minimal user action needed |
+| **Long-run / phase done** | Smoke/full pass-fail + plan `[X]` or **§3.1d/§3.1e** — **implref §3.1h** |
 
 No jargon walls; tables over long prose.
 
@@ -126,7 +128,7 @@ Pause and engage the user only when:
 
 - **Step 1** true ambiguity needs answers (multiple-choice sent).
 - **aciub** / **implref** true blocker (build/tests unfixable, missing secrets, explicit scope cut, session cut per **implref** §3.1e).
-- All plan scope **and** sidetracks are **`[X]`** — then step 4 and stop.
+- All plan scope **and** sidetracks are **`[X]`** — including Exit smoke→full per **implref §3.1h** where the plan defines them — then step 4 and stop.
 
 Resume: **`qimpl <same-plan-path>`** or **`aciub`** / **`resumimpl`** on the plan — classic chain only.
 
@@ -136,6 +138,6 @@ Resume: **`qimpl <same-plan-path>`** or **`aciub`** / **`resumimpl`** on the pla
 
 - [ ] User invoked **`qimpl`** (not **`qimpltdd`**).
 - [ ] Step 1: MC questions **or** “No blocking ambiguities” + proceeded.
-- [ ] Step 2: **onlyref** plan(s) with phased tests, DRY, docs bar.
+- [ ] Step 2: **onlyref** plan(s) with phased tests, DRY, and the **implref** comments-and-docs gate (executed in step 3, not only written into the plan).
 - [ ] Step 3: **aciub** ran all phases without handoff spam.
 - [ ] Step 4: layman closing table delivered.

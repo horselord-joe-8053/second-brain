@@ -1,0 +1,110 @@
+You are a data author for a synthetic Samsung Australia retail service desk (NOT a search engineer). Produce three files that match an existing repo contract exactly. Do not invent extra columns or JSON keys.
+
+Intended save paths (for the human operator):
+- tmp/simulated_data/service_queries.csv
+- tmp/simulated_data/ticket_manifest.jsonl
+- tmp/simulated_data/ticket_retrieval.jsonl
+
+## Domain
+- Phone models ONLY: "Galaxy A15 5G", "Galaxy A16 5G", "Galaxy A25 5G".
+- Geography: Australian cities with state (rotate Sydney NSW, Melbourne VIC, Brisbane QLD, plus optionally Perth WA, Adelaide SA, Canberra ACT).
+- All customer text is fictional (synthetic names only if needed in eval queries; no real PII).
+- Every ticket description must include exactly one Samsung-style diagnostic code in the form SAM-E### (three digits, e.g. SAM-E042). Mention it naturally—either in a closing technician line and/or in customer-visible wording—but each of the 60 historical rows must end with this exact pattern somewhere in customer_query_text:
+  Technician log: diagnostic code SAM-E###.
+- Use UNIQUE SAM-E### codes across all 60 historical tickets (no duplicates).
+
+## Deliverable A — service_queries.csv (60 data rows + header)
+
+Match this header exactly (order matters):
+ticket_id,item_number,store_id,city,state,model,status,customer_query_text,resolution_text,opened_at,updated_at,closed_at
+
+Row ID rules:
+- ticket_id: T-0042-000000 through T-0042-000059 (zero-padded 6 digits).
+- item_number: ITM-00000000 through ITM-00000059 (8-digit zero-padded).
+- store_id: ST-0000 through ST-0059.
+
+Status mix (approximate):
+- ~75% status=resolved with non-empty resolution_text and closed_at=2025-01-03T10:00:00Z
+- ~25% open-ish: received, resolving, or resolution_rejected — empty resolution_text and empty closed_at
+- Pattern suggestion: every 4th row (000003, 000007, …) may be non-resolved; others mostly resolved.
+
+Timestamps:
+- opened_at=2025-01-01T10:00:00Z
+- updated_at=2025-01-02T10:00:00Z
+- closed_at as above or empty for non-resolved
+
+Model mix: spread ~20 tickets per model (not strictly equal is OK if close).
+
+customer_query_text quality (CRITICAL):
+- Non-trivial, highly diversified complaints: at least 15 distinct primary issue themes across the 60 (e.g. black screen, battery drain, SIM/5G, camera, fingerprint, Bluetooth, overheating, charging port, NFC, app crashes, storage full, ghost touches, audio mic, Wi‑Fi drop, update loop, etc.).
+- Each description: 2–4 sentences, concrete symptoms, timing/context, second symptom line where natural.
+- Two stored prose styles (mix across rows):
+  (1) CRM-style: "Customer reports: <issue> on <model> in <city>, <state>. … Technician log: diagnostic code SAM-E###."
+  (2) Intake-style: "Need help: <model>, <issue>. … Technician log: diagnostic code SAM-E###."
+- Do NOT put operational IDs in customer_query_text: no ticket_id, item_number, store_id, ITM-, ST-, or "Case ref …".
+- resolution_text: short technician fix (one sentence) for resolved rows only.
+
+CSV formatting:
+- Quote any field that contains commas or double quotes.
+- UTF-8, Unix newlines.
+
+## Deliverable B — ticket_manifest.jsonl (exactly 60 lines)
+
+One JSON object per line (no outer array). Keys exactly (no extras):
+ticket_id, model, status, seed, customer_query_text
+
+Rules:
+- One line per CSV data row, same order as CSV (000000 … 000059).
+- ticket_id, model, status, customer_query_text must match the CSV row exactly (character-for-character for customer_query_text).
+- seed: use integer 42 for every line (generator parity with repo default).
+
+Purpose: provenance sidecar for repo tooling (generate_eval_from_manifest.py). Search loads CSV only; manifest is not required for Postgres if CSV + eval JSONL exist, but emit it anyway for parity.
+
+## Deliverable C — ticket_retrieval.jsonl (exactly 10 lines)
+
+One JSON object per line (no outer array). Keys exactly:
+eval_id, query, model_filter, expected_ticket_ids, stratum, source_ticket_id
+
+Rules:
+- eval_id: eval-0001 through eval-0010 (use these ids in order).
+- expected_ticket_ids: JSON array with exactly ONE ticket_id from the 60 historical rows.
+- source_ticket_id: same id as expected_ticket_ids[0].
+- model_filter: must equal the matched historical row’s model field.
+
+Matching intent (CRITICAL):
+- Each eval query is a NEW customer intake that should retrieve ONE specific historical ticket as gold.
+- Semantic overlap with the gold historical customer_query_text: same underlying fault story (model + problem + key symptoms + same SAM-E### as the gold historical row).
+- Lexical overlap should be PARTIAL on purpose for most rows: rephrase issues, swap city/caller wording, reorder sentences, use synonyms (e.g. "mobile data keeps cutting out" vs "mobile data drops when switching to 5G").
+- Anti-leakage: eval query must NOT be identical to (nor a trivial edit of) the gold row’s customer_query_text. At least ~30% of tokens should differ from the stored prose.
+- The eval query MUST include the SAME SAM-E### code as the gold historical ticket (natural phrasing, e.g. "Error code SAM-E176", "screen showed SAM-E176", "diagnostic SAM-E176 appeared").
+
+Strata (assign exactly):
+- 3 rows: stratum "error_code" — screenshot/intake style query: starts with "Need help: <model>, …" includes symptoms AND explicit "Error code SAM-E###." (same ### as gold). Do NOT copy the gold stored text verbatim.
+- 2 rows: stratum "literal_token" — include a literal hardware/SKU token in the query (e.g. "SM-A156") tied to the A25 SIM/5G theme, still paraphrased otherwise.
+- 5 rows: stratum "paraphrase" — use template shape:
+  "Need help: <FirstName> in <City> with a <model> — <issue>. <extra symptom>."
+  (Australian first names: Jordan, Sam, Casey, Riley, Morgan, Taylor, Jamie, Alex.)
+
+Eval query constraints:
+- No operational IDs (no T-0042-, ITM-, ST-, store numbers).
+- model_filter must match gold; do not point eval at a ticket whose model differs from the story in the query.
+
+Hard negatives (important for realism):
+- For each gold ticket you pick, assume 1–2 other historical tickets exist with similar symptoms but DIFFERENT SAM-E### codes. Write eval queries so the correct gold is identifiable by matching SAM-E### + model + story, not by copying a unique phrase only one row has.
+
+Coverage:
+- Pick 10 different gold ticket_ids from the 60 (no duplicate gold).
+- Spread gold across all three models (at least 2 eval rows per model).
+
+## Output format for your reply
+1. A short table: eval_id → source_ticket_id → SAM-E code → stratum (for human review).
+2. The full CSV in a ```csv fenced block.
+3. The full manifest JSONL in a ```jsonl fenced block (one compact JSON per line).
+4. The full eval JSONL in a ```jsonl fenced block (one compact JSON per line).
+
+Before you finish, self-check:
+- 60 CSV rows, 60 manifest lines, 10 eval JSONL lines.
+- Manifest fields match CSV for each ticket_id.
+- 60 unique SAM-E codes in CSV; each eval query’s SAM-E matches its gold historical row.
+- No eval query verbatim equals its gold customer_query_text.
+- All JSON parses; all ticket_ids in JSONL exist in CSV.

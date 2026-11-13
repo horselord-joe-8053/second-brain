@@ -1,0 +1,483 @@
+{
+  "eval_suite_id": "TYPE_C_C20",
+  "eval_suite_long_name": "C20-insight-orientation",
+  "schema_version": "cos_insight_qa.v1",
+  "created_at": "20261110-141830",
+  "corpus_profile": "fru_us_1k",
+  "grounding_policy": "Type C orientation gold. Every concrete claim cites a manual PDF in the attached zip. No ticket statistics and no repair procedures.",
+  "sources_opened": [
+    "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+    "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+    "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+    "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf"
+  ],
+  "questions": [
+    {
+      "id": "COS-C01",
+      "difficulty": "easy",
+      "audience": "service_lead",
+      "question": "For GE cooling complaints after grocery loading, what should a service lead brief staff to watch before treating slow temperature recovery as a failed component?",
+      "answer": "Brief staff to distinguish expected temperature stabilization from persistent cooling trouble before assigning a component cause. The GE top-control instructions give a recommended refrigerator setting of 37°F and freezer setting of 0°F and say to allow 24 hours for stabilization (ge_GNE27JYMFS/user-guide.pdf, Controls). The same control section describes TurboCool as a way to cool the fresh-food compartment more rapidly after a large food load, warm leftovers, or an extended power interruption (ge_GNE27JYMFS/user-guide.pdf, Controls). The troubleshooting chart also associates long motor operation with newly plugged-in equipment, large food loads, hot conditions, frequent door openings, and the coldest control setting (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). It separately lists insufficiently cold settings and repeated door openings among possible explanations for warm compartments (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). For a briefing, prioritize the elapsed time, setpoint, recent loading, and door-use context rather than interpreting a single warm reading as proof of a failed cooling part. Warn that GE's guide groups several control variants under one manual, so staff should identify the applicable control presentation before quoting a button sequence (ge_GNE27JYMFS/user-guide.pdf, Controls). The manual provides checks and expectations, not a ranked probability of component failures.",
+      "rubric": [
+        "Distinguishes stabilization after loading from persistent cooling loss.",
+        "Uses GE setpoints, TurboCool, and troubleshooting context with citations.",
+        "Cites GE Controls and Troubleshooting for all temperature claims.",
+        "No invented compressor codes, defect rates, or invasive cooling-system instructions."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Controls",
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service"
+        ]
+      }
+    },
+    {
+      "id": "COS-C02",
+      "difficulty": "easy",
+      "audience": "ops_lead",
+      "question": "For a newly installed GE refrigerator with little ice, what should an ops lead prioritize when briefing expectations and water-supply checks without guaranteeing immediate output?",
+      "answer": "Prioritize installation age and water-supply conditions before promising ice output or replacement service. GE says a newly installed refrigerator may take 12 to 24 hours to begin making ice, and the stated output of roughly 100–130 cubes per day varies with freezer temperature, ambient temperature, and door openings (ge_GNE27JYMFS/user-guide.pdf, Automatic Icemaker). The same section requires a potable cold-water supply and specifies 25–120 psi for automatic icemaker operation (ge_GNE27JYMFS/user-guide.pdf, Automatic Icemaker). Its installation guidance treats the water line, shutoff arrangement, and connection as prerequisites to a supplied ice maker rather than optional performance enhancements (ge_GNE27JYMFS/user-guide.pdf, Installation Instructions). The troubleshooting chart points staff toward water-supply obstructions and a clogged filter when ice and water production is absent (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). Brief the lead to distinguish an initial waiting period from an ongoing no-water condition, and to confirm which icemaker configuration the unit actually has; the manual repeatedly marks icemakers and dispensers as model-dependent (ge_GNE27JYMFS/user-guide.pdf, Automatic Icemaker). This evidence supports expectation-setting and routing, not a guarantee of daily output at every home or an inference about which component has failed.",
+      "rubric": [
+        "Connects new-install waiting period with water-supply prerequisites.",
+        "Notes ice output depends on operating conditions and configuration.",
+        "Uses GE icemaker and water-line passages to substantiate timing.",
+        "No fabricated icemaker identifiers, guaranteed output rates, or mechanical repair steps."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Automatic Icemaker",
+          "ge_GNE27JYMFS/user-guide.pdf#Installation Instructions",
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service"
+        ]
+      }
+    },
+    {
+      "id": "COS-C03",
+      "difficulty": "easy",
+      "audience": "training_lead",
+      "question": "For GE water-dispensing complaints involving splashes or delayed drips, what should a training lead brief as normal use guidance versus signs needing further attention?",
+      "answer": "Brief a distinction between short post-dispense flow and continuing leakage, because the guide gives owners specific handling and air-purging context. GE's dispenser guidance says to keep a glass beneath the internal dispenser for two to three seconds after releasing its button, because water can continue briefly; it also directs initial air removal and disposal of the first six glasses after installation (ge_GNE27JYMFS/user-guide.pdf, Dispenser (on some models)). The troubleshooting chart links apparent dispenser leakage to moving the glass away too soon, and describes trapped air in the water line as another reason for dripping after dispensing (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). The same chart distinguishes no-water complaints involving a blocked line or a filter issue from an ordinary delayed drip (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). Training should therefore capture whether the issue occurs immediately after dispensing, after a new installation, or continuously, rather than using the word leak for every droplet. Explain that the manual describes external and internal dispenser options, so instructions must follow the installed configuration (ge_GNE27JYMFS/user-guide.pdf, Dispenser (on some models)). Do not promise that every persistent leak can be cleared by waiting or flushing; that conclusion is not supplied by these passages.",
+      "rubric": [
+        "Distinguishes temporary post-dispense drips from continuing leakage.",
+        "Refers to glass positioning and trapped air in GE passages.",
+        "Cites GE dispenser and troubleshooting passages for drip explanations.",
+        "No made-up valve part numbers, leakage percentages, or water-line repairs."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Dispenser (on some models)",
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service"
+        ]
+      }
+    },
+    {
+      "id": "COS-C04",
+      "difficulty": "easy",
+      "audience": "regional_lead",
+      "question": "For GE noise complaints after installation, what should a regional lead brief teams to recognize as normal cycling while watching for a different underlying concern?",
+      "answer": "Brief teams to separate named operating sounds from vibration or a loss of cooling, rather than treating unfamiliar noise alone as a failure. GE lists compressor humming or pulsation, fan whooshing, defrost cracking, refrigerant gurgling, and water movement as normal sounds under the stated operating circumstances (ge_GNE27JYMFS/user-guide.pdf, Normal Operating Conditions). The same section explains that fan speeds can change when food is added or doors are opened frequently, and that the compressor can run faster and longer than an older refrigerator (ge_GNE27JYMFS/user-guide.pdf, Normal Operating Conditions). In contrast, the troubleshooting chart associates rattling or vibration with leveling legs and notes that long motor cycles can also reflect hot weather, door activity, or recent food loads (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). Brief staff to collect the sound description, timing, recent installation or loading, and whether doors close normally before referring the case. This distinguishes a documented normal operating condition from a checkable installation issue, without implying that all sounds are harmless. The guide does not give a measured decibel threshold or a failure-rate ranking for any of these noises, so staff should not invent one.",
+      "rubric": [
+        "Differentiates documented normal sounds from rattling tied to leveling.",
+        "Captures operating circumstances instead of automatically diagnosing failure.",
+        "Cites GE normal-sounds and troubleshooting before discussing faults.",
+        "No invented compressor codes, decibel rankings, or mechanical repair steps."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Normal Operating Conditions",
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service"
+        ]
+      }
+    },
+    {
+      "id": "COS-C05",
+      "difficulty": "easy",
+      "audience": "service_lead",
+      "question": "For KitchenAid door complaints involving beeps and dark interior lights, what should a service lead brief about separate door, alarm, and lighting conditions?",
+      "answer": "Brief staff that audible door alerts and lighting behavior are related to door usage but are not the same diagnosis. KitchenAid says the Door Ajar Alarm sounds when a refrigerator door or freezer drawer remains open for five minutes while cooling is on, repeating every two minutes until the opening is closed (kitchenaid_KRFF507HPS/user-guide.pdf, Door Ajar Alarm). Its troubleshooting chart separately states that interior lights can stop illuminating when doors have been open for more than ten minutes, with closing and reopening restoring their task lighting (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). That chart also says some apparent light failures call for service when the refrigerator has power but the LED lighting does not illuminate during normal opening (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). A door that will not close can be held open by food packages or an incorrectly positioned bin or shelf (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). Brief the team to record the elapsed open time, whether cooling is enabled, and whether the door actually seals before making a conclusion about the alarm or lights. The manual supports separating these observable cases, not treating every beep as an electrical defect or every dark light as a broken lamp.",
+      "rubric": [
+        "Distinguishes five-minute alarm behavior from ten-minute lighting behavior.",
+        "Notes physical door obstruction as a separate possibility.",
+        "Cites KitchenAid alarm and lighting troubleshooting passages.",
+        "No fabricated alarm parts, malfunction rates, or door disassembly."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Door Ajar Alarm",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING"
+        ]
+      }
+    },
+    {
+      "id": "COS-C06",
+      "difficulty": "easy",
+      "audience": "training_lead",
+      "question": "For KitchenAid water-filter changes followed by weak flow or dripping, what should a training lead prioritize in customer guidance without promising a plumbing diagnosis?",
+      "answer": "Prioritize filter seating, the indicated replacement status, and water-system flushing as distinct customer-facing checks. KitchenAid's filter instructions say an incorrectly locked water filter prevents water from flowing through the dispenser and warn that failure to flush after filter installation can cause dripping or reduced flow (kitchenaid_KRFF507HPS/user-guide.pdf, Water Filtration System). The guide recommends replacement at least every six months or sooner if dispenser or icemaker flow visibly decreases (kitchenaid_KRFF507HPS/user-guide.pdf, Replace the Water Filter). Its water-dispensing section explains that air introduced during installation or replacement can cause spurting and dripping, and describes flushing the system before using calibrated dispensing features (kitchenaid_KRFF507HPS/user-guide.pdf, Water and Ice Dispensers). The troubleshooting table also lists low household pressure, a kinked source line, a reverse-osmosis system, incorrect filter installation, and a clogged filter among possible explanations for poor water or ice delivery (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). Brief staff to ask what changed, whether the filter is seated, and whether the recommended flush occurred before escalating. Do not equate a visible warning light with proof of a plumbing fault, or promise that a filter replacement alone resolves every flow complaint.",
+      "rubric": [
+        "Links seating and flushing to reduced flow or dripping.",
+        "Includes filter-status timing and alternative water-supply explanations.",
+        "Cites filter installation, flushing, and troubleshooting evidence.",
+        "No invented filter component numbers, success rates, or plumbing repair procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Water Filtration System",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Replace the Water Filter",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Water and Ice Dispensers",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING"
+        ]
+      }
+    },
+    {
+      "id": "COS-C07",
+      "difficulty": "easy",
+      "audience": "ops_lead",
+      "question": "For KitchenAid customers storing produce, meat, and leftovers, what should an ops lead brief about choosing drawers and avoiding overpromises about freshness?",
+      "answer": "Brief storage guidance around the drawers' documented functions rather than promising a universal shelf-life extension. KitchenAid says its crisper humidity is automatically regulated, so customers should not look for a separate crisper humidity control (kitchenaid_KRFF507HPS/user-guide.pdf, Crisper and Crisper Cover). Its optional temperature-controlled full-width drawer is intended for items such as fresh meat, deli foods, and beverages, with the manual mapping colder settings to fish and meat, an intermediate setting to deli and cheese, and the least cold setting to wine (kitchenaid_KRFF507HPS/user-guide.pdf, Temperature-Controlled Drawer (on some models)). The same drawer guidance cautions against putting leafy vegetables there because the colder temperatures may damage them (kitchenaid_KRFF507HPS/user-guide.pdf, Temperature-Controlled Drawer (on some models)). A separate meat-storage guide advises airtight, moisture-proof wrapping and gives differentiated storage windows, while telling owners to freeze meat if storage will exceed those windows (kitchenaid_KRFF507HPS/user-guide.pdf, Meat Storage Guide). For training, present those passages together: product placement, packaging, and limited time expectations all matter. The manual does not quantify a guaranteed extension in freshness for any individual household, and the temperature-controlled drawer is expressly limited to some models (kitchenaid_KRFF507HPS/user-guide.pdf, Temperature-Controlled Drawer (on some models)).",
+      "rubric": [
+        "Distinguishes automatically managed crisper humidity from optional drawer settings.",
+        "Connects meat-storage guidance with drawer use and produce cautions.",
+        "Supports each placement claim with KitchenAid feature or storage passages.",
+        "No invented drawer parts, freshness percentages, or service procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Crisper and Crisper Cover",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Temperature-Controlled Drawer (on some models)",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Meat Storage Guide"
+        ]
+      }
+    },
+    {
+      "id": "COS-C08",
+      "difficulty": "easy",
+      "audience": "regional_lead",
+      "question": "For KitchenAid users returning after an absence or outage, what should a regional lead brief about Vacation Mode, power alerts, and their limitations?",
+      "answer": "Brief these as two different operating contexts rather than suggesting that Vacation Mode serves as a complete outage record. KitchenAid says Vacation Mode defrosts the freezer less often to conserve energy and may be cancelled by door activity after the initial hour or by enabling other specified modes (kitchenaid_KRFF507HPS/user-guide.pdf, Vacation Mode). Its Power Outage Indicator instead appears when power was interrupted and the freezer rose to 18°F (-8°C) or higher; the display flashes “PO” until the event is acknowledged (kitchenaid_KRFF507HPS/user-guide.pdf, Power Outage Indicator). Critically, the same guide says a power outage occurring in Sabbath Mode will not be indicated on the display, regardless of duration (kitchenaid_KRFF507HPS/user-guide.pdf, Additional Features). These are distinct manual-backed observations, so the briefing should ask which mode was active and what the display actually showed. Do not tell an owner that the absence of a “PO” message proves no interruption occurred; the Sabbath exception contradicts that promise (kitchenaid_KRFF507HPS/user-guide.pdf, Additional Features). Also avoid describing Vacation Mode as a safety guarantee for unattended food. These sections specify control behavior and alerts, not an individual food-safety determination after an absence.",
+      "rubric": [
+        "Explains Vacation Mode separately from Power Outage Indicator.",
+        "Notes the Sabbath Mode exception to outage display.",
+        "Cites Vacation, outage, and Sabbath-mode descriptions.",
+        "No invented module identifiers, outage rates, or technician reset procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Vacation Mode",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Power Outage Indicator",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Additional Features"
+        ]
+      }
+    },
+    {
+      "id": "COS-C09",
+      "difficulty": "easy",
+      "audience": "training_lead",
+      "question": "For Samsung SmartThings enrollment complaints, what should a training lead brief customers to check before promising a cloud or appliance failure diagnosis?",
+      "answer": "Brief enrollment as a combination of supported mobile software, account setup, and home networking, rather than a single refrigerator fault. Samsung describes SmartThings installation, supported mobile operating systems, and wireless-network requirements, including a 2.4 GHz Wi-Fi connection and supported router authentication (samsung_RF28K9070SG/user-guide.pdf, SmartThings). Its setup section requires a Samsung account and describes registering the refrigerator through the app's device-discovery flow (samsung_RF28K9070SG/user-guide.pdf, Samsung account). The troubleshooting table then asks owners to check the router, account sign-in, device registration, access-point distance, and possible electrical interference when pairing fails (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). That table also distinguishes a refrigerator that has never registered from one that appears connected but whose app is not working properly (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). For training, ask whether the problem is discovering the device, signing into the account, completing registration, or using an already connected appliance. Explain that some remote settings may not be available even when app registration succeeds (samsung_RF28K9070SG/user-guide.pdf, Refrigerator app). The manuals do not provide a probability that a given complaint originates in the refrigerator, app, or router, so do not promise a cause from the symptom alone.",
+      "rubric": [
+        "Separates app discovery, sign-in, and registration symptoms.",
+        "Checks supported networking and account prerequisites.",
+        "Cites SmartThings setup and troubleshooting rather than assuming a cause.",
+        "No fabricated radio parts, outage rates, or router repair procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#SmartThings",
+          "samsung_RF28K9070SG/user-guide.pdf#Samsung account",
+          "samsung_RF28K9070SG/user-guide.pdf#Troubleshooting",
+          "samsung_RF28K9070SG/user-guide.pdf#Refrigerator app"
+        ]
+      }
+    },
+    {
+      "id": "COS-C10",
+      "difficulty": "easy",
+      "audience": "service_lead",
+      "question": "For Samsung moisture on cabinet edges or around door openings, what should a service lead brief teams to watch before labeling it refrigeration-system failure?",
+      "answer": "Brief humidity, door sealing, and the location of the moisture as primary observations before proposing a hardware cause. Samsung's troubleshooting guide says its front corners include heat-proof piping intended to reduce condensation and that high ambient humidity can still produce exterior moisture; warm corners alone are not necessarily a system fault (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). It also associates moisture or water drops around the vertical mullion with high surrounding humidity (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). The installation section emphasizes a stable, level location and adequate surrounding clearance for the refrigerator (samsung_RF28K9070SG/user-guide.pdf, Step-by-step installation). The troubleshooting entries repeatedly ask owners to ensure doors close properly and to limit the exposure of interior compartments to warm, humid air (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). For a service briefing, distinguish exterior condensation, mullion droplets, and moisture inside the compartment before communicating next steps. Do not promise that any single observed droplet proves a damaged gasket, failed cooling system, or unsafe operation. The manual's descriptions support context-based triage, but they do not rank the causes of condensation by frequency or supply an absolute humidity threshold that diagnoses every case.",
+      "rubric": [
+        "Distinguishes cabinet-edge, mullion, and interior moisture contexts.",
+        "Links environmental humidity with door and placement observations.",
+        "Cites Samsung installation and troubleshooting for moisture claims.",
+        "No invented gasket parts, prevalence rankings, or cabinet repair procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#Troubleshooting",
+          "samsung_RF28K9070SG/user-guide.pdf#Step-by-step installation"
+        ]
+      }
+    },
+    {
+      "id": "COS-H01",
+      "difficulty": "hard",
+      "audience": "service_lead",
+      "question": "For Samsung ice shortages after the bucket is emptied, what should a service lead brief from the user and repair guides without promising a precise replenishment time?",
+      "answer": "Brief staged replenishment and basic operating conditions, not a single guaranteed time for a completely refilled bucket. Samsung's user guide says initial ice-making performance should be allowed to stabilize and describes waiting for small batches after all stored ice has been used (samsung_RF28K9070SG/user-guide.pdf, Ice maker). Its consumer troubleshooting section instead advises waiting twelve hours after the bucket has been emptied and checking whether ice making is disabled, the freezer setting is suitable, the water line is open, or the bucket contains clumps (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). The technician sheet also gives a twelve-hour wait after the bucket is depleted and lists ice-maker enablement, freezer setting, and clumping as considerations (samsung_RF28K9070SG/repair-guide.pdf, General). Taken together, these are different contexts for getting some cubes versus restoring a usable supply, not evidence that every household will replenish at the same rate. The briefing should record when ice was last removed and whether the concern is no output or slower recovery. Do not direct customers through the service sheet's electrical or forced-mode procedures: that document explicitly identifies itself as intended for qualified technicians (samsung_RF28K9070SG/repair-guide.pdf, Fast Track Troubleshooting). No failure probability or guaranteed full-bin recovery time is established by these passages.",
+      "rubric": [
+        "Distinguishes partial ice recovery from guaranteed full-bin recovery.",
+        "Uses consumer ice guidance and technician General section.",
+        "Cites Samsung consumer ice-making and technician General separately.",
+        "No unsupported icemaker parts, depletion rates, or forced-mode procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#Ice maker",
+          "samsung_RF28K9070SG/user-guide.pdf#Troubleshooting",
+          "samsung_RF28K9070SG/repair-guide.pdf#General",
+          "samsung_RF28K9070SG/repair-guide.pdf#Fast Track Troubleshooting"
+        ]
+      }
+    },
+    {
+      "id": "COS-H02",
+      "difficulty": "hard",
+      "audience": "training_lead",
+      "question": "For Samsung no-water complaints, what should a training lead reconcile between the consumer guide and technician sheet before promising any particular failed part?",
+      "answer": "Brief observable supply, filter, and dispensing conditions first, while explicitly avoiding an assumed internal water component. Samsung's consumer troubleshooting lists an open shutoff valve, sound water-line tubing, and a correctly installed filter as checks when water will not dispense (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). The maintenance section also explains that filter replacement can introduce air and cause temporary spurting or dripping, with water run through the dispenser afterward (samsung_RF28K9070SG/user-guide.pdf, Maintenance). The technician sheet's general table describes water-tank filling, freezing, installation, and filter seating instead (samsung_RF28K9070SG/repair-guide.pdf, General). Those passages do not establish that the tank wording and line-supply wording describe an identical physical arrangement for every variant covered by the service sheet. Train staff to report which symptom is observed and which consumer-facing water-supply checks have been completed, while reserving component identification for qualified service review. The technician document is explicitly written for persons with appliance-repair expertise, not as customer repair instructions (samsung_RF28K9070SG/repair-guide.pdf, Fast Track Troubleshooting). Do not promise that the filter, tank, valve, or electronic board is defective solely because dispensing stopped. The provided documents list possibilities; they do not rank their likelihood.",
+      "rubric": [
+        "Identifies consumer water-line checks without assuming a specific failed part.",
+        "Flags tank wording in technician sheet as variant-sensitive.",
+        "Cites Samsung consumer water checks and technician tank wording separately.",
+        "No fabricated tank parts, fault rates, or invasive plumbing procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#Troubleshooting",
+          "samsung_RF28K9070SG/user-guide.pdf#Maintenance",
+          "samsung_RF28K9070SG/repair-guide.pdf#General",
+          "samsung_RF28K9070SG/repair-guide.pdf#Fast Track Troubleshooting"
+        ]
+      }
+    },
+    {
+      "id": "COS-H03",
+      "difficulty": "hard",
+      "audience": "regional_lead",
+      "question": "For Samsung condensation at front corners, the vertical mullion, or inside compartments, what should a regional lead brief from both manual types without overdiagnosing?",
+      "answer": "Brief moisture by location and environmental context rather than presenting all condensation as the same equipment failure. The Samsung user guide explains that warmed cabinet corners can be associated with anti-condensation piping, while humid air and long door openings can still produce moisture on outer surfaces (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). It separately recognizes droplets around the vertical mullion when surrounding humidity is high (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). The technician sheet likewise describes warm front corners, humidity, and doors left open, and says that those conditions do not automatically indicate a system failure (samsung_RF28K9070SG/repair-guide.pdf, General). For interior frost, the technician guidance raises blocked vents and improperly closed doors, whereas its advice on moisture around vegetables includes uncovered high-water-content foods (samsung_RF28K9070SG/repair-guide.pdf, General). The orientation should therefore distinguish exterior wetness, mullion droplets, interior frost, and produce-area condensation, then brief visible conditions rather than a component verdict. Its consumer troubleshooting also says to keep air vents unobstructed and doors closed properly when frost appears inside (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). These passages do not give an exact household-humidity cutoff, a failure prevalence, or permission to treat persistent water accumulation as harmless without further assessment.",
+      "rubric": [
+        "Separates cabinet, mullion, frost, and interior-moisture cases.",
+        "Uses user troubleshooting and technician General support.",
+        "Cites Samsung user and technician passages for each moisture pattern.",
+        "No invented mullion parts, humidity failure rates, or cabinet disassembly."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#Troubleshooting",
+          "samsung_RF28K9070SG/repair-guide.pdf#General"
+        ]
+      }
+    },
+    {
+      "id": "COS-H04",
+      "difficulty": "hard",
+      "audience": "ops_lead",
+      "question": "For Samsung remote-control complaints, what should an ops lead brief about inconsistent app terminology between the user guide and repair sheet without assuming compatibility?",
+      "answer": "Brief the software naming and version distinction before combining support instructions from two documents. The Samsung user guide describes registration through SmartThings, a Samsung account, supported mobile operating systems, and specific Wi-Fi/router requirements (samsung_RF28K9070SG/user-guide.pdf, SmartThings) (samsung_RF28K9070SG/user-guide.pdf, Samsung account). Its troubleshooting entries address failed discovery, registration, account sign-in, and an app that remains unusable after connection (samsung_RF28K9070SG/user-guide.pdf, Troubleshooting). The technician sheet, however, labels its connectivity table “Samsung Smart Home - Troubleshooting” and supplies older mobile-platform requirements and similarly named connection scenarios (samsung_RF28K9070SG/repair-guide.pdf, Samsung Smart Home - Troubleshooting). The presence of different app names and requirements is a documentation difference, not proof that the two apps are interchangeable or that the technician-sheet requirements override the consumer guide. For a current briefing limited to these PDFs, identify which software name the customer is actually using, then ground assistance in the corresponding passage. The user guide also cautions that some refrigerator settings may not be available for remote control (samsung_RF28K9070SG/user-guide.pdf, Refrigerator app). Do not promise universal app compatibility, full remote functionality, or a definite cloud-side failure from the symptom. Neither document provides a measured incident frequency.",
+      "rubric": [
+        "Explicitly identifies SmartThings versus Samsung Smart Home naming difference.",
+        "Uses both user and technician connectivity sections.",
+        "Cites consumer SmartThings and technician Smart Home distinctly.",
+        "No invented network modules, app-failure rates, or circuit diagnostic procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "samsung_RF28K9070SG/user-guide.pdf#SmartThings",
+          "samsung_RF28K9070SG/user-guide.pdf#Samsung account",
+          "samsung_RF28K9070SG/user-guide.pdf#Troubleshooting",
+          "samsung_RF28K9070SG/repair-guide.pdf#Samsung Smart Home - Troubleshooting",
+          "samsung_RF28K9070SG/user-guide.pdf#Refrigerator app"
+        ]
+      }
+    },
+    {
+      "id": "COS-H05",
+      "difficulty": "hard",
+      "audience": "service_lead",
+      "question": "Across GE, KitchenAid, and Samsung cooling complaints, what should a service lead prioritize when briefing temperature recovery without conflating their different control behaviors?",
+      "answer": "Prioritize the applicable model's control mode, recent food load, and elapsed stabilization period before interpreting a temperature complaint as a failed component. GE describes recommended refrigerator and freezer settings for relevant controls, advises allowing time for stabilization, and offers a rapid-cooling mode for recent large loads (ge_GNE27JYMFS/user-guide.pdf, Controls). KitchenAid asks owners to check that air vents are clear before changing setpoints and to wait at least twenty-four hours between adjustments (kitchenaid_KRFF507HPS/user-guide.pdf, Using the Controls). Its troubleshooting table also identifies recently added food, incomplete door closure, and cooling turned off as possible reasons for a warm compartment (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). Samsung explains that its panel can temporarily display the actual interior temperature while moving toward a newly selected setpoint, and says the temperature will take time to catch up (samsung_RF28K9070SG/user-guide.pdf, Operations). It separately documents Power Cool for temporary rapid cooling (samsung_RF28K9070SG/user-guide.pdf, Power Cool). Therefore brief the shared decision sequence—mode, ventilation, load, doors, and time—while preserving brand-specific controls and display meanings. These user manuals do not give a cross-brand comparison of cooling failure rates or authorize assigning a failed compressor from one reading. Avoid promising identical recovery behavior across the three brands.",
+      "rubric": [
+        "Keeps GE, KitchenAid, and Samsung control behavior distinct.",
+        "Connects stabilization, airflow, and display behavior.",
+        "Cites all three brands’ control or troubleshooting evidence.",
+        "No fictional compressor part IDs, failure rankings, or refrigeration repair steps."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Controls",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Using the Controls",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING",
+          "samsung_RF28K9070SG/user-guide.pdf#Operations",
+          "samsung_RF28K9070SG/user-guide.pdf#Power Cool"
+        ]
+      }
+    },
+    {
+      "id": "COS-H06",
+      "difficulty": "hard",
+      "audience": "training_lead",
+      "question": "Across GE, KitchenAid, and Samsung door beeps, what should a training lead brief about alarm timing, enabled states, and closing behavior without standardizing them?",
+      "answer": "Brief that an open-door alarm is model-specific, so the presence or timing of a beep should not be judged against one universal rule. GE's applicable top-control instructions describe an alarm sounding after a door remains open for more than two minutes and stopping once the door closes (ge_GNE27JYMFS/user-guide.pdf, Controls). KitchenAid describes a five-minute Door Ajar Alarm while cooling is on, repeated at two-minute intervals, with a temporary mute option while a door remains open (kitchenaid_KRFF507HPS/user-guide.pdf, Door Ajar Alarm). Samsung says its Door Alarm is enabled by default, can be toggled from the feature panel, and sounds with a flashing indicator after an opening exceeds two minutes (samsung_RF28K9070SG/user-guide.pdf, Door Alarm). KitchenAid's troubleshooting also identifies food packages and mispositioned bins or shelves as physical reasons a door may not close completely (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). Train personnel to record the brand, selected alarm state, opening duration, and whether the door seals. GE's guide includes optional control arrangements, so confirm the installed presentation before quoting control steps (ge_GNE27JYMFS/user-guide.pdf, Controls). None of these passages supports promising that a silent door alarm always means a defective sensor.",
+      "rubric": [
+        "Contrasts GE and Samsung two-minute alarms with KitchenAid five-minute timing.",
+        "Accounts for alarm enablement and physical closure.",
+        "Cites all three brands’ documented door-alarm behavior.",
+        "No invented alarm sensors, fault statistics, or switch replacement procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Controls",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Door Ajar Alarm",
+          "samsung_RF28K9070SG/user-guide.pdf#Door Alarm",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING"
+        ]
+      }
+    },
+    {
+      "id": "COS-H07",
+      "difficulty": "hard",
+      "audience": "regional_lead",
+      "question": "For GE and KitchenAid filter-related water complaints, what should a regional lead brief about replacement and bypass differences while refusing to rank filter reliability?",
+      "answer": "Brief shared symptoms but preserve the brands' different instructions for filter installation and operation. GE's XWFE section says an installed filter or bypass plug is required for its dispenser and icemaker to operate, and it associates filter status and certain alerts with filter identification and possible leakage (ge_GNE27JYMFS/user-guide.pdf, Water Filter Cartridge - XWFE (on some models)). GE's troubleshooting table also lists clogged or improperly installed filters among causes of absent water or ice (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). KitchenAid says a filter that is not correctly locked into its housing prevents dispenser flow, and that its status system can display ordering or replacement prompts (kitchenaid_KRFF507HPS/user-guide.pdf, Water Filtration System). Its instructions recommend replacing the disposable filter at least every six months, or earlier if water flow falls substantially (kitchenaid_KRFF507HPS/user-guide.pdf, Replace the Water Filter). Brief the team to distinguish an installation or status issue from low supply pressure and to use each brand's own instructions rather than transplanting a bypass procedure. These manuals do not state which brand's filter fails more often, an expected service-call rate, or a comparative filter lifespan under equivalent households. Reject a reliability ranking based on these documents alone.",
+      "rubric": [
+        "Explains GE bypass dependence versus KitchenAid filter seating.",
+        "Uses each brand’s filter and flow guidance.",
+        "Cites GE and KitchenAid filter guidance with clear separation.",
+        "No invented filter parts, reliability rankings, or bypass modification procedures."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Water Filter Cartridge - XWFE (on some models)",
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Water Filtration System",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Replace the Water Filter"
+        ]
+      }
+    },
+    {
+      "id": "COS-H08",
+      "difficulty": "hard",
+      "audience": "ops_lead",
+      "question": "For GE and KitchenAid owners reporting compressor hums, clicks, or gurgles, what should an ops lead prioritize in triage without inventing a brand noise ranking?",
+      "answer": "Prioritize sound type, when it occurs, and whether there is a related operational complaint before treating unfamiliar noises as defects. GE describes humming or pulsation from an efficient compressor, whooshing fans, defrost-related popping, and refrigerant gurgling as normal in specified situations (ge_GNE27JYMFS/user-guide.pdf, Normal Operating Conditions). Its troubleshooting chart separately associates vibration or rattling with leveling rather than automatically with the compressor (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). KitchenAid likewise identifies normal pulsating fans, wall expansion pops, refrigerant hissing, defrost sizzling, and water gurgling (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). But its noise table also points to an unsteady cabinet or water line moving against the cabinet as potentially addressable sources of vibration or rattling (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). For operations, brief agents to capture a descriptive recording or account of the sound and its operating context, then separate documented normal categories from observable instability. Neither manual publishes comparable sound-level measurements for these exact refrigerators or rates of noise-related service failures. Do not claim either brand is quieter, noisier, or more failure-prone from a list of normal sounds.",
+      "rubric": [
+        "Compares normal noise classes across GE and KitchenAid.",
+        "Separates rattling or vibration from normal cycling.",
+        "Cites both brands’ noise and vibration guidance.",
+        "No invented compressor parts, failure rankings, or cabinet repair instructions."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Normal Operating Conditions",
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING"
+        ]
+      }
+    },
+    {
+      "id": "COS-H09",
+      "difficulty": "hard",
+      "audience": "regional_lead",
+      "question": "For KitchenAid Vacation Mode and Samsung Smart Grid, what should a regional lead brief about distinct energy controls while refusing to promise comparative savings?",
+      "answer": "Brief these as different energy-management mechanisms and avoid presenting them as interchangeable settings or quantified savings programs. KitchenAid says Vacation Mode reduces freezer defrost frequency and can be cancelled by later door activity or by activating certain other modes (kitchenaid_KRFF507HPS/user-guide.pdf, Vacation Mode). Its power-outage indicator is a separate alert triggered when the freezer warms to a specified temperature after interruption, and its Sabbath Mode has an exception to outage reporting (kitchenaid_KRFF507HPS/user-guide.pdf, Power Outage Indicator) (kitchenaid_KRFF507HPS/user-guide.pdf, Additional Features). Samsung's Smart Grid description instead relies on an eligible utility service and can respond to utility demand signals with temporary load reductions, displayed as L3 or L4 (samsung_RF28K9070SG/user-guide.pdf, SMART GRID Function (Demand Response)). The Samsung user guide describes L4 reductions affecting compressor operation and ice/defrost activity, together with conditions that cancel the temporary state (samsung_RF28K9070SG/user-guide.pdf, Operations). Brief staff on why the feature exists, which external prerequisites apply, and what the display can legitimately confirm. These PDFs do not provide comparable annual household savings, a brand-level ranking, or a guaranteed reduction in energy bills. Avoid deriving a number from mode descriptions alone, and do not promise that an outage or door opening has the same implications on both appliances.",
+      "rubric": [
+        "Distinguishes vacation defrost behavior from utility demand response.",
+        "Mentions Samsung utility prerequisites and L3/L4 operation.",
+        "Cites Samsung demand response and KitchenAid vacation or outage passages.",
+        "No invented control parts, savings percentages, or technical override repairs."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Vacation Mode",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Power Outage Indicator",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Additional Features",
+          "samsung_RF28K9070SG/user-guide.pdf#SMART GRID Function (Demand Response)",
+          "samsung_RF28K9070SG/user-guide.pdf#Operations"
+        ]
+      }
+    },
+    {
+      "id": "COS-H10",
+      "difficulty": "hard",
+      "audience": "training_lead",
+      "question": "For GE and KitchenAid reports of frozen fresh food, what should a training lead brief about air-vent placement and separate drawer controls without guessing component failures?",
+      "answer": "Brief food placement and the scope of each control before assigning a cooling-system fault. GE's troubleshooting chart links food freezing in the fresh-food compartment to items placed too near the rear air vent, as well as a refrigerator control set too cold (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). GE also recommends moving food away from the vent and making a warmer control adjustment when the setting is too cold (ge_GNE27JYMFS/user-guide.pdf, Troubleshooting Tips... Before you call for service). KitchenAid's use instructions tell owners to check for blocked air vents before changing the temperature setpoints (kitchenaid_KRFF507HPS/user-guide.pdf, Using the Controls). Its troubleshooting table specifically says that blocking the vent at the upper-left rear of the refrigerator can cause overly cold conditions (kitchenaid_KRFF507HPS/user-guide.pdf, TROUBLESHOOTING). Separately, its optional temperature-controlled drawer affects only that drawer and should not be understood as the main refrigerator or freezer thermostat (kitchenaid_KRFF507HPS/user-guide.pdf, Temperature-Controlled Drawer (on some models)). Train teams to ask where the affected food sat and which control was adjusted, then explain why those details matter. Neither manual provides a component-failure probability for frozen food, and no documented evidence here supports guessing a defective damper or sensor merely from the symptom.",
+      "rubric": [
+        "Connects air-vent placement with frozen-food symptoms in both brands.",
+        "Distinguishes optional drawer control from cabinet temperature controls.",
+        "Cites both brands’ airflow passages and KitchenAid drawer control.",
+        "No invented damper parts, frozen-food failure rates, or vent disassembly."
+      ],
+      "authoring": {
+        "prompt_id": "cos_insight_gold.v1",
+        "model_family": "openai",
+        "human_verified": false,
+        "sources": [
+          "ge_GNE27JYMFS/user-guide.pdf#Troubleshooting Tips... Before you call for service",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Using the Controls",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#TROUBLESHOOTING",
+          "kitchenaid_KRFF507HPS/user-guide.pdf#Temperature-Controlled Drawer (on some models)"
+        ]
+      }
+    }
+  ]
+}

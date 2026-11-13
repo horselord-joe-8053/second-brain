@@ -1,0 +1,296 @@
+market: US
+fault_code_prefix: FRU-E
+models:
+- sku: RF28K9070SG
+  brand: Samsung
+  docs_folder: samsung_RF28K9070SG
+- sku: GNE27JYMFS
+  brand: GE
+  docs_folder: ge_GNE27JYMFS
+- sku: KRFF507HPS
+  brand: KitchenAid
+  docs_folder: kitchenaid_KRFF507HPS
+issues:
+- key: ice_maker_no_ice
+  symptom: ice maker stopped producing cubes
+  resolution: Cleared jammed auger and reset ice maker module.
+  paraphrase: the ice maker quit making ice
+  manual_anchors:
+  - ice maker does not make ice
+  - icemaker does not work
+  - ice maker is not producing ice
+  - no water or ice cube production
+  weight: 1.0
+  models: &id001
+  - RF28K9070SG
+  - GNE27JYMFS
+  - KRFF507HPS
+- key: water_dispenser_slow
+  symptom: refrigerator water dispenser runs very slowly
+  resolution: Replaced clogged inline filter and flushed water line.
+  paraphrase: water comes out of the door really slow
+  manual_anchors:
+  - water dispenser is not functioning
+  - water dispenser does not work
+  - water and ice dispenser will not operate
+  - water pressure
+  weight: 1.1
+  models: &id002
+  - RF28K9070SG
+- key: freezer_not_cold
+  symptom: freezer section not staying cold enough
+  resolution: Replaced evaporator fan and verified sealed system pressures.
+  paraphrase: freezer feels warm and food is softening
+  manual_anchors:
+  - does not operate or cool
+  - too warm
+  - freezer cooling
+  weight: 1.2
+  models: &id003
+  - GNE27JYMFS
+  - KRFF507HPS
+- key: fridge_warm_spots
+  symptom: warm spots on upper refrigerator shelves
+  resolution: Cleared blocked air damper and recalibrated temperature sensors.
+  paraphrase: top shelf items are not cold enough
+  manual_anchors:
+  - does not operate or cool
+  - too warm
+  - air vent
+  weight: 1.3
+  models: *id001
+- key: compressor_noise
+  symptom: loud humming from the compressor area
+  resolution: Leveled unit, tightened condenser mounts, replaced start relay.
+  paraphrase: compressor hums loudly every few minutes
+  manual_anchors:
+  - unusual noises
+  - seems noisy
+  - compressor running
+  - high-pitched hum
+  weight: 1.4
+  models: *id002
+- key: door_seal_gap
+  symptom: door gasket not sealing on the left hinge side
+  resolution: Reseated gasket and adjusted door alignment pins.
+  paraphrase: door does not seal and you can feel cold air leaking
+  manual_anchors:
+  - gasket
+  - door seal
+  weight: 1.0
+  models: *id003
+- key: ice_clumping
+  symptom: ice cubes clumping together in the bin
+  resolution: Adjusted freezer temperature and replaced bin auger seal.
+  paraphrase: ice in the bin is one big frozen chunk
+  manual_anchors:
+  - ice clumps
+  - clumped
+  - ice cubes stuck
+  - ice is clogged
+  weight: 1.1
+  models: *id001
+- key: defrost_drain_clog
+  symptom: water pooling under crisper drawers
+  resolution: Cleared defrost drain tube and installed heater wire kit.
+  paraphrase: water puddles under the vegetable drawers
+  manual_anchors:
+  - drain pan
+  - drain
+  - defrost water
+  - water on the floor
+  - defrost
+  weight: 1.2
+  models: *id002
+- key: touch_panel_dead
+  symptom: refrigerator touch panel unresponsive
+  resolution: Power-cycled display board and updated firmware.
+  paraphrase: screen on the door will not respond to taps
+  manual_anchors:
+  - control panel
+  - control lock
+  - unresponsive
+  weight: 1.3
+  models: *id003
+- key: wifi_pairing_fail
+  symptom: SmartFridge app will not pair over Wi‑Fi
+  resolution: Reset network module and re-provisioned home SSID.
+  paraphrase: app cannot connect the fridge to Wi‑Fi
+  manual_anchors:
+  - smartthings
+  - wi-fi
+  - wifi
+  - wireless access point
+  weight: 1.4
+  models: *id001
+- key: filter_alert_stuck
+  symptom: replace water filter alert will not clear
+  resolution: Installed OEM filter and reset indicator per service bulletin.
+  paraphrase: filter light stays on after we changed the filter
+  manual_anchors:
+  - filter indicator
+  - filter reset
+  - reset the filter
+  - filter status
+  weight: 1.0
+  models: *id002
+- key: condenser_fan_rattle
+  symptom: rattling noise from rear condenser fan
+  resolution: Removed debris, lubricated fan shaft, replaced worn blade.
+  paraphrase: rattling sound from the back of the fridge
+  manual_anchors:
+  - rattling
+  - vibration
+  weight: 1.1
+  models: *id003
+- key: ice_maker_leak
+  symptom: water leaking from ice maker housing
+  resolution: Replaced fill tube heater and tightened water inlet valve.
+  paraphrase: water drips from the ice maker area
+  manual_anchors:
+  - leaking
+  - leak
+  - dripping
+  weight: 1.2
+  models: *id001
+- key: humidity_drawer_stuck
+  symptom: preservation drawer stuck and hard to open
+  resolution: Realigned drawer rails and replaced cracked humidity seal.
+  paraphrase: special drawer is stuck shut
+  manual_anchors:
+  - humidity
+  - crisper
+  - drawer
+  weight: 1.3
+  models: *id002
+- key: temp_fluctuation
+  symptom: temperature swings between 38°F and 48°F
+  resolution: Replaced thermistor and validated control board setpoints.
+  paraphrase: temperature keeps bouncing up and down
+  manual_anchors:
+  - temperature control
+  - temperature setting
+  - actual temperature
+  weight: 1.4
+  models: *id003
+- key: post_outage_surge
+  symptom: fridge warm after brief power outage
+  resolution: Reset breakers, verified compressor start, cleared fault log.
+  paraphrase: after the power blink the fridge never cooled back down
+  manual_anchors:
+  - power failure
+  - power outage
+  - power interruption
+  weight: 1.0
+  models: *id001
+- key: interior_light_out
+  symptom: refrigerator interior lights stay off
+  resolution: Replaced door switch and LED light assembly.
+  paraphrase: lights inside the fridge do not turn on
+  manual_anchors:
+  - interior light
+  - lights do not work
+  - led lighting
+  - replacing the lights
+  weight: 1.1
+  models: *id002
+- key: door_alarm_chirp
+  symptom: door alarm chirps even when doors are closed
+  resolution: Adjusted door switches and recalibrated alarm timer.
+  paraphrase: alarm keeps beeping though doors look shut
+  manual_anchors:
+  - door alarm
+  - beeping
+  weight: 1.2
+  models: *id003
+- key: ice_tastes_plastic
+  symptom: ice cubes taste like plastic or chemical
+  resolution: Flushed lines, ran sanitize cycle, replaced filter.
+  paraphrase: ice tastes weird like plastic
+  manual_anchors:
+  - taste
+  - odor
+  - smell
+  weight: 1.3
+  models: *id001
+- key: freezer_frost_wall
+  symptom: heavy frost buildup on freezer back wall
+  resolution: Forced defrost cycle and replaced defrost thermostat.
+  paraphrase: back of the freezer is coated in frost
+  manual_anchors:
+  - frost forms
+  - frost/ice buildup
+  - frost
+  weight: 1.4
+  models: *id002
+- key: water_line_frozen
+  symptom: water line to dispenser frozen in door
+  resolution: Insulated door channel and raised freezer setpoint slightly.
+  paraphrase: no water at the dispenser in winter
+  manual_anchors:
+  - frozen
+  - water supply line
+  - water line
+  weight: 1.0
+  models: *id003
+- key: crisper_cracked
+  symptom: crisper drawer cracked along the front lip
+  resolution: Replaced drawer assembly and verified humidity slide.
+  paraphrase: vegetable drawer cracked when we loaded it
+  manual_anchors:
+  - crisper
+  - drawer
+  weight: 1.1
+  models: *id001
+- key: eco_mode_confusion
+  symptom: energy saver mode seems to warm the fridge
+  resolution: Disabled eco mode and documented normal setpoints for owner.
+  paraphrase: energy saver mode makes the fridge feel too warm
+  manual_anchors:
+  - energy saver
+  - energy saving
+  - vacation mode
+  - power cool
+  weight: 1.2
+  models: *id002
+- key: french_door_misalign
+  symptom: French doors sit uneven and scrape
+  resolution: Adjusted hinge cams and synchronized door heights.
+  paraphrase: one door sits higher and scrapes the other
+  manual_anchors:
+  - door alignment
+  - doors are not even
+  - appear to be uneven
+  - level the refrigerator
+  weight: 1.3
+  models: *id003
+detail_slots:
+- Started after we loaded groceries from Costco.
+- Happens more on humid days in the kitchen.
+- Unit is on a dedicated 20A circuit.
+- We hear the fan cycle but cooling feels weak.
+- Problem began the morning after a thunderstorm.
+- Kids leave the door open sometimes but this feels different.
+- We vacuumed the condenser coils last month.
+- Freezer is packed fairly full right now.
+- Water filter was changed about six weeks ago.
+- No recent moves — fridge has been in this spot for two years.
+- Smart app shows normal temps but food feels warm.
+- Noise is worse when the icemaker tries to dump a batch.
+intake_openings:
+- 'Customer reports: {symptom} on {model} in {city}, {state}.'
+- 'Shop note: owner describes {symptom} on their {model} ({city}).'
+- 'Intake: {model} owner in {city}, {state} — {symptom}.'
+- 'Need help with {model}: {symptom} (visited {store} store).'
+code_phrasings:
+- Display showed {code} on the service menu.
+- Diagnostic {code} appeared on the door panel.
+- Technician later confirmed {code} in the service log.
+- Owner photo shows {code} on the error screen.
+hybrid_bait_pairs:
+- bait_key: ice_maker_no_ice
+  style: misroute_checkout
+- bait_key: water_dispenser_slow
+  style: closed_ticket_repeat
+- bait_key: touch_panel_dead
+  style: closed_ticket_repeat

@@ -1,0 +1,79 @@
+---
+description: >-
+  Keywords delivery-resumimpl, resumimpl (with seed_grow/plans path), EXECUTE_GEN resume: follow
+  seed_grow/plans/*-plan.md checklists — [ ]/[X] per delivery phase P1…; update after each exit;
+  optional docs/plans/wip|completed archive. Companion to .cursor/skills/fabrication/references/EXECUTE_GEN.md and
+  implement-feature. Refactor plans under cursor_gen/refactor_plans/ still use implref.
+alwaysApply: false
+---
+
+<h1 id="dr-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>delivery-resumimpl</code> — bootstrap delivery plan checklist</h1>
+
+<h2 id="dr-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When this applies](#dr-when)
+2. [Plan shape](#dr-shape)
+3. [Procedure](#dr-procedure)
+4. [Optional folder archive](#dr-folders)
+5. [Triggers vs refactor plans](#dr-vs-implref)
+
+---
+
+<h2 id="dr-when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When this applies</h2>
+
+| Trigger | Meaning |
+|---------|---------|
+| **`delivery-resumimpl`** | User names **`seed_grow/plans/<feature>-plan.md`** (or spec `<!-- plan: … -->` target). Execute from first **`[ ]`**. |
+| **`resumimpl seed_grow/plans/…`** | Same as **`delivery-resumimpl`** when the path is under **`seed_grow/plans/`**. |
+| **`Run .cursor/skills/fabrication/references/EXECUTE_GEN.md …`** (resume) | Before coding: open linked **`seed_grow/plans/*-plan.md`**, honor **`[X]`**, continue from first **`[ ]`**. |
+
+If ambiguous, ask **one** question: which **`seed_grow/plans/*.md`** is the delivery ledger?
+
+---
+
+<h2 id="dr-shape" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Plan shape</h2>
+
+Delivery plans **must** match **`docs/templates/implementation-plan.md`**:
+
+- Top: **`<!-- delivery-status: new|wip|completed -->`**, **`<!-- plan-for: docs/specs/… -->`**
+- Phases **`### P1` … `### Pn`** with **Execution checklist** bullets **`[ ]` / `[X]`**
+- Phase heading may prefix **`[X]`** when **all** checklist bullets in that phase are **`[X]`**
+- **Exit** / **ACs** / **HG-*** prose stays; checkboxes are the human-visible progress bar
+
+**Canonical path (zone 2):** **`seed_grow/plans/<feature>-plan.md`** (spec **`<!-- plan: -->`** must keep pointing here). Do **not** move the only copy into **`docs/plans/wip/`**.
+
+---
+
+<h2 id="dr-procedure" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Procedure</h2>
+
+1. Open the delivery plan and spec linked by **`<!-- plan-for: -->`** / spec **`<!-- plan: -->`**.
+2. If checklists missing, normalize per **`docs/templates/implementation-plan.md`** before implementing.
+3. Set **`<!-- delivery-status: wip -->`** when marking the first implementable **`[X]`** (if still **`new`**).
+4. Implement the **first phase** that has any **`[ ]`**, in **P1 → Pn** order; respect **`implement-feature`** and **HG-*** stops.
+5. After each checklist item completes: edit plan → **`[X]`**; after phase **Exit**: prefix phase **`[X]`** if all bullets done; append spec **`## Decisions`** when gates or ambiguities require it.
+6. Run phase **Exit** verify commands before ticking verify-related boxes.
+7. When **every** implementable checklist item is **`[X]`** (or waived with one-line rationale in the plan): set **`<!-- delivery-status: completed -->`**; optional [folder archive](#dr-folders).
+
+**Blockers:** same as **`EXECUTE_GEN.md`** agent mandate — stop with numbered human steps; leave boxes **`[ ]`**.
+
+---
+
+<h2 id="dr-folders" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Optional folder archive</h2>
+
+| Path | Use |
+|------|-----|
+| **`docs/plans/wip/`** | Optional **read-only snapshot** when human wants a dated copy mid-flight — **not** the live ledger. |
+| **`docs/plans/completed/`** | Optional archive copy when **`delivery-status: completed`** — live file remains at **`seed_grow/plans/<feature>-plan.md`**. |
+
+See **`docs/plans/README.md`**. Agent **may** copy (not move) the plan to **`completed/`** on full completion if the human uses archives.
+
+---
+
+<h2 id="dr-vs-implref" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Triggers vs refactor plans</h2>
+
+| Tree | Rule |
+|------|------|
+| **`seed_grow/plans/*-plan.md`** | **`delivery-resumimpl`** (this file) + **`EXECUTE_GEN.md`** |
+| **`cursor_gen/refactor_plans/**`** | **`implref`** / **`resumimpl`** + **`onlyref`** |
+
+Do not mix checklist files across those trees in one session without explicit user direction.

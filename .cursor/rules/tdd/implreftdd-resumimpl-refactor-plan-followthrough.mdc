@@ -39,7 +39,7 @@ If the plan was authored with **`onlyreftdd`**, read its per-phase **TDD mode** 
 
 **`.cursor/rules/implref-resumimpl-refactor-plan-followthrough.mdc`** (**`implref`** / **`resumimpl`**)
 
-That covers: step 0 normalize, step 1 ambiguity gate, step 2 Quality bar in plan, step 3 phases, step 3.4 exwar, step 3.5 wip/completed, step 4 closing table, blockers (3.1d / 3.1e), and self-check.
+That covers: step 0 normalize, step 1 ambiguity gate, step 2 Quality bar in plan, step 3 phases, step 3.4 exwar, step 3.5 wip/completed, step 4 closing table, blockers (3.1d / 3.1e), **operator gates (§3.1f)**, and self-check.
 
 **Non-TDD behavior lives only in the classic file.** Edit classic **`implref`** once when shared impl rules change; edit **this file** only when TDD execution rules change.
 
@@ -71,7 +71,7 @@ No forced red-first test for pure removal unless the plan explicitly demands one
 
 <h3 id="irtdd-step3-shared" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.3 Shared (both modes)</h3>
 
-- After phase green + **exwar** (classic step 3.4), mark phase `[X]` per classic **3.2**.
+- After phase green + **exwar** (classic step 3.4), mark phase `[X]` per classic **3.2** only once classic **§3.2b** (comments and docs gate) is satisfied. That gate is inherited from **implref**; do not redefine it here. **`qimpltdd`** reaches it through **`aciubtdd` → this file → implref**.
 - When seeds/migrations changed, follow classic **aciub** env-sync expectations via **aciubtdd** if active (SQLite harness + Postgres refresh).
 
 ---
@@ -137,4 +137,5 @@ Do not switch modes mid-phase without documenting in the plan Decision log.
 - [ ] Full **`implref`** procedure followed except step 3 ordering.
 - [ ] Each phase started with **TDD mode** one-liner.
 - [ ] **`strict-TDD`:** red observed (or documented) before impl; green before `[X]`.
+- [ ] Classic **§3.2b** satisfied before each phase `[X]` — incl. **cdcm** ≥1 doc line per touched class/function (inherited from **implref**, not waived by TDD).
 - [ ] Closing table per classic step 4 (tests run row mentions TDD mode used).

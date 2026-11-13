@@ -1,0 +1,9 @@
+{
+  "checkpoints": [
+    { "id": "analyze", "repeatable": true, "label": "Analyze" },
+    { "id": "harness-seeded", "repeatable": false, "label": "Harness seeded" },
+    { "id": "modules-applied", "repeatable": false, "label": "Modules applied" },
+    { "id": "verify-gate", "repeatable": false, "label": "Verify gate" },
+    { "id": "product-seeded", "repeatable": false, "label": "Product seeded" }
+  ]
+}

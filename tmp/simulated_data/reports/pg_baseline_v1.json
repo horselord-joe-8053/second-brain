@@ -1,0 +1,99 @@
+{
+  "mode": "vector_only",
+  "backend": "postgres",
+  "search_mode": "vector_only",
+  "hybrid_flag": "0",
+  "total": 10,
+  "recall_at_1": 0.5,
+  "by_stratum": {
+    "hybrid_stress": 0.0,
+    "paraphrase": 1.0,
+    "code_in_query": 0.0
+  },
+  "cases": [
+    {
+      "eval_id": "eval-0001",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-000042",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0002",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-000002",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0003",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-000002",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0004",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-000015",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0005",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-000012",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0006",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-000025",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0007",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-000025",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0008",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-000035",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0009",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-000005",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0010",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-000031",
+      "hit_strict": false,
+      "hit_acceptable": null
+    }
+  ],
+  "sim_data_profile": "rrf_data_llm_gen",
+  "sim_data_profile_label": "LLM-authored corpus (tmp/simulated_data)",
+  "service_queries_csv": "/Users/jjw8053/projects/second_brain/tmp/simulated_data/service_queries.csv",
+  "eval_jsonl": "/Users/jjw8053/projects/second_brain/tmp/simulated_data/ticket_retrieval.jsonl"
+}

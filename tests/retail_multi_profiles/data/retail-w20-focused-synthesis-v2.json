@@ -1,0 +1,1023 @@
+{
+  "schema_version": "cos_insight_qa.v2",
+  "eval_suite_id": "TYPE_W_W20",
+  "status": "frozen",
+  "questions": [
+    {
+      "id": "W20_01",
+      "question_class": "global_cross_brand",
+      "audience": "Consumer-support trainers",
+      "question": "Across GE, KitchenAid, and Samsung, what staged troubleshooting framework separates normal temperature recovery from a cooling problem that needs intervention?",
+      "answer": "First establish context: startup, warm food, frequent openings, and recent setting changes can require recovery rather than repair. GE and KitchenAid generally allow 24 hours for initial cooling and setting stabilization; Samsung says reaching a new set temperature takes time without repeated resetting. Next check cooling-enabled status, power, door closure, settings, and unobstructed airflow; also assess installation heat and ventilation. Correct those conditions before further adjustments. Long or variable-speed operation alone is not proof of failure, and persistent problems should follow the manuals' service guidance rather than improvised repairs.",
+      "criteria": [
+        {
+          "text": "Separates expected recovery after startup, loading, or door opening from persistent cooling failure.",
+          "critical": true
+        },
+        {
+          "text": "Includes both operating-state checks and physical checks such as doors, vents, and installation conditions.",
+          "critical": true
+        },
+        {
+          "text": "Preserves the GE/KitchenAid 24-hour guidance without imposing that exact interval on Samsung temperature changes.",
+          "critical": false
+        },
+        {
+          "text": "Does not treat long runtime alone as a fault or recommend unsupported repairs.",
+          "critical": true
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Troubleshooting, English pp. 45–47; PDF pp. 45–47"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 21–22, Using the Controls"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 33–34, Troubleshooting—Operation"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Feature panel, English pp. 36–38 (PDF pp. 36–38)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Troubleshooting—General, English pp. 63–65 (PDF pp. 63–65)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_02",
+      "question_class": "global_cross_brand",
+      "audience": "Appliance sales educators",
+      "question": "How should a briefing distinguish temporary high-output cooling from ordinary temperature adjustment across GE, KitchenAid, and Samsung, including the limits and tradeoffs?",
+      "answer": "Treat these as temporary responses to unusual demand, not substitutes for normal set points and recovery time. GE TurboCool targets refrigerator loads, warm leftovers, or recovery after an interruption; it prevents refrigerator temperature changes while active and leaves the freezer setting unaffected. KitchenAid separates Max Cool for refrigerator demand from Max Ice for temporary ice demand, each lasting 24 hours unless canceled. Samsung separates Power Cool and Power Freeze, returns to previous settings after several hours, and explicitly warns of increased power use; for large freezer loads it calls for Power Freeze at least 20 hours beforehand. KitchenAid also says colder normal settings do not accelerate initial cooling.",
+      "criteria": [
+        {
+          "text": "Frames accelerated modes as temporary demand responses rather than universally better normal settings.",
+          "critical": true
+        },
+        {
+          "text": "Distinguishes GE's refrigerator-focused TurboCool, KitchenAid's cooling/ice split, and Samsung's refrigerator/freezer split.",
+          "critical": true
+        },
+        {
+          "text": "States Samsung's energy-consumption tradeoff and automatic return to previous settings.",
+          "critical": true
+        },
+        {
+          "text": "Includes useful timing or interface limits, such as KitchenAid's 24-hour duration, Samsung's advance activation, or GE's temperature-adjustment restriction.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Controls, English pp. 8–11; PDF pp. 8–11"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 22–23, Cooling On/Off / Options"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 21–22, Using the Controls"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Power Freeze and Power Cool, English pp. 37–38 (PDF pp. 37–38)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_03",
+      "question_class": "global_cross_brand",
+      "audience": "Water-system support staff",
+      "question": "Using GE and KitchenAid, build a causal framework for weak water flow and small or hollow ice that explains why replacing the ice maker is not the first conclusion.",
+      "answer": "Follow the supply path: confirm potable cold water, adequate pressure, an open shutoff, and unrestricted tubing; then assess reverse osmosis and refrigerator-filter restriction before blaming ice-making hardware. GE specifies 25–120 psi and directs use of its bypass plug with RO feeding a filtered refrigerator. KitchenAid specifies 35–120 psi at the refrigerator and discusses RO sediment filters, tank refill, and removing the refrigerator filter if its added restriction reduces pressure. Both connect restricted filtration or supply to poor ice or water performance. Check installation and flushing as well as filter condition; unresolved plumbing restrictions belong with a qualified plumber.",
+      "criteria": [
+        {
+          "text": "Organizes diagnosis along the water supply, pressure, tubing, RO, and filter path rather than immediately blaming the ice maker.",
+          "critical": true
+        },
+        {
+          "text": "Connects low flow or hollow ice to supply or filter restriction in both brands.",
+          "critical": true
+        },
+        {
+          "text": "Preserves the distinction between GE's bypass-plug instruction and KitchenAid's filter-removal guidance for RO restriction.",
+          "critical": true
+        },
+        {
+          "text": "Provides the correct brand-specific pressure ranges and appropriate plumbing escalation.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Water Connection/Installing the Water Line, English pp. 38, 41–43; PDF pp. 38, 41–43"
+          },
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Troubleshooting, English pp. 45–46; PDF pp. 45–46"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 12–14, Water Supply Requirements / Connect the Water Supply"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 36–38, Troubleshooting—Ice and Water"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid"
+        ]
+      }
+    },
+    {
+      "id": "W20_04",
+      "question_class": "global_cross_brand",
+      "audience": "Consumer information writers",
+      "question": "What shared limitations should a responsible filtered-water briefing state across GE, KitchenAid, and Samsung, rather than presenting a refrigerator filter as universal water purification?",
+      "answer": "Start with a suitable water supply: GE and KitchenAid prohibit unsafe or unknown-quality water without adequate disinfection, and Samsung explicitly says its filter does not sterilize water or destroy microorganisms. GE and KitchenAid certify specific listed reductions, not universal contaminant removal, and warn that actual performance varies. Pressure, cold-water temperature limits, correct installation, flushing, and timely replacement matter. All three use roughly six-month replacement guidance, with earlier action for reduced flow or local water conditions. An indicator or reset tracks maintenance; it does not establish that any incoming water is safe.",
+      "criteria": [
+        {
+          "text": "Rejects the claim that these filters make arbitrary unsafe water safe or remove all contaminants.",
+          "critical": true
+        },
+        {
+          "text": "Distinguishes specific certified reductions from universal purification and acknowledges variable performance.",
+          "critical": true
+        },
+        {
+          "text": "Connects treatment performance to operating conditions and maintenance rather than indicator status alone.",
+          "critical": true
+        },
+        {
+          "text": "Notes approximately six-month replacement guidance and reasons for earlier replacement.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Water Filter Guidelines, English p. 15; Performance Data Sheet, English p. 50; PDF pp. 15, 50"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 40, Performance Data Sheet"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Installation—Water dispenser line, English pp. 33–35 (PDF pp. 33–35)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Filter Reset; Maintenance—Water filter, English pp. 41, 59–61 (PDF pp. 41, 59–61)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_05",
+      "question_class": "global_cross_brand",
+      "audience": "Safety trainers",
+      "question": "Across the manuals, what taxonomy prevents users from confusing control lock, cooling-off modes, ice-maker shutoff, and electrical isolation?",
+      "answer": "These are different layers of control. A lock restricts user inputs or dispensing; KitchenAid explicitly says its lock does not cut power to the refrigerator, ice maker, or dispenser light. Cooling Off stops refrigeration rather than establishing electrical safety: GE says control OFF leaves power connected, and Samsung Shop mode still runs fans and lights while compressors stop. Ice-maker OFF separately stops ice production and is needed when water is unavailable. Cleaning and service require the prescribed power disconnection, not merely a locked panel or an OFF display; qualified personnel handle repairs.",
+      "criteria": [
+        {
+          "text": "Separates input/dispensing lock, refrigeration shutdown, ice production shutdown, and electrical disconnection.",
+          "critical": true
+        },
+        {
+          "text": "Explicitly states that control OFF or lock is not electrical isolation.",
+          "critical": true
+        },
+        {
+          "text": "Uses supported brand differences, including Samsung lights/fans in Shop mode or KitchenAid lock leaving ice-maker power intact.",
+          "critical": false
+        },
+        {
+          "text": "Retains the need for ice-maker shutoff when water is unavailable and safe disconnection for maintenance.",
+          "critical": true
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Safety Information, English pp. 3–4; PDF pp. 3–4"
+          },
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Controls, English pp. 10–11, Figure C; PDF pp. 10–11"
+          },
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Automatic Icemaker, English pp. 20–21; PDF pp. 20–21"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 26, The Ice Dispenser / Dispenser Drip Tray / Light / Lock"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Feature panel, English pp. 40–41 (PDF pp. 40–41)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_06",
+      "question_class": "global_cross_brand",
+      "audience": "Food-storage educators",
+      "question": "How do the KitchenAid and Samsung manuals support a storage-planning framework that distinguishes whole-compartment cooling, local storage conditions, and convertible space?",
+      "answer": "Do not assume every drawer control changes the whole refrigerator. KitchenAid's temperature-controlled drawer affects only that drawer, with meat/fish, deli/cheese, and wine settings; leafy vegetables should not go there, and crisper humidity is automatic rather than user-adjustable. Its dual-evaporator models also separate refrigerator and freezer air. Samsung's FlexZone instead converts the lower-right compartment among frozen, soft-freezing, meat/chill, and beverage uses; Cool at 41°F is for beverages used fairly quickly, not meat or food storage. In both brands, arranging food must preserve airflow, so storage flexibility does not justify blocking vents.",
+      "criteria": [
+        {
+          "text": "Distinguishes a local drawer adjustment from whole-compartment settings and Samsung's convertible compartment.",
+          "critical": true
+        },
+        {
+          "text": "Includes food-suitability limits, especially no meat or food at Samsung FlexZone Cool and no leafy vegetables in KitchenAid's cold drawer.",
+          "critical": true
+        },
+        {
+          "text": "Explains that food arrangement must preserve airflow.",
+          "critical": true
+        },
+        {
+          "text": "Notes KitchenAid's automatic crisper humidity or model-dependent separate evaporators without making them universal.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 5–6, Parts and Features / What’s New Behind the Doors?"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 21, 28–30, Opening and Closing Doors / Refrigerator, Door, and Freezer Features"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 35–36, Troubleshooting—Temperature and Moisture"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Door Alarm and FlexZone, English pp. 38–39 (PDF pp. 38–39)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Troubleshooting—General, English pp. 63–65 (PDF pp. 63–65)"
+          }
+        ],
+        "source_brands": [
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_07",
+      "question_class": "global_cross_brand",
+      "audience": "Household maintenance writers",
+      "question": "What common cleaning framework can be taught across GE, KitchenAid, and Samsung, and which surface-specific differences prevent a single universal cleaning recipe?",
+      "answer": "Disconnect power as directed, use gentle cleaning materials, rinse or wipe and dry, and avoid harsh or abrasive chemicals. All three warn against washing cold glass shelves with warm water because thermal shock can break them. Finish identification matters: GE forbids stainless-steel cleaner on its fingerprint-resistant and several other listed finishes, while conventional stainless permits approved products; KitchenAid permits appliance-designed stainless cleaner for heavy stainless soil but keeps it off plastic and gaskets. Samsung prohibits direct water spraying and direct cleaner spraying onto the display, and requires a dry cloth for plug contacts. Even cloth rules differ: Samsung permits paper towels, while GE's listed sensitive finishes and KitchenAid door guidance prohibit them.",
+      "criteria": [
+        {
+          "text": "Provides shared gentle-cleaning, drying, and power-safety principles.",
+          "critical": true
+        },
+        {
+          "text": "Includes the shared cold-glass/warm-water breakage warning.",
+          "critical": true
+        },
+        {
+          "text": "Makes cleaner choice dependent on finish, especially GE fingerprint-resistant versus conventional stainless.",
+          "critical": true
+        },
+        {
+          "text": "Preserves a useful non-universal detail such as paper-towel restrictions or Samsung's spray and dry-plug rules.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Care and Cleaning, English p. 22; PDF p. 22"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 31–32, Cleaning / Lights"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Safety—Cleaning cautions; Maintenance—Cleaning, English pp. 12–13, 59 (PDF pp. 12–13, 59)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_08",
+      "question_class": "global_cross_brand",
+      "audience": "Telephone support staff",
+      "question": "Across GE, KitchenAid, and Samsung, how can sound complaints be classified by mechanism and context instead of treating every noise as a component failure?",
+      "answer": "Classify sounds into cooling and airflow, thermal change, and water/ice events. Variable compressor or fan sounds, refrigerant bubbling, expansion clicks or pops, defrost water sounds, and ice drops can be normal. Context determines action: GE and KitchenAid explain increased runtime or fan activity during high demand; vibration or rattling calls for stability, clearance, tubing, or loose-object checks. Water-valve buzzing is expected during filling with water connected, but GE and KitchenAid say to switch the ice maker off if water is not connected; GE warns continued operation without water can damage the valve. Sound alone does not justify a speculative repair.",
+      "criteria": [
+        {
+          "text": "Groups normal noises by cooling/airflow, thermal movement, and water/ice mechanisms.",
+          "critical": true
+        },
+        {
+          "text": "Contrasts normal operating sounds with actionable installation or stability causes.",
+          "critical": true
+        },
+        {
+          "text": "Distinguishes connected-water filling sounds from an ice maker running without water.",
+          "critical": true
+        },
+        {
+          "text": "Avoids inferring a failed component solely from a normal sound description.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Normal Operating Conditions, English p. 44; PDF p. 44"
+          },
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Troubleshooting, English pp. 45–46; PDF pp. 45–46"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 34–35, Troubleshooting—Noise"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Troubleshooting—General, English pp. 63–64 (PDF pp. 63–64)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_09",
+      "question_class": "global_cross_brand",
+      "audience": "Owners planning extended absences",
+      "question": "Using GE and KitchenAid, what decision framework distinguishes a vacation feature from the physical preparations needed for a long absence or shutdown?",
+      "answer": "First decide whether refrigeration will remain on. KitchenAid Vacation Mode only reduces freezer defrost frequency; it does not replace its absence instructions to manage food, shut off water, turn off the ice maker, and empty the bin. For a full shutdown, both brands call for food removal, cleaning, and doors left open to prevent odor or mold; GE explicitly requires unplugging, and KitchenAid's electrical instructions require disconnection for cleaning. GE also calls for qualified draining if freezing temperatures are possible and filter replacement plus a 2-gallon dispenser flush after vacation. KitchenAid specifies shutting ice-maker water off at least a day before shutdown and turning the maker off after the last batch.",
+      "criteria": [
+        {
+          "text": "Distinguishes leaving refrigeration on from fully shutting down.",
+          "critical": true
+        },
+        {
+          "text": "Explains that KitchenAid Vacation Mode is an energy feature, not a substitute for water, ice, and food preparations.",
+          "critical": true
+        },
+        {
+          "text": "Includes cleaning and open-door storage for a shut-down refrigerator, with safe power disconnection.",
+          "critical": true
+        },
+        {
+          "text": "Adds supported brand-specific details such as freeze-risk draining, restart flushing, or KitchenAid's advance water shutoff.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Care and Cleaning; Replacing the Lights, English p. 23; PDF p. 23"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 23, Additional Features"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 32, Vacation and Moving Care"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 12, Electrical Requirements"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid"
+        ]
+      }
+    },
+    {
+      "id": "W20_10",
+      "question_class": "global_cross_brand",
+      "audience": "Installation coordinators",
+      "question": "Across the three brands, what installation-readiness framework goes beyond checking whether the refrigerator cabinet fits in an opening?",
+      "answer": "Check the entire route and operating envelope: entrance clearance, possible door removal, door swing, service access, ventilation, and water-line space. Then verify a load-bearing stable floor, suitable ambient conditions away from heat or sunlight, and compliant electrical and potable-water supplies. Finish by leveling, confirming stable support and door closure, checking water connections for leaks, and allowing the prescribed cooling and flushing before use. Do not reuse one brand's dimensions or leveling directions for another: GE, KitchenAid, and Samsung specify different clearances and ambient ranges, and KitchenAid uses brake feet to lift the front rollers off the floor.",
+      "criteria": [
+        {
+          "text": "Includes transport route, door operation, service access, and ventilation rather than cabinet dimensions alone.",
+          "critical": true
+        },
+        {
+          "text": "Includes environmental, floor-support, and utility readiness.",
+          "critical": true
+        },
+        {
+          "text": "Includes final stability, door-closure, leak, and commissioning checks.",
+          "critical": true
+        },
+        {
+          "text": "Recognizes brand-specific clearances and adjustment procedures rather than inventing a universal specification.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Installation Instructions, English pp. 24–26, 39–40; PDF pp. 24–26, 39–40"
+          },
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Installing the Water Line, English pp. 38, 42–43; PDF pp. 38, 42–43"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 7, Unpack the Refrigerator / Location Requirements"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 15–16, Refrigerator Leveling, Door Closing and Alignment"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Installation—Select a site and Flooring, English pp. 27–29 (PDF pp. 27–29)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Installation—Water-line notes, Initial settings, and Final check; Safety—Installation cautions, English pp. 7, 35 (PDF pp. 7, 35)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_11",
+      "question_class": "global_cross_brand",
+      "audience": "Ice-dispenser support trainers",
+      "question": "What shared safety framework and meaningful configuration differences should guide ice-bin removal and jam handling across GE, KitchenAid, and Samsung?",
+      "answer": "Keep hands and objects out of discharge openings and moving mechanisms, use sturdy glasses, and do not use an ice bin as general food storage. Clear accessible obstructions only by the manual's method: GE specifies a wooden spoon for a blocked chute, while KitchenAid specifies plastic utensils for ice obstructions. Bin removal does not imply a universal shutoff behavior: GE says removing its door bucket does not stop ice production; KitchenAid's refrigerator ice maker stops automatically with the bin removed, but its freezer maker must be switched off before bin removal. Samsung describes safe bucket removal, correct reseating, and no hands or objects in the chute. Do not transfer one configuration's behavior to another.",
+      "criteria": [
+        {
+          "text": "States the shared prohibition on reaching into outlets or moving ice mechanisms.",
+          "critical": true
+        },
+        {
+          "text": "Preserves GE's continued-production behavior versus KitchenAid's refrigerator-bin automatic stop and freezer shutoff requirement.",
+          "critical": true
+        },
+        {
+          "text": "Restricts jam clearing to supported methods rather than sharp tools or improvised disassembly.",
+          "critical": true
+        },
+        {
+          "text": "Includes sturdy-glass, food-storage, or correct bucket-reseating precautions.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Dispenser, English p. 13; Automatic Icemaker, English p. 20; PDF pp. 13, 20"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 26, The Ice Dispenser / Dispenser Drip Tray / Light / Lock"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 27, Ice Maker and Ice Storage Bin"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Ice-maker diagnosis; Maintenance—Ice-maker bucket, English pp. 51–52, 55 (PDF pp. 51–52, 55)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_12",
+      "question_class": "global_cross_brand",
+      "audience": "Warranty intake staff",
+      "question": "What warranty-intake framework captures the meaningful similarities and differences among GE, KitchenAid, and Samsung without promising blanket refrigerator coverage?",
+      "answer": "Identify the exact model, country, purchase date and proof, failed component, and parts-versus-labor period before promising coverage. All three describe initial one-year defect coverage, but extended coverage differs: GE gives the stated five-year sealed-system coverage to Profile and Café models; KitchenAid covers qualifying liner and sealed-system defects with parts and labor in years 2–5 and sealed-system parts only in years 6–10; Samsung's US terms include five-year sealed-system parts and labor and ten-year Digital Inverter Compressor parts with five-year labor. Also screen for exclusions such as improper installation, maintenance, unauthorized work, and commercial use, and verify authorized-service access. Cooling-off settings or ordinary installation corrections should not automatically be treated as warrantable failures.",
+      "criteria": [
+        {
+          "text": "Requires model, geography, purchase proof/date, component, and parts/labor distinctions before a coverage decision.",
+          "critical": true
+        },
+        {
+          "text": "Accurately distinguishes the brands' extended coverage without extending GE Profile/Café terms to all GE models.",
+          "critical": true
+        },
+        {
+          "text": "Recognizes exclusions and authorized-service or access requirements rather than promising blanket coverage.",
+          "critical": true
+        },
+        {
+          "text": "Distinguishes operating or installation corrections from demonstrated covered defects.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Limited Warranty, English pp. 48–49; Consumer Support, English p. 52; PDF pp. 48–49, 52"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 41, 43, Limited Warranty / At Your Service"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Limited Warranty and support, English pp. 68–72, 76 (PDF pp. 68–72, 76)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Feature panel, English pp. 40–41 (PDF pp. 40–41)"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances",
+          "KitchenAid",
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_13",
+      "question_class": "global_single_brand",
+      "audience": "GE water-system support staff",
+      "question": "For GE XWFE systems, what lifecycle framework links replacement scheduling, hydraulic performance, electronic recognition, and leak response?",
+      "answer": "Schedule replacement every six months, at rated capacity, or earlier for noticeably reduced flow; a filter or bypass plug is required for dispenser and ice-maker operation. Install the compatible XWFE cartridge fully, flush according to the applicable procedure, and reset for models that require it; some reset automatically. Treat a remaining red indicator as a diagnostic prompt, not proof that the new cartridge is exhausted: check installation, leaks, compatibility, label damage, and reset requirements. LEAK indicates a detected filter leak and calls for replacement and wiping up water; Err indicates failed detection or communication. Proper pressure, freeze protection, and timely replacement also matter because maintenance failures can reduce performance or cause leakage.",
+      "criteria": [
+        {
+          "text": "Connects time/capacity/flow-based replacement with the requirement for a filter or bypass plug.",
+          "critical": true
+        },
+        {
+          "text": "Distinguishes physical installation and flushing from electronic reset or automatic recognition.",
+          "critical": true
+        },
+        {
+          "text": "Distinguishes LEAK from Err and does not treat every red indicator as an exhausted cartridge.",
+          "critical": true
+        },
+        {
+          "text": "Includes operating-limit or delayed-replacement leakage risks.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Water Filter Cartridge—XWFE, English pp. 14–15; PDF pp. 14–15"
+          },
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Water Filter Cartridge—XWFE, English p. 14; PDF p. 14"
+          },
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Water Filter Guidelines, English p. 15; Performance Data Sheet, English p. 50; PDF pp. 15, 50"
+          },
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Troubleshooting, English p. 47; PDF p. 47"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances"
+        ]
+      }
+    },
+    {
+      "id": "W20_14",
+      "question_class": "global_single_brand",
+      "audience": "KitchenAid support trainers",
+      "question": "What functional taxonomy of KitchenAid operating modes explains why an inactive dispenser, a silent alarm, and stopped cooling require different interpretations?",
+      "answer": "Separate refrigeration state, demand boosts, behavioral modes, and interface restrictions. Cooling Off stops both compartments, and Showroom Mode also disables cooling. Max Cool and Max Ice temporarily increase output for 24 hours. Sabbath Mode preserves temperature set points but disables lights, sounds, alarms, and dispensing; Vacation Mode instead reduces freezer defrost frequency and is canceled by specified interactions. Dispenser lock disables controls and levers without cutting appliance or ice-maker power. Normal-tone suppression leaves alert tones audible, while an unacknowledged PO outage indication disables control and dispenser functions until MEASURED FILL is pressed. Electrical isolation still requires disconnection, not a mode selection.",
+      "criteria": [
+        {
+          "text": "Distinguishes stopped cooling from disabled dispensing or suppressed lights and alarms.",
+          "critical": true
+        },
+        {
+          "text": "Contrasts temporary Max features, Sabbath behavior, and Vacation energy behavior.",
+          "critical": true
+        },
+        {
+          "text": "Includes lock or PO acknowledgment as a separate explanation for inactive controls/dispensing.",
+          "critical": true
+        },
+        {
+          "text": "Preserves useful interaction details and the distinction between modes and electrical disconnection.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 22–23, Cooling On/Off / Options"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 23, Additional Features"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 23, Power Outage Indicator / Door Ajar Alarm"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 26, The Ice Dispenser / Dispenser Drip Tray / Light / Lock"
+          },
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "p. 12, Electrical Requirements"
+          }
+        ],
+        "source_brands": [
+          "KitchenAid"
+        ]
+      }
+    },
+    {
+      "id": "W20_15",
+      "question_class": "global_single_brand",
+      "audience": "Samsung energy-feature educators",
+      "question": "How does Samsung's manual frame the tradeoff between immediate cooling demand, utility-driven load reduction, and user control of energy features?",
+      "answer": "Power Cool and Power Freeze prioritize rapid cooling, run at full power for several hours, and increase consumption before returning to previous settings. Smart Grid instead requires utility registration and a compatible EMS: L3 moderately reduces load for up to 4.5 hours, whereas L4 aggressively reduces it, including stopping the compressor, for at most 15 minutes and ends on door or dispenser activity. Override lets the user ignore utility signals. App-based defrost delay schedules a different energy action, while reported consumption depends on operating conditions and stored food rather than simply matching specifications. These connected capabilities require a working supported connection and do not make every refrigerator setting remotely available.",
+      "criteria": [
+        {
+          "text": "Contrasts high-output cooling's increased consumption with demand-response load reduction.",
+          "critical": true
+        },
+        {
+          "text": "Distinguishes L3 and L4 in intensity and bounded duration.",
+          "critical": true
+        },
+        {
+          "text": "Explains user Override and the utility/network prerequisites rather than implying automatic universal participation.",
+          "critical": true
+        },
+        {
+          "text": "Includes defrost scheduling, variable consumption reporting, or limits on remote availability.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Power Freeze and Power Cool, English pp. 37–38 (PDF pp. 37–38)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—SMART GRID Function, English pp. 45–47 (PDF pp. 45–47)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—MAC address and Energy Management, English pp. 46, 48–49 (PDF pp. 46, 48–49)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—SmartThings and device authentication, English pp. 40, 42–44 (PDF pp. 40, 42–44)"
+          }
+        ],
+        "source_brands": [
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_16",
+      "question_class": "global_single_brand",
+      "audience": "Samsung service-document reviewers",
+      "question": "What source-use framework should govern a Samsung briefing that combines the owner guide and technician sheet, especially where procedures or reference values differ?",
+      "answer": "Use the owner guide for consumer operation, installation, and routine care, and preserve the technician-only boundary for forced modes, electrical testing, and component removal. Do not silently merge conflicting instructions: the owner guide gives a five-second Cooling Off hold, while the technician sheet gives six seconds. Likewise, the sheet's diagnostic sensor and heater connector assignments differ from its board-layout/wiring references, so it does not establish a single reconciled pinout. Some ice-maker temperatures also lack units. State these limitations and seek qualified, model-appropriate service clarification rather than inventing units, selecting a pinout without qualification, or presenting technician procedures as household troubleshooting.",
+      "criteria": [
+        {
+          "text": "Separates consumer operating guidance from technician-only diagnostics and repair.",
+          "critical": true
+        },
+        {
+          "text": "Explicitly preserves the five-second versus six-second Cooling Off discrepancy instead of inventing one universal instruction.",
+          "critical": true
+        },
+        {
+          "text": "Acknowledges conflicting connector assignments and avoids presenting a reconciled pinout as established fact.",
+          "critical": true
+        },
+        {
+          "text": "Flags unspecified ice-maker temperature units or other document-scope limitations.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Feature panel, English pp. 40–41 (PDF pp. 40–41)"
+          },
+          {
+            "file": "samsung_RF28K9070SG/repair-guide.pdf",
+            "location": "Page 1, Important Safety Notice and Support Information"
+          },
+          {
+            "file": "samsung_RF28K9070SG/repair-guide.pdf",
+            "location": "Page 1, control-panel illustrations and Demo MODE / Cooling off Mode"
+          },
+          {
+            "file": "samsung_RF28K9070SG/repair-guide.pdf",
+            "location": "Pages 11–12, Main Board of Fridge Layout, SMPS, Inverter Board, and Wiring Diagram"
+          },
+          {
+            "file": "samsung_RF28K9070SG/repair-guide.pdf",
+            "location": "Page 2, Heat Release I/M Test Mode"
+          }
+        ],
+        "source_brands": [
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_17",
+      "question_class": "boundary_local",
+      "audience": "GE owners",
+      "question": "In GE's filter diagnostics, what does LEAK indicate, what accompanying behavior is listed, and what action is instructed?",
+      "answer": "LEAK or scrolling LEAK indicates a detected filter leak. Water is disabled, the red Filter Status LED flashes, and a buzzer sounds. Replace the filter and wipe water from the filter and surrounding area.",
+      "criteria": [
+        {
+          "text": "Identifies LEAK as a detected filter leak.",
+          "critical": true
+        },
+        {
+          "text": "States that water dispensing is disabled.",
+          "critical": true
+        },
+        {
+          "text": "Instructs filter replacement and wiping up surrounding water.",
+          "critical": true
+        },
+        {
+          "text": "Mentions the flashing red Filter Status LED and buzzer.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "ge_GNE27JYMFS/user-guide.pdf",
+            "location": "Troubleshooting, English p. 47; PDF p. 47"
+          }
+        ],
+        "source_brands": [
+          "GE Appliances"
+        ]
+      }
+    },
+    {
+      "id": "W20_18",
+      "question_class": "boundary_local",
+      "audience": "KitchenAid owners",
+      "question": "How is KitchenAid Measured Fill calibrated, and what should the user do if the calibration cup is overfilled or water spills?",
+      "answer": "Flush the system first. Place a sturdy 1-cup (237 mL) measuring cup on the tray and hold OPTIONS and LOCK together for 3 seconds. Dispense exactly to the 1-cup line and press MEASURED FILL under Confirm. If water spills or the cup is overfilled, discard the water and restart using ICE MODE under Back.",
+      "criteria": [
+        {
+          "text": "Uses a sturdy 1-cup measuring cup and dispenses precisely to its line.",
+          "critical": true
+        },
+        {
+          "text": "Enters calibration with OPTIONS and LOCK held together for 3 seconds.",
+          "critical": true
+        },
+        {
+          "text": "Confirms with MEASURED FILL and restarts after a spill or overfill rather than confirming an inaccurate amount.",
+          "critical": true
+        },
+        {
+          "text": "Notes that flushing precedes calibration.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "kitchenaid_KRFF507HPS/user-guide.pdf",
+            "location": "pp. 24–25, Water and Ice Dispensers / Flush the Water System / Calibrate Measured Fill"
+          }
+        ],
+        "source_brands": [
+          "KitchenAid"
+        ]
+      }
+    },
+    {
+      "id": "W20_19",
+      "question_class": "boundary_local",
+      "audience": "Samsung owners",
+      "question": "What are Samsung FlexZone's four modes, and what storage warning applies specifically to Cool?",
+      "answer": "Freezer matches the main freezer temperature for frozen food. Soft Freezing is 23°F (−5°C) for meat and fish; Chill / Meat is 30°F (−1°C) for items such as steak, cold cuts, fish, bacon, and cheese. Cool is 41°F (5°C) for beverages used fairly quickly. Do not store meat or food at Cool because it may spoil.",
+      "criteria": [
+        {
+          "text": "States that Freezer mode follows the main freezer temperature.",
+          "critical": true
+        },
+        {
+          "text": "Correctly identifies Soft Freezing at 23°F and Chill / Meat at 30°F.",
+          "critical": true
+        },
+        {
+          "text": "Identifies Cool at 41°F as a beverage setting and includes the no-meat-or-food spoilage warning.",
+          "critical": true
+        },
+        {
+          "text": "Includes representative suitable foods or the fairly-quick beverage-use qualification.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "samsung_RF28K9070SG/user-guide.pdf",
+            "location": "Operations—Door Alarm and FlexZone, English pp. 38–39 (PDF pp. 38–39)"
+          }
+        ],
+        "source_brands": [
+          "Samsung"
+        ]
+      }
+    },
+    {
+      "id": "W20_20",
+      "question_class": "boundary_local",
+      "audience": "Qualified appliance technicians",
+      "question": "According to the Samsung technician sheet's sensor-reference section, what ground should be used for DC measurements, and what resistance thresholds identify open or shorted sensors?",
+      "answer": "Use circuit ground, such as a marked main-PCB GND, not chassis ground, which gives incorrect measurements. Sensor resistance over 100 kΩ is considered open; under 2 kΩ is considered shorted. A sensor can also be out of tolerance without meeting either threshold.",
+      "criteria": [
+        {
+          "text": "Specifies circuit ground rather than chassis ground for DC measurement.",
+          "critical": true
+        },
+        {
+          "text": "Gives over 100 kΩ as the open-sensor threshold.",
+          "critical": true
+        },
+        {
+          "text": "Gives under 2 kΩ as the shorted-sensor threshold.",
+          "critical": true
+        },
+        {
+          "text": "Recognizes out-of-tolerance readings as another possible sensor problem.",
+          "critical": false
+        }
+      ],
+      "authoring": {
+        "human_verified": true,
+        "sources": [
+          {
+            "file": "samsung_RF28K9070SG/repair-guide.pdf",
+            "location": "Page 2, sensor chart and DC measurement cautions"
+          }
+        ],
+        "source_brands": [
+          "Samsung"
+        ]
+      }
+    }
+  ],
+  "review": {
+    "reviewer": "jjw8053-chat-approval-20261111",
+    "reviewed_at": "2026-11-11T12:24:50.758265+00:00",
+    "approval": "approve_all",
+    "approved_question_ids": [
+      "W20_01",
+      "W20_02",
+      "W20_03",
+      "W20_04",
+      "W20_05",
+      "W20_06",
+      "W20_07",
+      "W20_08",
+      "W20_09",
+      "W20_10",
+      "W20_11",
+      "W20_12",
+      "W20_13",
+      "W20_14",
+      "W20_15",
+      "W20_16",
+      "W20_17",
+      "W20_18",
+      "W20_19",
+      "W20_20"
+    ],
+    "pre_review_sha256": "f2992b9965677fc14076fc6815822e08aa77beb4a1c78f9b80acec179b1251d8"
+  },
+  "authoring_run": {
+    "provider": "openai",
+    "model": "gpt-6.1-sol",
+    "prompt_sha256": "0ca210a2a2ccaf0a530a1ef18ad547a07e514ee208f4dbb1a0eeacad13aa06ad"
+  },
+  "freeze": {
+    "reviewer": "jjw8053-chat-approval-20261111",
+    "reviewed_at": "2026-11-11T12:24:51.394003+00:00",
+    "candidate_sha256": "ac6e757b2aca2f7e5163e2341540b2fdef9e3bd8cd9769f13af15c0b59793f99",
+    "blinding_seed": "w20-v2-20261111"
+  }
+}

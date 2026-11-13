@@ -1,0 +1,125 @@
+---
+description: >-
+  Default operator logging: **utils/neat_logger** / **neat_logger_ts** (tags, colors, heartbeats) for CLIs and
+  harnesses; **logging_utils/** for JSONL checkpoints only. Encourage verbose **DEBUG** (env-gated) while
+  running/debugging. Referenced from qimpl, onlyref, implref. Keywords: neatlog, qimpl, qimpltdd, onlyref, aciub,
+  opslog, heartbeat, DEBUG.
+alwaysApply: false
+---
+
+<h1 id="neatlog-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>neatlog</code> — operator logging standard</h1>
+
+**`utils/neat_logger*`** is the repo’s **preferred unified** operator log producer (tagging, colors, file mirror, **Heartbeat**). Use it for **any** script, CLI, `python -m …` entrypoint, batch runner, or live harness — not only “long” jobs.
+
+**Pair with:** **`.cursor/rules/opslog-ops-run-logs-directory.mdc`**, **`.cursor/rules/serlog-search-gitignored-logs.mdc`**.
+
+<h2 id="neatlog-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Default — always neat_logger for operators](#neatlog-default) — not a conditional bar.
+2. [logging_utils — structured checkpoint only](#neatlog-tailored) — JSONL + resume.
+3. [Density: INFO + DEBUG](#neatlog-debug) — observe runs and debug failures.
+4. [Checkpoint semantics](#neatlog-checkpoint) — deducing the failing ticket.
+5. [Plan authoring (onlyref / qimpl)](#neatlog-plan).
+6. [Implement (aciub / implref)](#neatlog-impl).
+7. [Anti-patterns](#neatlog-anti).
+8. [Self-check](#neatlog-self).
+
+---
+
+<h2 id="neatlog-default" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Default — always neat_logger for operators</h2>
+
+| Context | Rule |
+|---------|------|
+| **CLI / `__main__` / ops script** | **Use neat_logger** (Python **`utils/neat_logger`**, TS **`utils/neat_logger_ts`**) — see **`HOWTO_USE_NEAT_LOGGER.md`**. |
+| **Library pure functions** (no process story) | No forced logger; callers log at boundaries. |
+| **Refactor plan** adds or changes a runner/harness | Plan **Quality bar** names log file + checkpoint ([§5](#neatlog-plan)). |
+| **`qimpl` / `aciub` / `implref`** | Same phase ships logging — not deferred polish. |
+
+**Patterns:**
+
+- **`NeatLoggerFactory.create("OPS", "<COMPONENT>", log_file_name=…, log_output="both")`** for dedicated runs under **`logs/ops/`**.
+- **`step` / `info` / `warning` / `error`** at transitions; **`heartbeat(...)`** around any call that may stay silent **&gt; ~20 s** (LLM, large HTTP read).
+- Never **`print()`** alone for operator-visible progress in new harness code.
+
+---
+
+<h2 id="neatlog-tailored" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. logging_utils — structured checkpoint only</h2>
+
+**`logging_utils/`** complements neat_logger — it does **not** replace it.
+
+| Use logging_utils for | Keep on neat_logger |
+|-----------------------|---------------------|
+| Append-only **JSONL** (`progress` / `result` events) | Human **`tail -f`** story |
+| **`--resume`** key sets | Tags, colors, heartbeats |
+| Dedup-friendly machine records | Errors with stack context |
+
+Example: **`logging_utils/run_progress.py`** + **`NeatLoggerFactory`** in the retail lane runner.
+
+---
+
+<h2 id="neatlog-debug" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Density: INFO + DEBUG</h2>
+
+**Prefer more logging over less** when building or debugging runners (including multi-lane eval).
+
+| Level | When |
+|-------|------|
+| **INFO / step** | Every milestone an operator should see in a normal run (start/end, lane, question_id, step name, i/N). |
+| **DEBUG** | Branch choices, model ids, truncated prompt/hash sizes, top-k paths, HTTP status, retry attempt — anything that answers “what did it think right before it failed?” |
+
+**Python:** `NeatLogger.debug(msg)` — emits only when **`NEAT_LOGGER_DEBUG=1`** (or `true` / `yes`). Plans and harness READMEs should document the env var for live debugging.
+
+**Plans:** For eval/harness phases, Quality bar should say: *“DEBUG lines for retrieval/LLM boundaries; operator enables with NEAT_LOGGER_DEBUG.”*
+
+---
+
+<h2 id="neatlog-checkpoint" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Checkpoint semantics — deducing the failing ticket</h2>
+
+When **`results.jsonl`** is appended **sequentially**:
+
+| Last line type | Inference |
+|----------------|-----------|
+| **`type: result`** | Last **completed** `(lane, question_id)` — success through judge/score. |
+| **`type: progress`** with **`step: judge_start`** (no later **`row_done`** / **`result`**) | **Failing ticket** = that lane + question_id; failure likely **during judge** (or timeout waiting on judge). |
+| **`step: answer_done`** then crash | Problem ticket = same ids; failure on **judge** (or between answer and judge). |
+| **`step: row_error`** | Explicit failing ticket + error string. |
+
+**Required for long benchmarks:** flush JSONL **before and after** slow external calls; never only write **`results.json`** at end.
+
+---
+
+<h2 id="neatlog-plan" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Plan authoring (onlyref / qimpl)</h2>
+
+Every runner/harness phase **Exit** must include:
+
+- **neat_logger** component name + **`logs/ops/…`** file
+- **JSONL** path + progress **`step`** vocabulary
+- **DEBUG** env var + what extra fields appear
+- **Resume** behavior if N × lanes &gt; 50
+
+---
+
+<h2 id="neatlog-impl" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Implement (aciub / implref)</h2>
+
+- Logging in the **same phase** as the runner.
+- Smoke with **`tail -f`** noted in plan or chat.
+- On phase **`[X]`**, spot-check: start line, per-row progress, at least one DEBUG path when env set.
+
+---
+
+<h2 id="neatlog-anti" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Anti-patterns</h2>
+
+| Anti-pattern | Why |
+|--------------|-----|
+| Silent loop | Cannot deduce failing ticket |
+| End-only JSON | Crash loses all rows |
+| Raw stdlib logging without neat_logger on CLIs | Loses unified tags/colors/ops paths |
+| DEBUG always on in CI default | Noise — gate with env |
+
+---
+
+<h2 id="neatlog-self" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Self-check (agent)</h2>
+
+- [ ] CLI/harness uses **neat_logger** (not print-only).
+- [ ] JSONL checkpoint if run can fail mid-way.
+- [ ] DEBUG hooks on non-obvious branches (env-gated).
+- [ ] **onlyref/qimpl/implref** plan bar updated when adding runners.

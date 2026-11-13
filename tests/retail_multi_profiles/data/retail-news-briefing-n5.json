@@ -1,0 +1,92 @@
+{
+  "schema_version": "news_briefing_smoke.v1",
+  "eval_suite_id": "TYPE_N_N5",
+  "status": "smoke",
+  "construct": "news_summaries",
+  "expected_hits": {
+    "wiki_prefix": "wiki/sources/13-fridge-newsmd--",
+    "bundled_prefix": "raw/sources/fridge-news_md/"
+  },
+  "questions": [
+    {
+      "id": "N01",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "news_briefing",
+      "question": "What should support staff say about GE GNE27JYMFS now that its product page says it is no longer manufactured?",
+      "required_point": "Discontinuation is not a recall, and it does not prove that parts or service are unavailable.",
+      "answer": "GE's listing says this model is no longer being manufactured. Discontinuation is not a recall, and it does not prove that parts or service are unavailable. Staff should treat manufacturing status, warranty, parts, and recalls as four separate questions.",
+      "criteria": [
+        {
+          "text": "Discontinuation is not a recall, and it does not prove that parts or service are unavailable.",
+          "critical": true
+        }
+      ],
+      "source_page": "wiki/sources/13-fridge-newsmd--16-gegne27jymfsnews--1j33fyx.md"
+    },
+    {
+      "id": "N02",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "news_briefing",
+      "question": "How should staff use the RTINGS review when an owner says produce is drying out in a GNE27JYMFS?",
+      "required_point": "Drying is not automatic proof of a cooling failure.",
+      "answer": "RTINGS rates everyday use 7.4/10. It attributes drying produce to a comparatively dry compartment and crispers that do not fully prevent leafy vegetables from drying. Drying is not automatic proof of a cooling failure.",
+      "criteria": [
+        {
+          "text": "Drying is not automatic proof of a cooling failure, and the review score is 7.4/10.",
+          "critical": true
+        }
+      ],
+      "source_page": "wiki/sources/13-fridge-newsmd--16-gegne27jymfsnews--1j33fyx.md"
+    },
+    {
+      "id": "N03",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "news_briefing",
+      "question": "Can staff tell a GNE27JYMFS owner that the new GE Profile Kitchen Assistant features can be added to that model?",
+      "required_point": "Scan-to-List, the inventory camera, and the new display cannot be added to GNE27JYMFS.",
+      "answer": "No. Scan-to-List, the inventory camera, and the new display cannot be added to GNE27JYMFS. Those features belong to the announced GE Profile model, and the cited release does not identify that model as a GNE27JYMFS successor.",
+      "criteria": [
+        {
+          "text": "Scan-to-List, the inventory camera, and the new display cannot be added to GNE27JYMFS.",
+          "critical": true
+        }
+      ],
+      "source_page": "wiki/sources/13-fridge-newsmd--16-gegne27jymfsnews--1j33fyx.md"
+    },
+    {
+      "id": "N04",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "news_briefing",
+      "question": "Does KitchenAid KRFF507HPS have Intelligent Auto Fill?",
+      "required_point": "KRFF507HPS does not include Intelligent Auto Fill.",
+      "answer": "No. KRFF507HPS does not include Intelligent Auto Fill. That hands-free dispenser is on newer KitchenAid models. KRFF507HPS has a through-the-door dispenser, and KitchenAid has not announced an upgrade that adds Auto Fill to this model.",
+      "criteria": [
+        {
+          "text": "KRFF507HPS does not include Intelligent Auto Fill.",
+          "critical": true
+        }
+      ],
+      "source_page": "wiki/sources/13-fridge-newsmd--24-kitchenaidkrff507hpsnews--1f4ab6n.md"
+    },
+    {
+      "id": "N05",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "news_briefing",
+      "question": "What should staff say when an RF28K9070SG owner expects the new Samsung AI refrigerator software?",
+      "required_point": "The announced AI software update excludes RF28K9070SG.",
+      "answer": "The announced AI software update excludes RF28K9070SG. It covers selected newer Family Hub models. Owner-review snapshots also differ by retailer: Best Buy shows 4.3/5 and Home Depot shows 3.6/5.",
+      "criteria": [
+        {
+          "text": "The announced AI software update excludes RF28K9070SG, and review scores differ by retailer.",
+          "critical": true
+        }
+      ],
+      "source_page": "wiki/sources/13-fridge-newsmd--22-samsungrf28k9070sgnews--1vtdbi6.md"
+    }
+  ]
+}

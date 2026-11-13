@@ -1,0 +1,80 @@
+# Copy to config/brain-stack.yaml (gitignored) — operator source of truth for this machine.
+# secrets: values live ONLY in brain-stack.yaml (not committed). Optional legacy: repo .env fallback.
+version: 1
+
+# Agent runtime for ./scripts/brain/agent.sh (start|stop|restart): hermes | openclaw.
+# Does not select brain profile, LLM Wiki URL, or MCP catalog — only which harness adapter runs.
+active_harness: hermes
+
+# Brain-profiles: brain/personal (personal second brain) | brain/retail (FRU aftersales).
+# Env BRAIN_PROFILE wins over this key; default retail. One profile is active at a time.
+active_brain_profile: retail
+
+paths:
+  repo_root: "."
+  # Parent of the profile dirs. Active root = <brains_dir>/<profile>; wiki vault = <root>/wiki (derived).
+  brains_dir: "brain"
+
+llm_wiki:
+  api_base_url: "http://127.0.0.1:19828/api/v1"
+  # Token: generated in LLM Wiki app; scripts pull → .env (not set here).
+
+# Shared messaging env key names (Hermes platforms: / OpenClaw channels when wired).
+messaging:
+  sync_env_keys:
+    - TELEGRAM_BOT_TOKEN
+    - TELEGRAM_ALLOWED_USERS
+    - TELEGRAM_HOME_CHANNEL
+    - TELEGRAM_HOME_CHANNEL_THREAD_ID
+    - WHATSAPP_ENABLED
+    - WHATSAPP_MODE
+    - WHATSAPP_ALLOWED_USERS
+    - WHATSAPP_HOME_CHANNEL
+    - WHATSAPP_HOME_USER_ID
+    - WHATSAPP_HOME_CHANNEL_THREAD_ID
+
+# Optional: add `secrets:` here instead of repo .env (same key names). Gitignored brain-stack.yaml only.
+hermes:
+  # Defaults for ./scripts/brain/adapters/hermes/start-hermes.sh (Desktop or --tui)
+  chat_provider: "gemini"
+  chat_model: "gemini-3.1-flash-lite"
+  ui: "desktop"
+  sync_env_keys:
+    - OPENAI_API_KEY
+    - OPENROUTER_API_KEY
+    - GEMINI_API_KEY
+    - GOOGLE_API_KEY
+    - LLM_WIKI_API_TOKEN
+  sync_env_keys_optional:
+    - OPENROUTER_API_KEY
+    - GOOGLE_API_KEY
+    - TELEGRAM_BOT_TOKEN
+    - TELEGRAM_ALLOWED_USERS
+    - TELEGRAM_HOME_CHANNEL
+    - TELEGRAM_HOME_CHANNEL_THREAD_ID
+    - WHATSAPP_ENABLED
+    - WHATSAPP_MODE
+    - WHATSAPP_ALLOWED_USERS
+    - WHATSAPP_HOME_CHANNEL
+    - WHATSAPP_HOME_USER_ID
+    - WHATSAPP_HOME_CHANNEL_THREAD_ID
+  mcp_server_js: "../nu_llm_wiki/mcp-server/dist/src/index.js"
+
+# Obsidian vault is derived from the active profile (<brains_dir>/<profile>/wiki); no obsidian.vault_path key.
+
+# Shared retail manual retrieval (production bundle + lane A–D benchmark use the same knobs).
+# Production Hermes path: expose concatenated page_prefix text in retail_answer.v1 (no forced summarization).
+# Benchmark harness adds a closed-world answer LLM step via tests/.../run-config.yaml → retail_eval only.
+second_brain:
+  retail_evidence:
+    # TYPE_A_M90 (M90-technical-singlefact) manual-only harness: top manual hits (not the bundle knob).
+    search_top_k: 5
+    # TYPE_B_B20 (B20-technical-compound) bundled retail_answer: manual hits in one prompt (fixed-k concat).
+    k_manuals: 5
+    # Bundled: ticket hits copied into the same prompt (build_answer_bundle default is 2).
+    k_tickets: 2
+    query_template: "{model_id} {question}"
+    page_prefix_chars: 8000
+    insufficient_literal: Insufficient_Information_Based_On_Given_PDF
+    # Future: evidence_mode excerpt | page_prefix | both (prod bundle); benchmark uses page_prefix for fairness.
+    evidence_mode: page_prefix

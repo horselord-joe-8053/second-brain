@@ -1,0 +1,272 @@
+{
+  "eval_suite_id": "TYPE_B_B20",
+  "eval_suite_long_name": "B20-technical-compound",
+  "schema_version": "bundled_qa.v1",
+  "created_at": "20261026-201800",
+  "corpus_profile": "fru_us_1k",
+  "grounding_policy": "Each gold answer must be supportable from one historical ticket resolution in fru_us_1000_100/service_queries.csv AND one manual fact already in retail-manual-qa-test-suite.json for the same model. Do not invent parts or temperatures. expected_ticket_ids must be resolved rows (ticket search pool); provenance_ticket_ids optional for open narrative source.",
+  "retrieval_contract": {
+    "k_tickets": 2,
+    "k_manuals": 5,
+    "manual_top_k_source": "TYPE_A_M90 search_top_k (5)",
+    "ticket_top_k_source": "build_answer_bundle default k_tickets (2)",
+    "per_leg_llm_rerank": false,
+    "bundle_assembly": "fixed_k_concat"
+  },
+  "insufficient_information_literal": "Insufficient_Information_Based_On_Given_PDF",
+  "questions": [
+    {
+      "id": "BND-E01",
+      "difficulty": "easy",
+      "model": "GNE27JYMFS",
+      "question": "On a GNE27JYMFS the touch panel is unresponsive (same complaint as a resolved Omaha case that showed FRU-E108). What did that case do, and when does the user guide say the door alarm beeps?",
+      "answer": "The resolved case power-cycled the display board and updated firmware. When the door alarm is enabled, it sounds if either door stays open for more than 2 minutes; closing the door stops the beeping.",
+      "expected_ticket_ids": ["T-0042-100017"],
+      "manual_anchor_question_id": "ge_GNE27JYMFS-E02"
+    },
+    {
+      "id": "BND-E02",
+      "difficulty": "easy",
+      "model": "GNE27JYMFS",
+      "question": "A GNE27JYMFS has warm spots on the upper refrigerator shelves after a Costco load (Long Beach case, no fault code in the short symptom). What was the resolution, and what factory refrigerator and freezer presets does the top-control guide list?",
+      "answer": "The case cleared a blocked air damper and recalibrated the temperature sensors. Factory presets are 37°F (2.8°C) for the refrigerator and 0°F (−17.8°C) for the freezer.",
+      "expected_ticket_ids": ["T-0042-100000"],
+      "manual_anchor_question_id": "ge_GNE27JYMFS-E01"
+    },
+    {
+      "id": "BND-E03",
+      "difficulty": "easy",
+      "model": "GNE27JYMFS",
+      "question": "My GNE27JYMFS keeps freezing the ice cubes into one solid clump, and the food sometimes feels warm even though the app reports normal temperatures. What should a technician check or repair to stop this, and where is the XWFE filter housing located?",
+      "answer": "The repair adjusted the freezer temperature and replaced the bin auger seal. The XWFE filter housing is in the back upper-right corner of the refrigerator compartment.",
+      "expected_ticket_ids": ["T-0042-100043"],
+      "manual_anchor_question_id": "ge_GNE27JYMFS-E03"
+    },
+    {
+      "id": "BND-E04",
+      "difficulty": "easy",
+      "model": "KRFF507HPS",
+      "question": "KRFF507HPS ice-maker housing is leaking and the service menu showed FRU-E100 (Raleigh). What parts work fixed it, and what cold-water pressure does the guide require for the dispenser and ice maker?",
+      "answer": "The case replaced the fill-tube heater and tightened the water inlet valve. Required household cold-water pressure is 35–120 psi (241–827 kPa).",
+      "expected_ticket_ids": ["T-0042-100001"],
+      "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E02"
+    },
+    {
+      "id": "BND-E05",
+      "difficulty": "easy",
+      "model": "KRFF507HPS",
+      "question": "A KRFF507HPS in Kansas City stopped making cubes and showed FRU-E109. What did service do, and what outlet and circuit does the guide require?",
+      "answer": "Service cleared a jammed auger and reset the ice-maker module. The refrigerator needs a grounded 3-prong outlet on 115 V, 60 Hz AC with a fused 15- or 20-amp circuit, and must not use an extension cord or adapter.",
+      "expected_ticket_ids": ["T-0042-100024"],
+      "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E01"
+    },
+    {
+      "id": "BND-E21",
+      "difficulty": "easy",
+      "model": "KRFF507HPS",
+      "question": "A KRFF507HPS in Kansas City stopped making cubes and showed FRU-E109. How do I fix it? What outlet and circuit are required?",
+      "answer": "Clear the jammed auger and reset the ice maker module. The refrigerator needs a grounded 3-prong outlet on 115 V, 60 Hz AC with a fused 15- or 20-amp circuit, and must not use an extension cord or adapter.",
+      "expected_ticket_ids": ["T-0042-100024"],
+      "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E01",
+      "provenance_note": "Natural customer wording (21st row); same retrieval/manual gold as BND-E05."
+    },
+    {
+      "id": "BND-E06",
+      "difficulty": "easy",
+      "model": "KRFF507HPS",
+      "question": "KRFF507HPS French doors sit uneven and scrape (Kansas City, FRU-E107). What adjustment was recorded, and how often should the water filter be replaced according to the guide?",
+      "answer": "The case adjusted the hinge cams and synchronized the door heights. Replace the water filter when the status indicates replacement or at least every 6 months, and sooner if water or ice-maker flow decreases noticeably.",
+      "expected_ticket_ids": ["T-0042-100016"],
+      "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E04"
+    },
+    {
+      "id": "BND-E07",
+      "difficulty": "easy",
+      "model": "RF28K9070SG",
+      "question": "RF28K9070SG water is pooling under the crisper drawers and a technician confirmed FRU-E101. What was installed, and what freezer temperatures can the Freezer button select?",
+      "answer": "Service cleared the defrost drain tube and installed a heater-wire kit. The Freezer button selects from 5°F (−15°C) down to −8°F (−23°C).",
+      "expected_ticket_ids": ["T-0042-100018"],
+      "provenance_ticket_ids": ["T-0042-100002"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E02"
+    },
+    {
+      "id": "BND-E08",
+      "difficulty": "easy",
+      "model": "RF28K9070SG",
+      "question": "The water dispenser on my RF28K9070SG has slowed to a trickle and the display showed FRU-E103. What room-temperature range is safe for operating the refrigerator?",
+      "answer": "The case replaced a clogged inline filter and flushed the water line. The allowed room temperature is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100026"],
+      "provenance_ticket_ids": ["T-0042-100004"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01"
+    },
+    {
+      "id": "BND-E08N-alt",
+      "difficulty": "easy",
+      "model": "RF28K9070SG",
+      "question": "The water dispenser on my RF28K9070SG has slowed to a trickle and the display showed FRU-E103. When I pick the install location, what temperature range should the site stay within?",
+      "answer": "The case replaced a clogged inline filter and flushed the water line. The allowed room temperature is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100026"],
+      "provenance_ticket_ids": ["T-0042-100004"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "provenance_note": "Alt customer U2 (install-site wording); same gold as BND-E08."
+    },
+    {
+      "id": "BND-E09",
+      "difficulty": "easy",
+      "model": "RF28K9070SG",
+      "question": "RF28K9070SG has warm spots on the upper shelves and diagnostic FRU-E105 (Columbus). What sensor work was done, and how do you turn off Control Lock?",
+      "answer": "The case cleared a blocked air damper and recalibrated the temperature sensors. Press and hold Lighting/Control Lock for 3 seconds to deactivate the lock.",
+      "expected_ticket_ids": ["T-0042-100013"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E06"
+    },
+    {
+      "id": "BND-E10",
+      "difficulty": "easy",
+      "model": "RF28K9070SG",
+      "question": "RF28K9070SG compressor area hums and food feels warm; the service menu showed FRU-E104 (Atlanta). What was replaced, and when does the door alarm sound?",
+      "answer": "The unit was leveled, condenser mounts were tightened, and the start relay was replaced. If a door remains open more than 2 minutes, the alarm sounds and its indicator blinks.",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E04"
+    },
+    {
+      "id": "BND-H01",
+      "difficulty": "hard",
+      "model": "GNE27JYMFS",
+      "question": "After a grocery haul the top shelves of my GE French-door fridge stay warmer than the rest even though I did not change the setpoint. A similar resolved visit recalibrated sensors. What mechanical part did they clear, and if I also just hooked up the ice maker how long might the first ice take?",
+      "answer": "They cleared a blocked air damper and recalibrated the temperature sensors. A newly installed refrigerator may take 12 to 24 hours to begin making ice.",
+      "expected_ticket_ids": ["T-0042-100000"],
+      "manual_anchor_question_id": "ge_GNE27JYMFS-E06"
+    },
+    {
+      "id": "BND-H02",
+      "difficulty": "hard",
+      "model": "GNE27JYMFS",
+      "question": "The door display on my GNE27JYMFS no longer responds when I press it. What component should a technician reset or repair, and what cold-water pressure does the ice maker need?",
+      "answer": "They power-cycled the display board and updated firmware. The cold-water line should supply 25–120 psi (172–827 kPa).",
+      "expected_ticket_ids": ["T-0042-100017"],
+      "manual_anchor_question_id": "ge_GNE27JYMFS-E05"
+    },
+    {
+      "id": "BND-H03",
+      "difficulty": "hard",
+      "model": "GNE27JYMFS",
+      "question": "Cubes from my GE ice bin taste off and a past case replaced a seal on the auger after changing the freezer setpoint. Should I keep the first batches after the water line is cleared, and what seal did that case replace?",
+      "answer": "No. Throw away the first few batches of ice to clear the water line. That case replaced the bin auger seal (and adjusted the freezer temperature).",
+      "expected_ticket_ids": ["T-0042-100043"],
+      "manual_anchor_question_id": "ge_GNE27JYMFS-E07"
+    },
+    {
+      "id": "BND-H04",
+      "difficulty": "hard",
+      "model": "KRFF507HPS",
+      "question": "Water is dripping from the ice-maker cavity on a KitchenAid French-door and cooling feels weak. A Raleigh case with FRU-E100 tightened one valve. Which heater did they replace, and should the ice maker stay on before the water line is connected?",
+      "answer": "They replaced the fill-tube heater and tightened the water inlet valve. Turn the ice maker OFF until the water is connected.",
+      "expected_ticket_ids": ["T-0042-100001"],
+      "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E03"
+    },
+    {
+      "id": "BND-H05",
+      "difficulty": "hard",
+      "model": "KRFF507HPS",
+      "question": "My KitchenAid stopped dropping cubes after I packed the freezer. A Kansas City case reset a module. What else did they clear in the ice path, and what is the required cold-water pressure?",
+      "answer": "They cleared a jammed auger and reset the ice-maker module. Household cold-water pressure should be 35–120 psi (241–827 kPa).",
+      "expected_ticket_ids": ["T-0042-100024"],
+      "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E02"
+    },
+    {
+      "id": "BND-H06",
+      "difficulty": "hard",
+      "model": "KRFF507HPS",
+      "question": "There is a rattle at the back of my KitchenAid near the condenser (Philadelphia case, FRU-E106). What did they do to the fan, and what forms the seal between the two closed refrigerator doors?",
+      "answer": "They removed debris, lubricated the fan shaft, and replaced a worn blade. The vertically hinged seal on the left door automatically forms a seal between the two closed refrigerator doors.",
+      "expected_ticket_ids": ["T-0042-100014"],
+      "manual_anchor_question_id": "kitchenaid_KRFF507HPS-E06"
+    },
+    {
+      "id": "BND-H07",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "Puddles keep forming under the crisper drawers in my RF28K9070SG even though it is on a dedicated 20-amp circuit. What should a technician clear or repair, and how do I start Power Freeze?",
+      "answer": "They cleared the defrost drain tube and installed a heater-wire kit. Press and hold Freezer for 3 seconds.",
+      "expected_ticket_ids": ["T-0042-100018"],
+      "provenance_ticket_ids": ["T-0042-100002"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E03"
+    },
+    {
+      "id": "BND-H08",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "The water dispenser on my RF28K9070SG only trickles after I fill several jugs. What temperature range can I select with the Freezer button?",
+      "answer": "They replaced a clogged inline filter and flushed the water line. Freezer settings run from 5°F (−15°C) down to −8°F (−23°C).",
+      "expected_ticket_ids": ["T-0042-100026"],
+      "provenance_ticket_ids": ["T-0042-100004"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E02"
+    },
+    {
+      "id": "BND-H09",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "Food on the top shelf of my Samsung feels warm on humid days while the app looks normal. A Columbus case recalibrated sensors. What airflow part did they clear, and what temperature does FlexZone Soft Freezing use?",
+      "answer": "They cleared a blocked air damper and recalibrated the temperature sensors. FlexZone Soft Freezing uses 23°F (−5°C).",
+      "expected_ticket_ids": ["T-0042-100013"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E05"
+    },
+    {
+      "id": "BND-H10",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104. After checking that the refrigerator is level, what electrical part should be inspected or replaced, and what room-temperature range is safe for operation?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01"
+    },
+    {
+      "id": "BND-H10N-alt",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104, and I already leveled it. What ambient temperature range is allowed where the refrigerator is installed?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "provenance_note": "Alt customer U2 (ambient-only); leveling in U1; same gold as BND-H10."
+    },
+    {
+      "id": "BND-H10N-site",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104, and I already leveled it. When I pick the install location, what temperature range should the installation site stay within?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "provenance_note": "H10N-alt symptom unit; U2 uses installation-site wording like BND-E08N-alt. Same gold as BND-H10."
+    },
+    {
+      "id": "BND-H10N-alt-rr-xenc",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104, and I already leveled it. What ambient temperature range is allowed where the refrigerator is installed?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "manual_rerank": "cross_encoder",
+      "provenance_note": "Same question and gold as BND-H10N-alt. Manual leg: top 20 per unit, MiniLM cross-encoder, keep 5 per unit."
+    },
+    {
+      "id": "BND-H10N-alt-rr-llm",
+      "difficulty": "hard",
+      "model": "RF28K9070SG",
+      "question": "My RF28K9070SG has a loud hum near the compressor and the food feels warm even though the app reports normal temperatures; the display also showed FRU-E104, and I already leveled it. What ambient temperature range is allowed where the refrigerator is installed?",
+      "answer": "After leveling and tightening the condenser mounts, the start relay was replaced. The allowed ambient range is 50–110°F (10–43°C).",
+      "expected_ticket_ids": ["T-0042-100132"],
+      "provenance_ticket_ids": ["T-0042-100010"],
+      "manual_anchor_question_id": "samsung_RF28K9070SG-E01",
+      "manual_rerank": "llm_listwise",
+      "provenance_note": "Same question and gold as BND-H10N-alt. Manual leg: top 20 per unit, llm_listwise, keep 5 per unit."
+    }
+  ]
+}

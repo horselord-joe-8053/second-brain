@@ -15,6 +15,8 @@ Copy into any repo’s **`.cursor/rules/`** for consistent, **scannable** long-f
 
 **When to apply:** Whenever you **create, edit, or review** a **`*.md`** file or a **`.mdc`** rule whose body is Markdown.
 
+**Exception:** Repository root **`README.md`** follows **`.cursor/rules/readme-fru-genai-platform.mdc`** (FRU GenAI platform style: emoji TOC, Mermaid palette)—not this rule’s HTML heading outline.
+
 **Trigger:** This rule has **`alwaysApply: true`** in this workspace so it **stays in agent context** by default—apply this spec to **all** new or edited **`*.md`** / **`.mdc`** files here. You can still include **`mrkd`** or **@**‑mention **`mrkd-markdown-authoring`** to stress the rule for a specific edit. (Cursor does not auto-enforce formatting in the editor; consistency depends on following this rule when authoring.)
 
 **Portable copy:** You can copy **this single rule** into another repo’s **`.cursor/rules/`**; it already includes outline conventions plus **tables** and **Mermaid** (section 6).

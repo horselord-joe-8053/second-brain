@@ -1,0 +1,822 @@
+{
+  "mode": "rrf_normal",
+  "backend": "postgres",
+  "search_mode": "rrf_normal",
+  "hybrid_flag": "0",
+  "total": 100,
+  "recall_at_1": 0.44,
+  "by_stratum": {
+    "paraphrase": 0.56,
+    "hybrid_stress": 0.43333333333333335,
+    "code_in_query": 0.15
+  },
+  "cases": [
+    {
+      "eval_id": "eval-0001",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100371",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0002",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100113",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0003",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100524",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0004",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100366",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0005",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100029",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0006",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100594",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0007",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100428",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0008",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100706",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0009",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100370",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0010",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100851",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0011",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100023",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0012",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100724",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0013",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100853",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0014",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100236",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0015",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100458",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0016",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100997",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0017",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100801",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0018",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100114",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0019",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100416",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0020",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100860",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0021",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100255",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0022",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100139",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0023",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100408",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0024",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100955",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0025",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100684",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0026",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100781",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0027",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100138",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0028",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100448",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0029",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100936",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0030",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100114",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0031",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100630",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0032",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100362",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0033",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100259",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0034",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100360",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0035",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100284",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0036",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100477",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0037",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100952",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0038",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100607",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0039",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100475",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0040",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100891",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0041",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100504",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0042",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100322",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0043",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100769",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0044",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100183",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0045",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100541",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0046",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100690",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0047",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100958",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0048",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100492",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0049",
+      "stratum": "paraphrase",
+      "hit": true,
+      "top_ticket_id": "T-0042-100740",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0050",
+      "stratum": "paraphrase",
+      "hit": false,
+      "top_ticket_id": "T-0042-100702",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0051",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100261",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0052",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100019",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0053",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100062",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0054",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100607",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0055",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100643",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0056",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100217",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0057",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100421",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0058",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100099",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0059",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100530",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0060",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100509",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0061",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100481",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0062",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100100",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0063",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100963",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0064",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100611",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0065",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100098",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0066",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100911",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0067",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100021",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0068",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100470",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0069",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100225",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0070",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100626",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0071",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100492",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0072",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100024",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0073",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100984",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0074",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100964",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0075",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100550",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0076",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100220",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0077",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100477",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0078",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100790",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0079",
+      "stratum": "hybrid_stress",
+      "hit": true,
+      "top_ticket_id": "T-0042-100272",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0080",
+      "stratum": "hybrid_stress",
+      "hit": false,
+      "top_ticket_id": "T-0042-100217",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0081",
+      "stratum": "code_in_query",
+      "hit": true,
+      "top_ticket_id": "T-0042-100593",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0082",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100761",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0083",
+      "stratum": "code_in_query",
+      "hit": true,
+      "top_ticket_id": "T-0042-100414",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0084",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100780",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0085",
+      "stratum": "code_in_query",
+      "hit": true,
+      "top_ticket_id": "T-0042-100943",
+      "hit_strict": true,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0086",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100511",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0087",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100605",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0088",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100796",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0089",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100284",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0090",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100383",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0091",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100260",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0092",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100151",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0093",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100003",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0094",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100553",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0095",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100260",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0096",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100474",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0097",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100858",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0098",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100173",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0099",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100347",
+      "hit_strict": false,
+      "hit_acceptable": null
+    },
+    {
+      "eval_id": "eval-0100",
+      "stratum": "code_in_query",
+      "hit": false,
+      "top_ticket_id": "T-0042-100218",
+      "hit_strict": false,
+      "hit_acceptable": null
+    }
+  ],
+  "lexical_leg_nonempty": 100,
+  "lexical_leg_nonempty_rate": 1.0,
+  "sim_data_profile": "fru_us_1k",
+  "sim_data_profile_label": "FRU US corpus 1000 historical + 100 ABC eval (fru_us_1000_100)",
+  "service_queries_csv": "/Users/jjw8053/projects/second_brain/scripts/retail/sim_data/profiles/fru_us_1000_100/service_queries.csv",
+  "eval_jsonl": "/Users/jjw8053/projects/second_brain/scripts/retail/sim_data/profiles/fru_us_1000_100/ticket_retrieval.jsonl",
+  "lexical_backend": "tantivy"
+}

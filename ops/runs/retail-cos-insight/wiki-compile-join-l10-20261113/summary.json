@@ -1,0 +1,15 @@
+{
+  "run_id": "wiki-compile-join-l10-20261113",
+  "arms": [
+    "wiki",
+    "bundled"
+  ],
+  "question_count": 10,
+  "suite_sha256": "7339b62f0e5908c4311d357c50e11a75de5f6f8e37704c533155ec51a955057d",
+  "author_provider": "",
+  "answer_provider": "openai",
+  "answer_model": "gpt-4o-mini",
+  "judge_provider": "gemini",
+  "judge_model": "gemini-4-carbon",
+  "completed_at": "2026-11-12T15:20:27.329339+00:00"
+}

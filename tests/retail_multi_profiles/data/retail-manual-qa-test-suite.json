@@ -1,0 +1,1446 @@
+{
+  "eval_suite_id": "TYPE_A_M90",
+  "eval_suite_long_name": "M90-technical-singlefact",
+  "schema_version": "1.0",
+  "created_at": "20261018-180336",
+  "source_archive": "fridge-docs-pdf.zip",
+  "grounding_policy": "Use only PDFs from the model leaf directory; no external information or other models.",
+  "insufficient_information_literal": "Insufficient_Information_Based_On_Given_PDF",
+  "models": [
+    {
+      "model_id": "ge_GNE27JYMFS",
+      "source_pdfs": [
+        "fridge-docs/ge_GNE27JYMFS/user-guide.pdf"
+      ],
+      "questions": [
+        {
+          "id": "ge_GNE27JYMFS-E01",
+          "difficulty": "easy",
+          "question": "What factory refrigerator and freezer temperature settings does the guide list for the GNE27J top control?",
+          "answer": "For the GNE27J top control, the factory presets are 37°F (2.8°C) for the refrigerator and 0°F (−17.8°C) for the freezer.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 9,
+              "page_number_basis": "printed",
+              "reason": "Lists GNE27J under the top-control models and identifies both factory temperature presets.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E02",
+          "difficulty": "easy",
+          "question": "When will the door alarm beep if I leave a refrigerator door open?",
+          "answer": "When the door alarm is enabled, it sounds if either door stays open for more than 2 minutes; closing the door stops the beeping.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 9,
+              "page_number_basis": "printed",
+              "reason": "Explains the top-control Door Alarm trigger and how the beeping stops.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E03",
+          "difficulty": "easy",
+          "question": "If my refrigerator uses the XWFE water filter, where is its filter housing?",
+          "answer": "In the back upper-right corner of the refrigerator compartment.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 14,
+              "page_number_basis": "printed",
+              "reason": "Identifies the XWFE cartridge-holder location.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E04",
+          "difficulty": "easy",
+          "question": "What is the rated water-filter capacity of the XWFE cartridge?",
+          "answer": "170 gallons (643.5 litres).",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 15,
+              "page_number_basis": "printed",
+              "reason": "Provides the XWFE application-guidelines capacity.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E05",
+          "difficulty": "easy",
+          "question": "What cold-water pressure is required for the automatic ice maker?",
+          "answer": "25–120 psi (172–827 kPa).",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 20,
+              "page_number_basis": "printed",
+              "reason": "Specifies the automatic ice-maker water-pressure range.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E06",
+          "difficulty": "easy",
+          "question": "How long might a newly installed refrigerator take to begin making ice?",
+          "answer": "It may take 12 to 24 hours.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 20,
+              "page_number_basis": "printed",
+              "reason": "States the initial ice-production waiting period.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E07",
+          "difficulty": "easy",
+          "question": "Should I keep the first ice cubes made after setting up the ice maker?",
+          "answer": "No. Throw away the first few batches of ice to clear the water line.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 20,
+              "page_number_basis": "printed",
+              "reason": "Instructs users to discard the first ice batches.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E08",
+          "difficulty": "easy",
+          "question": "How should I clean a fingerprint-resistant stainless or painted exterior finish?",
+          "answer": "Use warm water with mild soap or detergent and a soft or microfiber cloth, then wipe dry. Do not use stainless-steel cleaner on those door surfaces.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 22,
+              "page_number_basis": "printed",
+              "reason": "Lists approved and prohibited cleaning methods for these exterior finishes.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E09",
+          "difficulty": "easy",
+          "question": "If food freezes in the refrigerator near the rear air vent, what should I change?",
+          "answer": "Move the food away from the rear air vent. If the refrigerator control is set too cold, raise its setting toward warmer one increment at a time.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 47,
+              "page_number_basis": "printed",
+              "reason": "Troubleshooting instructions identify vent proximity and overcold settings.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-E10",
+          "difficulty": "easy",
+          "question": "What is the general limited warranty period on refrigerator parts for this GE model?",
+          "answer": "One year from original purchase for parts that fail because of defects in materials or workmanship, with related labor and service included under that limited warranty.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 48,
+              "page_number_basis": "printed",
+              "reason": "States the basic one-year refrigerator limited warranty and its scope.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H01",
+          "difficulty": "hard",
+          "question": "When I first install my GNE27J and connect the ice maker, what freezer preset should I expect, and how long may I need to wait for the first ice?",
+          "answer": "The GNE27J top-control freezer preset is 0°F (−17.8°C). After installation, the automatic ice maker may take 12–24 hours to begin producing ice.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 9,
+              "page_number_basis": "printed",
+              "reason": "Establishes the GNE27J freezer factory preset.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 20,
+              "page_number_basis": "printed",
+              "reason": "Supplies the separate ice-maker initial waiting period.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H02",
+          "difficulty": "hard",
+          "question": "I use an XWFE filter and want to schedule replacements. Where do I find it, and how often or at what capacity should I replace it?",
+          "answer": "The holder is at the back upper-right of the refrigerator compartment. Replace the disposable XWFE cartridge every 6 months, at its 170-gallon rated capacity, or sooner if water flow noticeably decreases.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 14,
+              "page_number_basis": "printed",
+              "reason": "Locates the XWFE holder.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 15,
+              "page_number_basis": "printed",
+              "reason": "Specifies the replacement timing, capacity and earlier-change condition.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H03",
+          "difficulty": "hard",
+          "question": "I am shutting off the water to the ice maker during a long vacation. What pressure must the supply meet when I reconnect it, and how much water should I flush through the dispenser after returning?",
+          "answer": "The cold-water line should supply 25–120 psi (172–827 kPa) for automatic ice-maker operation. Upon returning from a long absence, the guide says to replace the filter and run 2 gallons of water through the cold-water dispenser (about 5 minutes) to flush the system.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 20,
+              "page_number_basis": "printed",
+              "reason": "Specifies the operating water-pressure range for an automatic ice maker.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 23,
+              "page_number_basis": "printed",
+              "reason": "Provides the return-from-vacation flush volume and filter instruction.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H04",
+          "difficulty": "hard",
+          "question": "My water filter is unavailable, but I still want water and ice. What must be installed instead of the filter, and what water-pressure range does the guide require?",
+          "answer": "Install the designated filter bypass plug; neither the dispenser nor the ice maker will operate without a filter or bypass plug. The required cold-water pressure for the ice maker is 25–120 psi (172–827 kPa).",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 14,
+              "page_number_basis": "printed",
+              "reason": "Requires a bypass plug when a replacement filter is unavailable.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 20,
+              "page_number_basis": "printed",
+              "reason": "States the required incoming water pressure.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H05",
+          "difficulty": "hard",
+          "question": "My GNE27J shows “tc,” and some food by the back vent is freezing. What does “tc” mean and what should I do about the food?",
+          "answer": "“tc” means TurboCool is activated. Move food away from the rear air vent; if cooling is still too strong, adjust the refrigerator to a warmer setting incrementally after TurboCool is no longer preventing a refrigerator temperature adjustment.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 9,
+              "page_number_basis": "printed",
+              "reason": "Defines the TurboCool tc display and notes temperature-setting constraints during TurboCool.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 47,
+              "page_number_basis": "printed",
+              "reason": "Provides the remedy for food freezing by the rear vent.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H06",
+          "difficulty": "hard",
+          "question": "I want to clean the fridge exterior and then pull the appliance out to clean behind it. What cleaning products and moving method should I use?",
+          "answer": "For fingerprint-resistant or painted finishes, use mild detergent in warm water with a soft or microfiber cloth and wipe dry; avoid abrasive and stainless-steel cleaners on those surfaces. Raise the front leveling legs and pull the refrigerator straight out, then push it straight back rather than sideways to avoid floor or appliance damage.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 22,
+              "page_number_basis": "printed",
+              "reason": "Specifies suitable exterior cleaners and cloths.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 23,
+              "page_number_basis": "printed",
+              "reason": "Explains raising leveling legs and moving straight in/out.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H07",
+          "difficulty": "hard",
+          "question": "I am troubleshooting a water dispenser that has stopped after a filter change. If air is trapped, how long should I operate the dispenser, and what should I check about the filter/bypass setup?",
+          "answer": "Press the dispenser arm for at least 2 minutes to clear trapped air. Ensure a properly installed filter cartridge or the correct bypass plug is present; the dispenser and ice maker cannot run with neither installed.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 46,
+              "page_number_basis": "printed",
+              "reason": "Specifies the at-least-two-minute dispenser action for trapped air.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 14,
+              "page_number_basis": "printed",
+              "reason": "States the mandatory installed filter-or-bypass condition.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H08",
+          "difficulty": "hard",
+          "question": "After replacing my XWFE filter, I see water spurting at the dispenser. How much water should I run, and when does the manual say to replace the filter again?",
+          "answer": "Run the dispenser for about 3 minutes (approximately 1½ gallons) after installing a new cartridge. Replace an XWFE cartridge about every 6 months or at its 170-gallon rated capacity, and sooner if flow noticeably decreases.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 46,
+              "page_number_basis": "printed",
+              "reason": "Specifies dispenser flushing after a newly installed filter.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 15,
+              "page_number_basis": "printed",
+              "reason": "Sets the water-filter replacement interval and early-replacement condition.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H09",
+          "difficulty": "hard",
+          "question": "If the XWFE filter fails from a manufacturing defect shortly after I buy the fridge, how long is the limited filter warranty, and what is the ordinary replacement interval?",
+          "answer": "The refrigerator warranty gives the included water filter a 30-day limited warranty from the refrigerator’s original purchase date for defects in materials or workmanship. Separately, the XWFE filter is normally replaced about every 6 months or sooner if flow decreases.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 48,
+              "page_number_basis": "printed",
+              "reason": "Defines the included water-filter limited-warranty duration and coverage.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 15,
+              "page_number_basis": "printed",
+              "reason": "Defines the separate routine filter-replacement interval.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-H10",
+          "difficulty": "hard",
+          "question": "The GNE27J refrigerator seems too warm after I changed the settings and the icemaker is not making ice yet. What stabilization time applies to the temperature setting, and what separate initial ice-maker delay is normal?",
+          "answer": "Allow 24 hours for the refrigerator temperature to stabilize at the selected recommended setting. A newly installed refrigerator can separately take 12–24 hours to start making ice.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 9,
+              "page_number_basis": "printed",
+              "reason": "Gives the control-setting temperature-stabilization period.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/ge_GNE27JYMFS/user-guide.pdf",
+              "page_number": 20,
+              "page_number_basis": "printed",
+              "reason": "Gives the initial ice-maker startup period.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N01",
+          "difficulty": "negative",
+          "question": "How many kilowatt-hours will my particular GNE27JYMFS use during the next 30 days at my home’s actual temperatures and door-opening pattern?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N02",
+          "difficulty": "negative",
+          "question": "What is the exact measured noise level in dB(A) of my individual refrigerator at one metre while its compressor is running?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N03",
+          "difficulty": "negative",
+          "question": "What is the precise replacement compressor part number for my unit’s serial-number-specific manufacturing revision?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N04",
+          "difficulty": "negative",
+          "question": "How many minutes, exactly, will it take my freezer to return to 0°F after I load 8 kg of warm groceries?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N05",
+          "difficulty": "negative",
+          "question": "What price will a repair technician in my suburb charge next week to replace my compressor?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N06",
+          "difficulty": "negative",
+          "question": "What is the serial number printed on the identification label of the actual refrigerator I purchased?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N07",
+          "difficulty": "negative",
+          "question": "How many litres of water did the dispenser on my refrigerator deliver during the previous calendar month?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N08",
+          "difficulty": "negative",
+          "question": "On what exact date will the ice maker in my particular unit first fail?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N09",
+          "difficulty": "negative",
+          "question": "What precise water-filter pressure drop in psi will the cartridge in my own fridge have after 100 days of use?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "ge_GNE27JYMFS-N10",
+          "difficulty": "negative",
+          "question": "Which firmware version is currently installed on my individual refrigerator’s optional connected module?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        }
+      ]
+    },
+    {
+      "model_id": "kitchenaid_KRFF507HPS",
+      "source_pdfs": [
+        "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf"
+      ],
+      "questions": [
+        {
+          "id": "kitchenaid_KRFF507HPS-E01",
+          "difficulty": "easy",
+          "question": "What type of electrical outlet and power supply does this refrigerator require?",
+          "answer": "A grounded 3-prong outlet supplied with 115 V, 60 Hz AC on a fused 15- or 20-amp circuit. Do not use an extension cord or adapter.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 12,
+              "page_number_basis": "printed",
+              "reason": "States recommended electrical supply and outlet safety instructions.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E02",
+          "difficulty": "easy",
+          "question": "What household cold-water pressure range is needed for the water dispenser and ice maker?",
+          "answer": "35–120 psi (241–827 kPa).",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 12,
+              "page_number_basis": "printed",
+              "reason": "Lists the required cold-water pressure.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E03",
+          "difficulty": "easy",
+          "question": "If I switch on the refrigerator before connecting the water line, what should I do with the ice maker?",
+          "answer": "Turn the ice maker OFF until the water is connected.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 13,
+              "page_number_basis": "printed",
+              "reason": "Gives the explicit installation instruction for an unconnected water supply.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E04",
+          "difficulty": "easy",
+          "question": "How often should I replace the disposable water filter?",
+          "answer": "When the filter status indicates replacement or at least every 6 months, and sooner if water or ice-maker flow decreases noticeably.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 18,
+              "page_number_basis": "printed",
+              "reason": "Sets water-filter replacement timing and early replacement trigger.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E05",
+          "difficulty": "easy",
+          "question": "When should I replace the refrigerator air filter?",
+          "answer": "On models fitted with the disposable air filter, replace it every 6 months, when its status indicator has completely changed from white to red.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 19,
+              "page_number_basis": "printed",
+              "reason": "Specifies the air-filter interval and colour indicator.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E06",
+          "difficulty": "easy",
+          "question": "What happens to the vertical seal between the two refrigerator doors when I close both doors?",
+          "answer": "The vertically hinged seal on the left door automatically forms a seal between the two closed refrigerator doors.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 21,
+              "page_number_basis": "printed",
+              "reason": "Describes operation of the left-door hinged seal.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E07",
+          "difficulty": "easy",
+          "question": "How do I turn cooling off using the control panel?",
+          "answer": "Press and hold LOCK and MEASURED FILL together for 3 seconds; “Refrigeration Cooling is Off” appears on the display.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 22,
+              "page_number_basis": "printed",
+              "reason": "Provides the cooling-off button combination and display message.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E08",
+          "difficulty": "easy",
+          "question": "Where do I install the water filter inside the refrigerator?",
+          "answer": "Inside the filter compartment on the right side of the refrigerator ceiling.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 17,
+              "page_number_basis": "printed",
+              "reason": "Identifies the filter housing location.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E09",
+          "difficulty": "easy",
+          "question": "Do I need to clean the condenser routinely in a normal home?",
+          "answer": "No. Routine condenser cleaning is not required under normal household operating conditions.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 32,
+              "page_number_basis": "printed",
+              "reason": "States routine condenser cleaning is not needed in normal environments.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-E10",
+          "difficulty": "easy",
+          "question": "If my dispenser water is warm immediately after installation, how long should I allow for it to cool completely?",
+          "answer": "Allow 24 hours after installation for the water supply to cool completely.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 39,
+              "page_number_basis": "printed",
+              "reason": "Troubleshooting table specifies the 24-hour initial water-cooling wait.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H01",
+          "difficulty": "hard",
+          "question": "My ice cubes are hollow. What inlet water-pressure range is required, and what two water-supply checks does the troubleshooting section recommend?",
+          "answer": "The supply pressure should be 35–120 psi (241–827 kPa). Check that the shutoff valve is fully open and that the water-source line is not kinked; the guide also advises checking the filter if the problem persists.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 12,
+              "page_number_basis": "printed",
+              "reason": "Sets the required water-pressure range.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 37,
+              "page_number_basis": "printed",
+              "reason": "Identifies the valve, kink and filter troubleshooting checks for hollow cubes.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H02",
+          "difficulty": "hard",
+          "question": "After installing a water filter, how do I lock it into its housing, and how exactly should I flush the dispenser system?",
+          "answer": "Turn the cartridge clockwise 90° (a quarter turn) to lock it. Then flush the water system by running the dispenser paddle for 5 seconds, releasing it for 5 seconds, and repeating until water flows; continue the 5-second on/off cycle until a total of about 3 gallons (12 litres) has been dispensed.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 17,
+              "page_number_basis": "printed",
+              "reason": "Gives locking action and the flushing requirement.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 24,
+              "page_number_basis": "printed",
+              "reason": "Gives the water-system flushing procedure after installation.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H03",
+          "difficulty": "hard",
+          "question": "My water dispenser flow has slowed after months of use. When is a filter due for replacement, and what troubleshooting test helps confirm a clogged filter?",
+          "answer": "Replace the filter when indicated or at least every 6 months, earlier if flow is noticeably reduced. Remove the filter and operate the dispenser; if flow improves, the filter is clogged and should be replaced.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 18,
+              "page_number_basis": "printed",
+              "reason": "States replacement timing and slow-flow trigger.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 38,
+              "page_number_basis": "printed",
+              "reason": "Explains the diagnostic flow comparison with the filter removed.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H04",
+          "difficulty": "hard",
+          "question": "If I keep getting food smells, what kind of filter is described for controlling odors, and what is the replacement interval and indicator colour?",
+          "answer": "The refrigerator has an air filter intended to reduce common food odours; on models with that filter, replace it every 6 months when its status indicator changes completely from white to red.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 6,
+              "page_number_basis": "printed",
+              "reason": "Identifies the air filter as the odour-reduction component.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 19,
+              "page_number_basis": "printed",
+              "reason": "States its replacement schedule and indicator colour.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H05",
+          "difficulty": "hard",
+          "question": "If I turn off cooling to clean the refrigerator, what controls turn cooling off and what electrical safety step does the installation guidance require?",
+          "answer": "Hold LOCK and MEASURED FILL simultaneously for 3 seconds to switch cooling off. Before cleaning or installation work, disconnect the refrigerator from the electrical source; reconnect it and turn cooling on after finishing.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 22,
+              "page_number_basis": "printed",
+              "reason": "Provides the control-panel cooling-off action.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 12,
+              "page_number_basis": "printed",
+              "reason": "Requires electrical disconnection before cleaning or installation.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H06",
+          "difficulty": "hard",
+          "question": "The water from my dispenser is warm after I have filled several large jugs. How long should I wait for it to cool again, and what button sequence starts Measured Fill calibration?",
+          "answer": "After a large draw of water, allow about 3 hours for the supply to cool completely. To initiate Measured Fill calibration, press and hold OPTIONS and LOCK simultaneously for 3 seconds (after flushing the dispenser system).",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 39,
+              "page_number_basis": "printed",
+              "reason": "Distinguishes the 3-hour post-heavy-use wait from the initial 24-hour cool-down.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 24,
+              "page_number_basis": "printed",
+              "reason": "Describes the dispenser preparation and initial cooling precautions.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H07",
+          "difficulty": "hard",
+          "question": "My refrigerator rolls forward when I open its doors, and the door seals have become sticky. What tool and adjustment should steady the fridge, and how should I clean the gaskets?",
+          "answer": "Open the freezer drawer and use a ¼-inch hex driver to turn both brake feet clockwise equally until they are snug against the floor, then recheck stability. Clean sticky gaskets and their contact surfaces with mild soap and warm water; rinse and dry them using a soft cloth.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 39,
+              "page_number_basis": "printed",
+              "reason": "Gives the sticky-gasket cleaning remedy in the troubleshooting table.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 16,
+              "page_number_basis": "printed",
+              "reason": "Specifies the brake-foot adjustment and ¼-inch hex-driver tool.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H08",
+          "difficulty": "hard",
+          "question": "If I am going away but keeping the refrigerator powered in Vacation Mode, how do I activate that mode, and what should I do with the water supply and ice maker?",
+          "answer": "Press and hold TEMPERATURE and OPTIONS together for 3 seconds to activate Vacation Mode; “VAC” appears on the display. If the ice maker is connected to the household supply, turn off the refrigerator water supply, switch off the ice maker, and empty the ice bin before leaving.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 23,
+              "page_number_basis": "printed",
+              "reason": "Describes Vacation Mode activation and display.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 32,
+              "page_number_basis": "printed",
+              "reason": "Specifies water-supply and ice-maker steps before an extended absence.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H09",
+          "difficulty": "hard",
+          "question": "I replaced the water filter and still get weak dispenser flow. What must be true about the filter’s installed position, and which test distinguishes a clog from another water-supply problem?",
+          "answer": "Make sure the water filter is turned clockwise 90° and locked into the housing; without correct locking, water will not flow. If flow is merely weak, remove the filter and test the dispenser: improved flow indicates the filter may be clogged and needs replacement.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 17,
+              "page_number_basis": "printed",
+              "reason": "Explains locking the filter and the no-flow consequence if unlocked.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 38,
+              "page_number_basis": "printed",
+              "reason": "Explains the remove-filter comparison test for a clog.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-H10",
+          "difficulty": "hard",
+          "question": "My newly installed refrigerator has not cooled fully. How long should the first cool-down take, and after changing a temperature set point how long should I wait before changing it again?",
+          "answer": "Allow about 24 hours following installation for complete cooling. After changing a set point, wait at least 24 hours before making another temperature adjustment, then recheck temperatures.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 33,
+              "page_number_basis": "printed",
+              "reason": "Provides the new-installation cooling time.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/kitchenaid_KRFF507HPS/user-guide.pdf",
+              "page_number": 21,
+              "page_number_basis": "printed",
+              "reason": "Specifies the minimum interval between set-point adjustments.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N01",
+          "difficulty": "negative",
+          "question": "How many kWh will this particular refrigerator use next month with my family’s exact opening and cooking habits?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N02",
+          "difficulty": "negative",
+          "question": "What is the exact acoustic sound-pressure level in dB(A) measured one metre from my unit in my kitchen?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N03",
+          "difficulty": "negative",
+          "question": "What is the exact replacement retail price of the P9RFWB2L water filter at my local shop today?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N04",
+          "difficulty": "negative",
+          "question": "What serial number will appear on the rating label of the appliance delivered to my home?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N05",
+          "difficulty": "negative",
+          "question": "How many years of service will the compressor in my particular refrigerator provide before its first failure?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N06",
+          "difficulty": "negative",
+          "question": "What exact cubic centimetres of refrigerant are present in my specific unit after five years of use?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N07",
+          "difficulty": "negative",
+          "question": "Which brand and model of aftermarket Wi-Fi power monitor has been formally tested to work with this refrigerator?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N08",
+          "difficulty": "negative",
+          "question": "What will an authorised repairer charge at my postcode for replacing a failed control board next Tuesday?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N09",
+          "difficulty": "negative",
+          "question": "How many minutes exactly will it take a 10-litre pot of soup placed in the fridge to reach 4°C?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "kitchenaid_KRFF507HPS-N10",
+          "difficulty": "negative",
+          "question": "What is the complete firmware version and build identifier currently running on my refrigerator control panel?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        }
+      ]
+    },
+    {
+      "model_id": "samsung_RF28K9070SG",
+      "source_pdfs": [
+        "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+        "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf"
+      ],
+      "questions": [
+        {
+          "id": "samsung_RF28K9070SG-E01",
+          "difficulty": "easy",
+          "question": "Within what ambient temperature range does the installation guide say I should locate my refrigerator?",
+          "answer": "50–110°F (10–43°C).",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 27,
+              "page_number_basis": "printed",
+              "reason": "Provides the permitted installation-site ambient temperature range.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E02",
+          "difficulty": "easy",
+          "question": "What freezer temperature settings can I select with the Freezer button?",
+          "answer": "From 5°F (−15°C) down to −8°F (−23°C).",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 37,
+              "page_number_basis": "printed",
+              "reason": "Specifies the selectable freezer-temperature range.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E03",
+          "difficulty": "easy",
+          "question": "How do I activate Power Freeze?",
+          "answer": "Press and hold Freezer for 3 seconds.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 37,
+              "page_number_basis": "printed",
+              "reason": "Gives the Power Freeze activation control.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E04",
+          "difficulty": "easy",
+          "question": "What happens if I leave the door open while Door Alarm is enabled?",
+          "answer": "If a door remains open more than 2 minutes, the alarm sounds and its indicator blinks.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 38,
+              "page_number_basis": "printed",
+              "reason": "Specifies door-alarm activation and trigger.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E05",
+          "difficulty": "easy",
+          "question": "What temperature does FlexZone “Soft Freezing” use?",
+          "answer": "23°F (−5°C).",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 39,
+              "page_number_basis": "printed",
+              "reason": "Defines the Soft Freezing mode temperature.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E06",
+          "difficulty": "easy",
+          "question": "How do I unlock the dispenser if Control Lock prevents water and ice dispensing?",
+          "answer": "Press and hold Lighting/Control Lock for 3 seconds to deactivate the lock.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 40,
+              "page_number_basis": "printed",
+              "reason": "Explains locking/unlocking and the effect on dispensing.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E07",
+          "difficulty": "easy",
+          "question": "How long should I hold Crushed Ice to reset the water-filter indicator?",
+          "answer": "3 seconds.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 61,
+              "page_number_basis": "printed",
+              "reason": "Provides the filter life-cycle reset button and duration.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E08",
+          "difficulty": "easy",
+          "question": "What water pressure does the ice maker require?",
+          "answer": "20–125 psi.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 33,
+              "page_number_basis": "printed",
+              "reason": "States the required water pressure for ice-maker operation.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E09",
+          "difficulty": "easy",
+          "question": "How can I widen the gap between refrigerator doors on an RF28K907-series model?",
+          "answer": "With the doors closed, remove the six screws holding the top cover using a Phillips screwdriver, taking care not to disturb the wiring connectors. Use a 4 mm Allen wrench on the top-right gap bolt, turning it clockwise to widen the door gap; reinstall the cover afterward.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 32,
+              "page_number_basis": "printed",
+              "reason": "Shows the RF28K907* door gap mechanism and direction.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-E10",
+          "difficulty": "easy",
+          "question": "What does technician error number 85 mean?",
+          "answer": "COMP low voltage; the repair sheet says this error occurs when input voltage is AC 106 V or lower.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf",
+              "page_number": 6,
+              "page_number_basis": "pdf_index",
+              "reason": "Maps error 85 to compressor low voltage and gives its trigger.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H01",
+          "difficulty": "hard",
+          "question": "I have just replaced the Samsung water filter but the water dispenser still will not work. How do I reset and flush after replacement, and what panel control might be blocking dispensing?",
+          "answer": "Hold Crushed Ice for 3 seconds to reset the filter life detector, reopen the water valve, and dispense water for about 7 minutes to clear air and impurities. If Control Lock is enabled, hold Lighting/Control Lock for 3 seconds to unlock; Control Lock prevents water and ice dispensing even if the lever is pressed.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 40,
+              "page_number_basis": "printed",
+              "reason": "Explains how Control Lock blocks dispensing and how to unlock.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 61,
+              "page_number_basis": "printed",
+              "reason": "Gives filter reset and seven-minute purge after replacement.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H02",
+          "difficulty": "hard",
+          "question": "Following a power outage, my ice dispenser is struggling, and I have used up the ice supply. What should I do with the bucket after the outage, and how long does troubleshooting say to wait for more ice?",
+          "answer": "Empty the ice bucket after a power failure, because partly melted and jammed cubes may prevent the ice maker working properly. If all the ice has been used, the troubleshooting table says to allow 12 hours for the refrigerator to make more ice.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 51,
+              "page_number_basis": "printed",
+              "reason": "Warns about partly melted and jammed ice after a power failure and directs emptying the bucket.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 64,
+              "page_number_basis": "printed",
+              "reason": "Specifies the 12-hour wait after using all ice.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H03",
+          "difficulty": "hard",
+          "question": "I want to use the bottom-right FlexZone for deli meat, but the controls are locked. What mode and temperature do I need, how do I unlock it, and does Control Lock also prevent water or ice dispensing?",
+          "answer": "Use FlexZone “Chill / Meat,” set to 30°F (−1°C), selected by holding FlexZone for 3 seconds and cycling through its modes. Hold Lighting/Control Lock for 3 seconds to unlock the controls. While Control Lock is enabled, the dispenser also will not deliver water or ice.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 40,
+              "page_number_basis": "printed",
+              "reason": "Explains that Control Lock prevents dispensing and how to disable it.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 39,
+              "page_number_basis": "printed",
+              "reason": "Lists the FlexZone Chill/Meat setting and its controls.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H04",
+          "difficulty": "hard",
+          "question": "My freezer is not as cold as I want. What temperature range can I select, and what basic operating checks should I make before requesting repair?",
+          "answer": "The Freezer button lets you select temperatures from 5°F (−15°C) to −8°F (−23°C). Before requesting repair, check power connection, the temperature setting, direct sunlight/nearby heat sources, ventilation clearance and whether too much food is blocking air circulation.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 37,
+              "page_number_basis": "printed",
+              "reason": "Defines the allowable freezer control range.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 63,
+              "page_number_basis": "printed",
+              "reason": "Lists basic no-cooling troubleshooting checks.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H05",
+          "difficulty": "hard",
+          "question": "My kitchen gets hot and I have seen condensation around the warm front corners. What installation-room temperature range does the guide allow, and why can those corners feel warm and form moisture?",
+          "answer": "The installation site should be between 50°F and 110°F (10–43°C). Heat-proof piping in the front corners is intended to control condensation, so corner warmth is not necessarily a failure; higher ambient temperatures, humid air, or poorly closed doors can contribute to condensation.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 64,
+              "page_number_basis": "printed",
+              "reason": "Explains corner heat-proof piping and condensation conditions.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 27,
+              "page_number_basis": "printed",
+              "reason": "Provides the acceptable ambient temperature range for installation.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H06",
+          "difficulty": "hard",
+          "question": "If the ice maker is not producing ice and I have just connected a new water line, what pressure must the line supply and what should I check at the ice maker?",
+          "answer": "The ice maker requires 20–125 psi incoming water pressure. Check that the line is connected and its shutoff valve open, that Ice Maker Off is not active, and that no clumped ice is obstructing the bucket.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 33,
+              "page_number_basis": "printed",
+              "reason": "Establishes the water-line pressure requirement.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 64,
+              "page_number_basis": "printed",
+              "reason": "Gives ice-maker no-ice troubleshooting checks.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H07",
+          "difficulty": "hard",
+          "question": "I replaced the filter but the ice and water dispenser still acts blocked. What water-filter installation rule matters, and what does Control Lock do to dispensing?",
+          "answer": "Use only Samsung-provided or Samsung-approved water filters; unapproved filters can leak and damage the appliance. Separately, if Control Lock is on, the refrigerator will not dispense ice or water even when its dispenser lever is pressed. Hold Lighting/Control Lock for 3 seconds to unlock.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 59,
+              "page_number_basis": "printed",
+              "reason": "States approved-filter requirement and replacement precautions.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 40,
+              "page_number_basis": "printed",
+              "reason": "Explains Control Lock disabling ice and water dispensing.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H08",
+          "difficulty": "hard",
+          "question": "A technician says my fridge’s bubbling sound is normal but has also identified diagnostic code 85. What does the troubleshooting sheet say causes bubbling, and what fault does code 85 indicate?",
+          "answer": "The bubbling sound is identified as normal refrigerant circulating through the refrigerator. Error 85 means compressor low voltage; the technician error chart says this occurs if the AC input voltage is 106 V or lower. Electrical diagnosis belongs to qualified technicians.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf",
+              "page_number": 7,
+              "page_number_basis": "pdf_index",
+              "reason": "Identifies bubbling as a normal refrigerant sound.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf",
+              "page_number": 6,
+              "page_number_basis": "pdf_index",
+              "reason": "Defines diagnostic error 85 and its input-voltage criterion.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H09",
+          "difficulty": "hard",
+          "question": "If the refrigerator will not cool and a service technician intends to diagnose the electronics, what basic user checks are recommended and what caution does the repair sheet give for the main electronics?",
+          "answer": "First check that the power cord is connected, temperature controls are correct, the unit is away from heat/direct sun, ventilation is unobstructed and food does not block internal air passages. The technician sheet warns that the SMPS and inverter PCBs have AC input and generated high voltage; electrical measurement or repair must be handled by trained personnel.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+              "page_number": 63,
+              "page_number_basis": "printed",
+              "reason": "Provides owner-level no-cooling checks.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf",
+              "page_number": 11,
+              "page_number_basis": "pdf_index",
+              "reason": "Provides the main-board high-voltage technician safety warning.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-H10",
+          "difficulty": "hard",
+          "question": "A technician mentions compressor error 81, and I am wondering whether I should attempt a repair myself. What checks does that error call for and what safety limitation does the service sheet state?",
+          "answer": "Error 81 is a compressor-run error. The technician sheet calls for checking inverter-PCB soldering/shorts, whether its 15 V DC output is below 13.5 V, and the compressor/refrigeration cycle. The sheet explicitly says it is for qualified technicians with electrical, electronic and mechanical experience; do not attempt those tests as an untrained owner.",
+          "reference_points": [
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf",
+              "page_number": 6,
+              "page_number_basis": "pdf_index",
+              "reason": "Gives the definition and specified error-81 diagnostic checks.",
+              "created_at": "20261018-180336"
+            },
+            {
+              "pdf_relative_path": "fridge-docs/samsung_RF28K9070SG/repair-guide.pdf",
+              "page_number": 1,
+              "page_number_basis": "pdf_index",
+              "reason": "Explicitly limits service-sheet use to qualified repair personnel.",
+              "created_at": "20261018-180336"
+            }
+          ],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N01",
+          "difficulty": "negative",
+          "question": "What exact number of kWh will my individual RF28K9070SG consume next month in my house with its actual door-opening pattern?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N02",
+          "difficulty": "negative",
+          "question": "What serial number and factory assembly timestamp are printed on my own RF28K9070SG nameplate?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N03",
+          "difficulty": "negative",
+          "question": "Exactly how many decibels will my compressor register at 1 metre inside my kitchen right now?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N04",
+          "difficulty": "negative",
+          "question": "What is the measured resistance of the freezer thermistor in my own refrigerator at this moment, without taking a measurement?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N05",
+          "difficulty": "negative",
+          "question": "Which actual electrical component in my specific refrigerator has failed solely because diagnostic code 81 appears, without performing the prescribed checks?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N06",
+          "difficulty": "negative",
+          "question": "How much will an authorised technician charge tomorrow in my suburb to replace its inverter board?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N07",
+          "difficulty": "negative",
+          "question": "What exact date in the future will my refrigerator’s compressor suffer its first mechanical failure?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N08",
+          "difficulty": "negative",
+          "question": "Which firmware build is installed on my refrigerator’s main PCB today?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N09",
+          "difficulty": "negative",
+          "question": "How many minutes exactly will it take my ice maker to refill its entire bucket under my home’s real water pressure and ambient conditions?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        },
+        {
+          "id": "samsung_RF28K9070SG-N10",
+          "difficulty": "negative",
+          "question": "What is the precise refrigerant mass remaining in my individual unit today after several years of use?",
+          "answer": "Insufficient_Information_Based_On_Given_PDF",
+          "reference_points": [],
+          "created_at": "20261018-180336"
+        }
+      ]
+    }
+  ]
+}

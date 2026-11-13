@@ -1,0 +1,186 @@
+---
+description: >-
+  Filename **readme-fru-genai-platform.mdc**. Keywords **readme-platform**, **readme-fru**:
+  root **README.md** for multi-subsystem / Gen-N platform repos — FRU GenAI analytics style
+  (emoji TOC, Mermaid init block, semantic colors, golden-separation callout). Overrides **mrkd**
+  for the repo root README only.
+globs:
+  - "README.md"
+alwaysApply: false
+---
+
+# Platform README authoring (FRU GenAI style)
+
+Project-agnostic pattern copied from **ultra-fru-genai-analytics-new** README: one scrolling “product page” that engineers can skim top-to-bottom or jump via emoji TOC.
+
+**Scope:** Apply to the repository **root `README.md` only**. Other `*.md` files may still follow `mrkd-markdown-authoring.mdc` when this repo uses it.
+
+**Trigger:** User says **`readme-platform`**, **`readme-fru`**, or asks to match the FRU GenAI analytics README layout.
+
+---
+
+## Document outline
+
+1. [Non-negotiable shape](#readme-non-negotiable) — title, intro, TOC, sections.
+2. [Introduction paragraph](#readme-intro) — what / for whom / lineage.
+3. [Emoji table of contents](#readme-toc) — menu pattern.
+4. [Numbered body sections](#readme-sections) — typical §1–§11.
+5. [Mermaid diagrams](#readme-mermaid) — init, colors, subgraphs.
+6. [Tables & callouts](#readme-tables) — markdown tables, golden separation.
+7. [Quick start & references](#readme-quickstart) — commands, links, Gen chain.
+8. [Self-check](#readme-self-check) — before merge.
+
+---
+
+## 1. Non-negotiable shape {#readme-non-negotiable}
+
+1. **Title line** — `# Product name — short tagline` (plain Markdown `#`, not HTML).
+2. **Opening block** — 2–4 sentences: problem, grounded behavior, **audience**. No “Why this repo exists” heading; fold motivation into the intro.
+3. **Horizontal rule** `---` then **emoji TOC** (see §3).
+4. **Body** — numbered sections with **emoji + number + title** (e.g. `🧩 1. System architecture`).
+5. **Anchor ids** — append `{#anchor}` on section titles when links need stable targets (e.g. `{#architecture}`).
+6. **Footer** — optional one line pointing at this rule or sibling Gen repos.
+
+**Do not** use HTML-colored `<h1>` / document-outline blocks in root README unless GitHub preview requires it; this style is **GitHub-native Markdown + Mermaid + HTML tables only where FRU README used them**.
+
+---
+
+## 2. Introduction paragraph {#readme-intro}
+
+Include, in order when relevant:
+
+| Element | Purpose |
+|---------|---------|
+| **One-liner** | What the system does in plain language (no internal codenames first). |
+| **Grounding** | What artifacts are authoritative (DB, wiki, APIs)—not “the LLM imagines.” |
+| **Gen / lineage** | `Gen N` of `{parent repo link}` if applicable; one row explaining delta from prior gen. |
+| **Scoped claims** | If comparing arms, modes, or clouds—state **where** winners are proven, not global superiority. |
+
+---
+
+## 3. Emoji table of contents {#readme-toc}
+
+Use a block like:
+
+```markdown
+ 📋 Table of Contents 
+
+- [🧩 1. System architecture](#architecture)
+- [🗺 2. Deployment topology](#deployment-topology)
+...
+```
+
+**Emoji map (reuse consistently within a repo):**
+
+| Emoji | Typical section |
+|-------|-----------------|
+| 🧩 | System architecture |
+| 🗺 | Topology / evolution / multi-env matrix |
+| 🤖 | Agent or query flow |
+| ✨ | Golden separation (design principle callout) |
+| 🏗 | Deploy / pipeline |
+| 📊 | Metrics / evidence / benchmarks |
+| 🚀 | Quick start |
+| ⚙️ | Configuration |
+| 📦 | Technology reference |
+| 🗄 | Data model |
+| 🧪 | Testing |
+| 📚 | Docs / war stories |
+
+Adapt section titles to the product; keep **numbers stable** once published (append new § at end).
+
+---
+
+## 4. Numbered body sections {#readme-sections}
+
+**Recommended spine** (trim or extend; do not skip §1 and Quick start):
+
+1. **System architecture** — one `flowchart TB` with **subgraphs** per subsystem; legend line above diagram; subsystem table (`Serves | Reads | Writes`).
+2. **Topology or evolution** — matrix diagram (`flowchart LR`), provider × scope, or Gen2→Gen3 map.
+3. **Query / agent flow** — `sequenceDiagram` or `flowchart TB` for interactive path; optional ### subsection table for tools/steps.
+4. **Golden separation** — blockquote with **three short lines** (who owns what; what the LLM must not substitute for).
+5. **Evidence** (if applicable) — benchmark tables with run ids; link to artifact paths; **routing table** by question class.
+6. **Quick start** — `bash` fenced block; small port/url table.
+7. **Configuration** — key groups table (not every env var).
+8. **Technology reference** — lane × stack × in-repo path.
+9. **Data model** — tables / paths.
+10. **Testing** — commands to reproduce proof.
+11. **Docs & plans** — curated links; bootstrap one-liner if kit-driven.
+
+Keep sections **short**; push depth to `docs/` linked from §11.
+
+---
+
+## 5. Mermaid diagrams {#readme-mermaid}
+
+**Every major diagram** starts with the FRU init block:
+
+```text
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'9px', 'fontFamily':'sans-serif'}, 'flowchart': {'nodeSpacing':14, 'rankSpacing':18, 'padding':8, 'useMaxWidth':true}}}%%
+```
+
+**Semantic colors** (apply `style NODE fill:#…,stroke:#…,stroke-width:1px,font-size:9px` on **every** node and subgraph):
+
+| Semantic | Fill | Stroke | Use for |
+|----------|------|--------|---------|
+| User / UI / edge | `#e3f2fd` | `#1976d2` | People, browsers, Obsidian |
+| API / core service | `#64b5f6` | `#1565c0` | Flask, wiki API, QueryAgent |
+| CI / scheduler / decision | `#fff8e1` | `#ff8f00` | Cron, orchestrator, diamonds |
+| Batch / Spark / heavy | `#ffb74d` | `#e65100` | Spark, manual RAG pool build |
+| Success / compile / kube | `#e8f5e9` | `#2e7d32` | Subsystem subgraph borders (kube/compile) |
+| nonkube / warning lane | `#fff3e0` | `#e65100` | Subsystem subgraph (nonkube/raw) |
+| Data store | `#e1bee7` | `#6a1b9a` | Postgres, object store (**use cylinder** `(("…"))`) |
+| External LLM | `#fff3e0` | `#e65100` | Chat, embed, judge — **dotted arrows** `-.->` |
+| Staging / eval | `#ede7f6` | `#5e35b1` | Benchmark judge, COS |
+
+**Clarity rules:**
+
+- Prefer **`flowchart TB`** for architecture; **`flowchart LR`** for side-by-side comparisons (local vs cloud, A1 vs A3, Gen2 vs Gen3).
+- **Subgraph** titles name scope (`Subsystem A — …`, `Gen 2 — …`).
+- Label edges (`|"SQL + pgvector"|`) on data-plane arrows only.
+- Cap nodes per diagram (~5–15); split into §2.1 / §2.2 if needed.
+- **Distinguish shapes:** cylinders for databases; rectangles for services; diamonds only for real branch nodes.
+
+---
+
+## 6. Tables & callouts {#readme-tables}
+
+- Prefer **GitHub Markdown tables** for quick start URLs, tech stack, routing cheatsheets.
+- Use **HTML tables** only when FRU-style colored headers are needed (`background:#1565c0` on `<th>`); keep them rare in README.
+- **Golden separation** format:
+
+```markdown
+ ✨ 4. Golden separation {#golden-separation}
+
+> **Line one owns X.**  
+> **Line two owns Y.**  
+> **Line three: what the LLM does.**
+```
+
+- **Evidence tables** must include: suite name, **run id**, n, metrics, link to frozen artifact path.
+- State **non-claims** in the same section or a sub-bullet list (what benchmarks did *not* prove).
+
+---
+
+## 7. Quick start & references {#readme-quickstart}
+
+- Commands copy-pasteable; note interpreter (`python3.12`, `./scripts/py`, venv).
+- Link **parent / sibling** repos in intro and §11 (**Gen chain**).
+- Point to operator runbooks, not duplicate them.
+
+---
+
+## 8. Self-check {#readme-self-check}
+
+- [ ] Intro is concise; no “Why this repo exists” heading.
+- [ ] Emoji TOC matches all numbered sections and anchors work.
+- [ ] At least one **architecture** Mermaid with legend + subsystem table.
+- [ ] Mermaid uses **init block** + **per-node styles** + subgraph fills.
+- [ ] Golden separation blockquote present when multiple subsystems or arms exist.
+- [ ] Claims scoped (construct / cloud / question class); falsifiers mentioned.
+- [ ] Quick start + test reproduce commands present.
+- [ ] Root README does **not** rely on `mrkd` HTML heading palette.
+
+---
+
+**Portable copy:** duplicate this file to another repo’s `.cursor/rules/` and adjust emoji § titles to the product’s vocabulary.

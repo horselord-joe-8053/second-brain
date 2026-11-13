@@ -1,0 +1,16 @@
+{"ts": "2026-10-27T14:32:06.483343+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "row_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-27T14:32:07.422173+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "manual_retrieve_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-27T14:32:10.828501+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "manual_retrieve_done", "question_id": "BND-E01", "index": 0, "retrieval_ms": 3405}
+{"ts": "2026-10-27T14:32:10.828859+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "answer_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-27T14:32:13.443818+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "answer_done", "question_id": "BND-E01", "index": 0, "answer_ms": 2614}
+{"ts": "2026-10-27T14:32:13.444299+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "judge_start", "question_id": "BND-E01", "index": 0}
+{"ts": "2026-10-27T14:32:14.783334+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "judge_done", "question_id": "BND-E01", "index": 0, "judge_ms": 1338}
+{"ts": "2026-10-27T14:32:14.784957+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "row_done", "question_id": "BND-E01", "index": 0, "judge_pass": true, "ticket_hit_in_packet": true}
+{"ts": "2026-10-27T14:32:14.786206+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "row_start", "question_id": "BND-H01", "index": 1}
+{"ts": "2026-10-27T14:32:15.596790+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "manual_retrieve_start", "question_id": "BND-H01", "index": 1}
+{"ts": "2026-10-27T14:32:16.591376+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "manual_retrieve_done", "question_id": "BND-H01", "index": 1, "retrieval_ms": 994}
+{"ts": "2026-10-27T14:32:16.591903+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "answer_start", "question_id": "BND-H01", "index": 1}
+{"ts": "2026-10-27T14:32:18.477243+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "answer_done", "question_id": "BND-H01", "index": 1, "answer_ms": 1885}
+{"ts": "2026-10-27T14:32:18.477519+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "judge_start", "question_id": "BND-H01", "index": 1}
+{"ts": "2026-10-27T14:32:19.749775+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "judge_done", "question_id": "BND-H01", "index": 1, "judge_ms": 1271}
+{"ts": "2026-10-27T14:32:19.750610+00:00", "run_id": "b20-evo18-t0-smoke-20261027", "step": "row_done", "question_id": "BND-H01", "index": 1, "judge_pass": true, "ticket_hit_in_packet": false}

@@ -1,0 +1,148 @@
+{
+  "schema_version": "cos_insight_qa.v1",
+  "construct": "limit_join",
+  "status": "locked_before_scores",
+  "pattern": "The manual still describes the feature. The compiled news page states the limit. Questions use bare model codes and never a single catalog id.",
+  "questions": [
+    {
+      "id": "L01",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "A shopper has the GNE27JYMFS user guide open, then reads GE's 2026 Kitchen Assistant announcement. Which of the announced features can be added to an owned GNE27JYMFS?",
+      "answer": "None. Scan-to-List, the inventory camera, and the new display cannot be added to an owned GNE27JYMFS. The announcement describes a different GE Profile refrigerator, and the cited release does not identify that refrigerator as a GNE27JYMFS successor or a retrofit.",
+      "criteria": [
+        {
+          "text": "Scan-to-List, the inventory camera, and the new display cannot be added to an owned GNE27JYMFS.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L02",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "The KRFF507HPS user guide describes a through-the-door dispenser. A 2026 KitchenAid note describes Intelligent Auto Fill. Are those the same feature on the KRFF507HPS?",
+      "answer": "No. The KRFF507HPS has a through-the-door dispenser and does not include Intelligent Auto Fill. Intelligent Auto Fill is a hands-free system on newer KitchenAid refrigerators, and KitchenAid has not announced an upgrade that adds it to the KRFF507HPS.",
+      "criteria": [
+        {
+          "text": "The KRFF507HPS does not include Intelligent Auto Fill, and its door dispenser is not that feature.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L03",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "One briefing has to cover the GNE27JYMFS, the KRFF507HPS, and the RF28K9070SG. What must it refuse to promise from the 2026 announcements, even though each user guide is still in the file set?",
+      "answer": "Refuse three promises. Scan-to-List, the inventory camera, and the new display cannot be added to the GNE27JYMFS. Intelligent Auto Fill cannot be promised for the KRFF507HPS. The September 2026 AI software update, AutoView see-through door, and Sphere Ice cannot be promised for the RF28K9070SG. A live user guide does not prove that those 2026 features were added.",
+      "criteria": [
+        {
+          "text": "The briefing must refuse the GE camera and scan features on the GNE27JYMFS, Intelligent Auto Fill on the KRFF507HPS, and the Samsung AI update, see-through door, and Sphere Ice on the RF28K9070SG.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L04",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "The RF28K9070SG guide describes the controls on that refrigerator. Does Samsung's September 2026 AI software announcement add Tizen 10.0, Gemini food identification, or a Family Hub display to this model?",
+      "answer": "No. Samsung's September 2026 announcement does not name the RF28K9070SG as a supported update target. Those software features are described for selected newer Family Hub models. Staff must not promise Tizen 10.0, Gemini-powered food identification, or a Family Hub display on the RF28K9070SG.",
+      "criteria": [
+        {
+          "text": "The RF28K9070SG is not a supported target for Tizen 10.0, Gemini food identification, or a Family Hub display.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L05",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "A buyer likes the RF28K9070SG FlexZone and asks whether the 2026 Bespoke three-door models are a direct replacement that adds AutoView and Sphere Ice to this unit.",
+      "answer": "No. The 2026 Bespoke announcement describes three-door refrigerators, not a retrofit of the four-door RF28K9070SG. It does not call those models direct replacements, and it does not promise to add AutoView or Sphere Ice to the RF28K9070SG. FlexZone remains the signature of this older four-door layout.",
+      "criteria": [
+        {
+          "text": "AutoView and Sphere Ice are not a retrofit for the RF28K9070SG, and the 2026 three-door models are not a direct replacement.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L06",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "Best Buy shows the RF28K9070SG at 4.3/5 and Home Depot shows 3.6/5, and both pools mention ice and cooling complaints. The service guide also has ice-maker pages. What may staff treat those two scores as?",
+      "answer": "The two scores are separate retailer review pools, not a hardware failure rate and not a recall. Best Buy is 4.3/5 from 597 reviews with 84% recommending, and Home Depot is 3.6/5 from 530 reviews with 58% recommending. Ice production, freezer cooling, and the convertible zone are different symptom families. The gap between the scores does not prove that the hardware changed.",
+      "criteria": [
+        {
+          "text": "The Best Buy and Home Depot scores are not a failure rate and not a recall.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L07",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "An owner says vegetables are drying out in a GNE27JYMFS and points at the temperature-control pages in the user guide. How should staff use the RTINGS review before treating that as a cooling failure?",
+      "answer": "RTINGS scores everyday use at 7.4/10 and produce preservation at 6.7/10. It attributes drying to a comparatively dry main compartment and crispers that do not fully stop leafy vegetables from drying. Drying is not automatic proof of a cooling failure. Temperature uniformity on the tested unit was 8.7/10.",
+      "criteria": [
+        {
+          "text": "Drying produce is not automatic proof of a cooling failure.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L08",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "The GNE27JYMFS user guide still lists Turbo Cool, the ice maker, and the water filter. A shopper asks whether that means GE is still manufacturing the model and whether a recall is underway.",
+      "answer": "No. GE's listing says the GNE27JYMFS is no longer being manufactured. Discontinuation is not a recall, and it does not prove that parts or service are unavailable. The user guide remains the document for an installed unit. Manufacturing status, warranty, parts, and recalls are four separate questions.",
+      "criteria": [
+        {
+          "text": "Discontinuation is not a recall, and it does not prove that parts or service are unavailable.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L09",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "Lowe's lists the KRFF507HPS at 4.3/5 from 1,908 reviews. A buyer asks whether that rating means the model includes the 2026 Intelligent Auto Fill dispenser.",
+      "answer": "No. The 4.3/5 score is owner sentiment about the KRFF507HPS, with 84% of those reviewers recommending it. The KRFF507HPS does not include Intelligent Auto Fill, and a retailer rating is not an announcement that the feature was added.",
+      "criteria": [
+        {
+          "text": "The Lowe's rating does not mean the KRFF507HPS includes Intelligent Auto Fill.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "L10",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "limit_join",
+      "question": "Staff have the GNE27JYMFS user guide open on the ice-maker pages. A caller says the ice bin takes too much freezer space and asks whether to treat that as a failed freezer and whether the model is still a current production refrigerator.",
+      "answer": "Do not treat the ice bin's use of freezer space as a failed freezer. RTINGS scored ice making 8.4/10 and noted that the bin consumes noticeable freezer-drawer space. Separately, the GNE27JYMFS is no longer being manufactured. That status is not a recall, and it does not prove that parts or service are unavailable.",
+      "criteria": [
+        {
+          "text": "The ice bin using freezer space is not proof of a failed freezer, and the GNE27JYMFS is no longer being manufactured.",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}

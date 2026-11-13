@@ -1,0 +1,230 @@
+{
+  "main": {
+    "id": "f852918daa3fbb0e",
+    "type": "split",
+    "children": [
+      {
+        "id": "19b2a2a4e11a4bef",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4f86ec25d63b8e4e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "log.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "log"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5ace428ab2c7e03b",
+    "type": "split",
+    "children": [
+      {
+        "id": "cf5f9bfdd85e79ec",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "477f8d8f691f17ee",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "08615acf8aa86941",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "b295727a890f5598",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0bd3277d45234e4f",
+    "type": "split",
+    "children": [
+      {
+        "id": "3b9dd5fc747f8c74",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "02119d40da52d706",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "concepts/subjunctive-mood.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "3b3a05e53cb921d7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "concepts/subjunctive-mood.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "b9e1020574f67ea0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7e5ca7d2840816fd",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "affcf1200d8c1642",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "concepts/subjunctive-mood.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "4f86ec25d63b8e4e",
+  "lastOpenFiles": [
+    "index.md",
+    "sources/7-uploads--10-smoke-test--1dwb8eh.md",
+    "concepts/personal-knowledge-base.md",
+    "entities/nashsu-llm-wiki.md",
+    "sources/7-uploads--2-ch--jlibw9.md",
+    "concepts/event-sourced-engine.md",
+    "concepts/architectural-paradigms.md",
+    "entities/model-context-protocol.md",
+    "entities/openhands.md",
+    "entities/hermes-agent.md",
+    "entities/deep-agents.md",
+    "entities/claude-code.md",
+    "entities/deepseek-harness.md",
+    "sources/3-web--37-agent-harness-architecture-2026-10-06--l2w4cv.md",
+    "concepts/us-china-relations.md",
+    "concepts/brazil-china-relations.md",
+    "entities/china.md",
+    "sources/3-web--39-brazil-election-china-impact-2026-10-06--16urerm.md",
+    "entities/brad-pitt.md",
+    "sources/7-uploads--15-imgb3a51486e16d--18photl.md",
+    "media/7-uploads--15-imgb3a51486e16d--18photl/001-img_b3a51486e16d.jpg",
+    "media/7-uploads--15-imgb3a51486e16d--18photl",
+    "sources/7-uploads--24-movie-booking-2026-10-06--10pl4gh.md",
+    "entities/heart-of-the-beast.md",
+    "media/7-uploads--24-movie-booking-2026-10-06--10pl4gh",
+    "media/7-uploads--32-aiapplicationlandscape2026slides--9fbdnl/img-8.png",
+    "Untitled.base",
+    "concepts/tiered-resource-allocation.md",
+    "concepts/hybrid-execution-model.md",
+    "concepts/managed-platform.md",
+    "entities/nous-research.md",
+    "Untitled 1.base",
+    "Untitled.canvas",
+    "media/7-uploads--32-aiapplicationlandscape2026slides--9fbdnl/img-3.png",
+    "media/7-uploads--32-aiapplicationlandscape2026slides--9fbdnl/img-4.png",
+    "media/7-uploads--32-aiapplicationlandscape2026slides--9fbdnl/img-2.png"
+  ]
+}

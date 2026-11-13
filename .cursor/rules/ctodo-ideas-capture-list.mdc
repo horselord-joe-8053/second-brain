@@ -1,0 +1,134 @@
+---
+description: >-
+  Keyword **ctodo** — capture and analyze idea backlog in
+  **docs_manual_gen/todos/TODO_IDEAS_LIST.md** (create dir/file idempotently).
+  Trigger with `ctodo <description>`. Cursor does not auto-load rules by keyword;
+  **@**-mention this rule or include **ctodo** in the prompt.
+globs:
+  - "**/docs_manual_gen/todos/**"
+  - "**/TODO_IDEAS_LIST.md"
+alwaysApply: false
+---
+
+<h1 id="ctodo-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Idea backlog capture (<code>ctodo</code>)</h1>
+
+**Trigger:** User message contains **`ctodo`** as a **whole-word** token, followed by a **description of ideas** (rest of prompt or quoted block).
+
+**Target file (single ledger):** `docs_manual_gen/todos/TODO_IDEAS_LIST.md`
+
+**Also apply:** Follow **mrkd-markdown-authoring** for any create/edit of that file.
+
+<h2 id="ctodo-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Workflow](#ctodo-workflow) — steps on every `ctodo` invocation.
+2. [Idempotent bootstrap](#ctodo-bootstrap) — dir + file template.
+3. [Entry schema](#ctodo-entry) — fields, status, IDs.
+4. [Analysis content](#ctodo-analysis) — what to write in each section.
+5. [Update vs append](#ctodo-dedupe) — slug match rule.
+
+---
+
+<h2 id="ctodo-workflow" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Workflow</h2>
+
+On **`ctodo <description>`**:
+
+1. **Bootstrap** — ensure `docs_manual_gen/todos/` and `TODO_IDEAS_LIST.md` exist ([§2](#ctodo-bootstrap)).
+2. **Parse** — extract idea text; derive a **title** (short headline) and **slug** (`kebab-case`, ASCII, max ~48 chars).
+3. **Dedupe** — if an entry with the same **`slug:`** already exists, **update that entry**; else **append** a new entry ([§5](#ctodo-dedupe)).
+4. **Analyze** — produce structured analysis from the description ([§4](#ctodo-analysis)).
+5. **Write** — merge into `TODO_IDEAS_LIST.md`; set **`last-modified`** to today (ISO date); on new entries set **`added`** to today and **`status: new`** unless facts imply otherwise ([§3](#ctodo-entry)).
+6. **Reply briefly** — confirm ID, title, status, and path; do not dump the full file unless asked.
+
+**Out of scope for `ctodo` alone:** implementing code or creating plan files — unless the user also asks. Linking to plans is a **metadata update** when status becomes `planned`.
+
+---
+
+<h2 id="ctodo-bootstrap" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Idempotent bootstrap</h2>
+
+If **`docs_manual_gen/todos/`** or **`TODO_IDEAS_LIST.md`** is missing, create them.
+
+**Initial `TODO_IDEAS_LIST.md`** (only when file does not exist):
+
+```markdown
+<h1 id="todo-ideas-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">TODO — ideas ledger</h1>
+
+**Purpose:** Captured ideas from **`ctodo`** prompts; one section per idea.  
+**Rule:** `.cursor/rules/ctodo-ideas-capture-list.mdc`
+
+<h2 id="todo-ideas-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [Active entries](#todo-ideas-entries) — newest at bottom unless user reorders.
+
+---
+
+<h2 id="todo-ideas-entries" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Active entries</h2>
+
+*(No entries yet.)*
+```
+
+Do **not** recreate or truncate an existing ledger.
+
+---
+
+<h2 id="ctodo-entry" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Entry schema</h2>
+
+Each idea is one **`###`** subsection under **Active entries**, using this block (YAML front matter in a fenced `yaml` block for machine-readable fields):
+
+**ID assignment (new entries only):** scan existing **`id:`** values; next id is **`CTODO-NNN`** with zero-padded 3 digits (`CTODO-001`, …). Never reuse or renumber.
+
+**Status** (exact tokens):
+
+| Status | Meaning |
+|--------|---------|
+| `new` | Captured; no delivery plan doc yet |
+| `planned` | Tracked in a plan under `docs/plans/` or `docs_manual_gen/` plan doc — set **`related-plans`** |
+| `d-impl` | Shipped without a plan doc (direct implement) |
+
+**Dates:** ISO **`YYYY-MM-DD`** in **`added`** and **`last-modified`**.
+
+**Template for one entry:**
+
+```markdown
+<h3 id="ctodo-NNN-slug" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">CTODO-NNN — Title here</h3>
+
+```yaml
+id: CTODO-NNN
+slug: short-slug
+added: YYYY-MM-DD
+last-modified: YYYY-MM-DD
+status: new
+related-plans: []
+```
+
+**Summary** — one or two sentences.
+
+**Analysis**
+
+- **Intent** — what problem or outcome.
+- **Scope** — in/out for a first slice.
+- **Dependencies** — repos, tools, human gates.
+- **Risks / open questions** — bullets.
+- **Suggested next step** — plan doc, spike, or implement.
+
+**Source prompt** — paraphrase or short quote of the user’s `ctodo` description.
+```
+
+When promoting to **`planned`**, set **`related-plans`** to repo-relative paths (e.g. `docs/plans/foo-plan.md`). When **`d-impl`**, list key paths or commit refs in **Suggested next step** or a **`Delivered`** bullet; keep **`related-plans: []`** unless a plan was added retroactively.
+
+---
+
+<h2 id="ctodo-analysis" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Analysis content</h2>
+
+Analysis must be **clean and scannable** — not a raw chat dump. Infer reasonably from the description; label uncertainty in **open questions**. Do not invent repo files; if linking plans or code, **grep or read** first.
+
+If the user’s text clearly says work is already in a plan or already shipped, set **`status`** to **`planned`** or **`d-impl`** accordingly on first write or update.
+
+---
+
+<h2 id="ctodo-dedupe" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Update vs append</h2>
+
+- **Same `slug`** in an existing entry → **update** that section: refresh analysis, **`last-modified`**, status/plans if changed; **preserve `id` and `added`**.
+- **New slug** → **append** new **`###`** block with next **`CTODO-NNN`**.
+- **Slug change** for same idea → treat as new entry unless user asks to merge; optionally note superseded id in **open questions**.
+
+**Anchor ids:** heading **`id="ctodo-NNN-slug"`** must match **`id`** and **`slug`** for outline links.

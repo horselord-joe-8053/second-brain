@@ -1,0 +1,56 @@
+{
+  "corpus_profile": "fru_us_1k",
+  "diagnostics": {
+    "manual_leg_ok": true,
+    "notes": [],
+    "ticket_leg_ok": true,
+    "wiki_available": true
+  },
+  "fault_code": "FRU-E101",
+  "manuals": {
+    "hits": [
+      {
+        "excerpt": "Ice maker If the ice maker is not making ice, check the water supply line and shutoff valve.",
+        "rank": 1,
+        "raw_origin": {
+          "archive_pdf_path": "archive/fridge-docs/samsung_RF28K9070SG/user-guide.pdf",
+          "doc_path": "raw/sources/fridge-docs/samsung_RF28K9070SG/user-guide.txt",
+          "pages": []
+        },
+        "source": "wiki",
+        "wiki_path": "wiki/sources/samsung-user-guide.md",
+        "wiki_score": 0.4286
+      }
+    ]
+  },
+  "model": "RF28K9070SG",
+  "model_sku": "samsung_RF28K9070SG",
+  "profile": "retail",
+  "query": "Customer with RF28K9070SG: ice maker not making ice, code FRU-E101",
+  "schema": "retail_answer.v1",
+  "tickets": {
+    "hits": [
+      {
+        "cosine_similarity": 0.1656,
+        "customer_query_text": "ice maker stopped producing cubes FRU-E101",
+        "fused_score": 0.180328,
+        "issue_key": "ice_maker_no_ice",
+        "model": "RF28K9070SG",
+        "rank": 1,
+        "resolution_text": "Reset ice maker.",
+        "ticket_id": "T-1"
+      },
+      {
+        "cosine_similarity": -0.1517,
+        "customer_query_text": "door alarm keeps beeping",
+        "fused_score": 0.008065,
+        "issue_key": "door_alarm",
+        "model": "RF28K9070SG",
+        "rank": 2,
+        "resolution_text": "Realigned door gasket.",
+        "ticket_id": "T-2"
+      }
+    ],
+    "search_mode": "rrf_term_boosted"
+  }
+}

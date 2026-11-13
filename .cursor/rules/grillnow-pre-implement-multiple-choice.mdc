@@ -1,0 +1,54 @@
+---
+description: >-
+  **grillnow** — before IMPLEMENT/qimpl/qimpltdd on a non-trivial task, ask concise multiple-choice
+  questions; record answers in the plan **## Decisions**; wait unless user says skip grill.
+alwaysApply: true
+---
+
+<h1 id="grillnow-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0"><code>grillnow</code> — pre-implement multiple choice</h1>
+
+<h2 id="grillnow-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
+
+1. [When to grill](#grillnow-when) — triggers and skip.
+2. [How to ask](#grillnow-how) — format, limit, tool.
+3. [Record answers](#grillnow-record) — plan/spec decisions.
+4. [Then implement](#grillnow-then) — qimpl / qimpltdd / aciub.
+
+---
+
+<h2 id="grillnow-when" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. When to grill</h2>
+
+**Grill before code, eval retune, operator runs, or doc+code delivery** when the user asks to implement, retune, qimpl, qimpltdd, or similar **and** any of these are unset:
+
+- Which **plan/spec** is authoritative for the change.
+- **Scope** (eval-only vs corpus, which rows/files).
+- **Acceptance** (strict vs soft metrics, required operator path).
+- **Product narrative** constraints (what story the demo must tell).
+
+**Skip grill** when the user explicitly says **`skip grill`**, **`skip align`**, or gives **unambiguous** answers in the same message (treat as pre-answered).
+
+**Pair with** `requirement-alignment.mdc`: prefer **one** grill pass of **≤4** multiple-choice questions (not free-form questionnaires).
+
+---
+
+<h2 id="grillnow-how" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. How to ask</h2>
+
+- Use the **AskQuestion** tool when available; otherwise numbered **A / B / C** options in chat.
+- Each question: **one line prompt**, **2–4 options**, label **(Recommended)** on the default when the repo/plan already implies it.
+- Phrase options **safely** (no destructive git, no secret commits unless asked).
+- **Do not** start implementation in the same turn as the grill (unless user said skip grill).
+
+---
+
+<h2 id="grillnow-record" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Record answers</h2>
+
+After answers (or skip):
+
+- Append **`## Decisions`** / update **`last_aligned`** on the **target refactor plan** (or spec) with **MC letter + one-line rationale**.
+- For **qimpltdd**, plan updates use **onlyreftdd** shape before **aciubtdd**.
+
+---
+
+<h2 id="grillnow-then" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Then implement</h2>
+
+Proceed with **qimpltdd** / **aciubtdd** / **implreftdd** on the agreed plan path; re-run operator/verify per plan **Exit** rows.

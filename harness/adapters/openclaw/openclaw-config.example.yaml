@@ -1,0 +1,8 @@
+# Placeholder — rename keys after OpenClaw upstream documents MCP + channel config.
+# Map entries from config/second-brain.mcp-servers.yaml into the host-specific tree.
+
+openclaw:
+  mcp_servers_from_catalog: config/second-brain.mcp-servers.yaml
+  channels:
+    telegram: null
+    whatsapp: null

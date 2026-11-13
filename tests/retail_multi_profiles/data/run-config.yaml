@@ -1,0 +1,116 @@
+# D6 suites: TYPE_A_M90 (M90-technical-singlefact) · TYPE_B_B20 (B20-technical-compound) · TYPE_C_C20 (C20-insight-orientation)
+# Lane A–D harness eval overrides → tests/retail_multi_profiles/lib/runner.py
+#
+# Run profiles (D3/D5 dimensions): tests/retail_multi_profiles/docs/RUN_PROFILES.md
+# Plan: docs_manual_gen/ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md Phase 1 (P1.0b adds d5: on profiles)
+#
+# Retrieval scalars: config/brain-stack.yaml → second_brain.retail_evidence
+#
+# Env (LLM): OPENAI_API_KEY + OPENAI_MODEL (answer); GEMINI_API_KEY + RETAIL_JUDGE_MODEL or judge.model;
+#            LLM_WIKI_API_BASE_URL, LLM_WIKI_API_TOKEN
+# Env (D5 overrides, planned P1.0b): RETAIL_D5_RERANK_ENABLED, RETAIL_D5_RERANK_BACKEND,
+#            RETAIL_D5_AGENTIC_ENABLED — strict true/false parsing
+
+schema_version: "1.0"
+
+retail_eval:
+  answer:
+    provider: openai
+    model: gpt-4o-mini # override: OPENAI_MODEL in .env
+    temperature: 0
+  judge:
+    provider: gemini
+    model: gemini-4-carbon # independent strong judge; override: RETAIL_JUDGE_MODEL
+    temperature: 0
+
+smoke_question_ids: [samsung_RF28K9070SG-E01, samsung_RF28K9070SG-H01]
+
+# TYPE_B_B20 bundled Q&A smoke (minor M4): two ids — one easy, one hard.
+bundled_smoke_question_ids: [BND-E01, BND-H01]
+
+# TYPE_C_C20 insight suite smoke (M11 P3.4)
+cos_insight_smoke_question_ids: [COS-C01, COS-H01]
+cos_insight_bundled_profile_id: MANUAL_B_RAW_PG_HYBRID
+
+wiki_evidence:
+  mode: full
+  sources_prefix: wiki/sources/
+  rerank: false
+
+wiki_answer:
+  provisional_label: "[provisional insight]"
+  uncertainty_enabled: true
+
+retail_raw_rag:
+  embedding:
+    provider: openai
+    model: text-embedding-3-small
+    batch_size: 32
+    timeout_sec: 120
+  retrieval:
+    default_mode: vector
+    rrf_k: 60
+  agentic:
+    enabled: false
+    max_loops: 1
+
+# HG-P1 default when CLI omits --profile and --retrieval-mode raw_rag (Lane B PG hybrid + D5 R+V+A).
+default_run_profile: MANUAL_B_RAW_PG_HYBRID_RERANK
+
+# run_profiles: informal ids → harness flags. Target: each block also carries d5: (rerank/verifier/agentic).
+# D3 = raw_retrieval (vector | hybrid_rrf). D5.R = d5.rerank.enabled + backend llm_listwise (not hybrid_rrf_rerank alone).
+run_profiles:
+  MANUAL_B_RAW_VECTOR:
+    retrieval_mode: raw_rag
+    raw_retrieval: vector
+    lanes: B
+  MANUAL_B_RAW_HYBRID:
+    retrieval_mode: raw_rag
+    raw_retrieval: hybrid_rrf
+    manual_d3_backend: pg
+    lanes: B
+    d5:
+      rerank:
+        enabled: false
+      verifier:
+        enabled: false
+      agentic:
+        enabled: false
+  MANUAL_B_RAW_HYBRID_RERANK:
+    retrieval_mode: raw_rag
+    raw_retrieval: hybrid_rrf
+    manual_d3_backend: pg
+    lanes: B
+    d5:
+      rerank:
+        enabled: true
+      verifier:
+        enabled: true
+      agentic:
+        enabled: true
+        max_loops: 1
+  MANUAL_B_RAW_PG_HYBRID:
+    retrieval_mode: raw_rag
+    raw_retrieval: hybrid_rrf
+    manual_d3_backend: pg
+    lanes: B
+    d5:
+      rerank:
+        enabled: false
+      verifier:
+        enabled: false
+      agentic:
+        enabled: false
+  MANUAL_B_RAW_PG_HYBRID_RERANK:
+    retrieval_mode: raw_rag
+    raw_retrieval: hybrid_rrf
+    manual_d3_backend: pg
+    lanes: B
+    d5:
+      rerank:
+        enabled: true
+      verifier:
+        enabled: true
+      agentic:
+        enabled: true
+        max_loops: 1

@@ -1,0 +1,8 @@
+{
+  "reviewer": "jjw8053-chat-approval-20261112",
+  "reviewed_at": "2026-11-11T13:05:51.468075+00:00",
+  "candidate_path": "ops/runs/retail-w20-author/w20-v3-briefing-20261112/candidate.json",
+  "candidate_sha256": "f5713299047787f7c295731b26e1448c5c78b22b79bafc2bef71333f7fa36d0d",
+  "frozen_path": "tests/retail_multi_profiles/data/retail-w20-briefing-v3.json",
+  "frozen_sha256": "ca51baaff16c21d171fb92270306ce6f502982e61ecd34cff2747b91b4167631"
+}

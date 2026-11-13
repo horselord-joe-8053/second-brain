@@ -1,0 +1,453 @@
+#!/usr/bin/env python3.12
+"""Load config/brain-stack.yaml and apply env/path helpers (no PyYAML required).
+
+Brain-profiles: ``brain/<profile>/`` (``personal`` | ``retail``) is the active Nashsu project root.
+Resolution order: ``BRAIN_PROFILE`` env → ``active_brain_profile`` in yaml → ``retail``.
+
+CLI:
+  brain_stack.py              apply Hermes secrets + print MCP / vault exports (legacy behavior)
+  brain_stack.py profile-env  print BRAIN_PROFILE / BRAIN_ROOT / SECOND_BRAIN_WIKI_VAULT exports only
+"""
+from __future__ import annotations
+
+import os
+import re
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any
+
+_ENV_REF = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
+
+BRAIN_PROFILES: tuple[str, ...] = ("personal", "retail")
+DEFAULT_BRAIN_PROFILE = "retail"
+
+
+def _parse_simple_yaml(text: str) -> dict[str, Any]:
+    """Parse a small YAML subset: nested maps, string scalars, string lists."""
+    root: dict[str, Any] = {}
+    stack: list[tuple[int, dict[str, Any]]] = [(-1, root)]
+    list_key: str | None = None
+    list_indent = 0
+
+    for raw in text.splitlines():
+        line = raw.split("#", 1)[0].rstrip()
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        key_line = line.strip()
+
+        while stack and indent <= stack[-1][0]:
+            stack.pop()
+            list_key = None
+
+        parent = stack[-1][1]
+
+        if key_line.startswith("- ") and list_key is not None and indent >= list_indent:
+            item = key_line[2:].strip().strip('"').strip("'")
+            assert isinstance(parent.get(list_key), list)
+            parent[list_key].append(item)
+            continue
+
+        if ":" not in key_line:
+            continue
+        key, _, rest = key_line.partition(":")
+        key = key.strip()
+        val = rest.strip()
+
+        if not val:
+            if key.endswith("_keys") or key in ("sync_env_keys",):
+                parent[key] = []
+                list_key = key
+                list_indent = indent + 2
+            else:
+                new_map: dict[str, Any] = {}
+                parent[key] = new_map
+                stack.append((indent, new_map))
+                list_key = None
+            continue
+
+        if val in ("|", ">"):
+            parent[key] = ""
+            continue
+
+        if val.startswith("[") and val.endswith("]"):
+            inner = val[1:-1].strip()
+            parent[key] = [x.strip().strip('"').strip("'") for x in inner.split(",") if x.strip()] if inner else []
+            list_key = None
+            continue
+
+        parent[key] = val.strip('"').strip("'")
+        list_key = None
+
+    return root
+
+
+def expand_env_refs(obj: Any) -> Any:
+    if isinstance(obj, dict):
+        return {k: expand_env_refs(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [expand_env_refs(v) for v in obj]
+    if isinstance(obj, str):
+
+        def repl(m: re.Match[str]) -> str:
+            return os.environ.get(m.group(1), "")
+
+        return _ENV_REF.sub(repl, obj)
+    return obj
+
+
+def _deep_merge(base: dict[str, Any], overlay: dict[str, Any]) -> dict[str, Any]:
+    out = dict(base)
+    for k, v in overlay.items():
+        if k in out and isinstance(out[k], dict) and isinstance(v, dict):
+            out[k] = _deep_merge(out[k], v)
+        else:
+            out[k] = v
+    return out
+
+
+def _local_stack_path(repo: Path) -> Path | None:
+    for name in (
+        "brain-stack.yaml",
+        "brain_stack.yaml",
+        "brain-stack.yml",
+        "brain-stack.local.yaml",
+    ):
+        p = repo / "config" / name
+        if p.is_file():
+            return p
+    return None
+
+
+def mcp_catalog_path(repo: Path) -> Path:
+    return repo / "config" / "second-brain.mcp-servers.yaml"
+
+
+def _substitute_placeholders(obj: Any, mapping: dict[str, str]) -> Any:
+    if isinstance(obj, dict):
+        return {k: _substitute_placeholders(v, mapping) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_substitute_placeholders(v, mapping) for v in obj]
+    if isinstance(obj, str):
+        out = obj
+        for key, val in mapping.items():
+            out = out.replace(f"${{{key}}}", val)
+        return out
+    return obj
+
+
+def load_mcp_servers_catalog(repo: Path | None = None, stack: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Load config/second-brain.mcp-servers.yaml with paths resolved from brain-stack."""
+    repo = repo or Path(__file__).resolve().parents[2]
+    path = mcp_catalog_path(repo)
+    if not path.is_file():
+        raise FileNotFoundError(f"missing {path}")
+    stack = stack or load_brain_stack(repo)
+    raw = _parse_simple_yaml(path.read_text(encoding="utf-8"))
+    mapping = {
+        "NU_LLM_WIKI_MCP": str(stack["hermes"]["mcp_server_js"]),
+        "BRAIN_ROOT": str(stack["paths"]["brain_root"]),
+    }
+    return _substitute_placeholders(raw, mapping)
+
+
+def format_mcp_servers_block(servers: dict[str, Any]) -> str:
+    """Emit Hermes-style mcp_servers: YAML subtree (no wiring markers)."""
+
+    def emit_scalar(key: str, val: str, indent: int) -> list[str]:
+        pad = " " * indent
+        if val == "${LLM_WIKI_API_TOKEN}" or (val.startswith("${") and val.endswith("}")):
+            return [f"{pad}{key}: \"{val}\""]
+        if " " in val or ":" in val:
+            return [f'{pad}{key}: "{val}"']
+        return [f"{pad}{key}: {val}"]
+
+    lines: list[str] = ["mcp_servers:"]
+    for name, spec in servers.items():
+        if not isinstance(spec, dict):
+            continue
+        lines.append(f"  {name}:")
+        for k, v in spec.items():
+            if k == "args" and isinstance(v, list):
+                lines.append("    args:")
+                for item in v:
+                    s = str(item)
+                    if s.startswith("-") or " " in s:
+                        lines.append(f'      - "{s}"' if s == "-y" else f"      - {s}")
+                    else:
+                        lines.append(f"      - {s}")
+            elif k == "env" and isinstance(v, dict):
+                lines.append("    env:")
+                for ek, ev in v.items():
+                    lines.extend(emit_scalar(ek, str(ev), 6))
+            elif isinstance(v, str):
+                lines.extend(emit_scalar(k, v, 4))
+    return "\n".join(lines)
+
+
+def active_harness(stack: dict[str, Any]) -> str:
+    h = (stack.get("active_harness") or "hermes").strip().lower()
+    return h if h in ("hermes", "openclaw") else "hermes"
+
+
+def messaging_sync_env_keys(stack: dict[str, Any]) -> list[str]:
+    msg = stack.get("messaging") or {}
+    keys = list(msg.get("sync_env_keys") or [])
+    if keys:
+        return keys
+    hermes = stack.get("hermes") or {}
+    all_keys = list(hermes.get("sync_env_keys") or [])
+    messaging_prefixes = ("TELEGRAM_", "WHATSAPP_")
+    return [k for k in all_keys if k.startswith(messaging_prefixes)]
+
+
+def hermes_core_sync_env_keys(stack: dict[str, Any]) -> list[str]:
+    hermes = stack.get("hermes") or {}
+    keys = list(hermes.get("sync_env_keys") or [])
+    msg_keys = set(messaging_sync_env_keys(stack))
+    if not msg_keys:
+        return keys
+    return [k for k in keys if k not in msg_keys]
+
+
+def resolve_brain_profile(stack: dict[str, Any] | None = None) -> str:
+    """Return the active profile name: env BRAIN_PROFILE, then yaml, then retail; raise on unknown."""
+    raw = os.environ.get("BRAIN_PROFILE", "").strip()
+    if not raw and stack:
+        raw = str(stack.get("active_brain_profile") or "").strip()
+    profile = (raw or DEFAULT_BRAIN_PROFILE).lower()
+    if profile not in BRAIN_PROFILES:
+        raise ValueError(f"unknown brain profile {profile!r}; valid: {', '.join(BRAIN_PROFILES)}")
+    return profile
+
+
+def _abs(repo: Path, value: str) -> Path:
+    """Resolve a yaml path value relative to the repo root."""
+    p = Path(value)
+    return (p if p.is_absolute() else repo / p).resolve()
+
+
+def load_brain_stack(repo: Path | None = None) -> dict[str, Any]:
+    """Merge example + local brain-stack yaml and derive absolute, profile-scoped paths."""
+    repo = repo or Path(__file__).resolve().parents[2]
+    example = repo / "config" / "brain-stack.example.yaml"
+    if not example.is_file():
+        raise FileNotFoundError("missing config/brain-stack.example.yaml")
+    data = _parse_simple_yaml(example.read_text(encoding="utf-8"))
+    local = _local_stack_path(repo)
+    if local:
+        data = _deep_merge(data, _parse_simple_yaml(local.read_text(encoding="utf-8")))
+    paths = data.setdefault("paths", {})
+    paths.setdefault("repo_root", str(repo.resolve()))
+    # Legacy configs set brain_root to the parent dir ("brain"); treat it as brains_dir.
+    brains_dir = _abs(repo, paths.get("brains_dir") or paths.get("brain_root") or "brain")
+    profile = resolve_brain_profile(data)
+    data["active_brain_profile"] = profile
+    brain_root = brains_dir / profile
+    paths["brains_dir"] = str(brains_dir)
+    paths["brain_root"] = str(brain_root)
+    # Vaults always follow the profile so stale "brain/wiki" values cannot leak through.
+    paths["wiki_vault"] = str(brain_root / "wiki")
+    hermes = data.setdefault("hermes", {})
+    mcp_js = hermes.get("mcp_server_js", "../nu_llm_wiki/mcp-server/dist/src/index.js")
+    hermes["mcp_server_js"] = str(_abs(repo, mcp_js))
+    data.setdefault("obsidian", {})["vault_path"] = paths["wiki_vault"]
+    return expand_env_refs(data)
+
+
+def profile_env_lines(stack: dict[str, Any]) -> list[str]:
+    """Shell export lines for the active profile (safe to eval; no secrets)."""
+    paths = stack["paths"]
+    return [
+        f"export BRAIN_PROFILE={stack['active_brain_profile']}",
+        f"export BRAIN_ROOT={paths['brain_root']}",
+        f"export SECOND_BRAIN_WIKI_VAULT={paths['wiki_vault']}",
+    ]
+
+
+def _read_env_map(path: Path) -> dict[str, str]:
+    out: dict[str, str] = {}
+    if not path.is_file():
+        return out
+    for line in path.read_text(encoding="utf-8").splitlines():
+        s = line.strip()
+        if not s or s.startswith("#") or "=" not in s:
+            continue
+        k, _, v = s.partition("=")
+        out[k.strip()] = v.strip()
+    return out
+
+
+def upsert_env_file(dst: Path, src: Path, keys: list[str]) -> None:
+    """Copy listed keys from src into dst; preserve other dst lines."""
+    src_map = _read_env_map(src)
+    if not dst.is_file():
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_text("", encoding="utf-8")
+    lines = dst.read_text(encoding="utf-8").splitlines()
+    present = set()
+    new_lines: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped and not stripped.startswith("#") and "=" in stripped:
+            k = stripped.split("=", 1)[0].strip()
+            if k in keys and k in src_map:
+                new_lines.append(f"{k}={src_map[k]}")
+                present.add(k)
+                continue
+        new_lines.append(line)
+    for k in keys:
+        if k in src_map and k not in present:
+            new_lines.append(f"{k}={src_map[k]}")
+    dst.write_text("\n".join(new_lines).rstrip() + "\n", encoding="utf-8")
+
+
+def collect_hermes_secrets(stack: dict[str, Any], repo: Path) -> dict[str, str]:
+    """Secrets for Hermes: brain-stack.yaml `secrets:` first, then repo `.env` fallback."""
+    hermes_keys = hermes_core_sync_env_keys(stack)
+    keys = hermes_keys + [k for k in messaging_sync_env_keys(stack) if k not in hermes_keys]
+    if not keys:
+        keys = list(stack.get("hermes", {}).get("sync_env_keys") or [])
+    raw = stack.get("secrets") or {}
+    out: dict[str, str] = {}
+    if isinstance(raw, dict):
+        for k in keys:
+            v = raw.get(k)
+            if isinstance(v, str) and v.strip():
+                out[k] = v.strip()
+    env_fallback = _read_env_map(repo / ".env")
+    for k in keys:
+        if k not in out and env_fallback.get(k):
+            out[k] = env_fallback[k]
+    return out
+
+
+def upsert_stack_secret(repo: Path, key: str, value: str) -> None:
+    """Update gitignored config/brain-stack.yaml secrets map (create from example if needed)."""
+    local = _local_stack_path(repo) or (repo / "config" / "brain-stack.yaml")
+    if not local.is_file():
+        example = repo / "config" / "brain-stack.example.yaml"
+        local.write_text(
+            example.read_text(encoding="utf-8") + "\nsecrets:\n",
+            encoding="utf-8",
+        )
+    text = local.read_text(encoding="utf-8")
+    needle = f"{key}:"
+    lines = text.splitlines()
+    if any(line.strip().startswith(needle) for line in lines):
+        new_lines = []
+        for line in lines:
+            if line.strip().startswith(needle):
+                indent = line[: len(line) - len(line.lstrip())]
+                new_lines.append(f"{indent}{key}: \"{value}\"")
+            else:
+                new_lines.append(line)
+        local.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
+        return
+    if "secrets:" not in text:
+        text = text.rstrip() + "\n\nsecrets:\n"
+    text = text.rstrip() + f'\n  {key}: "{value}"\n'
+    local.write_text(text, encoding="utf-8")
+
+
+def apply_hermes_model_config(stack: dict[str, Any]) -> None:
+    """Write model.provider / model.default from brain-stack hermes.chat_* (if hermes CLI present)."""
+    hermes = stack.get("hermes") or {}
+    provider = (hermes.get("chat_provider") or "").strip()
+    model = (hermes.get("chat_model") or "").strip()
+    if not provider and not model:
+        return
+    if not shutil.which("hermes"):
+        return
+    if provider:
+        subprocess.run(
+            ["hermes", "config", "set", "model.provider", provider],
+            check=False,
+            capture_output=True,
+        )
+    if model:
+        subprocess.run(
+            ["hermes", "config", "set", "model.default", model],
+            check=False,
+            capture_output=True,
+        )
+
+
+def verify_stack_config(repo: Path) -> list[str]:
+    """Return list of issues (empty if OK). Does not print secret values."""
+    issues: list[str] = []
+    try:
+        stack = load_brain_stack(repo)
+    except FileNotFoundError as e:
+        return [str(e)]
+    if not _local_stack_path(repo):
+        issues.append("missing config/brain-stack.yaml — copy from config/brain-stack.example.yaml")
+    hermes = stack.get("hermes") or {}
+    if not hermes:
+        issues.append("brain-stack missing hermes section")
+        return issues
+    keys = list(hermes.get("sync_env_keys") or [])
+    optional_keys = frozenset(
+        hermes.get("sync_env_keys_optional") or ["OPENROUTER_API_KEY", "GOOGLE_API_KEY"]
+    )
+    env_map = _read_env_map(repo / ".env")
+    secrets = collect_hermes_secrets(stack, repo)
+    if not (repo / ".env").is_file():
+        issues.append("missing repo .env — copy from .env.example")
+    for k in keys:
+        if k in optional_keys:
+            continue
+        if k not in secrets:
+            issues.append(f".env missing or empty: {k}")
+    provider = (hermes.get("chat_provider") or "").strip().lower()
+    if provider == "gemini" and not any(secrets.get(x) for x in ("GEMINI_API_KEY", "GOOGLE_API_KEY")):
+        issues.append("gemini provider requires GEMINI_API_KEY or GOOGLE_API_KEY in .env")
+    if not hermes.get("chat_provider"):
+        issues.append("brain-stack hermes.chat_provider unset (e.g. gemini)")
+    if not hermes.get("chat_model"):
+        issues.append("brain-stack hermes.chat_model unset (e.g. gemini-3.0-flash)")
+    mcp_js = Path(str(hermes.get("mcp_server_js", "")))
+    if not mcp_js.is_file():
+        issues.append(f"MCP server not built: {mcp_js}")
+    # GEMINI_MODEL in .env is not used by Hermes — informational
+    if env_map.get("GEMINI_MODEL") and not hermes.get("chat_model"):
+        issues.append("GEMINI_MODEL in .env is ignored — set hermes.chat_model in brain-stack.yaml")
+    return issues
+
+
+def apply_hermes_env(stack: dict[str, Any], repo: Path) -> int:
+    hermes_env = Path(os.environ.get("HERMES_HOME", Path.home() / ".hermes")) / ".env"
+    secrets = collect_hermes_secrets(stack, repo)
+    if not secrets:
+        return 0
+    tmp = repo / ".brain-stack-secrets.tmp.env"
+    try:
+        tmp.write_text("".join(f"{k}={v}\n" for k, v in secrets.items()), encoding="utf-8")
+        upsert_env_file(hermes_env, tmp, list(secrets.keys()))
+    finally:
+        if tmp.is_file():
+            tmp.unlink()
+    return len(secrets)
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI entry: default applies Hermes env; ``profile-env`` only prints profile exports."""
+    argv = sys.argv[1:] if argv is None else argv
+    repo = Path(__file__).resolve().parents[2]
+    stack = load_brain_stack(repo)
+    if argv[:1] == ["profile-env"]:
+        print("\n".join(profile_env_lines(stack)))
+        return 0
+    n = apply_hermes_env(stack, repo)
+    if n:
+        print(f"brain_stack: applied {n} secret(s) from stack → {Path.home() / '.hermes' / '.env'} (not printed)")
+    mcp = stack["hermes"]["mcp_server_js"]
+    print(f"export NU_LLM_WIKI_MCP={mcp}")
+    print("\n".join(profile_env_lines(stack)))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

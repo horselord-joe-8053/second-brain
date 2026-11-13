@@ -1,0 +1,37 @@
+You are a data author for a synthetic Samsung Australia retail service desk (NOT a search engineer). Produce three files matching the repo CSV/JSONL contract. Optimize for **natural diversity** and **production-like** wording—not for making any search algorithm win.
+
+Save paths (operator):
+- tmp/simulated_data/service_queries.csv
+- tmp/simulated_data/ticket_manifest.jsonl
+- tmp/simulated_data/ticket_retrieval.jsonl
+
+Domain
+- Models ONLY: Galaxy A15 5G, Galaxy A16 5G, Galaxy A25 5G.
+- Australia cities + states; fictional customers only.
+- **~50%** of historical rows (≈30/60) include **one** SAM-E### token somewhere in customer_query_text (natural wording). **~50%** have **no** SAM-E at all.
+- Do **not** require a fixed suffix like "Technician log: diagnostic code …". Codes may appear in customer or technician wording.
+
+Forbidden
+- Near-duplicate bodies (same story copy-pasted with only SAM-E changed).
+- Instructions to plant "hard negative" twins.
+- Eval queries that copy stored ticket text verbatim (≥30% token difference).
+- Eval gold pointing at non-resolved tickets (search uses resolved-only today).
+
+Deliverable A — service_queries.csv (60 rows + header)
+- Schema: ticket_id, item_number, store_id, city, state, model, status, customer_query_text, resolution_text, opened_at, updated_at, closed_at
+- ticket_id T-0042-000000 … T-0042-000059; mostly status=resolved with resolution_text and closed_at=2025-01-03T10:00:00Z
+- ≥15 distinct issue themes; **unique** customer_query_text per row
+
+Deliverable B — ticket_manifest.jsonl (60 lines)
+- Keys: ticket_id, model, status, seed, customer_query_text (match CSV); seed=42
+
+Deliverable C — ticket_retrieval.jsonl (10 lines)
+- Keys: eval_id, query, model_filter, expected_ticket_ids, stratum, source_ticket_id
+- Each eval row: new intake paraphrasing **one** gold historical ticket (semantic match).
+- **Natural code mix (D3):** when gold has SAM-E, ~half of eval queries mention that code, ~half describe the fault only.
+- Stratum labels: paraphrase | literal_token | code_in_query (when query mentions SAM-E)
+- Spread gold across models; 10 distinct gold ticket_ids
+
+Output: review table (eval_id → gold → SAM-E in query?), then ```csv```, two ```jsonl``` blocks.
+
+Reproducible alternative (no LLM): python3 scripts/retail/seed/generate_llm_corpus_v2.py

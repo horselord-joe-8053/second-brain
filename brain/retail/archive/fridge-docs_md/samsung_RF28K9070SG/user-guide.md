@@ -1,0 +1,4159 @@
+# user-guide.pdf — extracted Markdown
+
+
+
+> Original PDF: `user-guide.pdf`; PDF page references below are 1-based.
+
+
+
+> Source fidelity: Text and diagrams are extracted from this PDF only; image links are rasterized views of their original PDF pages.
+
+
+
+## PDF page 1
+
+### Refrigerator
+
+### User manual
+
+Free Standing Appliance
+
+2018-07-05 5:53:09
+
+### Original figure / page illustration (PDF page 1)
+
+![Original PDF page 1 (illustrations and visual labels)](assets/user-guide/page_001.png)
+
+
+## PDF page 2
+
+### Contents
+
+Safety information
+
+4
+
+Important safety symbols and precautions:
+
+4
+
+State of California Proposition 65 Warning (US only)
+
+5
+
+Critical installation warnings
+
+5
+
+Installation cautions
+
+7
+
+Critical usage warnings
+
+8
+
+Usage cautions
+
+11
+
+Cleaning cautions
+
+12
+
+Critical disposal warnings
+
+13
+
+This appliance is intended to be used in household and similar applications such as
+
+13
+
+1. Regulatory Notice
+
+14
+
+Installation
+
+16
+
+Refrigerator at a glance
+
+16
+
+Door removal for entrance
+
+19
+
+Step-by-step installation
+
+27
+
+Operations
+
+36
+
+Feature panel
+
+36
+
+SmartThings
+
+42
+
+SMART GRID Function (Demand Response)
+
+45
+
+Special features
+
+50
+
+Maintenance
+
+55
+
+Handle and care
+
+55
+
+Cleaning
+
+59
+
+Replacement
+
+59
+
+Troubleshooting
+
+63
+
+General
+
+63
+
+SmartThings
+
+66
+
+Smart Grid
+
+67
+
+2
+
+English
+
+2018-07-05 5:53:09
+
+
+## PDF page 3
+
+LIMITED WARRANTY (U.S.A.)
+
+68
+
+SAMSUNG REFRIGERATOR
+
+68
+
+Warranty Information (CANADA)
+
+71
+
+If your refrigerator needs service
+
+71
+
+Limited Warranty for Original Purchaser
+
+71
+
+Obligation to the Original Owner
+
+71
+
+Exclusions of the Warranty
+
+72
+
+Open Source Announcement
+
+73
+
+English 3
+
+2018-07-05 5:53:09
+
+
+## PDF page 4
+
+### Safety information
+
+- Before using your new Samsung Refrigerator, please read this manual thoroughly
+
+to ensure that you know how to operate the features and functions that your new
+
+appliance offers safely and efficiently.
+
+- This appliance is not intended for use by persons (including children) with reduced
+
+physical, sensory or mental capabilities, or lack of experience and knowledge, unless
+
+they have been given supervision or instruction concerning use of the appliance by a
+
+person responsible for their safety. Children should be supervised to ensure that they
+
+do not play with the appliance.
+
+- Because the following instructions cover various models, the characteristics of your
+
+refrigerator may differ slightly from the refrigerator described in this manual.
+
+- If you have any question, contact us at 1-800-SAMSUNG or find help and information
+
+online at www.samsung.com.
+
+- R-600a or R-134a is used as a refrigerant. Check the compressor label on the rear of
+
+the appliance or the rating label inside the fridge to see which refrigerant is used for
+
+your refrigerator. If this product contains flammable gas (Refrigerant R-600a), contact
+
+your local authority in regard to safe disposal of this product.
+
+- It is hazardous for anyone other than an Authorised Service Person to service this
+
+appliance.
+
+Warning; Risk of fire / flammable materials
+
+Important safety symbols and precautions:
+
+Please follow all safety instructions in this manual. This manual uses the following safety
+
+symbols.
+
+WARNING
+
+Hazards or unsafe practices that may result in severe personal injury, property damage,
+
+and/or death.
+
+CAUTION
+
+Hazards or unsafe practices that may result in severe personal injury and/or property
+
+damage.
+
+NOTE
+
+Useful information that helps users understand or benefit from the refrigerator.
+
+These warning signs are here to prevent injury to you and others.
+
+Please follow them carefully.
+
+After reading this section, keep it in a safe place for future reference.
+
+4
+
+English
+
+2018-07-05 5:53:10
+
+
+## PDF page 5
+
+State of California Proposition 65 Warning (US only)
+
+WARNING: Cancer and Reproductive Harm - www.P65Warnings.ca.gov.
+
+Critical installation warnings
+
+WARNING
+
+- Do not install the refrigerator in a damp location or place where it may come in contact
+
+with water.
+
+- Deteriorated insulation on electrical parts may cause an electric shock or fire.
+
+- Do not place this refrigerator in direct sunlight or expose it to the heat from stoves,
+
+room heaters, or other appliances.
+
+- Do not plug several appliances into the same multiple power strip. The refrigerator
+
+should always be plugged into its own individual electrical outlet which has a voltage
+
+rating that matches the voltage listed on the refrigerator’s rating plate.
+
+- This provides the best performance and also prevents overloading of house wiring
+
+circuits, which could overheat the wires and cause a fire hazard.
+
+- If the wall socket is loose, do not insert the power plug.
+
+- There is a risk of electric shock of fire.
+
+- Do not use a power cord that has cracks or abrasion damage along its length or at
+
+either end.
+
+- Do not bend the power cord excessively or place heavy objects on it.
+
+- Do not pull or excessively bend the power cord.
+
+- Do not twist or tie the power cord.
+
+- Do not hook the power cord over a metal object, place a heavy object on the power
+
+cord, insert the power cord between objects, or push the power cord into the space
+
+behind the appliance.
+
+- When moving the refrigerator, be careful not to roll over or damage the power cord.
+
+- This may result in an electric shock or fire.
+
+- Never unplug your refrigerator by pulling on the power cord. Always grip the plug
+
+firmly and pull straight out from the outlet.
+
+- Damage to the cord may cause a short-circuit, fire, and/or electric shock.
+
+- Do not store explosive substances such as aerosol cans with a flammable propellant in
+
+this appliance.
+
+- Do not install this appliance near a heater or flammable material.
+
+- Do not install this appliance in a location where gas may leak.
+
+- This may result in an electric shock or fire.
+
+- This refrigerator must be properly located and installed in accordance with the
+
+instructions in this manual before you use it.
+
+English 5
+
+2018-07-05 5:53:10
+
+
+## PDF page 6
+
+### Safety information
+
+- Connect the power plug in the proper position with the cord hanging down.
+
+- If you connect the power plug upside down, the wire can get cut off and cause a fire
+
+or electric shock.
+
+- Make sure that the power plug is not crushed or damaged by the back of the
+
+refrigerator.
+
+- Keep the packing materials out of reach of children.
+
+- There is a risk of death from suffocation if a child puts the packing materials on his
+
+or her head.
+
+- The appliance must be positioned so that the plug is accessible after installation.
+
+- Failing to do so may result in an electric shock or fire due to electric leakage.
+
+- Do not install this appliance in a humid, oily or dusty location, or in a location exposed
+
+to direct sunlight or to water (rain drops).
+
+- Deteriorated insulation on electrical parts may cause an electric shock or fire.
+
+- If large amounts of dust or water enter the refrigerator, disconnect the power plug and
+
+contact your Samsung Electronics service center.
+
+- Otherwise there is a risk of fire.
+
+- Do not stand on top of the appliance or place objects (such as laundry, lighted candles,
+
+lighted cigarettes, dishes, chemicals, metal objects, etc.) on the appliance.
+
+- This may result in an electric shock, fire, problems with the product, or injury.
+
+- You need to remove all the protective plastic film before you initially plug the product
+
+in.
+
+- Children should be supervised to ensure that they do not play with the snap rings used
+
+for door adjustment or the water tube clips.
+
+- There is risk of death by suffocation if a child swallows a snap ring or water tube
+
+clip. Keep the snap rings and water tube clips out of children's reach.
+
+- The refrigerator must be safely grounded.
+
+- Always make sure that you have grounded the refrigerator before attempting to
+
+investigate or repair any part of the appliance. Power leakages can cause severe
+
+electric shock.
+
+- Never use gas pipes, telephone lines, or other potential lightning attractors as an
+
+electrical ground.
+
+- You must ground the refrigerator to prevent any power leakages or electric shocks
+
+caused by current leakage from the refrigerator.
+
+- This may result in an electric shock, fire, explosion, or problems with the product.
+
+6
+
+English
+
+2018-07-05 5:53:10
+
+
+## PDF page 7
+
+- Improper use of the grounding plug can result in a risk of electric shock. If it is
+
+necessary to use an extension cord, use only a 3-wire extension cord that has a
+
+3-blade grounding plug and a 3-slot receptacle that will accept the plug on the
+
+appliance. The marked rating of the extension cord should be AC 115-120 V, 10
+
+A, or more. If a grounding adapter is used, make sure the receptacle box is fully
+
+grounded.
+
+- Plug the power plug into the wall socket firmly. Do not use a damaged power plug,
+
+damaged power cord, or loose wall socket.
+
+- This may result in an electric shock or fire.
+
+- If the power cord is damaged, have it replaced immediately by the manufacturer or
+
+one of its service agents.
+
+- Only a qualified technician or service company should be allowed to change the fuse in
+
+the refrigerator.
+
+- Failing to do so may result in an electric shock or personal injury.
+
+- The wall socket must be easily accessible so that the appliance can be quickly
+
+disconnected from the wall socket in an emergency.
+
+- It must be outside the area of the rear of the appliance.
+
+- When positioning the appliance, ensure the power cord is not trapped or damaged.
+
+- Do not locate multiple portable socket-outlets or portable power supplies at the rear of
+
+the appliance.
+
+Installation cautions
+
+CAUTION
+
+- Allow sufficient space around the refrigerator and install it on a flat surface.
+
+- Keep the ventilation space in the appliance enclosure or mounting structure clear of
+
+obstructions.
+
+- After you have installed the refrigerator and turned it on, allow the appliance to stand
+
+for 2 hours before loading it with food.
+
+- We strongly recommend you have a qualified technician or service company install the
+
+refrigerator.
+
+- Failing to do so may result in an electric shock, fire, explosion, problems with the
+
+product, or injury.
+
+- Overloading one door may make the refrigerator fall, causing physical injury.
+
+English 7
+
+2018-07-05 5:53:10
+
+
+## PDF page 8
+
+### Safety information
+
+Critical usage warnings
+
+WARNING
+
+- Do not insert the power plug into a wall socket with wet hands.
+
+- This may result in an electric shock.
+
+- Do not store articles on the top of the appliance.
+
+- When you open or close the door, the articles may fall and cause personal injury
+
+and/or material damage.
+
+- Do not insert hands, feet or metal objects (such as chopsticks, etc.) into the bottom or
+
+the back of the refrigerator.
+
+- This may result in an electric shock or injury.
+
+- Any sharp edges may cause a personal injury.
+
+- Do not touch the inside walls of the freezer or products stored in the freezer with wet
+
+hands.
+
+- This may cause frostbite.
+
+- Do not put a container filled with water on the refrigerator.
+
+- If spilled, there is a risk of fire or electric shock.
+
+- Do not keep volatile or flammable objects or substances (benzene, thinner, propane
+
+gas, alcohol, ether, LP gas, and other such products) in the refrigerator.
+
+- This refrigerator is for storing food only.
+
+- This may result in fire or explosion.
+
+- Children should be supervised to ensure that they do not play with the appliance.
+
+- Keep fingers out of “pinch point” areas. Clearances between the doors and cabinet
+
+are necessarily small. Be careful when you open the doors if children are in the area.
+
+- Do not let children hang on the door or door bins. A serious injury may occur.
+
+- Do not let children go inside the refrigerator. They could become trapped.
+
+- Do not insert your hands into the area under the appliance.
+
+- Any sharp edges may cause personal injury.
+
+- Do not store pharmaceutical products, scientific materials, or temperature sensitive
+
+products in the refrigerator.
+
+- Products that require strict temperature controls must not be stored in the
+
+refrigerator.
+
+- Do not place or use electrical appliances inside the refrigerator/freezer, unless they are
+
+of a type recommended by the manufacturer.
+
+- If you smell smoke, pull out the power plug immediately, and then contact your
+
+Samsung Electronics service center.
+
+- If large amounts of dust or water enter the refrigerator, disconnect the power plug and
+
+contact your Samsung Electronics service center.
+
+- Otherwise there is a risk of fire.
+
+8
+
+English
+
+2018-07-05 5:53:10
+
+
+## PDF page 9
+
+- Do not let children step on a drawer.
+
+- The drawer may break and cause them to slip.
+
+- Do not leave the doors of the refrigerator open while the refrigerator is unattended
+
+and do not let children enter the refrigerator.
+
+- Do not allow babies or children go into a drawer.
+
+- It can cause death from suffocation by entrapment or personal injury.
+
+- Do not overfill the refrigerator with food.
+
+- When you open the door, an item may fall out and cause personal injury or material
+
+damage.
+
+- Do not spray volatile material such as insecticide onto the surface of the appliance.
+
+- As well as being harmful to humans, it may also result in an electric shock, fire, or
+
+problems with the product.
+
+- Never put fingers or any objects into the water dispenser outlet, ice chute, or ice maker
+
+bucket.
+
+- It may cause a personal injury or material damage.
+
+- Do not use or place any substances sensitive to temperature such as flammable sprays,
+
+flammable objects, dry ice, medicine, or chemicals near or inside the refrigerator.
+
+- Do not use a hair dryer to dry the inside of the refrigerator. Do not place a lighted
+
+candle in the refrigerator to remove bad odors.
+
+- This may result in an electric shock or fire.
+
+- Fill the water tank, ice tray, and water cubes with potable water only (tap water,
+
+mineral water, or purified water).
+
+- Do not fill the tank with tea, juice, or a sports drink. They can damage the
+
+refrigerator.
+
+- Do not stand on top of the appliance or place objects (such as laundry, lighted candles,
+
+lighted cigarettes, dishes, chemicals, metal objects, etc.) on the appliance. This may
+
+result in an electric shock, fire, problems with the product, or injury. Do not put a
+
+container filled with water on the appliance.
+
+- If spilled, there is a risk of fire or electric shock.
+
+- Do not use mechanical devices or any other means to accelerate the defrosting process,
+
+other than those recommended by the manufacturer.
+
+- Do not damage the refrigerant circuit.
+
+- Never stare directly at the UV LED lamp for long periods of time.
+
+- This may result in eye strain due to the ultraviolet rays.
+
+- Do not put a fridge shelf into the refrigerator upside down. The shelf stopper will not
+
+work.
+
+- The glass shelf could fall and cause personal injury.
+
+- Keep fingers out of “pinch point” areas. Clearances between the doors and cabinet are
+
+necessarily small. Be careful when you open the doors if children are in the area.
+
+English 9
+
+2018-07-05 5:53:10
+
+
+## PDF page 10
+
+### Safety information
+
+- If a gas leak is detected, avoid any naked flames or potential sources of ignition, and
+
+air the room in which the appliance is standing for several minutes.
+
+- Do not touch the appliance or power cord.
+
+- Do not use a ventilating fan.
+
+- A spark may result in an explosion or fire.
+
+- Use only the LED Lamps provided by the manufacturer or its service agents.
+
+- Bottles should be stored tightly together so that they do not fall over or out.
+
+- This product is intended only for the storage of food in a domestic environment.
+
+- Never put fingers or any objects into the water dispenser outlet, ice chute, or ice maker
+
+bucket.
+
+- This can cause a personal injury or material damage.
+
+- Do not attempt to repair, disassemble, or modify the refrigerator yourself.
+
+- Unauthorized modifications can cause safety problems. To reverse an unauthorized
+
+modification, we will charge the full cost of parts and labor.
+
+- Do not use any fuse (such as cooper, steel wire, etc.) other than a standard fuse.
+
+- If your refrigerator needs to be repaired or reinstalled, contact your nearest service
+
+center.
+
+- Failing to do so may result in an electric shock, fire, problems with the product, or
+
+injury.
+
+- If the interior or exterior LED lamp has gone out, contact your nearest Samsung service
+
+center.
+
+- If the refrigerator emits a burning smell or smoke, unplug the refrigerator immediately
+
+and contact a Samsung service center.
+
+- Failing to do so may result in an electric or fire hazards.
+
+- Pull the power plug out of the socket before changing the interior lamps of the
+
+refrigerator.
+
+- Otherwise, there is a risk of electric shock.
+
+- If you experience difficulty changing a non-LED light, contact a Samsung service
+
+center.
+
+- If the product is equipped with LED lamps, do not disassemble the Lamp Covers and
+
+LED lamps yourself.
+
+- Contact a Samsung service center.
+
+- Plug the power plug into the wall socket firmly.
+
+- Do not use a damaged power plug, damaged power cord, or loose wall socket.
+
+- This may result in an electric shock or fire.
+
+10
+
+English
+
+2018-07-05 5:53:10
+
+
+## PDF page 11
+
+Usage cautions
+
+CAUTION
+
+- Do not re-freeze frozen foods that have thawed completely. Do not place carbonated
+
+or fizzy drinks in the freezer compartment. Do not put bottles or glass containers in the
+
+freezer.
+
+- When the contents freeze, the glass may break and cause personal injury.
+
+- Use only the ice maker provided with the refrigerator.
+
+- To get the best performance from the product:
+
+- Do not place food too close to the vents at the rear of the refrigerator as this can
+
+obstruct free air circulation in the refrigerator compartment.
+
+- Wrap food up properly or place it in airtight containers before putting it into the
+
+refrigerator.
+
+- Do not put glass bottles or carbonated beverages into the freezer. They can freeze
+
+and break. Broken beverage containers can cause injury.
+
+- Please observe maximum storage times and expiration dates of frozen goods.
+
+- Do not put glass containers or bottles or carbonated beverages into the freezer.
+
+- The container may freeze and break, and this may result in injury.
+
+- Service Warranty and Modification.
+
+- Any changes or modifications performed by a 3rd party on this finished appliance
+
+are not covered under Samsung warranty service, nor is Samsung responsible for
+
+safety issues that result from 3rd party modifications.
+
+- Do not block the air vents inside the refrigerator.
+
+- If the air vents are blocked, especially with a plastic bag, the refrigerator can be
+
+over cooled. If a cooling period lasts too long, the water filter may break and cause
+
+water leakage.
+
+- If the refrigerator is disconnected from the power supply, you should wait for at least
+
+five minutes before plugging it back in.
+
+- If large amounts of water enter the refrigerator, pull out the power plug and contact a
+
+Samsung service center.
+
+- Do not strike or apply excessive force to any glass surface.
+
+- Broken glass may result in a personal injury and/or property damage.
+
+- Fill the water tank and ice cube trays with potable water only (tap water, mineral
+
+water, or purified water).
+
+- Do not fill the tank with tea, juice, or a sports drink. They can damage the
+
+refrigerator.
+
+- If the refrigerator is flooded, shut off the power to the refrigerator and contact your
+
+nearest Samsung service center.
+
+- There is a risk of electric shock or fire.
+
+English 11
+
+2018-07-05 5:53:10
+
+
+## PDF page 12
+
+### Safety information
+
+- Do not keep vegetable oil in your refrigerator’s door bins. The oil can solidify, making it
+
+foul-tasting and difficult to use. In addition, the open container can leak and the leaked
+
+oil can cause the door bin to crack. After opening an oil container, it is best to keep the
+
+container in a cool and shaded place such as a cupboard or pantry.
+
+- Examples of vegetable oil: olive oil, corn oil, grape-seed oil, etc.
+
+Cleaning cautions
+
+CAUTION
+
+- Do not spray water directly on the inside or outside the refrigerator.
+
+- There is a risk of fire or electric shock.
+
+- Do not use a hair dryer to dry the inside of the refrigerator.
+
+- Do not place a lighted candle in the refrigerator to remove bad odors.
+
+- This may result in an electric shock or fire.
+
+- Do not spray cleaning products directly on the display.
+
+- Printed letters on the display may come off.
+
+- If any foreign substance such as water has entered the appliance, unplug the power
+
+plug and contact your nearest service center.
+
+- Failing to do so may result in an electric shock or fire.
+
+- Use a clean, dry cloth to remove any foreign matter or dust from the power plug
+
+blades. Do not use a wet or damp cloth when cleaning the plug.
+
+- Otherwise, there is a risk of fire or electric shock.
+
+- Do not clean the appliance by spraying water directly onto it.
+
+- Do not use benzene, thinner, or Clorox (bleach) to clean the refrigerator.
+
+- They may damage the surface of the appliance and may cause a fire.
+
+- Never put fingers or any objects into the dispenser outlet.
+
+- This can cause a personal injury or material damage.
+
+- Before cleaning or performing maintenance, unplug the appliance from the wall socket.
+
+- Failing to do so may result in an electric shock or fire.
+
+- Use a clean sponge or soft cloth and a mild detergent in warm water to clean the
+
+refrigerator.
+
+- Do not use abrasive or harsh cleansers such as window sprays, scouring cleansers,
+
+flammable fluids, muriatic acid, cleaning waxes, concentrated detergents, bleaches,
+
+or cleansers containing petroleum products on exterior surfaces (doors and cabinet),
+
+plastic parts, door and interior liners, and gaskets.
+
+- These can scratch or damage the material.
+
+12
+
+English
+
+2018-07-05 5:53:10
+
+
+## PDF page 13
+
+- Do not clean glass shelves or covers with warm water when they are cold. Glass
+
+shelves and covers may break if exposed to sudden temperature changes or impacts
+
+such as bumping or dropping.
+
+Critical disposal warnings
+
+WARNING
+
+- DANGER : Risk of child entrapment. Before you throw away your old refrigerator or
+
+freezer:
+
+- Take off the doors and door latch.
+
+- Leave the shelves in place so that children may not easily climb inside.
+
+- Children trapped inside a refrigerator can hurt themselves or suffocate to death.
+
+- Please dispose of the packaging material from this product in an environmentally
+
+friendly manner.
+
+- Ensure that none of the pipes on the back of the refrigerator are damaged prior to
+
+disposal.
+
+- R-600a or R-134a is used as a refrigerant. Check the compressor label on the rear of
+
+the appliance or the rating label inside the fridge to see which refrigerant is used for
+
+your refrigerator. If this refrigerator contains flammable gas (Refrigerant R-600a),
+
+contact your local authority in regard to the safe disposal of this product.
+
+- When disposing of this refrigerator, remove the door/door seals and door latch so that
+
+small children or animals cannot become trapped inside. Children should be supervised
+
+to ensure that they do not play with the appliance.
+
+- If trapped inside, the child could be injured or suffocate to death.
+
+- Cyclopentane is used in the insulation. The gases in the insulation material require
+
+a special disposal procedure. Please contact your local authorities in regard to the
+
+environmentally safe disposal of this product.
+
+- Keep all packaging materials well out of the reach of children, as packaging materials
+
+can be dangerous to children.
+
+- If a child places a bag over his or her head, the child could suffocate.
+
+This appliance is intended to be used in household and similar applications
+
+such as
+
+- staff kitchen areas in shops, offices and other working environments;
+
+- farm houses and by clients in hotels, motels and other residential type environments;
+
+- bed and breakfast type environments;
+
+- catering and similar non-retail applications.
+
+English 13
+
+2018-07-05 5:53:10
+
+
+## PDF page 14
+
+### Safety information
+
+1. Regulatory Notice
+
+1.1 FCC Notice
+
+FCC CAUTION:
+
+Any changes or modifications not expressly approved by the party responsible for
+
+compliance could void the user’s authority to operate the equipment.
+
+Contains Transmitter Module FCC ID: A3LSWL-CQ52
+
+This device complies with Part 15 of FCC Rules. Operation is Subject to the following two
+
+conditions:
+
+(1) This device may not cause harmful interference, and
+
+(2) This device must accept any interference received including interference that cause
+
+undesired operation.
+
+For products available in the US and Canadian markets, only channels 1~11 are available.
+
+You cannot select other channels.
+
+FCC STATEMENT:
+
+This equipment has been tested and found to comply within the limits for a Class B
+
+digital device, pursuant to part 15 of the FCC Rules. These limits are designed to provide
+
+reasonable protection against harmful interference in a residential installation.
+
+This equipment generates, uses, and can radiate radio frequency energy and, if not
+
+installed and used in accordance with the instructions, may cause harmful interference
+
+to radio communications. However, there is no guarantee that interference will not occur
+
+in a particular installation. If this equipment does cause harmful interference to radio or
+
+television reception, which can be determined by turning the equipment off and on, the
+
+user is encouraged to try to correct the interference by one or more of the following
+
+measures:
+
+- Reorient or relocate the receiving antenna
+
+- Increase the separation between the equipment and receiver
+
+- Connect the equipment to an outlet that is on a different circuit than the receiver.
+
+- Consult the dealer or an experienced radio/TV technician for help.
+
+FCC RADIATION EXPOSURE STATEMENT:
+
+This equipment complies with FCC radiation exposure limits set forth for an uncontrolled
+
+environment.
+
+This equipment should be installed and operated so there is at least 8 inches (20 cm)
+
+between the radiator and your body. This device and it’s antennas must not be co-located
+
+or operated in conjunction with any other antenna or transmitter except in accordance
+
+with FCC multi-transmitter product procedures.
+
+14
+
+English
+
+2018-07-05 5:53:10
+
+
+## PDF page 15
+
+1.2 IC Notice
+
+Contains Transmitter Module IC: 649E-SWLCQ52
+
+The term “IC” before the radio certification number only signifies that Industry Canada
+
+technical specifications were met. Operation is subject to the following two conditions : (1)
+
+this device may not cause interference, and (2) this device must accept any interference,
+
+including interference that may cause undesired operation of the device.
+
+This Class B digital apparatus complies with Canadian ICES-003.
+
+Cet appareil numérique de la classe B est conforme á la norme NMB-003 du Canada.
+
+For products available in the US and Canadian markets, only channels 1~11 are available.
+
+You cannot select other channels.
+
+IC RADIATION EXPOSURE STATEMENT:
+
+This equipment complies with IC RSS-102 radiation exposure limits set forth for an
+
+uncontrolled environment. This equipment should be installed and operated so there is at
+
+least 8 inches (20 cm) between the radiator and your body. This device and it’s antennas
+
+must not be co-located or operated in conjunction with any other antenna or transmitter
+
+except in accordance with FCC multi-transmitter product procedures.
+
+SAVE THESE INSTRUCTIONS
+
+English 15
+
+2018-07-05 5:53:10
+
+
+## PDF page 16
+
+### Installation
+
+Follow these instructions carefully to prevent accidents and to ensure the proper
+
+installation of this refrigerator.
+
+### WARNING
+
+- Use the refrigerator only for its intended purpose as described in this manual.
+
+- Any servicing must be performed by a qualified technician.
+
+- Dispose of the product packaging material in compliance with the local regulations.
+
+- To prevent electric shock, unplug the power cord before servicing.
+
+Refrigerator at a glance
+
+NOTE
+
+The images of parts in this manual and the actual provided component parts of the
+
+refrigerator may differ, depending on the model and your country.
+
+A
+
+B
+
+01
+
+08
+
+09
+
+02
+
+10
+
+03
+
+04
+
+05
+
+06
+
+07
+
+C
+
+D
+
+16
+
+English
+
+2018-07-05 5:53:11
+
+### Original figure / page illustration (PDF page 16)
+
+![Original PDF page 16 (illustrations and visual labels)](assets/user-guide/page_016.png)
+
+
+## PDF page 17
+
+01 Auto Ice Maker
+
+A. Fridge
+
+02 Wine Rack *
+
+B. Showcase Door *
+
+03 EZ Fresh Vegetable & Fruit Drawers
+
+C. Freezer
+
+04 Fridge Multi-Purpose Guard
+
+D. Flex Zone
+
+05 Easy Slide-Shelf
+
+06 Dry Food and Meat Storage Drawers
+
+07 Freezer door Bins
+
+08 Fixed Shelf
+
+09 Quick Space Shelf
+
+10 Water filter
+
+* applicable models only
+
+CAUTION
+
+- When the inner case is open, do not open the show case. The show case is likely to be
+
+pushed back and may be damaged.
+
+- When closing the show case, make sure the show case is closed properly. If you close
+
+the show case properly, you will hear a clicking sound.
+
+NOTE
+
+- For energy efficiency, keep all shelves, drawers, and baskets in their original positions.
+
+- When closing the door, make sure the vertical hinged section is in the correct position
+
+to avoid scratching the other door.
+
+- If the vertical hinged section is reversed, put it back into the correct position, and then
+
+close the door.
+
+- Moisture may form at times on the vertical hinged section.
+
+- If you close a door by force, the other door may open.
+
+- When the door opens, the interlock switch automatically disables the auger motor of
+
+the ice maker for safety reasons.
+
+- If the internal or external LED lamp is out of order, contact a local Samsung service
+
+center.
+
+English 17
+
+2018-07-05 5:53:11
+
+
+## PDF page 18
+
+### Installation
+
+Door bins
+
+Your refrigerator ships with door bins of different types and sizes. If the door bins for
+
+your refrigerator were packaged separately, use the figure below to help you position the
+
+bins properly.
+
+The number of door bins provided may differ with the model.
+
+18
+
+English
+
+2018-07-05 5:53:11
+
+### Original figure / page illustration (PDF page 18)
+
+![Original PDF page 18 (illustrations and visual labels)](assets/user-guide/page_018.png)
+
+
+## PDF page 19
+
+Door removal for entrance
+
+If the refrigerator cannot pass through the entrance to your home or kitchen due to its
+
+size, follow these instructions to remove and then re-install the refrigerator's doors. If you
+
+do not need to remove the doors, go to page 27 for the installation instructions.
+
+Tools required (not provided)
+
+Phillips screwdriver
+
+Flat-heat screwdriver
+
+Socket wrench (10 mm)
+
+Pliers
+
+Allen wrench (4 mm)
+
+Allen wrench (5 mm)
+
+Detaching the fridge doors
+
+1. With the door closed, use a Phillips
+
+screwdriver to remove the screws (x3)
+
+from the top cover. Pull up and remove
+
+the top cover with the connectors.
+
+English 19
+
+2018-07-05 5:53:12
+
+### Original figure / page illustration (PDF page 19)
+
+![Original PDF page 19 (illustrations and visual labels)](assets/user-guide/page_019.png)
+
+
+## PDF page 20
+
+### Installation
+
+2. Disconnect the two wire connectors
+
+on the left door. The position of the
+
+connectors differs with the model.
+
+CAUTION
+
+- Do not remove both doors
+
+simultaneously. Make sure to remove
+
+one door at a time. Otherwise, any of
+
+the doors may fall and cause physical
+
+injury.
+
+- Make sure the refrigerator is off before
+
+disconnecting the connectors.
+
+3. Disconnect the water tube from the
+
+coupler on the left door as shown.
+
+4. Gently draw up the clamp in several
+
+steps. To prevent finger injuries, do not
+
+apply a sudden force to the clamp.
+
+5. Pull up the clamp to remove.
+
+20
+
+English
+
+2018-07-05 5:53:12
+
+### Original figure / page illustration (PDF page 20)
+
+![Original PDF page 20 (illustrations and visual labels)](assets/user-guide/page_020.png)
+
+
+## PDF page 21
+
+6. Open the door 90 degrees. While
+
+holding the door, pull up and remove
+
+the top hinge. Be careful not to damage
+
+the connector wires when you remove
+
+the hinge.
+
+7. Gently pull up the door vertically to
+
+remove. Do not apply excessive force
+
+to the door. The door may fall, causing
+
+physical injury.
+
+8. Lay the door down on a flat surface.
+
+9. Repeat the steps above for the other
+
+door, except for Step 3. There is no
+
+water tube on the right side door.
+
+English 21
+
+2018-07-05 5:53:12
+
+### Original figure / page illustration (PDF page 21)
+
+![Original PDF page 21 (illustrations and visual labels)](assets/user-guide/page_021.png)
+
+
+## PDF page 22
+
+### Installation
+
+Detaching the freezer doors
+
+CAUTION
+
+- Be sure to remove the fridge doors before removing the freezer doors.
+
+- Use caution when disconnecting the bottom connectors.
+
+1. With the freezer door open, use a
+
+Phillips screwdriver to remove the
+
+screw holding the cover (A) of the
+
+adjustable leg.
+
+A
+
+2. Disconnect the wire connectors.
+
+3. Locate the hinge shaft. While holding
+
+the door with one hand, use a flat-head
+
+screwdriver or wrench to press the
+
+shaft down. Make sure to hold the door
+
+to prevent the door from falling.
+
+22
+
+English
+
+2018-07-05 5:53:13
+
+### Original figure / page illustration (PDF page 22)
+
+![Original PDF page 22 (illustrations and visual labels)](assets/user-guide/page_022.png)
+
+
+## PDF page 23
+
+4. To prevent contact with the middle
+
+hinge, slightly tilt the door to the front,
+
+and then lift it up to remove.
+
+5. Repeat the steps above for the other
+
+door.
+
+Re-attaching the freezer doors
+
+CAUTION
+
+- Before re-attaching the doors, make sure all the electrical connectors are properly
+
+connected.
+
+- The freezer doors must be re-attached before the fridge doors.
+
+- Be careful not to damage or step on the wires during this process.
+
+1. Insert the freezer door into the bottom
+
+hinge while pushing the freezer door in
+
+the direction of the arrow.
+
+CAUTION
+
+- Be careful not to damage or step on the
+
+wires during this process.
+
+English 23
+
+2018-07-05 5:53:13
+
+### Original figure / page illustration (PDF page 23)
+
+![Original PDF page 23 (illustrations and visual labels)](assets/user-guide/page_023.png)
+
+
+## PDF page 24
+
+### Installation
+
+2. While pressing the hinge shaft down,
+
+position the door so that the hinge shaft
+
+is below the shaft hole in the middle
+
+hinge. Release the hinge shaft so that it
+
+enters the shaft hole.
+
+3. With the door open, connect the bottom
+
+connectors in the direction of the
+
+arrows.
+
+4. Attach the levelling foot cover using a
+
+Phillips screwdriver. Be careful not to
+
+damage or step on the connectors.
+
+5. Repeat the steps above for the other
+
+door.
+
+24
+
+English
+
+2018-07-05 5:53:13
+
+### Original figure / page illustration (PDF page 24)
+
+![Original PDF page 24 (illustrations and visual labels)](assets/user-guide/page_024.png)
+
+
+## PDF page 25
+
+Re-attaching the fridge doors
+
+1. While holding the door open by more
+
+than 90 degrees, insert the shaft on
+
+the middle hinge into the hole on the
+
+bottom of the door.
+
+2. Put the top hinge into position on the
+
+top of the refrigerator, and then insert
+
+the hinge shaft into the top hole of the
+
+door. Make sure the wires from the
+
+door pass through the hole in the hinge
+
+shaft.
+
+3. Insert the clamp in the direction of the
+
+arrow.
+
+4. Push back the clamp as shown.
+
+English 25
+
+2018-07-05 5:53:14
+
+### Original figure / page illustration (PDF page 25)
+
+![Original PDF page 25 (illustrations and visual labels)](assets/user-guide/page_025.png)
+
+
+## PDF page 26
+
+### Installation
+
+5. Connect the wire connectors.
+
+CAUTION
+
+- Make sure the wire connectors are
+
+connected properly. Otherwise, the
+
+display will not operate.
+
+6. Connect the water tube.
+
+CAUTION
+
+- To prevent water leaks, make sure the
+
+red clips tighten the coupler properly.
+
+- Keep the clips out of children’s reach.
+
+7. Repeat the above steps for the other
+
+door, except for Step 6. The right door
+
+does not have a water tube.
+
+8. Attach the top cover with the front side
+
+first, and then press down on its back
+
+to get it into position. Then, tighten the
+
+screws (x3).
+
+26
+
+English
+
+2018-07-05 5:53:14
+
+### Original figure / page illustration (PDF page 26)
+
+![Original PDF page 26 (illustrations and visual labels)](assets/user-guide/page_026.png)
+
+
+## PDF page 27
+
+Step-by-step installation
+
+STEP 1 Select a site
+
+The site must:
+
+- Have a solid level surface without carpeting or flooring that may obstruct ventilation
+
+- Be out of direct sunlight
+
+- Have adequate room for opening and closing the door
+
+- Be away from any heat source
+
+- Provide room for maintenance and servicing
+
+- Have a temperature range between 50 °F (10 °C) and 110 °F (43 °C)
+
+Clearance
+
+See the pictures and table below and on the next page for installation space requirements.
+
+B
+
+A
+
+D
+
+C
+
+English 27
+
+2018-07-05 5:53:14
+
+### Table (PDF page 27)
+
+| Depth “A” | 34 1/ " (871 mm) 4 |
+| --- | --- |
+| Width “B” | 35 3/ " (908 mm) 4 |
+| Height “C” | 70 3/ " (1797 mm) 4 |
+| Overall Height “D” | 71 7/ " (1825 mm) 8 |
+
+
+## PDF page 28
+
+### Installation
+
+01 2" (50 mm)
+
+02 125°
+
+03 59 5/8" (1515 mm)
+
+01
+
+04 11 7/8" (303 mm)
+
+05 12" (305 mm)
+
+04
+
+04
+
+06 35 3/4" (908 mm)
+
+07 29 3/8" (748 mm)
+
+08 2 3/4" (70 mm)
+
+02
+
+02
+
+09 1 3/4" (43 mm)
+
+05
+
+10 49" (1245 mm)
+
+03
+
+06
+
+08
+
+07
+
+09
+
+10
+
+NOTE
+
+The measurements of your refrigerator may differ from those listed above, depending on
+
+the measuring method.
+
+28
+
+English
+
+2018-07-05 5:53:15
+
+### Original figure / page illustration (PDF page 28)
+
+![Original PDF page 28 (illustrations and visual labels)](assets/user-guide/page_028.png)
+
+
+## PDF page 29
+
+STEP 2 Flooring
+
+- The surface of the installation location
+
+must support a fully loaded refrigerator.
+
+- To protect the floor, put a large piece
+
+of cardboard under each leg of the
+
+refrigerator when you move it for
+
+installation.
+
+- To protect the floor once the
+
+refrigerator is in its final position, do
+
+not move it unless necessary. If you
+
+have to move it, place thick paper or
+
+cloth such as an old carpet, along the
+
+movement path.
+
+NOTE
+
+If the refrigerator cannot pass through entrance to your home or kitchen due to its size,
+
+see Door removal for entrance on page 19.
+
+English 29
+
+2018-07-05 5:53:15
+
+### Original figure / page illustration (PDF page 29)
+
+![Original PDF page 29 (illustrations and visual labels)](assets/user-guide/page_029.png)
+
+
+## PDF page 30
+
+### Installation
+
+STEP 3 Adjust the levelling feet
+
+CAUTION
+
+- When installed, the refrigerator must be level on a flat, solid floor. Not leveling the
+
+refrigerator can cause damage to the refrigerator or physical injury.
+
+- Levelling must be performed with the refrigerator empty. Make sure no food items are
+
+inside the refrigerator.
+
+- For safety reasons, adjust the front side a little higher than the rear side.
+
+You can level the refrigerator using the front legs. The front legs have a special screw
+
+(leveller) for levelling purposes. Use a flat-head screwdriver for levelling.
+
+- To adjust the height of the freezer side:
+
+Insert a flat-head screwdriver into the
+
+leveller of the freezer-side front leg.
+
+Turn the leveller clockwise to raise the
+
+refrigerator. Turn it counterclockwise to
+
+lower.
+
+- To adjust the height of the fridge side:
+
+Insert a flat-head screwdriver into the
+
+leveller of the fridge-side front leg.
+
+Turn the leveller clockwise to raise the
+
+refrigerator. Turn it counterclockwise to
+
+lower.
+
+30
+
+English
+
+2018-07-05 5:53:15
+
+### Original figure / page illustration (PDF page 30)
+
+![Original PDF page 30 (illustrations and visual labels)](assets/user-guide/page_030.png)
+
+
+## PDF page 31
+
+STEP 4 Adjust the door height as well as the door gap
+
+Snap ring
+
+The height of a door can be adjusted using the provided snap
+
+rings, which come in 4 different sizes (1 mm, 1.5 mm, 2 mm,
+
+and 2.5 mm).
+
+To adjust the height of a door
+
+1. Check the height difference between
+
+the doors, and then raise and hold the
+
+lower door.
+
+2. Insert a suitable-sized snap ring (A)
+
+between the door and the hinge as
+
+shown.
+
+A
+
+CAUTION
+
+- Insert only one snap ring for this purpose. If you insert two or more snap rings, the
+
+rings may slip out or make a rubbing noise.
+
+- Keep the snap rings out of children’s reach, and keep them for future use.
+
+- Do not raise the door too much. The door can contact and damage the top cover.
+
+English 31
+
+2018-07-05 5:53:15
+
+### Original figure / page illustration (PDF page 31)
+
+![Original PDF page 31 (illustrations and visual labels)](assets/user-guide/page_031.png)
+
+
+## PDF page 32
+
+### Installation
+
+To correct the door gap (applicable models only)
+
+RF28K907*
+
+Door gaps can be corrected using the
+
+gap bolt on the top right corner of the
+
+refrigerator.
+
+1. With the door closed, use a Phillips
+
+screwdriver to remove 6 screws on the
+
+top cover with the wire connectors.
+
+2. Use a 4 mm Allen wrench (not
+
+provided) to correct the door gap
+
+between two doors.
+
+- To widen the gap, turn the gap bolt
+
+clockwise.
+
+- To narrow the gap, turn the gap bolt
+
+counterclockwise.
+
+3. When done, reinsert the top cover.
+
+CAUTION
+
+The electrical connectors must be left intact during this process. Use caution so you don't
+
+tangle the connector wires or peel off the coating.
+
+32
+
+English
+
+2018-07-05 5:53:16
+
+### Original figure / page illustration (PDF page 32)
+
+![Original PDF page 32 (illustrations and visual labels)](assets/user-guide/page_032.png)
+
+
+## PDF page 33
+
+STEP 5 Connect the water dispenser line
+
+A water dispenser with a filter is one of the helpful features on your new refrigerator. To
+
+help promote better health, the water filter removes unwanted particles from your water.
+
+However, it does not sterilize or destroy microorganisms. You may need to purchase a
+
+water purifying system to do that.
+
+The water line also connects to the ice maker. For the ice maker to operate properly, a
+
+water pressure of 20-125 psi is required.
+
+If the refrigerator is installed in an area with low water pressure (below 20 psi), you can
+
+install a booster pump to compensate for the low pressure.
+
+After you have connected the water line, make sure the water storage tank inside the
+
+refrigerator is properly filled. To do this, press the water dispenser lever until the water
+
+runs from the water outlet.
+
+NOTE
+
+- Water line installation kits are available at extra cost from your retailer. We
+
+recommend using a water line installation kit that contains copper tubing and a 6 mm
+
+(1/4”) compression nut.
+
+- Use the new hose-sets supplied with the appliance only. Do not re-use an old hose set.
+
+WARNING
+
+- Keep ventilation openings, in the appliance enclosure or in the built-in structure, clear
+
+of obstruction. Connect to potable water supply only.
+
+1. Shut off the main water source.
+
+2. Insert the pipe clamp (B) and the shut
+
+A
+
+off valve (C) into the cold water line (A).
+
+B
+
+C
+
+3. Connect the water line installation kit
+
+(A) to the shut off valve (B).
+
+A
+
+B
+
+English 33
+
+2018-07-05 5:53:16
+
+### Original figure / page illustration (PDF page 33)
+
+![Original PDF page 33 (illustrations and visual labels)](assets/user-guide/page_033.png)
+
+
+## PDF page 34
+
+### Installation
+
+Connect the water supply line to the refrigerator
+
+There are several items you must purchase to complete this connection. You may find
+
+these items sold as a kit at your local hardware store.
+
+- 
+
+1/4” copper tubing
+
+Copper Tubing
+
+- 
+
+1/4” compression nut (1 pc)
+
+- Ferrule (2 pc)
+
+- 
+
+1/4” plastic tubing  Molded end (Bulb)
+
+Plastic Tubing
+
+- 
+
+1/4” compression nut (1pc)
+
+A. Refrigerator
+
+B. Household water supply line
+
+C
+
+C. Water Line: must be kept straight.
+
+01 Compression Nut (1/4”) (Assembled)
+
+A
+
+02 Ferrule (Not supplied)
+
+04
+
+03 Copper tubing (Not supplied)
+
+01
+
+05
+
+04 Plastic Tubing (Assembled)
+
+05 Compression Fitting (Assembled)
+
+06
+
+02
+
+06 Molded end (Bulb)
+
+07 Compression nut (B) (1/4”) (Not
+
+07
+
+supplied)
+
+03
+
+08
+
+08 Plastic Tubing (A) (Not supplied)
+
+B
+
+NOTE
+
+If you have to relocate the refrigerator
+
+after connecting the water line (C), make
+
+sure the joined section of the water line
+
+must is straight.
+
+1. Connect the household water line to the assembled compression fitting.
+
+- If you are using copper tubing, slip the compression nut (B) (not supplied) and
+
+ferrule (not supplied) on the copper tubing (not supplied) as shown.
+
+- If you are using plastic tubing (A), insert the molded end (Bulb) of the plastic tubing
+
+(A) into the compression fitting.
+
+34
+
+English
+
+2018-07-05 5:53:16
+
+### Original figure / page illustration (PDF page 34)
+
+![Original PDF page 34 (illustrations and visual labels)](assets/user-guide/page_034.png)
+
+
+## PDF page 35
+
+CAUTION
+
+If you use plastic tubing, (A) do not use it without the molded end (Bulb).
+
+2. Tighten the compression nut (B) onto the compression fitting. Do not over-tighten the
+
+compression nut (B).
+
+3. Turn the water on and check for any leakage. If you find water drops or leakage in
+
+the connection areas, turn off the main water supply. Check the connections and, if
+
+necessary, tighten.
+
+4. Flush 1 gallon of water through the filter before drinking or using the water from
+
+the refrigerator. (Flush approximately 6 minutes.) To flush, press a large glass or cup
+
+against the water dispenser lever. Fill the glass, empty it, and then repeat.
+
+5. After you turn on the refrigerator, let the ice maker make ice for 1 to 2 days. Over that
+
+period of time, throw out the first 1 or 2 buckets of ice the ice maker makes to ensure
+
+all impurities have been removed from the water line.
+
+NOTE
+
+Only connect the water line to a potable water source.
+
+- If you have to repair or disassemble the water line, cut off 1/4“ of the plastic tubing to
+
+make sure you get a snug, leak-free connection.
+
+- You can test the water line quickly using a paper cup. Under normal conditions, the
+
+water dispenser can fill a 5 3/4 oz. (170 cc) cup in about 10 seconds.
+
+STEP 6 Initial settings
+
+After you complete the following steps, the refrigerator should be fully functional.
+
+1. Plug the power cord into the wall socket to turn the refrigerator on.
+
+2. Open the door, and check if the interior light lights up.
+
+3. Set the temperature to the coldest setting, and then wait for about an hour. Then, the
+
+freezer will be slightly chilled, and the motor should be running smoothly.
+
+4. Wait until the refrigerator reaches the set temperature. Now the refrigerator is ready
+
+to use.
+
+STEP 7 Final check
+
+When installation is complete, confirm that:
+
+- The refrigerator is plugged into an electrical outlet and grounded properly.
+
+- The refrigerator is installed on a flat, level surface with appropriate clearance between
+
+it and any walls or cabinets.
+
+- The refrigerator is level and is sitting firmly on the floor.
+
+- The door opens and closes freely, and the interior light turns on automatically when
+
+you open the door.
+
+English 35
+
+2018-07-05 5:53:16
+
+
+## PDF page 36
+
+### Operations
+
+Feature panel
+
+01
+
+02
+
+03
+
+04
+
+09
+
+05
+
+06
+
+07
+
+08
+
+01 Freezer / Power Freeze
+
+02 Fridge / Power Cool
+
+03 Door Alarm
+
+04 FlexZone
+
+05 Lighting / Control Lock
+
+06 Ice Maker Off
+
+07 Cubed Ice / Override
+
+08 Crushed Ice / Filter
+
+09 Network connection
+
+Reset
+
+NOTE
+
+When you change the temperature on the panel, the panel displays the actual temperature
+
+inside the refrigerator until the temperature matches the temperature you set. Then, the
+
+panel displays the new set temperature. Note that it will take time for the refrigerator
+
+to reach the new temperature. This is normal. During this time, you need not set the
+
+temperature again.
+
+36
+
+English
+
+2018-07-05 5:53:17
+
+### Original figure / page illustration (PDF page 36)
+
+![Original PDF page 36 (illustrations and visual labels)](assets/user-guide/page_036.png)
+
+
+## PDF page 37
+
+01 Freezer / Power Freeze (3 sec)
+
+You can use the Freezer button to set the freezer temperature or to
+
+activate/deactivate Power Freeze. To set the freezer temperature,
+
+Freezer
+
+press Freezer repeatedly. Available temperatures are between 5 °F
+
+(-15 °C) and -8 °F (-23 °C).
+
+Power Freeze lowers the freezer temperature and speeds up the
+
+freezing process. In Power Freeze mode, the freezer runs at full
+
+power for several hours and then returns to normal operation and the
+
+previous temperature setting.
+
+- To activate Power Freeze, press and hold Freezer for 3 seconds.
+
+The corresponding indicator (
+
+) lights up, and the refrigerator
+
+speeds up the freezing process for you.
+
+- To deactivate, press and hold Freezer for 3 seconds again.
+
+Power Freeze shuts off and the freezer returns to the previous
+
+Power Freeze
+
+temperature setting.
+
+- To freeze large amounts of food, activate Power Freeze at least 20
+
+hours before putting food in the freezer.
+
+NOTE
+
+Using Power Freeze increases power consumption. If you do not
+
+need the Power Freeze function on, make sure you turn it off so that
+
+the refrigerator can return to normal operation and the previous
+
+temperature setting.
+
+02 Fridge / Power Cool (3 sec)
+
+You can use the Fridge button to set the fridge temperature or to
+
+activate/deactivate Power Cool.
+
+To set the fridge temperature, press Fridge repeatedly to select
+
+Fridge
+
+a desired temperature between 34 °F (1 °C) and 44 °F (7 °C).
+
+The temperature indicator displays the currently set or selected
+
+temperature.
+
+English 37
+
+2018-07-05 5:53:17
+
+
+## PDF page 38
+
+### Operations
+
+The Power Cool function lowers the fridge temperature and speeds
+
+up the cooling process. In the Power Cool mode, the fridge runs at full
+
+power for several hours and then returns to normal operation and the
+
+previous temperature setting. Use Power Cool to rapidly cool food
+
+that spoils quickly or to rapidly cool the refrigerator after the door has
+
+been left open for some time.
+
+To start Power Cool, press and hold Fridge for 3 seconds. The Power
+
+Cool icon lights and the refrigerator speeds up the cooling process.
+
+Power Cool
+
+To deactivate, press and hold Fridge for 3 seconds again. Power Cool
+
+turns off and the refrigerator returns to the previous temperature
+
+setting.
+
+NOTE
+
+Using Power Cool increases power consumption. If you do not need
+
+the Power Cool function on, make sure you turn it off so that the
+
+refrigerator can return to normal operation and the previous set
+
+temperature.
+
+03 Door Alarm / °C  °F (3 sec)
+
+You can enable or disable the door alarm by pressing Door Alarm.
+
+When Door Alarm is enabled and a door is left open for more than 2
+
+Door Alarm
+
+minutes, the alarm will sound and the alarm indicator will blink. The
+
+Door Alarm function is enabled by factory default.
+
+You can use the Door Alarm button to switch the temperature scale
+
+between Celsius and Fahrenheit.
+
+°C°F
+
+To switch the temperature scale, press and hold Door Alarm for
+
+3 seconds.
+
+38
+
+English
+
+2018-07-05 5:53:17
+
+
+## PDF page 39
+
+04 FlexZone
+
+With the FlexZone function, you can select an appropriate temperature for the food you
+
+have stored in the FlexZone compartment. The FlexZone compartment is located on the
+
+bottom right of the refrigerator. To initiate the FlexZone function, press and hold FlexZone
+
+for 3 seconds, and then press FlexZone repeatedly to cycle through the modes. When a
+
+desired mode is selected, release the button. The FlexZone function has the following four
+
+modes:
+
+CAUTION
+
+- When you switch or turn off this function, blood in meat or moisture in food may come
+
+out due to the temperature change.
+
+- Do not store meat or food in the FlexZone compartment at the Cool setting. The meat
+
+or food may spoil.
+
+NOTE
+
+If the FlexZone button does not activate the function, make sure the button is unlocked.
+
+Press and hold Lighting/Control Lock for more than 3 seconds until the lock icon turns off.
+
+Then, press and hold FlexZone for more than 3 seconds to change the mode.
+
+English 39
+
+2018-07-05 5:53:17
+
+### Table (PDF page 39)
+
+| Freezer | Select Freezer to set the FlexZone compartment to the same temperature as the freezer. Use to keep frozen food fresh. |
+| --- | --- |
+| Soft Freezing | Select Soft Freezing to set the FlexZone compartment to 23 °F (-5 °C). Use to keep meat and fsi h fresh for an extended time. |
+| Chill / Meat | Select Chill / Meat to set the FlexZone compartment to 30 °F (-1 °C). Use when storing deli food such as steak, cold cuts, fsi h, bacon, and cheese. |
+| Cool | Select Cool to set the FlexZone compartment to 41°F (5 °C). Use when storing beverages that you will use fairly quickly or beverages you want to keep cold such as water, juice, soft drinks, and beer. |
+
+
+## PDF page 40
+
+### Operations
+
+05 Lighting / Control Lock (3 sec)
+
+06 Ice Maker Off (3 sec)
+
+To disable ice making, press and hold Ice Maker Off for 3 seconds.
+
+In this mode, ice making is disabled even if you press Cubed Ice or
+
+Ice Maker Off
+
+Crushed Ice. To turn ice making back on, press and hold Ice Maker Off
+
+again for 3 seconds.
+
+07 Cubed Ice / Override (3 sec)
+
+You can select an ice type.
+
+Cubed Ice
+
+Press Cubed Ice to dispense cubed ice. The corresponding indicator
+
+turns on.
+
+The Override function activates/deactivates Smart Grid (See page 45).
+
+Override
+
+Press Cubed Ice/Override for 3 seconds to set/clear the Override
+
+function.
+
+40
+
+English
+
+2018-07-05 5:53:17
+
+### Table (PDF page 40)
+
+| Lighting | By default, the dispenser lamp turns on only when the dispenser is used. If you want to keep the dispenser lamp turned on (continuous mode), press Lighting. The lighting indicator also turns on. To restore the default settings, press Lighting again. |
+| --- | --- |
+| Control Lock | To prevent accidental setting changes, press and hold Control Lock for 3 seconds. All controls will be disabled and the Lock indicator ( ) will turn on. When Control Lock is on, the refrigerator does not dispense ice or water, even if the Dispenser Lever is pressed. To deactivate, press and hold again for 3 seconds. The Lock indicator turns off and the controls are re-enabled. |
+| Device authentication | When connecting the refrigerator to SmartThings App or Samsung smart devices such as Samsung Smart TVs, follow the app's or device's onscreen instructions and press and hold Control Lock for 5 seconds. The temperature panel displays "on" for 5 seconds before proceeding with the authentication procedure. Note that the Control Lock function will be not affected by this authentication. |
+
+
+## PDF page 41
+
+08 Crushed Ice / Filter Reset (3 sec)
+
+09 Network connection
+
+You can control and monitor your refrigerator through the SmartThings app. For more
+
+information, see the SmartThings section.
+
+English 41
+
+2018-07-05 5:53:17
+
+### Table (PDF page 41)
+
+| Crushed Ice | You can select an ice type. Press Crushed Ice to dispense Crushed Ice. The corresponding indicator turns on. |
+| --- | --- |
+| Filter Reset | After about 6 months of using the original water fliter (which typically amounts to about 320 gallons (1200 liters) of water), the Filter indicator blinks red to remind you that the fliter needs to be replaced. When this happens, replace the fliter, and then press and hold Crushed Ice for 3 seconds. This resets the fliter lifecycle detector and turns off the Filter indicator. NOTE • Some areas have relatively large amounts of lime in their water. This may reduce the lifecycle of the fliter. In these areas, you will have to replace the water fliter more often than specifei d above. • If water is not dispensing properly, the water fliter is most likely clogged. Even if the Filter indicator is not blinking, replace the water fliter. |
+| Cooling Off | Cooling Off mode (also called Shop mode), is designed for use by retailers when they are displaying refrigerators on the shop fol or. In Cooling Off mode, the refrigerator’s fan motor and lights operate normally, but the compressors do not run so that neither the refrigerator or the freezer run the cooling process. To enter Cooling Off mode, press and hold Fridge, Freezer, and Door Alarm for 5 seconds. The refrigerator chime sounds with the message of "OFF" on the temperature panel. To exit, press and hold again for 5 seconds. |
+
+
+## PDF page 42
+
+### Operations
+
+SmartThings
+
+Installation
+
+Visit the Google Play Store, Galaxy Apps, or Apple App Store and search for “SmartThings”.
+
+Download and install the SmartThings app provided by Samsung Electronics to your smart
+
+device.
+
+NOTE
+
+- The SmartThings app is designed for Android 6.0 (Marshmallow) or later, iOS 10.0
+
+or later, iPhone 6 or later, and is optimized for Samsung smartphones (Galaxy S and
+
+Galaxy Note series).
+
+- For improved performance, the SmartThings app is subject to change without notice or
+
+discontinued support according to the manufacturer’s policy.
+
+- Recommended encryption systems include WPA/TKIP and WPA2/AES. Any newer or
+
+non-standard Wi-Fi authentication protocols are not supported.
+
+- Wireless networks may be affected by the surrounding wireless communication
+
+environment.
+
+- If your Internet service provider has registered the MAC address of your PC or modem
+
+for identification, your Samsung Smart Refrigerator may fail to connect to the Internet.
+
+If this happens, contact your Internet service provider for technical assistance.
+
+- The firewall settings of your network system may prevent your Samsung Smart
+
+Refrigerator from accessing the Internet. Contact your Internet service provider for
+
+technical assistance. If this symptom continues, contact a local Samsung service center
+
+or retailer.
+
+- To configure the wireless access point (AP) settings, see the user manual of the AP
+
+(router).
+
+- Samsung Smart Refrigerators support both Wi-Fi 2.4 GHz with IEEE 802.11 b/g/n and
+
+Soft-AP protocols. (IEEE 802.11 n is recommended.)
+
+- Unauthorized Wi-Fi wireless routers may fail to connect to applicable Samsung Smart
+
+Refrigerators.
+
+42
+
+English
+
+2018-07-05 5:53:17
+
+
+## PDF page 43
+
+Samsung account
+
+You are required to register your Samsung account to use the app. If you don’t have a
+
+Samsung account, follow the app’s onscreen instructions to create a free Samsung account.
+
+Getting started
+
+Turn on the device you want to connect, open the SmartThings app on your phone, and
+
+then follow the instructions below.
+
+If a pop-up appears saying that a new device has been found, tap ADD NOW.
+
+If a pop-up doesn't appear, tap the + button, and then select the device you want to
+
+connect from the list of available devices.
+
+If your device isn't in the list of available devices, tap Supported Devices, select the device
+
+type (Refrigerator), and then select the specific device model.
+
+Follow the instructions in the app to set up your device. Once setup is complete, your
+
+refrigerator will appear as a "card" on your Devices screen.
+
+Refrigerator app
+
+Integrated control
+
+You can monitor and control your refrigerator at home and on the go.
+
+- Tap the refrigerator icon on the SmartThings Dashboard or tap the Devices icon at the
+
+bottom of the Dashboard, and then tap the refrigerator "card" to open the Refrigerator
+
+page.
+
+- Check the operation status or notifications related to your refrigerator, and then
+
+change options or settings if necessary.
+
+NOTE
+
+Some options or settings of the refrigerator may not be available for remote control.
+
+English 43
+
+2018-07-05 5:53:17
+
+
+## PDF page 44
+
+### Operations
+
+Key features
+
+Register SmartThings appliances to the SmartThings server for remote access.
+
+Refrigerator settings
+
+44
+
+English
+
+2018-07-05 5:53:17
+
+### Table (PDF page 44, 1)
+
+| Chat control | You can control your SmartThings appliances remotely, or check the operating status. |
+| --- | --- |
+| Home view (applicable models only) | By using the built-in camera of a SmartThings appliance, you can monitor your living room. This is available only with applicable models. |
+| Master key | The master key is designed to control the locking system for different user activities such as going out, coming home, going to bed at night, and waking up in the morning. This is available only with applicable models. |
+| Customer service | The user manual is downloadable, and the contact information for customer support is also provided. |
+| Settings | You can check the connected device as well as the software information (version and open-source licenses), and add devices or select a country. You can simulate the operation of the current device for demonstration purposes. |
+
+### Table (PDF page 44, 2)
+
+| Fridge | • Displays the currently set fridge temperature. • You can turn on or off Power Cool, and check the current settings. |
+| --- | --- |
+| Freezer | • Displays the currently set freezer temperature. • You can turn on or off Power Freeze, and check the current settings. |
+| FlexZone™ | • Displays the current mode setting. |
+| Ice Maker | • You can turn on or off Ice Maker, and check the current settings as well as the ice making status. |
+
+
+## PDF page 45
+
+SMART GRID Function (Demand Response)
+
+When the refrigerator operates in SMART GRID (Demand Response) mode, the Energy
+
+Management Refrigerator function can control energy usage or delay the operation of
+
+some functions to save money when energy prices or demand are the highest.
+
+NOTE
+
+- You can deactivate the SMART GRID (Demand Response) function at any time using the
+
+Override On/Off function.)
+
+- To use the SMART GRID (Demand Response) function, you need a separate contract with
+
+your electric utility company.
+
+In addition, to use the Smart Grid (Demand Response) function, you must register for the
+
+service with your electric company. The company must have an EMS (Energy Management
+
+System) that supports SEP (Smart Energy profile).
+
+Using the SMART GRID (Demand Response) Function
+
+This feature monitors energy prices and demand information from your utility company
+
+and sends notifications to the refrigerator to run high energy consuming tasks during off-
+
+peak times when electricity costs and demand are lower.
+
+If the refrigerator receives a control signal from the utility company, the refrigerator will
+
+display the DAL (L3) ~ TALR (L4) levels on the refrigerator display and control the power
+
+consumption according to the level.
+
+[Exception condition] The DAL and TALR control signals from a utility company work as
+
+long as product performance is maintained.
+
+If the refrigerator receives the SMART GRID (Demand Response) signal (DAL or TALR), the
+
+refrigerator will operate in Delay Appliance Load (Display:L3) or Temporary Appliance
+
+Load Reduction (Display:L4) mode.
+
+- Delay Appliance Load (L3): The refrigerator responds to a DAL signal by providing a
+
+moderate load reduction for the duration of the delay period. This function controls
+
+functions that consume a lot of energy such as adjusting the Cooling system, running
+
+the defrost cycle, and making ice.
+
+- When the refrigerator operates in DAL (L3) mode, “L3” is displayed on the
+
+refrigerator display.
+
+- DAL mode is automatically deactivated after it lasts for the amount of time
+
+stipulated by the DAL signal (max. 4.5 hours) or when the Override key is pressed.
+
+English 45
+
+2018-07-05 5:53:17
+
+
+## PDF page 46
+
+### Operations
+
+- Temporary Appliance Load Reduction (L4): The refrigerator responds to a TALR signal
+
+by aggressively reducing the load for a short time period. This function reduces energy
+
+consumption by stopping the compressor and controlling the functions that consume a
+
+lot of energy such as the defrost cycle and making ice.
+
+- When the refrigerator operates in TALR (L4) mode, “L4” is displayed on the
+
+refrigerator display.
+
+- TALR (L4) mode is automatically deactivated after it lasts for the received duration
+
+(max. 15 minutes), or when the Override key is pressed. The mode is immediately
+
+deactivated and the refrigerator returns to the normal state when the door is
+
+opened or closed, or the dispenser is used.
+
+To check the MAC address
+
+1. In this mode, the MAC address appears
+
+on the temperature panel (on both the
+
+freezer and the fridge sections of the
+
+panel) sequentially for 1 minute.
+
+Press and hold both Freezer and Fridge
+
+for 6 seconds. The temperature panel
+
+blinks. Then, press Freezer again to
+
+display the MAC address. The fridge
+
+beeps.
+
+2. For example, if the MAC address is
+
+"11-22-33-44-55-66", the temperature
+
+panel displays the address for 1 minute
+
+in this sequence: "-- / --"  "11 / 22" 
+
+"33 / 44"  "55 / 66"  "-- / --".
+
+After the 1 minute, the MAC address
+
+disappears and the temperature panel
+
+returns to the normal state.
+
+NOTE
+
+The temperature panel displays “"-- / --"
+
+for an unknown MAC address or if a Wi-Fi
+
+connection is not established or is lost.
+
+Override Mode
+
+When you want the refrigerator to ignore the SMART GRID (Demand Response) signal
+
+from the utility company, you can activate OVERRIDE mode.
+
+When you activate OVERRIDE mode, the refrigerator ignores the SMART GRID (Demand
+
+Response) signal and is not controlled by the utility company.
+
+46
+
+English
+
+2018-07-05 5:53:18
+
+### Original figure / page illustration (PDF page 46)
+
+![Original PDF page 46 (illustrations and visual labels)](assets/user-guide/page_046.png)
+
+
+## PDF page 47
+
+Activating and deactivating Override mode
+
+1. Press and hold Cubed Ice for 3 seconds.
+
+2. A buzzer sounds and \`Or’ and \`on’ is
+
+displayed in the freezer and fridge
+
+temperature displays for 5 seconds.
+
+3. If the refrigerator receives a SMART
+
+GRID (Demand Response) signal from
+
+the utility company, \`Or’ is displayed in
+
+the freezer temperature display.
+
+4. To deactivate OVERRIDE mode, press
+
+and hold Cubed Ice for 3 seconds.
+
+5. A Buzzer sounds and ‘Or’ and ‘oF’ is
+
+displayed on the fridge and freezer
+
+temperature displays for 5 seconds.
+
+NOTE
+
+- Alternatively, you can activate or
+
+deactivate OVERRIDE mode using
+
+the SmartThings app and the Energy
+
+Management function. See the next
+
+page.
+
+English 47
+
+2018-07-05 5:53:18
+
+### Original figure / page illustration (PDF page 47)
+
+![Original PDF page 47 (illustrations and visual labels)](assets/user-guide/page_047.png)
+
+
+## PDF page 48
+
+### Operations
+
+Using the Energy Management Function
+
+The Energy Management function enables you to control and monitor your Energy
+
+Management refrigerator using the SmartThings app for your convenience.
+
+NOTE
+
+- To use the Energy Management refrigerator functions, you have to install the
+
+corresponding app first.
+
+1. Operational Status
+
+- You can check the DR and Override status.
+
+2. Energy Consumption Reporting
+
+- Shows the accumulated power consumption. Power consumption data is updated
+
+every 10 minutes.
+
+NOTE
+
+The energy consumption report may differ from the power consumption specifications of
+
+the product depending on the operating environment and the stored food.
+
+3. Delay Defrost Capability
+
+- The Delay Defrost Capability function saves energy by delaying the defrost
+
+operation to a time specified by the user. You can configure the time. and this
+
+function will save energy during the specified period in a 24 hour cycle. If the
+
+time is not set, the function works with the default time settings. The default time
+
+settings are below:
+
+- 6 am to 10 am: 1st. November ~ 30th. April
+
+- 3 pm to 7 pm: 1st. May ~ 31th. October
+
+To change the time setting for the Delay Defrost Capability
+
+You can change the time setting for the Delay Defrost Capability on the app.
+
+48
+
+English
+
+2018-07-05 5:53:18
+
+
+## PDF page 49
+
+Provision for Open Access to the Connected Product Requirements
+
+1. SGIP Open Standards (Smart Energy Profile 2.0 - http://www.csep.org/)
+
+- Energy Consumption Reporting
+
+- Demand Response
+
+2. Samsung OPEN API
+
+- Operational Status, User Settings & Messages
+
+- ICE Maker Status: GET /external/icestatus?icegetstatus=opt (relevant to the energy
+
+consumption of the product 1)
+
+- Door Open Alarm: GET /devices/0/Door?type=opt (relevant to the energy
+
+consumption of the product 2)
+
+- DR Status: GET /external/drlc?drgetstatus=opt
+
+- Delay Defrost Capability
+
+- Set Schedule of the Defrost Delay: POST /devices/0/defrost/addSchedule
+
+- Get Schedule of the Defrost Delay : GET /devices/0/defrost/getSchedule
+
+- Delete Schedule of the Defrost Delay: POST /devices/0/defrost/delSchedule
+
+- Defrost Delay On/OFF: PUT /devices/0/defrost/delayevent
+
+English 49
+
+2018-07-05 5:53:18
+
+
+## PDF page 50
+
+### Operations
+
+Special features
+
+The refrigerator has many convenient features.
+
+Water dispenser
+
+With the water dispenser, you can dispense water without opening the fridge door.
+
+The water dispenser offers 3 options:
+
+chilled water, cubed ice, and crushed ice.
+
+If you do not want to dispense ice, simply
+
+press the water lever (B).
+
+A
+
+With the Ice Maker enabled,
+
+B
+
+1. Press to select an ice type.
+
+2. Put a water glass on the ice lever (A)
+
+and push it. Ice is dispensed from the
+
+dispenser.
+
+3. Then, put the glass on the water lever
+
+(B) and push it. Water is dispensed from
+
+the dispenser.
+
+NOTE
+
+- To get ice and water, push the ice lever (A) first for ice, then move your glass down and
+
+press the water lever (B) for water.
+
+- If you push both levers at once, only the first pushed lever operates.
+
+- To prevent spills, wait 1 second before removing the glass after dispensing.
+
+- Make sure the glass is in line with the dispenser to prevent the dispensed water from
+
+spilling out.
+
+- If you do not use the water dispenser for 2-3 days, the dispensed water may have an
+
+abnormal smell or taste. This is not a system failure. Discard the first 1-2 glasses of
+
+water.
+
+50
+
+English
+
+2018-07-05 5:53:18
+
+
+## PDF page 51
+
+Ice maker
+
+The refrigerator has a built-in ice maker that automatically dispenses ice so that you can
+
+enjoy filtered water with cubed or crushed ice to your preference.
+
+Ice making
+
+After you have installed your refrigerator and plugged it in, follow these instructions to
+
+ensure proper ice making and to keep the ice bucket full of ice:
+
+1. Let the refrigerator operate for at least 24 hours to ensure optimal performance.
+
+2. Dispense the first 4 to 6 ice cubes into a glass.
+
+3. Wait another 8 hours and dispense another 4 to 6 ice cubes.
+
+4. Then, wait another 16 hours and dispense the first glass-full of ice.
+
+NOTE
+
+- If you consume all the ice at once, you must wait 8 hours before dispensing the first 4
+
+to 6 cubes. This ensures that the ice bucket is filled with ice properly.
+
+- Ice cubes generated rapidly may look white, which is normal.
+
+Diagnosis
+
+If ice does not dispense, first check the ice
+
+maker.
+
+To check the ice maker
+
+1. Press Test on the side of the ice maker.
+
+You will hear a chime (ding-dong) when
+
+you press the button.
+
+2. You will hear another chime if the ice
+
+maker is operating properly.
+
+CAUTION
+
+- If the ice making chime rings repeatedly, contact the waterline installer or a local
+
+Samsung service center.
+
+- Do not press Test repeatedly after the ice tray is filled with ice or water. Water may
+
+overflow or ice may jam.
+
+- Do not put food in the ice bucket. The frozen food may damage the ice maker,
+
+especially when you open or close the door.
+
+- When the refrigerator recovers power after a power failure, the ice bucket may
+
+contain a mix of melted and jammed ice cubes, which can prevent the ice maker from
+
+working properly. To prevent this, make sure to empty the ice bucket before using the
+
+refrigerator.
+
+- Do not put fingers or any objects into the dispenser outlet or the ice maker. This can
+
+cause physical injury or property damage.
+
+English 51
+
+2018-07-05 5:53:18
+
+
+## PDF page 52
+
+- When reinserting the ice maker tray, make sure that the tray is properly centered at
+
+the entrance. Otherwise, the tray can get stuck.
+
+If you press Ice Maker to turn the ice maker off, make sure to remove all ice cubes from
+
+the ice bucket. Remaining ice cubes may clump together, making it difficult to remove
+
+- Removal of the ice bucket does not affect the thermal and mechanical performance of
+
+### Operations
+
+Ice Maker Off
+
+them.
+
+To remove the ice bucket
+
+NOTE
+
+the refrigerator.
+
+52
+
+English
+
+1. Hold the bottom of the ice bucket with
+
+one hand and hold the side with the
+
+other hand.
+
+2. Gently lift it up and pull out.
+
+3. Remove the remaining ice cubes and
+
+put the ice bucket back into place.
+
+If the ice bucket is not firmly inserted, turn
+
+the ice screw 90 degrees, and then try
+
+again.
+
+2018-07-05 5:53:19
+
+### Original figure / page illustration (PDF page 52)
+
+![Original PDF page 52 (illustrations and visual labels)](assets/user-guide/page_052.png)
+
+
+## PDF page 53
+
+Water clouding
+
+Water supplied to the refrigerator flows through a core alkaline filter. During this filtering
+
+process, the water pressure of the water increases and the water becomes saturated with
+
+oxygen and nitrogen. This causes the water to look misty or cloudy temporarily when
+
+dispensed. This is normal and the water will look clear after a few seconds.
+
+Wine Rack
+
+The refrigerator ships with the wine rack, which can be positioned in one of 3 positions:
+
+under the shelf, in the partition guide or on top of the sliding shelf of the FlexZone.
+
+Availability of the position depends on the model.
+
+CAUTION
+
+To remove or insert the wine rack, make sure that the wine rack is empty.
+
+Under the shelf
+
+Insert the wine rack under the shelf of the
+
+fridge. Make sure to insert it to the end as
+
+marked in the figure.
+
+In the partition guide
+
+Insert the wine rack in the partition guide
+
+of the FlexZone.
+
+- Make sure the front of the wine rack
+
+fits in the partition guide on the inner
+
+left-hand side of the FlexZone.
+
+English 53
+
+2018-07-05 5:53:19
+
+### Original figure / page illustration (PDF page 53)
+
+![Original PDF page 53 (illustrations and visual labels)](assets/user-guide/page_053.png)
+
+
+## PDF page 54
+
+### Operations
+
+On the sliding shelf
+
+Insert the wine rack on top of the sliding
+
+shelf of the FlexZone, normally below the
+
+partition guide.
+
+CAUTION
+
+- Do not store wine bottles in the freezer. The bottles freeze and break, causing physical
+
+injury.
+
+- Do not store wine bottles in two rows. The bottles may fall, causing physical injury.
+
+- Do not store the wine bottles taller than 330 mm in height. The bottles may break
+
+when you close the door, causing physical injury.
+
+54
+
+English
+
+2018-07-05 5:53:19
+
+### Original figure / page illustration (PDF page 54)
+
+![Original PDF page 54 (illustrations and visual labels)](assets/user-guide/page_054.png)
+
+
+## PDF page 55
+
+### Maintenance
+
+Handle and care
+
+Icemaker bucket
+
+If you do not dispense ice for an extended period, ice may form clumps inside the bucket.
+
+If this happens, remove and empty the icemaker bucket.
+
+1. To remove the ice maker bucket, gently
+
+lift it up, and then pull it out slowly
+
+while holding the bottom of the bucket
+
+with one hand and the side with the
+
+other hand.
+
+2. Lift up and pull the bucket out. Empty
+
+the bucket.
+
+3. When done, put the bucket back into
+
+position. If the bucket does not fit in,
+
+turn the helix screw 90 degrees, and
+
+then try again.
+
+CAUTION
+
+- Do not apply excessive force to the bucket cover. The cover may break.
+
+- Do not forcefully close the door. Water may spill over the ice maker.
+
+- To prevent injury, make sure to clean up any ice or water that has fallen on the floor.
+
+- To prevent accidents or injury, do not let children play with the water dispenser or the
+
+ice maker.
+
+- Do not put your hand or an object into the ice chute. This may cause physical injury or
+
+product damage.
+
+- Use only the provided ice bucket. Third-party ice buckets may cause a system failure.
+
+- Use only potable water that is connected to the water supply line.
+
+NOTE
+
+- The water pressure required for ice making is between 20 psi and 125 psi.
+
+- If the Ice Off indicator blinks, remove and reinsert the ice bucket. Make sure it is
+
+reinserted properly.
+
+- Noise from the the ice maker as it produces ice during the ice making process is
+
+normal.
+
+- While the door is open, neither the ice maker nor the water dispenser operates.
+
+English 55
+
+2018-07-05 5:53:19
+
+### Original figure / page illustration (PDF page 55)
+
+![Original PDF page 55 (illustrations and visual labels)](assets/user-guide/page_055.png)
+
+
+## PDF page 56
+
+### Maintenance
+
+Tempered glass shelves (fridge)
+
+- To remove a shelf, fully open the
+
+corresponding door. Hold the front of
+
+the shelf, and then gently lift up and
+
+slide out.
+
+- To reinsert, hold the shelf at an angle
+
+so the front is higher than the back, and
+
+then insert the top hook into the top
+
+shelf notch. Then, lower the shelf and
+
+insert the bottom shelf hook into the
+
+bottom shelf notch.
+
+CAUTION
+
+- The tempered glass shelves are heavy.
+
+Use caution when removing them.
+
+- The shelf must be inserted correctly. Do
+
+not insert upside down.
+
+- Glass containers may scratch the
+
+surface of glass shelves.
+
+56
+
+English
+
+2018-07-05 5:53:20
+
+### Original figure / page illustration (PDF page 56)
+
+![Original PDF page 56 (illustrations and visual labels)](assets/user-guide/page_056.png)
+
+
+## PDF page 57
+
+Door bins
+
+The top door bin section has a marked line to ensure easy removal and proper reinsertion.
+
+Lift up the door bin, and then pull out
+
+straight.
+
+CAUTION
+
+Do not allow children to play with the bins. Sharp-edged corners may cause injury.
+
+Vegetable & fruit drawers (EZ fresh zone)
+
+Gently lift up the front of the drawer and
+
+slide out.
+
+We recommend that you remove the door
+
+bins before removing the drawer. This is to
+
+prevent damage to the door bins.
+
+English 57
+
+2018-07-05 5:53:20
+
+### Original figure / page illustration (PDF page 57)
+
+![Original PDF page 57 (illustrations and visual labels)](assets/user-guide/page_057.png)
+
+
+## PDF page 58
+
+### Maintenance
+
+Vegetable shelf
+
+1. Slide out the left-side vegetable drawer.
+
+2. Slide in the right-side foldable shelf.
+
+3. While supporting the vegetable shelf
+
+with one hand, slide it out with the
+
+other hand.
+
+NOTE
+
+To use the space that is opened up after
+
+removing the foldable shelf, take out the
+
+vegetable shelf.
+
+To reinsert, follow the steps above in the
+
+reverse order.
+
+Ice bucket
+
+To remove the ice bucket, see the Maintenance section on page 52.
+
+58
+
+English
+
+2018-07-05 5:53:20
+
+### Original figure / page illustration (PDF page 58)
+
+![Original PDF page 58 (illustrations and visual labels)](assets/user-guide/page_058.png)
+
+
+## PDF page 59
+
+Cleaning
+
+Interior and exterior
+
+WARNING
+
+- Do not use benzene, thinner, or home/car detergent such as Clorox™ for cleaning. They
+
+may damage the surface of the refrigerator and cause a fire.
+
+- Do not spray water onto the refrigerator. This may cause electric shock.
+
+- Do not put fingers or any objects into the dispenser outlet.
+
+Regularly use a dry cloth to remove all foreign substances such as dust or water from the
+
+power plug terminals and contact points.
+
+1. Unplug the power cord.
+
+2. Use a moistened, soft, lint-free cloth or paper towel to clean the refrigerator’s interior
+
+and exterior.
+
+3. When done, use a dry cloth or paper towel to dry well.
+
+4. Plug in the power cord.
+
+Replacement
+
+Water filter
+
+WARNING
+
+- Do not use third-party water filters. Use only Samsung-provided or -approved filters.
+
+- Unapproved filters may leak and damage the refrigerator, causing electric shock.
+
+Samsung is not responsible for any damage that may occur from use of third-party
+
+water filters.
+
+The filter indicator ( ) turns red to let you know it is time to replace the water filter.
+
+Before replacing the filter, make sure the water supply line is shut off.
+
+1. Open the filter cover.
+
+English 59
+
+2018-07-05 5:53:21
+
+### Original figure / page illustration (PDF page 59)
+
+![Original PDF page 59 (illustrations and visual labels)](assets/user-guide/page_059.png)
+
+
+## PDF page 60
+
+### Maintenance
+
+2. Turn the knob of the filter cartridge
+
+counter clockwise 90 degrees (1/4
+
+turn). The filter cartridge unlocks.
+
+3. Pull out to remove the cartridge.
+
+- If the water filter is severely
+
+contaminated, the cartridge may not
+
+be easy to remove. If that is the case,
+
+use force to remove the cartridge.
+
+- To prevent water leaks from the
+
+filter opening, keep the cartridge
+
+straight while removing it.
+
+NOTE
+
+To prevent overflow, empty and dry the
+
+water filter tray.
+
+4. Insert a new filter cartridge. Use only
+
+Samsung-provided or approved filters.
+
+60
+
+English
+
+2018-07-05 5:53:21
+
+### Original figure / page illustration (PDF page 60)
+
+![Original PDF page 60 (illustrations and visual labels)](assets/user-guide/page_060.png)
+
+
+## PDF page 61
+
+5. Turn the cartridge knob clockwise to
+
+lock into place.
+
+6. Press and hold Crushed Ice on the
+
+feature panel for 3 seconds to reset the
+
+life cycle detector.
+
+The filter indicator ( ) turns off.
+
+7. When you are done replacing the filter,
+
+open the water valve and run water
+
+through the dispenser for about 7
+
+minutes. This is to remove impurities
+
+and air from the water line.
+
+NOTE
+
+- A newly installed filter may cause the water dispenser to spurt water briefly. This is
+
+because air has entered the waterline.
+
+- The replacement process may cause the water dispenser to drip for a short period of
+
+time. If it drips, simply wipe up any water on the floor with a dry towel.
+
+English 61
+
+2018-07-05 5:53:21
+
+
+## PDF page 62
+
+### Maintenance
+
+Reverse osmosis water filtration system
+
+The water pressure of the water supply system to a reverse osmosis water filtration
+
+system must be between 35 psi and 120 psi (241 kPa and 827 kPa).
+
+The water pressure of the reverse osmosis water filtration system to the refrigerator’s
+
+cold water line must be at least 40 psi (276 kPa). If the water pressure is below these
+
+specifications:
+
+- Check if the sediment filter in the reverse osmosis system is blocked. Replace the filter
+
+if necessary.
+
+- Refill the water tank in the reverse osmosis system with water.
+
+- If your refrigerator has a water filter, it may further reduce the water pressure when
+
+used in conjunction with a reverse osmosis system. Remove the water filter.
+
+For more information or servicing, contact a licensed plumbing professional.
+
+Ordering a new filter
+
+To purchase a new water filter, contact a local Samsung service center or visit www.
+
+samsungparts.com on the web.
+
+LED Lights
+
+To replace the LED lights on the refrigerator, contact a local Samsung service center.
+
+WARNING
+
+The LED lights are not user-serviceable. Do not attempt to replace an LED light yourself.
+
+This can cause electric shock.
+
+62
+
+English
+
+2018-07-05 5:53:21
+
+
+## PDF page 63
+
+### Troubleshooting
+
+If you encounter a problem with the refrigerator, first check the tables starting below, and
+
+then try the suggested actions.
+
+General
+
+English 63
+
+2018-07-05 5:53:22
+
+### Table (PDF page 63)
+
+| Symptom | Action |
+| --- | --- |
+| The refrigerator does not operate or cool. | • Make sure the power cord is connected properly. • Make sure the temperature control is set correctly. Try setting to a lower temperature. • Make sure the refrigerator is not being exposed to direct sunlight and is not near a heat source. Failing to do so may affect the cooling performance. • Make sure the refrigerator is far enough away from rear walls, side walls, or cabinets to allow proper ventilation. Failing to do so may affect the cooling performance. • Too much food can block the internal ventilation of the refrigerator. To keep the refrigerator operating normally, do not put too much food inside. |
+| Food in the fridge freezes. | • Check if the temperature control is set to the lowest temperature. If so, change to a higher temperature. • This can happen if the ambient room temperature is too low. Set the room temperature higher. • Check if food containing a high proportion of water has been put in the coldest area of the fridge or near the cooling vent. If so, move the food to other shelves in the fridge. |
+| You hear unusual noises or sounds. | • Make sure the refrigerator is installed on a stable, fal t surface. • Make sure the refrigerator is far enough away from rear walls, side walls, and cabinets to allow proper ventilation. • Make sure that there are no foreign objects (coins, keys, cutlery, etc.) inside or underneath the refrigerator. • The refrigerator may produce a ticking sound from inside. This occurs when the various accessories contract or expand as the temperature inside changes. This is normal. |
+
+
+## PDF page 64
+
+### Troubleshooting
+
+64
+
+English
+
+2018-07-05 5:53:22
+
+### Table (PDF page 64)
+
+| Symptom | Action |
+| --- | --- |
+| The front corners and sides become warm and form condensation. | • To prevent condensation from forming, the refrigerator has heat-proof piping in the front corners. If the ambient temperature rises, this equipment may not work effectively. This is not a system failure. • Make sure the door is closed properly. Condensation may form if you leave the door open for an extended period of time. • Condensation may form on the exterior surface of the refrigerator if humid air comes into contact with the cool surface of the refrigerator. |
+| The ice maker does not make ice. | • If you have used all the ice in the ice bucket, you must wait for 12 hours for the refrigerator to make more ice. • See if the Ice Maker Off icon is lit. If it is, press and hold Ice Maker Off for 3 seconds. • Make sure the freezer is set below 32 °F (0 °C) (or 23 °F (-5 °C) in warm ambient air). • Make sure the water line is properly connected and the shut- off valve is open. • Check if the ice bucket contains ice clumps. If it does, empty the ice bucket and try again. |
+| The water dispenser is not functioning. | • Make sure the water line is properly connected and the shut- off valve is open. • Make sure the water supply line tubing is not damaged such as crushed or kinked. • Make sure the water fliter is installed properly. |
+| You hear a bubbling sound. | • This is normal. The bubbling sound comes from refrigerant circulating through the refrigerator. |
+| A bad smell comes from inside the refrigerator. | • Check for any spoiled food. We recommend cleaning the refrigerator on a regular basis and removing any spoiled or suspect food items. • Make sure strong smelling food is wrapped tightly or stored in air tight containers. |
+| Frost forms on the interior walls. | • Make sure the air vents are not blocked by food or any other objects so that the air can circulate freely. For effci ient air circulation, it is recommended to arrange food items evenly. • Make sure the door is closed properly. |
+
+
+## PDF page 65
+
+Symptom
+
+Action
+
+Condensation or
+
+- While the refrigerator is operating, condensation or water
+
+water drops form on
+
+drops may form on or around the vertical mullion if the
+
+or around the vertical
+
+surrounding humidity is too high.
+
+mullion.
+
+English 65
+
+2018-07-05 5:53:22
+
+### Original figure / page illustration (PDF page 65)
+
+![Original PDF page 65 (illustrations and visual labels)](assets/user-guide/page_065.png)
+
+
+## PDF page 66
+
+### Troubleshooting
+
+SmartThings
+
+66
+
+English
+
+2018-07-05 5:53:22
+
+### Table (PDF page 66)
+
+| Symptom | Action |
+| --- | --- |
+| Could not fni d “SmartThings” in the app market. | • The SmartThings app is designed for Android 6.0 (Marshmallow) or later, iOS 10.0 or later, iPhone 6 or later, and is optimized for Samsung smartphones (Galaxy S and Galaxy Note series). |
+| The SmartThings app fails to operate. | • The SmartThings app is available for applicable models only. • The old Samsung Smart Refrigerator app cannot connect with Samsung Smart Home models. |
+| The SmartThings app is installed but is not connected to my refrigerator. | • You must log into your Samsung account to use the app. • Make sure that your router is operating normally. • If you have not connected your refrigerator to the SmartThings App after the app was installed, you must make the connection using the device registration function of the app. |
+| Could not log into the app. | • You must log into your Samsung account to use the app. • If you don’t have a Samsung account, follow the app’s onscreen instructions to create one. |
+| An error message appears when I try to register my refrigerator. | • Easy Connection may fail due to the distance from your access point (AP) or electrical interference from the surrounding environment. Wait a moment and try again. |
+| The SmartThings app is successfully connected to my refrigerator but does not run. | • Exit and restart the SmartThings app or disconnect and reconnect the router. • Unplug the power cord of the refrigerator, and then plug it in again after 1 minute. |
+
+
+## PDF page 67
+
+Smart Grid
+
+English 67
+
+2018-07-05 5:53:22
+
+### Table (PDF page 67)
+
+| Symptom | Action |
+| --- | --- |
+| What Do I Need to use the Energy Management and Smart Grid functions? | To use the Smart Grid (Demand Response) and Energy Management functions on your refrigerator, you need the following: Devices • Wireless access point (router) • Samsung Energy Management-supported refrigerator • Smartphone Registration • Connect your refrigerator to your home Wi-Fi network. • Register for the EMS service with your electric company that has an EMS (Energy Management System) supporting SEP (Smart Energy proflie). Application • Download the SmartThings app from the Google Play Store, Apple App Store, or Samsung Galaxy Apps. • Install and run the SmartThings app on your smartphone. |
+| Why isn’t the Energy Management function working normally? | • Make sure that your home router is operating normally with proper Internet service and connection. • Make sure that the refrigerator is connected to the AP. Checkpoints • Connect your smartphone to the router (AP, Access Point), and then check if you can browse the Internet on the smartphone. • Check if the Wi-Fi icon on the refrigerator’s display is on. If not, connect the refrigerator to the AP. |
+| Why isn’t the Delay Defrost Capability working normally? | • Make sure that your home router is operating normally with proper Internet service and connection. • Make sure that the refrigerator does not display L3 or L4 on the display panel. |
+
+
+## PDF page 68
+
+### LIMITED WARRANTY (U.S.A.)
+
+SAMSUNG REFRIGERATOR
+
+LIMITED WARRANTY TO ORIGINAL CONSUMER PURCHASER WITH PROOF OF
+
+PURCHASE
+
+This SAMSUNG brand product, as supplied and distributed by Samsung Electronics
+
+America, Inc. (SAMSUNG) and delivered new, in the original carton to the original
+
+consumer purchaser, is warranted by SAMSUNG against manufacturing defects in
+
+materials or workmanship for the limited warranty period of:
+
+One (1) year parts and labor
+
+Five (5) years parts and labor on Sealed Refrigeration System Only (Compressor,
+
+Evaporator, Condenser, Drier, and Connecting Tubing)
+
+Ten (10) years part and Five (5) years labor on Digital Inverter Compressor Only
+
+This limited warranty is valid only on products purchased and used in the United States
+
+that have been installed, operated, and maintained according to the instructions attached
+
+to or furnished with the product. To receive warranty service, the purchaser must contact
+
+SAMSUNG at the address or phone number provided below for problem determination and
+
+service procedures. Warranty service can only be performed by a SAMSUNG authorized
+
+service center. The original dated bill of sale must be presented upon request as proof
+
+of purchase to SAMSUNG or SAMSUNG’s authorized service center to receive warranty
+
+service.
+
+SAMSUNG will provide in-home service within the contiguous United States during the
+
+warranty period at no charge, subject to availability of SAMSUNG authorized servicers
+
+within the customer’s geographic area. If in-home service is not available, SAMSUNG may
+
+elect, at its option, to provide transportation of the product to and from an authorized
+
+service center. If the product is located in an area where service by a SAMSUNG
+
+authorized servicer is not available, you may be responsible for a trip charge or required
+
+to bring the product to a SAMSUNG authorized service center for service.
+
+To receive in-home service, product must be unobstructed and accessible to the service
+
+agent.
+
+During the applicable warranty period, a product will be repaired, replaced, or the
+
+purchase price refunded, at the sole option of SAMSUNG. SAMSUNG may use new
+
+or reconditioned parts in repairing a product, or replace the product with a new or
+
+reconditioned product. Replacement parts and products are warranted for the remaining
+
+portion of the original product’s warranty or ninety (90) days, whichever is longer. All
+
+replaced parts and products are the property of SAMSUNG and you must return them to
+
+SAMSUNG.
+
+68
+
+English
+
+2018-07-05 5:53:22
+
+
+## PDF page 69
+
+This limited warranty covers manufacturing defects in materials or workmanship
+
+encountered in normal household, noncommercial use of this product and shall not
+
+cover the following: damage that occurs in shipment, delivery, installation, and uses
+
+for which this product was not intended; damage caused by unauthorized modification
+
+or alteration of the product; product where the original factory serial numbers have
+
+been removed, defaced, changed in any way, or cannot be readily determined; cosmetic
+
+damage including scratches, dents, chips, and other damage to the product’s finishes;
+
+damage caused by abuse, misuse, pest infestations, accident, fire, floods, or other acts
+
+of nature or God; damage caused by use of equipment, utilities, services, parts, supplies,
+
+accessories, applications, installations, repairs, external wiring or connectors not supplied
+
+or authorized by SAMSUNG; damage caused by incorrect electrical line current, voltage,
+
+fluctuations and surges; damage caused by failure to operate and maintain the product
+
+according to instructions; in-home instruction on how to use your product; and service
+
+to correct installation not in accordance with electrical or plumbing codes or correction
+
+of household electrical or plumbing (i.e., house wiring, fuses, or water inlet hoses). The
+
+cost of repair or replacement under these excluded circumstances shall be the customer’s
+
+responsibility.
+
+Visits by an authorized servicer to explain product functions, maintenance or installation
+
+are not covered by this limited warranty. Please contact SAMSUNG at the number below
+
+for assistance with any of these issues.
+
+EXCLUSION OF IMPLIED WARRANTIES
+
+IMPLIED WARRANTIES, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY
+
+OR FITNESS FOR A PARTICULAR PURPOSE, ARE LIMITED TO ONE YEAR OR THE SHORTEST
+
+PERIOD ALLOWED BY LAW. Some states do not allow limitations on how long an implied
+
+warranty lasts, so the above limitations or exclusions may not apply to you. This warranty
+
+gives you specific rights, and you may also have other rights, which vary from state to
+
+state.
+
+English 69
+
+2018-07-05 5:53:22
+
+
+## PDF page 70
+
+### LIMITED WARRANTY (U.S.A.)
+
+LIMITATION OF REMEDIES
+
+YOUR SOLE AND EXCLUSIVE REMEDY IS PRODUCT REPAIR, PRODUCT REPLACEMENT,
+
+OR REFUND OF THE PURCHASE PRICE AT SAMSUNG’S OPTION, AS PROVIDED IN THIS
+
+LIMITED WARRANTY. SAMSUNG SHALL NOT BE LIABLE FOR SPECIAL, INCIDENTAL OR
+
+CONSEQUENTIAL DAMAGES, INCLUDING BUT NOT LIMITED TO TIME AWAY FROM WORK,
+
+HOTELS AND/OR RESTAURANT MEALS, REMODELING EXPENSES, LOSS OF REVENUE OR
+
+PROFITS, FAILURE TO REALIZE SAVINGS OR OTHER BENEFITS REGARDLESS OF THE LEGAL
+
+THEORY ON WHICH THE CLAIM IS BASED, AND EVEN IF SAMSUNG HAS BEEN ADVISED OF
+
+THE POSSIBILITY OF SUCH DAMAGES. Some states do not allow exclusion or limitation of
+
+incidental or consequential damages, so the above limitations or exclusions may not apply
+
+to you. This warranty gives you specific rights, and you may also have other rights, which
+
+vary from state to state.
+
+SAMSUNG does not warrant uninterrupted or error-free operation of the product. No
+
+warranty or guarantee given by any other person, firm, or corporation with respect to this
+
+product shall be binding on SAMSUNG.
+
+To obtain warranty service, please contact SAMSUNG at:
+
+Samsung Electronics America, Inc.
+
+85 Challenger Road
+
+Ridgefield Park, NJ 07660
+
+1-800-SAMSUNG (726-7864)
+
+www.samsung.com/us/support
+
+70
+
+English
+
+2018-07-05 5:53:22
+
+
+## PDF page 71
+
+### Warranty Information (CANADA)
+
+If your refrigerator needs service
+
+Do not hesitate to call any Samsung Authorized Service Center nearby giving them your
+
+name, address and telephone number if your product is not functioning properly.
+
+Limited Warranty for Original Purchaser
+
+This Samsung product is warranted by Samsung Electronics Canada Inc. (hereafter referred
+
+to as SECA) against manufacturing defects in material or workmanship for the following
+
+periods:
+
+Labor : 1 year (in-home)
+
+Parts : 1 year
+
+Inverter Compressor : 10 years (Part only)
+
+SECA further warrants that if this product fails to operate properly within the specified
+
+warranty period and the failure is due to improper workmanship or defective material,
+
+SECA will repair or replace the product at its option. In-home service is not available in all
+
+areas. Contact us to find out if in-home service is currently available in your area by using
+
+the contact information at the back of this warranty.
+
+All warranty repairs or part replacements must be performed by a SECA Authorized
+
+Service Center. (To find the nearest SECA Service Center, call 1-800-SAMSUNG (7267864)
+
+or visit our web site at www.samsung.com/ca)
+
+Obligation to the Original Owner
+
+The original dated sales receipt must be retained by the customer and is the only
+
+acceptable proof of purchase. It must be presented to a SECA Authorized Service Center
+
+at the time service is requested before warranty services are rendered. On all carry-in
+
+models, transportation to and from the Authorized Service Center is the responsibility of
+
+the customer.
+
+English 71
+
+2018-07-05 5:53:22
+
+
+## PDF page 72
+
+### Warranty Information (CANADA)
+
+Exclusions of the Warranty
+
+This warranty does not cover damage due to accident, fire, flood, and/or other Acts of
+
+God, misuse, incorrect line voltage, improper installation, improper or unauthorized
+
+repairs, commercial use, or damage that occurs during shipping. Customer adjustments
+
+which are explained in this owners manual are not covered under the terms of this
+
+warranty. This warranty will automatically be voided for any unit found with a missing
+
+or altered serial number. This warranty is valid only on products purchased and used in
+
+Canada.
+
+SAMSUNG CUSTOMER CARE CENTER
+
+Samsung Electronics Canada Inc.
+
+2050 Derry Road West
+
+Mississauga, Ontario L5N 0B9
+
+Canada
+
+1-800-SAMSUNG (726-7864)
+
+www.samsung.com/ca/support (English)
+
+www.samsung.com/ca_fr/support (French)
+
+72
+
+English
+
+2018-07-05 5:53:22
+
+
+## PDF page 73
+
+### Open Source Announcement
+
+The software included in this product contains open source software. You may obtain the
+
+complete corresponding source code for a period of three years after the last shipment of
+
+this product by sending an email to mailto:oss.request@samsung.com.
+
+It is also possible to obtain the complete corresponding source code in a physical medium
+
+such as a CD-ROM; a minimal charge will be required.
+
+The following URL http://opensource.samsung.com/opensource/SimpleConnectTP/seq/0
+
+leads to the download page of the source code made available and open source license
+
+information as related to this product. This offer is valid to anyone in receipt of this
+
+information.
+
+English 73
+
+2018-07-05 5:53:22
+
+### Original figure / page illustration (PDF page 73)
+
+![Original PDF page 73 (illustrations and visual labels)](assets/user-guide/page_073.png)
+
+
+## PDF page 74
+
+### Memo
+
+2018-07-05 5:53:22
+
+### Original figure / page illustration (PDF page 74)
+
+![Original PDF page 74 (illustrations and visual labels)](assets/user-guide/page_074.png)
+
+
+## PDF page 75
+
+### Memo
+
+2018-07-05 5:53:22
+
+### Original figure / page illustration (PDF page 75)
+
+![Original PDF page 75 (illustrations and visual labels)](assets/user-guide/page_075.png)
+
+
+## PDF page 76
+
+Scan the QR code* or visit
+
+www.samsung.com/spsn
+
+to view our helpful
+
+How-to Videos and Live Shows
+
+* Requires reader to be installed on your
+
+smartphone
+
+Contact SAMSUNG WORLD WIDE
+
+If you have any questions or comments relating to Samsung products, please contact the
+
+SAMSUNG customer care center.
+
+DA68-03378A-06
+
+2018-07-05 5:53:22
+
+### Table (PDF page 76)
+
+| Country | Contact Center | Web Site |
+| --- | --- | --- |
+| U.S.A | 1-800-SAMSUNG (726-7864) 1-844-SAM-PAYS (726-7297) | www.samsung.com/us/support |
+| CANADA | 1-800-SAMSUNG (726-7864) 1-844-SAM-PAYS (726-7297) | www.samsung.com/ca/support (English) www.samsung.com/ca fr/support (French) _ |
+
+### Original figure / page illustration (PDF page 76)
+
+![Original PDF page 76 (illustrations and visual labels)](assets/user-guide/page_076.png)
+

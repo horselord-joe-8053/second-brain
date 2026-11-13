@@ -82,6 +82,7 @@ In addition to **qimpl** plan requirements:
 - Step 2 plans must include per-phase **TDD mode** (`strict-TDD` / `smoke-after-delete`) per **onlyreftdd**.
 - Step 3 loop order: **`test → code → test → fix`** (or smoke-after-delete) per **aciubtdd** / **implreftdd**.
 - Closing table **Tests** row should note TDD modes used.
+- **Operator logging:** **neat_logger** default + **DEBUG** (`NEAT_LOGGER_DEBUG`) — **`.cursor/rules/neatlog-operator-logging-bar.mdc`**; plan + implement same phase as runner.
 
 ---
 

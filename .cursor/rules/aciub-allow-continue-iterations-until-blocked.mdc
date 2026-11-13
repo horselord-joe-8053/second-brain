@@ -90,7 +90,7 @@ If the named plan is **already all implementable `[X]`** (e.g. a completed maste
 
 For each iteration:
 
-1. Implement the **next** scoped chunk (prefer smallest green increment under the current phase).
+1. Implement the **next** scoped chunk (prefer smallest green increment under the current phase). Runners/CLIs: **neat_logger** + checkpoint per **`.cursor/rules/neatlog-operator-logging-bar.mdc`** (INFO milestones; **DEBUG** when debugging).
 2. Run **relevant** tests for that chunk (unit / Vitest / Playwright mocked e2e as the plan’s Quality bar requires).
 3. On failure: fix and re-run until green or a true blocker.
 4. When a **phase** (or major deliverable) reaches green tests: run the [**Exwar gate**](#aciub-exwar-gate) **before** marking that phase `[X]` or starting the next phase. Record outcome in the plan Decision log or phase notes when useful.
@@ -167,7 +167,8 @@ When the active artifact **is** the refactor plan `.md` itself, the plan’s `[ 
 Stop and engage the user only if:
 
 - a **true blocker** (align with **implref** §3.1d: unfixable build/tests, missing secrets, unresolved ambiguity after step 1, irreconcilable spec, destructive data without rollback, explicit user scope cut),
-- a **manual** user action is required,
+- **long-run Exit** failures (smoke or full) → §3.1d; execution order and green-path no-handoff → **implref [§3.1h](implref-resumimpl-refactor-plan-followthrough.mdc#ir-s3-1h)**,
+- a **manual** user action is required **only** per **implref** §3.1f or after **§3.1h** env check proves missing secrets — not because the plan labels Exit “operator” or “manual”,
 - the **requested plan scope** (and resolved open sidetracks, if a completed master was named) is fully done, or
 - **session cut** (**implref** §3.1e): leave plan in `wip/`, name exact next `[ ]` + path, tell user to **`aciub`** or **`resumimpl`** that path.
 
@@ -192,6 +193,7 @@ Not allowed unless a stop condition is met:
 - Stopping after “iteration passed” without starting the next cycle.
 - “Completed this pass” while the active plan still has open implementable `[ ]`.
 - Marking a phase `[X]` **without** completing the [Exwar gate](#aciub-exwar-gate) for that phase.
+- Handing off a long-run command after **green smoke** when **implref §3.1h** applies.
 
 Required: after each passing iteration, begin the next scoped iteration in the same session.
 

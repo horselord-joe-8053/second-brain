@@ -1,0 +1,23 @@
+# Harness-agnostic stdio MCP catalog (llm_wiki + second_brain_fs).
+# Hermes: merged as top-level mcp_servers: in ~/.hermes/config.yaml (merge-hermes-wiring.py).
+# OpenClaw: map the same entries into upstream config when schema is known.
+#
+# Placeholders ${NU_LLM_WIKI_MCP} and ${BRAIN_ROOT} are resolved by brain_stack.py from brain-stack.
+
+llm_wiki:
+  command: node
+  args: [${NU_LLM_WIKI_MCP}]
+  env:
+    LLM_WIKI_API_TOKEN: "${LLM_WIKI_API_TOKEN}"
+
+second_brain_fs:
+  command: npx
+  args: ["-y", "@modelcontextprotocol/server-filesystem", ${BRAIN_ROOT}]
+
+# Dev smoke for retail PG — production ticket path uses FRU retail sidecar (query-retail-brain).
+retail_pg:
+  command: npx
+  args:
+    - "-y"
+    - "@modelcontextprotocol/server-postgres"
+    - "${RETAIL_DATABASE_URL}"
