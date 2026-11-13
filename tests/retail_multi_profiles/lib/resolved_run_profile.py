@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from .config_coerce import coerce_bool, coerce_int
+from .eval_suites import TYPE_A_M90
 from .run_profiles import resolve_run_profile
 
 # D3 retrieval engines for raw_rag (D5 is separate — see RUN_PROFILES.md).
@@ -41,7 +42,7 @@ class ResolvedRunProfile:
         if parts:
             d5 = "+".join(parts)
         lanes = ",".join(self.lane_ids)
-        return f"MANUAL|M|D2.{lanes}|D3.{self._d3_label()}|LC|{d5}|M90|{lanes}"
+        return f"MANUAL|M|D2.{lanes}|D3.{self._d3_label()}|LC|{d5}|{TYPE_A_M90}|{lanes}"
 
     def _d3_label(self) -> str:
         if self.d3_engine == "vector":

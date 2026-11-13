@@ -1,6 +1,8 @@
 <h1 id="evo18-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — evo-18 multi-dimensional manual RAG combos (T0 + D2 + D7)</h1>
 
-**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — minor **M10** (Lane B PG hybrid + bundled B20 experiment matrix).  
+**D6 suites (this matrix):** `TYPE_A_M90` / **M90-technical-singlefact** and `TYPE_B_B20` / **B20-technical-compound** (table labels **M90** / **B20** = historical run-id prefixes).
+
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — minor **M10** (Lane B PG hybrid + bundled TYPE_B_B20 experiment matrix).  
 **Depends on:** [`REFACTOR_RETAIL_PRODUCT_SCOPE_BRAND_MODEL.md`](./REFACTOR_RETAIL_PRODUCT_SCOPE_BRAND_MODEL.md) (**M9**) — brand + OEM filters on both legs (code landed; this minor adds **SQL-first pool** + **manual Tantivy** + chunk/orchestration experiments).  
 **Branch:** `feature/evo-18-multi-various-new-combos`.  
 **Status:** **wip** — **`qimpltdd`** / **`aciubtdd`** / **`implreftdd`**.  

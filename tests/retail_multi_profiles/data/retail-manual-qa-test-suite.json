@@ -1,4 +1,6 @@
 {
+  "eval_suite_id": "TYPE_A_M90",
+  "eval_suite_long_name": "M90-technical-singlefact",
   "schema_version": "1.0",
   "created_at": "20261018-180336",
   "source_archive": "fridge-docs-pdf.zip",

@@ -349,6 +349,7 @@ def run_cos_insight_row(
         )
         wiki_answer = ctx.cfg.get("wiki_answer") or {}
         label = str(wiki_answer.get("provisional_label") or "[provisional insight]")
+        max_words = int(ctx.cfg.get("suite_answer_max_words") or 0) or None
         candidate, answer_ms = answer_from_context(
             q.question,
             context,
@@ -357,11 +358,13 @@ def run_cos_insight_row(
             temperature=answer_llm.temperature,
             preamble=label,
             insight_mode=True,
+            answer_max_words=max_words,
             generate=llm_generate,
         )
     elif arm == "bundled":
         retrieve = bundled_retrieve or retrieve_bundled_manual
         hits, context, retrieval_ms = retrieve(ctx, q.question)
+        max_words = int(ctx.cfg.get("suite_answer_max_words") or 0) or None
         candidate, answer_ms = answer_from_context(
             q.question,
             context,
@@ -370,6 +373,7 @@ def run_cos_insight_row(
             temperature=answer_llm.temperature,
             preamble="[manual retrieval]",
             insight_mode=True,
+            answer_max_words=max_words,
             generate=llm_generate,
         )
     else:
@@ -444,9 +448,12 @@ def run_cos_insight_benchmark(
     author_provider: str = "",
     suite_sha256: str = "",
     resume: bool = False,
+    answer_max_words: int | None = None,
 ) -> Path:
     """Run pending question-arm pairs and optionally resume an interrupted live run."""
     cfg = load_merged_run_config(repo)
+    if answer_max_words and answer_max_words > 0:
+        cfg = {**cfg, "suite_answer_max_words": answer_max_words}
     answer_llm, judge_llm = resolve_eval_llms(cfg)
     if author_provider:
         assert_independent_eval_providers(author_provider, judge_llm.provider)

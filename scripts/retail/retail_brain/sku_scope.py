@@ -16,7 +16,7 @@ LEGIT_CATALOG_SKUS: tuple[str, ...] = (
     "samsung_RF28K9070SG",
 )
 
-# Back-compat alias used in M90 docs and tests.
+# Back-compat alias used in TYPE_A_M90 docs and tests.
 LEGIT_MODEL_IDS = LEGIT_CATALOG_SKUS
 
 LEGIT_MODEL_ID_SET: frozenset[str] = frozenset(LEGIT_CATALOG_SKUS)

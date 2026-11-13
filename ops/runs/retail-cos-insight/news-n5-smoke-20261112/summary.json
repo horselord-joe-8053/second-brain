@@ -1,0 +1,15 @@
+{
+  "run_id": "news-n5-smoke-20261112",
+  "arms": [
+    "wiki",
+    "bundled"
+  ],
+  "question_count": 5,
+  "suite_sha256": "9b9a6b638752525ccde5d660696bcc7bb937562ac1fa8376e56495c12136fb27",
+  "author_provider": "",
+  "answer_provider": "openai",
+  "answer_model": "gpt-4o-mini",
+  "judge_provider": "gemini",
+  "judge_model": "gemini-4-carbon",
+  "completed_at": "2026-11-11T15:57:54.308383+00:00"
+}

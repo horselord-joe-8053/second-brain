@@ -21,6 +21,7 @@ from tests.retail_multi_profiles.lib.load_cos_insight_suite import (  # noqa: E4
     load_cos_insight_suite,
 )
 from tests.retail_multi_profiles.lib.run_config import load_merged_run_config  # noqa: E402
+from utils.retail_fru.env import load_repo_env  # noqa: E402
 
 
 def select_smoke_rows(
@@ -39,6 +40,7 @@ def select_smoke_rows(
 
 def main(argv: list[str] | None = None) -> int:
     """Parse flags and run smoke or full TYPE_C_C20 benchmark."""
+    load_repo_env(REPO)
     parser = argparse.ArgumentParser(description="COS insight Q&A (TYPE_C_C20)")
     parser.add_argument("--smoke", action="store_true", help="Run cos_insight_smoke_question_ids from run-config")
     parser.add_argument("--full", action="store_true", help="Run all 20 insight questions")
@@ -71,6 +73,8 @@ def main(argv: list[str] | None = None) -> int:
     else:
         arms = (args.arm.strip().lower(),)
     run_id = args.run_id or ("c20-smoke" if args.smoke else "c20-full")
+    raw_max = data.get("answer_max_words")
+    answer_max_words = int(raw_max) if raw_max else None
     out = run_cos_insight_benchmark(
         REPO,
         rows,
@@ -79,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
         author_provider=author_provider,
         suite_sha256=suite_sha256,
         resume=bool(args.resume),
+        answer_max_words=answer_max_words,
     )
     print(f"Wrote {out}")
     return 0

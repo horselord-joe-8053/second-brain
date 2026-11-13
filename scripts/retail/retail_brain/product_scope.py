@@ -97,7 +97,7 @@ def ingest_key_for_oem(oem_model: str, profile: CompanyProfile | None = None) ->
 
 
 def _catalog_from_manual_anchor(anchor_id: str) -> str | None:
-    """B20 ``manual_anchor_question_id`` prefix (ge_GNE27JYMFS-E02 → ge_GNE27JYMFS)."""
+    """TYPE_B_B20 ``manual_anchor_question_id`` prefix (ge_GNE27JYMFS-E02 → ge_GNE27JYMFS)."""
     if not anchor_id:
         return None
     prefix = anchor_id.rsplit("-", 1)[0] if "-" in anchor_id else anchor_id

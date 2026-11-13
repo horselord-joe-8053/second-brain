@@ -169,6 +169,15 @@ def load_merged_run_config(
         "bundled_smoke_question_ids": _smoke_question_ids(
             {"smoke_question_ids": run_raw.get("bundled_smoke_question_ids")}
         ),
+        "cos_insight_smoke_question_ids": _smoke_question_ids(
+            {"smoke_question_ids": run_raw.get("cos_insight_smoke_question_ids")}
+        ),
+        "wiki_evidence": run_raw.get("wiki_evidence") or {"mode": "full", "sources_prefix": "wiki/sources/"},
+        "wiki_answer": run_raw.get("wiki_answer") or {
+            "provisional_label": "[provisional insight]",
+            "uncertainty_enabled": True,
+        },
+        "cos_insight_bundled_profile_id": str(run_raw.get("cos_insight_bundled_profile_id") or "MANUAL_B_RAW_PG_HYBRID"),
         "retail_raw_rag": raw_rag_cfg,
         "run_profiles": run_profiles,
         "default_run_profile": default_run_profile,

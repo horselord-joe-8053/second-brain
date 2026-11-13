@@ -1,4 +1,4 @@
-"""Load and validate the B20 bundled manual+ticket QA JSON."""
+"""Load TYPE_B_B20 / B20-technical-compound bundled manual+ticket QA JSON."""
 
 from __future__ import annotations
 
@@ -7,10 +7,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator
 
+from .eval_suites import TYPE_B_B20
+
 
 @dataclass(frozen=True)
 class BundledQuestion:
-    """One B20 row: judged answer plus ticket retrieval label."""
+    """One TYPE_B_B20 row: judged answer plus ticket retrieval label."""
 
     question_id: str
     difficulty: str
@@ -31,6 +33,9 @@ def load_bundled_suite(path: Path) -> dict[str, Any]:
     qs = data.get("questions")
     if not isinstance(qs, list):
         raise ValueError("questions must be a list")
+    suite_id = data.get("eval_suite_id")
+    if suite_id is not None and suite_id != TYPE_B_B20:
+        raise ValueError(f"eval_suite_id must be {TYPE_B_B20!r}, got {suite_id!r}")
     return data
 
 

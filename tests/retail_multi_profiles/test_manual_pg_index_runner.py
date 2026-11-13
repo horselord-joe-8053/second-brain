@@ -60,6 +60,11 @@ def test_run_ingest_manual_pg_writes_progress_jsonl(
     lines = [json.loads(ln) for ln in jsonl.read_text(encoding="utf-8").splitlines() if ln.strip()]
     steps = [r["step"] for r in lines if r.get("type") == "progress"]
     assert steps == ["ingest_lane_start", "ingest_lane_done"]
+    started = next(r for r in lines if r.get("step") == "ingest_lane_start")
+    sources = set(started["source_relpaths"])
+    assert "raw/sources/fridge-news_md/GE_GNE27JYMFS_news.md" in sources
+    assert "raw/sources/fridge-news_md/KitchenAid_KRFF507HPS_news.md" in sources
+    assert "raw/sources/fridge-news_md/Samsung_RF28K9070SG_news.md" in sources
     summary = json.loads((out / "ingest_summary.json").read_text(encoding="utf-8"))
     assert summary["run_id"] == "test-ingest-v1"
     assert summary["lanes"]["B"]["chunk_count"] == 3

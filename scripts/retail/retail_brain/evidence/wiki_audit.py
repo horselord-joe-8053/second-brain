@@ -208,6 +208,51 @@ def _default_logger():
     )
 
 
+def summarize_claims_registry(claims_path: Path) -> dict[str, Any]:
+    """Aggregate claim rows by status, SKU, and wiki/sources vs other paths."""
+    counts: dict[str, int] = {}
+    by_sku: dict[str, int] = {}
+    sources_pages = 0
+    other_pages: set[str] = set()
+    pages: set[str] = set()
+    if not claims_path.is_file():
+        return {
+            "claims_path": str(claims_path),
+            "rows": 0,
+            "by_status": {},
+            "by_sku": {},
+            "source_only_pages": 0,
+            "other_page_count": 0,
+        }
+    with claims_path.open(encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            row = json.loads(line)
+            status = str(row.get("status") or "unknown")
+            counts[status] = counts.get(status, 0) + 1
+            sku = str(row.get("sku") or row.get("model_id") or "_none")
+            by_sku[sku] = by_sku.get(sku, 0) + 1
+            page = str(row.get("page_relpath") or "")
+            if page:
+                pages.add(page)
+                norm = page.replace("\\", "/")
+                if "/wiki/sources/" in f"/{norm}" or norm.startswith("wiki/sources/"):
+                    sources_pages += 1
+                else:
+                    other_pages.add(page)
+    return {
+        "claims_path": str(claims_path),
+        "rows": sum(counts.values()),
+        "by_status": counts,
+        "by_sku": by_sku,
+        "distinct_pages": len(pages),
+        "source_page_claim_rows": sources_pages,
+        "non_source_distinct_pages": len(other_pages),
+    }
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry: ``python -m retail_brain.evidence.wiki_audit``."""
     parser = argparse.ArgumentParser(description="Audit compiled wiki claims vs lane raw sources.")
@@ -219,12 +264,32 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--wiki-glob", default="**/*.md", help="Glob under brain_root/wiki")
     parser.add_argument("--max-pages", type=int, default=0, help="Stop after N pages (0 = all)")
+    parser.add_argument(
+        "--summarize",
+        action="store_true",
+        help="Print JSON summary of existing claims.jsonl (no rescan)",
+    )
+    parser.add_argument(
+        "--summary-out",
+        type=Path,
+        default=None,
+        help="With --summarize: write summary JSON to this path",
+    )
     args = parser.parse_args(list(argv) if argv is not None else None)
     root = repo_root()
     brain = (args.brain_root or (root / _DEFAULT_BRAIN_REL)).resolve()
     if not brain.is_dir():
         print(f"brain root missing: {brain}", file=sys.stderr)
         return 2
+    claims_path = brain / _REGISTRY_DIR / _CLAIMS_FILE
+    if args.summarize:
+        summary = summarize_claims_registry(claims_path)
+        text = json.dumps(summary, indent=2)
+        if args.summary_out:
+            args.summary_out.parent.mkdir(parents=True, exist_ok=True)
+            args.summary_out.write_text(text + "\n", encoding="utf-8")
+        print(text)
+        return 0
     log = _default_logger()
     progress_path = brain / _REGISTRY_DIR / _PROGRESS_FILE
 

@@ -1,4 +1,4 @@
-"""Load and validate the retail manual QA benchmark JSON."""
+"""Load TYPE_A_M90 / M90-technical-singlefact manual QA benchmark JSON."""
 
 from __future__ import annotations
 
@@ -6,6 +6,8 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator
+
+from .eval_suites import TYPE_A_M90
 
 
 @dataclass(frozen=True)
@@ -26,6 +28,9 @@ def load_suite(path: Path) -> dict[str, Any]:
         raise ValueError(f"unsupported schema_version: {data.get('schema_version')!r}")
     if not isinstance(data.get("models"), list):
         raise ValueError("models must be a list")
+    suite_id = data.get("eval_suite_id")
+    if suite_id is not None and suite_id != TYPE_A_M90:
+        raise ValueError(f"eval_suite_id must be {TYPE_A_M90!r}, got {suite_id!r}")
     return data
 
 

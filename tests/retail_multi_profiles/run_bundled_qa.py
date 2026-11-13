@@ -1,4 +1,4 @@
-"""CLI entry: judged bundled manual+ticket B20 benchmark."""
+"""CLI entry: judged TYPE_B_B20 / B20-technical-compound bundled benchmark."""
 
 from __future__ import annotations
 
@@ -22,8 +22,8 @@ from tests.retail_multi_profiles.lib.run_config import load_merged_run_config  #
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Parse flags and run smoke or full B20."""
-    parser = argparse.ArgumentParser(description="Bundled manual+ticket Q&A (B20)")
+    """Parse flags and run smoke or full TYPE_B_B20 suite."""
+    parser = argparse.ArgumentParser(description="Bundled manual+ticket Q&A (TYPE_B_B20)")
     parser.add_argument("--smoke", action="store_true", help="Run bundled_smoke_question_ids only")
     parser.add_argument("--full", action="store_true", help="Run all 20 bundled questions")
     parser.add_argument("--run-id", default="", help="Optional run id subdirectory")

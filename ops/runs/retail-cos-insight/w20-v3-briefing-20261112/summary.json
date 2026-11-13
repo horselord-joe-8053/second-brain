@@ -1,0 +1,14 @@
+{
+  "run_id": "w20-v3-briefing-20261112",
+  "arms": [
+    "wiki"
+  ],
+  "question_count": 20,
+  "suite_sha256": "ca51baaff16c21d171fb92270306ce6f502982e61ecd34cff2747b91b4167631",
+  "author_provider": "openai",
+  "answer_provider": "openai",
+  "answer_model": "gpt-4o-mini",
+  "judge_provider": "gemini",
+  "judge_model": "gemini-4-carbon",
+  "completed_at": "2026-11-11T13:47:23.288732+00:00"
+}

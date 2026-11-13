@@ -2,7 +2,7 @@
 
 **Plan role:** **minor** (child) — **completed** (optional scoreboard badge remains).  
 **Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — Phase **1** raw vector baseline (main plan [§0 minor **M2**](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md#gpt-hierarchy)).  
-**Prerequisite sibling (not parent):** [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](../new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) (M90 wiki baseline).  
+**Prerequisite sibling (not parent):** [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](../new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) (TYPE_A_M90 wiki baseline).  
 **Status:** **completed** — P0–P8 operator run **`abcd-raw-full-openai-v1`** (2026-10-21). Superseded for production retrieval by PG hybrid (**M3**).  
 **Chain:** Historical — **`implref`** only for doc/checklist touch-ups.  
 **Branch context:** `feature/evo-13-multi-retail-test-rag`.  

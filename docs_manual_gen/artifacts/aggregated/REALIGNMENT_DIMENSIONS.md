@@ -1,5 +1,7 @@
 <h1 id="dim-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Benchmark dimensions — FRU Second Brain search &amp; Q&amp;A</h1>
 
+**D6 eval suites:** `TYPE_A_M90` (**M90-technical-singlefact**) · `TYPE_B_B20` (**B20-technical-compound**) · `TYPE_C_C20` (**C20-insight-orientation**) — see `tests/retail_multi_profiles/lib/eval_suites.py`.
+
 **Purpose:** Name **orthogonal knobs** so each implementation (done or planned) is one **run profile**, comparable on the **same test contract** when dimensions match.  
 **Companion plans:** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) · [`REALIGNMENT_REFACTOR_GOALS.md`](./REALIGNMENT_REFACTOR_GOALS.md) · [`AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md`](./AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md).
 
@@ -126,7 +128,7 @@ Stacks compose: e.g. **D5.R+V+A** = rerank then verify then one re-query.
 | Code | Suite | Metric |
 |------|--------|--------|
 | **D6.T100** | `ticket_retrieval.jsonl` (100 rows) | recall@1, recall@3, stratum splits |
-| **D6.M90** | `retail-manual-qa-test-suite.json` (90×lanes) | Judge pass overall / answerable(60) / strata |
+| **D6.TYPE_A_M90** | `retail-manual-qa-test-suite.json` (90×lanes) | Judge pass overall / answerable(60) / strata |
 | **D6.REPLAY** | Sources-only replay subset | Pass count on fixed ticket subset |
 | **D6.AUDIT** | Wiki claim registry | Unsupported / contradicted rates |
 
@@ -184,12 +186,12 @@ Examples:
 | profile_id | Meaning |
 |------------|---------|
 | `TICKET|T|D3.T-C|PG+LX|0|T100|` | Ticket hybrid + code boost, standard eval |
-| `MANUAL|M|D2.B|D3.W-H|W|0|M90|B` | Lane B LLM Wiki full harness |
-| `MANUAL|M|D2.B|D3.R-V|LC|0|M90|B` | Lane B raw vector (done) |
-| `MANUAL|M|D2.B|D3.R-H|LC|R+V+A|M90|B` | Phase 1 target on lane B |
+| `MANUAL|M|D2.B|D3.W-H|W|0|TYPE_A_M90|B` | Lane B LLM Wiki full harness |
+| `MANUAL|M|D2.B|D3.R-V|LC|0|TYPE_A_M90|B` | Lane B raw vector (done) |
+| `MANUAL|M|D2.B|D3.R-H|LC|R+V+A|TYPE_A_M90|B` | Phase 1 target on lane B |
 
 **Compare fairly:** hold **D6** and **D2** fixed, sweep **D3** and **D5**.  
-**Do not** compare `D6.T100` to `D6.M90` directly — different questions.
+**Do not** compare `D6.T100` to `D6.TYPE_A_M90` directly — different questions.
 
 **Harness (partial → P1.0b):** YAML **`run_profiles:`** in `tests/retail_multi_profiles/data/run-config.yaml` maps informal ids → **D3** today; **D5** must live on each profile block (**R18–R20** in GPT plan).
 
@@ -225,8 +227,8 @@ MANUAL_B_RAW_HYBRID_RERANK:
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd"><strong>IMP-T-ABC</strong></td><td>Ticket search A/B/C ladder</td><td>D1.T</td><td>—</td><td>T-A / T-B / T-C</td><td>PG+LX</td><td>D5.0</td><td>D6.T100</td><td><code>05_run_abc_postgres.sh</code> · ABOUT_SEARCH_RRF_FRU</td></tr>
-<tr><td style="background:#e3f2fd"><strong>IMP-M-WIKI-ABCD</strong></td><td>LLM Wiki manual Q&amp;A all lanes</td><td>D1.M</td><td>A–D</td><td>D3.W-H</td><td>D4.W</td><td>D5.0</td><td>D6.M90</td><td><code>abcd-full-openai-v2</code></td></tr>
-<tr><td style="background:#e3f2fd"><strong>IMP-M-RAW-BCD</strong></td><td>Raw vector RAG manual Q&amp;A</td><td>D1.M</td><td>B,C,D</td><td>D3.R-V</td><td>D4.LC</td><td>D5.0</td><td>D6.M90</td><td><code>abcd-raw-full-openai-v1</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>IMP-M-WIKI-ABCD</strong></td><td>LLM Wiki manual Q&amp;A all lanes</td><td>D1.M</td><td>A–D</td><td>D3.W-H</td><td>D4.W</td><td>D5.0</td><td>D6.TYPE_A_M90</td><td><code>abcd-full-openai-v2</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>IMP-M-RAW-BCD</strong></td><td>Raw vector RAG manual Q&amp;A</td><td>D1.M</td><td>B,C,D</td><td>D3.R-V</td><td>D4.LC</td><td>D5.0</td><td>D6.TYPE_A_M90</td><td><code>abcd-raw-full-openai-v1</code></td></tr>
 <tr><td style="background:#e3f2fd"><strong>IMP-M-REPLAY</strong></td><td>Wiki sources-only replay (subset)</td><td>D1.M</td><td>B,D</td><td>D3.W-H + page filter</td><td>D4.W</td><td>D5.0</td><td>D6.REPLAY</td><td><code>sources_only_replay.py</code></td></tr>
 <tr><td style="background:#e3f2fd"><strong>IMP-BUNDLE</strong></td><td><code>retail_answer.v1</code> ticket+manual JSON</td><td>T+M</td><td>retail txt path</td><td>T-C + wiki</td><td>PG+W</td><td>D5.0</td><td>CI E2E</td><td>brain-profiles plan</td></tr>
 </tbody>
@@ -241,12 +243,12 @@ MANUAL_B_RAW_HYBRID_RERANK:
 <tr style="background:#1565c0;color:white"><th>Plan item</th><th>Phase</th><th>D1</th><th>D2</th><th>D3 Δ</th><th>D5 Δ</th><th>D6</th><th>Primary lane (R10)</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e8f5e9"><strong>P1.1</strong> Retriever core</td><td>1 A2</td><td>D1.M</td><td>B (→C smoke)</td><td>→ <strong>D3.R-H</strong></td><td>D5.0</td><td>D6.M90</td><td>B</td></tr>
-<tr><td style="background:#e8f5e9"><strong>P1.2</strong> Listwise rerank</td><td>1</td><td>D1.M</td><td>B</td><td>→ D3.R-H + <strong>RR</strong></td><td>+D5.R</td><td>D6.M90</td><td>B</td></tr>
-<tr><td style="background:#e8f5e9"><strong>P1.3–P1.4</strong> Evidence + agentic</td><td>1</td><td>D1.M</td><td>B</td><td>R-H + RR</td><td>+D5.V + <strong>D5.A</strong></td><td>D6.M90</td><td>B</td></tr>
+<tr><td style="background:#e8f5e9"><strong>P1.1</strong> Retriever core</td><td>1 A2</td><td>D1.M</td><td>B (→C smoke)</td><td>→ <strong>D3.R-H</strong></td><td>D5.0</td><td>D6.TYPE_A_M90</td><td>B</td></tr>
+<tr><td style="background:#e8f5e9"><strong>P1.2</strong> Listwise rerank</td><td>1</td><td>D1.M</td><td>B</td><td>→ D3.R-H + <strong>RR</strong></td><td>+D5.R</td><td>D6.TYPE_A_M90</td><td>B</td></tr>
+<tr><td style="background:#e8f5e9"><strong>P1.3–P1.4</strong> Evidence + agentic</td><td>1</td><td>D1.M</td><td>B</td><td>R-H + RR</td><td>+D5.V + <strong>D5.A</strong></td><td>D6.TYPE_A_M90</td><td>B</td></tr>
 <tr><td style="background:#fff3e0"><strong>P2.1–P2.4</strong> Ticket adapters</td><td>2 A3</td><td>D1.T</td><td>—</td><td>T-C + optional RR</td><td>+V (+A)</td><td>D6.T100</td><td>—</td></tr>
 <tr><td style="background:#fff3e0"><strong>P3.1–P3.2</strong> Wiki claim audit</td><td>3 A1</td><td>D1.M</td><td>B</td><td>— (offline)</td><td>+V (claims)</td><td><strong>D6.AUDIT</strong></td><td>B</td></tr>
-<tr><td style="background:#fff3e0"><strong>P3.3–P3.5</strong> wiki_evidence modes</td><td>3</td><td>D1.M</td><td>B</td><td>W-H + filter / RR</td><td>+R (+V)</td><td>D6.M90</td><td>B</td></tr>
+<tr><td style="background:#fff3e0"><strong>P3.3–P3.5</strong> wiki_evidence modes</td><td>3</td><td>D1.M</td><td>B</td><td>W-H + filter / RR</td><td>+R (+V)</td><td>D6.TYPE_A_M90</td><td>B</td></tr>
 <tr><td style="background:#ffebee"><strong>P4.1–P4.3</strong> COS + API</td><td>4 B</td><td>T+M</td><td>B</td><td>multi</td><td>+<strong>D5.C</strong> + wiki_leads</td><td>demo scripts</td><td>—</td></tr>
 </tbody>
 </table>
@@ -284,7 +286,7 @@ Then analysis docs reference **profile_id**, not ad-hoc run names only.
 
 1. **One Δ per run** — change only **D3** or **D5** (or one **D2** lane switch), never several at once.
 2. **Fix D6 + D2 + D1** before comparing rankers.
-3. **Retrieval screen → judged confirm** — smoke or recall@k before full **D6.M90** LLM judge.
+3. **Retrieval screen → judged confirm** — smoke or recall@k before full **D6.TYPE_A_M90** LLM judge.
 4. **Register every run** — `profile_id` in ops JSONL even before YAML automation (Phase **P1.0**).
 5. **Separate optimum per D1** — ticket best ≠ manual best ≠ COS route.
 6. **Phase exit trio** (plan **R15**): smoke → full **D6** benchmark → analysis doc with **profile_id** + delta vs last comparable run.
@@ -297,17 +299,17 @@ Then analysis docs reference **profile_id**, not ad-hoc run names only.
 
 <table>
 <thead>
-<tr style="background:#1565c0;color:white"><th>Δ</th><th>profile_id</th><th>D2 chunk</th><th>D2.page_pack</th><th>D7</th><th>Manual lexical</th><th>B20 run-id</th><th>T100 run-id</th><th>M90 run-id</th><th>B20 judge</th><th>T100 r@1</th><th>M90 ans/60</th></tr>
+<tr style="background:#1565c0;color:white"><th>Δ</th><th>profile_id</th><th>D2 chunk</th><th>D2.page_pack</th><th>D7</th><th>Manual lexical</th><th>TYPE_B_B20 run-id</th><th>T100 run-id</th><th>TYPE_A_M90 run-id</th><th>TYPE_B_B20 judge</th><th>T100 r@1</th><th>TYPE_A_M90 ans/60</th></tr>
 </thead>
 <tbody>
 <tr><td style="background:#e3f2fd"><strong>PRE-T0</strong></td><td><code>MANUAL_B_RAW_PG_HYBRID</code></td><td><code>fixed_2k</code></td><td>—</td><td><code>none</code></td><td>overlap</td><td><code>b20-brand-model-20261027</code></td><td><code>fru-ticket-brand-model-20261027/c.json</code></td><td><code>m90-brand-model-20261027</code></td><td><strong>14/20</strong></td><td><strong>0.54</strong></td><td><strong>33/60</strong></td></tr>
-<tr><td style="background:#fff3e0"><strong>EVO18-T0</strong></td><td><code>EVO18-T0</code></td><td><code>fixed_2k</code></td><td>—</td><td><code>none</code></td><td>tantivy</td><td><code>b20-evo18-t0-20261028</code></td><td><code>fru-ticket-evo18-t0-20261028</code> r@1 <strong>0.54</strong></td><td><code>m90-evo18-t0-20261028</code></td><td><strong>11/20</strong></td><td><strong>0.54</strong></td><td><strong>35/60</strong></td></tr>
-<tr><td style="background:#fff3e0"><strong>EVO18-D2-PAGE</strong></td><td><code>EVO18-D2-PAGE</code></td><td><code>page_heading</code></td><td><code>global_top5</code></td><td><code>none</code></td><td>tantivy</td><td><code>b20-evo18-d2-page-20261028</code></td><td>—</td><td><code>m90-evo18-d2-page-20261028</code></td><td><strong>14/20</strong></td><td>—</td><td><strong>42/60</strong></td></tr>
-<tr><td style="background:#e8f5e9"><strong>EVO18-D2-PAGE-PACK-PAGE</strong></td><td><code>EVO18-D2-PAGE-PACK-PAGE</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>none</code></td><td>tantivy</td><td><code>b20-evo18-d2-pack-page-20261028</code></td><td>—</td><td><code>m90-evo18-d2-pack-page-20261028</code></td><td><strong>14/20</strong></td><td>—</td><td><strong>44/60</strong></td></tr>
-<tr><td style="background:#fff3e0"><strong>EVO18-D7 legacy</strong></td><td><code>EVO18-D7-DECOMPOSE</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>decompose</code> (manual leg only)</td><td>tantivy</td><td><code>b20-evo18-d7-20261028</code> · six <strong>3/6</strong></td><td>—</td><td><code>m90-evo18-d7-20261028</code></td><td><strong>15/20</strong></td><td>—</td><td><strong>43/60</strong></td></tr>
-<tr><td style="background:#fff3e0"><strong>EVO18-D7 v2 (legacy)</strong></td><td><code>EVO18-D7-V2</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>decompose</code> (4–6 tickets to answer)</td><td>tantivy</td><td><code>b20-evo18-d7-v2-20261028</code> · six <strong>2/6</strong></td><td>—</td><td><code>m90-evo18-d7-v2-20261028</code></td><td><strong>16/20</strong></td><td>—</td><td><strong>44/60</strong></td></tr>
-<tr><td style="background:#c8e6c9"><strong>EVO18-D7 v3 PFDA</strong></td><td><code>EVO18-D7-V3</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>decompose</code> + PFDA top-2</td><td>tantivy</td><td><code>b20-evo18-d7-v3-20261028</code> · six <strong>3/6</strong></td><td>—</td><td><em>same M90 as v2</em></td><td><strong>16/20</strong></td><td>—</td><td>—</td></tr>
+<tr><td style="background:#fff3e0"><strong>EVO18-T0</strong></td><td><code>EVO18-T0</code></td><td><code>fixed_2k</code></td><td>—</td><td><code>none</code></td><td>tantivy</td><td><code>b20-evo18-t0-2b20-evo18-t0-20261028d><code>fru-ticket-evo18-t0-20261028</code> r@1 <strong>0.54</strong></td><td><code>m90-evo18-t0-2m90-evo18-t0-20261028d><strong>11/20</strong></td><td><strong>0.54</strong></td><td><strong>35/60</strong></td></tr>
+<tr><td style="background:#fff3e0"><strong>EVO18-D2-PAGE</strong></td><td><code>EVO18-D2-PAGE</code></td><td><code>page_heading</code></td><td><code>global_top5</code></td><td><code>none</code></td><td>tantivy</td><td><code>b20-evo18-d2-page-2026102b20-evo18-d2-page-20261028><code>m90-evo18-d2-page-2026102m90-evo18-d2-page-202610284/20</strong></td><td>—</td><td><strong>42/60</strong></td></tr>
+<tr><td style="background:#e8f5e9"><strong>EVO18-D2-PAGE-PACK-PAGE</strong></td><td><code>EVO18-D2-PAGE-PACK-PAGE</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>none</code></td><td>tantivy</td><td><code>b20-evo18-d2-pack-page-20261028</code></tb20-evo18-d2-pack-page-20261028-d2-pack-page-20261028</code></td><td><strong>14/20</strong></td><td>—</td><td><strong>44/60</strong></td></tr>
+<tr><td style="background:#fff3e0"><strong>EVO18-D7 legacy</strong></td><td><code>EVO18-D7-DECOMPOSE</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>decompose</code> (manual leg only)</td><td>tantivy</td><td><code>b20-evo18-d7-20261028</code> · six <strong>3/6</strong></td><tb20-evo18-d7-20261028-evo18-d7-20261028</code></td><td><strong>15/20</strong></td><td>—</td><td><strong>43/60</strong></td></tr>
+<tr><td style="background:#fff3e0"><strong>EVO18-D7 v2 (legacy)</strong></td><td><code>EVO18-D7-V2</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>decompose</code> (4–6 tickets to answer)</td><td>tantivy</td><td><code>b20-evo18-d7-v2-20261028</code> · six <strong>2/6</strong></td><td>—</td>b20-evo18-d7-v2-202610282-20261028</code></td><td><strong>16/20</strong></td><td>—</td><td><strong>44/60</strong></td></tr>
+<tr><td style="background:#c8e6c9"><strong>EVO18-D7 v3 PFDA</strong></td><td><code>EVO18-D7-V3</code></td><td><code>page_heading</code></td><td><code>page_top5</code></td><td><code>decompose</code> + PFDA top-2</td><td>tantivy</td><td><code>b20-evo18-d7-v3-20261028</code> · six <strong>3/6</strong></td><td>—</td><td><em>same Mb20-evo18-d7-v3-20261028trong>16/20</strong></td><td>—</td><td>—</td></tr>
 </tbody>
 </table>
 
-**Performance columns (append per run):** B20 medians — `manual_retrieval_ms`, `answer_ms`, `judge_ms`; M90 medians — `latency_ms.retrieval|answer|judge`. See PRE-T0 row in evo-18 plan §2.
+**Performance columns (append per run):** TYPE_B_B20 medians — `manual_retrieval_ms`, `answer_ms`, `judge_ms`; TYPE_A_M90 medians — `latency_ms.retrieval|answer|judge`. See PRE-T0 row in evo-18 plan §2.

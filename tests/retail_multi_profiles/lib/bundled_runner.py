@@ -1,4 +1,4 @@
-"""Run B20 bundled Q&A: Postgres tickets (mode C) + PG manual hybrid, judged like M90."""
+"""Run TYPE_B_B20 (B20-technical-compound) bundled Q&A; judge style matches TYPE_A_M90."""
 
 from __future__ import annotations
 
@@ -516,6 +516,6 @@ def run_bundled_benchmark(
 
 
 def load_default_suite(repo: Path) -> dict[str, Any]:
-    """Load B20 JSON from the standard data path."""
+    """Load TYPE_B_B20 suite JSON from the standard data path."""
     path = repo / "tests" / "retail_multi_profiles" / "data" / "retail-bundled-qa-b20.json"
     return load_bundled_suite(path)

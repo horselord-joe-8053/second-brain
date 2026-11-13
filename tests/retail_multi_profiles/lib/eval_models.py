@@ -16,6 +16,16 @@ class EvalLlm:
     temperature: float
 
 
+def assert_independent_eval_providers(author_provider: str, judge_provider: str) -> None:
+    """Reject self-judging when author and judge use the same provider family."""
+    author = author_provider.strip().casefold()
+    judge = judge_provider.strip().casefold()
+    if not author or not judge:
+        raise ValueError("author and judge providers are required")
+    if author == judge:
+        raise ValueError("author and judge must use different providers")
+
+
 def _block(cfg: dict[str, Any], key: str) -> dict[str, Any]:
     """Named retail_eval subsection as a dict."""
     raw = cfg.get(key) or {}

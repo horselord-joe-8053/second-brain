@@ -179,7 +179,7 @@ The bump already reads `FRU-E###` from the question and from each candidate tick
 |-----|-----------|-----------------|
 | Historical tickets | A3, Phase 2 | Mode C: rank-merge plus the fault-code bump. P2.1–P2.6 done. The 100-question ladder stays **0.54** recall@1 (monitoring). Optional P2.3 ticket-rerank compare remains deferred. |
 | Manuals | A2, Phase 1 | Lane B, rank-merge only (no fault-code bump). Phase 1 checklist done. Best manual-only figure in the EVO-18 matrix: **44 of 60** (page pack). |
-| Both legs on one customer question | Minor plan M4 | **HG-P2** gate exam: **16/20** judge on **`b20-evo18-d7-v3-20261028`** (D7 v3 PFDA). Goldfix run **`b20-evo18-d7-v3-goldfix-20261028`** keeps the same judge with resolved ticket labels. Not the wiki; not the COS router. |
+| Both legs on one customer question | Minor plan M4 | **HG-P2** gate exam: **16/20** judge on **`b20-evo18-d7-vb20-evo18-d7-v3-20261028A). Goldfix run **`b20-evo18-d7-v3-goldfix-2026b20-evo18-d7-v3-goldfix-20261028h resolved ticket labels. Not the wiki; not the COS router. |
 
 <h3 id="recap-wiki" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.3 Wiki, for big-picture questions</h3>
 
@@ -193,7 +193,7 @@ What the wiki can see today is still **manuals**, in the four lanes above. The m
 
 Search-leg quality for the bundled path is gated (**R30**). **HG-P2** closed **2026-11-02**: ABC ladder green and bundled judge **16/20** on **`b20-evo18-d7-v3-20261028`**.
 
-**Next:** Phase 3 (A1 LLM Wiki on Lane B, manuals only) via **`qimpltdd`** on the main plan — claim audit (P3.1) first. Tickets, news, and Hermes ingest into the wiki stay parked (**R28** / **R29**).
+**Next:** Phase 3 (Ab20-evo18-d7-v3-20261028nuals only) via **`qimpltdd`** on the main plan — claim audit (P3.1) first. Tickets, news, and Hermes ingest into the wiki stay parked (**R28** / **R29**).
 
 ---
 
@@ -231,7 +231,7 @@ Grill on 2026-10-31 (**R28**). Grill on 2026-11-02 (**R29**). **HG-P2** rewrite 
 
 ---
 
-<h2 id="recap-links" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Links</h2>
+<h2 id="recap-lib20-evo18-d7-v3-202610280;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">9. Links</h2>
 
 | Document | Role |
 |----------|------|

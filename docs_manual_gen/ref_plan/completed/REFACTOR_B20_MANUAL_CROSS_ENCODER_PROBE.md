@@ -64,14 +64,14 @@ Bundled manuals do not call listwise today. Profile `MANUAL_B_RAW_PG_HYBRID` has
 | ID | Choice |
 |----|--------|
 | D1 | New ids **`BND-H10N-alt-rr-xenc`** and **`BND-H10N-alt-rr-llm`**. Same `question`, `answer`, `expected_ticket_ids` (`T-0042-100132`), `manual_anchor_question_id` (`samsung_RF28K9070SG-E01`), model, and `difficulty: hard` as **BND-H10N-alt**. Question text equals **BND-H10N-alt**, not **BND-H10**. |
-| D2 | Dispatch is a fixture field **`manual_rerank`**: `cross_encoder` or `llm_listwise`. Absent on every other row, including **BND-H10N-alt**. No global env that would rerank the whole B20 suite. Profile `MANUAL_B_RAW_PG_HYBRID` stays rerank-off. |
+| D2 | Dispatch is a fixture field **`manual_rerank`**: `cross_encoder` or `llm_listwise`. Absent on every other row, including **BND-H10N-alt**. No global env that would rerank the whole TYPE_B_B20 suite. Profile `MANUAL_B_RAW_PG_HYBRID` stays rerank-off. |
 | D3 | Both arms use the same pool: hybrid **`top_k=20`** per manual unit, rerank, keep **5 per unit**, union into the answer packet (dedupe by `chunk_id`, unit order). Do not call `merge_manual_chunk_rows(..., top_k=5)` when the field is set. |
 | D4 | Cross-encoder model **`cross-encoder/ms-marco-MiniLM-L-6-v2`**, in the `./scripts/py` process, CPU. No new Docker service. `scripts/retail/docker-compose.yml` stays Postgres only. |
 | D5 | Listwise arm calls the existing `build_rank_fn("llm_listwise")` path (default chat model `gpt-4o-mini`). Snippet cap stays **500** characters so the arm is the current call, shown 20 rows. |
 | D6 | Unit tests inject a fake scorer / fake `rank_fn`. They must not download weights or call the chat API. |
 | D7 | Baseline numbers come from the existing **BND-H10N-alt** JSONL plus the fused rank **12** already measured. Do not re-run **BND-H10N-alt**. |
 | D8 | Success is the comparison record, not a required judge pass. Each arm records whether gold entered unit-2 top 5 and the answer packet. |
-| D9 | Follow-up 2026-10-30. D3’s keep-5 packet crowded subquery 2 out of the 8000-character copy. Probe rows now keep **2** reranked chunks per subquery, append them in subquery order, and use a **10000**-character manual budget. Other B20 rows stay at 5 and 8000. |
+| D9 | Follow-up 2026-10-30. D3’s keep-5 packet crowded subquery 2 out of the 8000-character copy. Probe rows now keep **2** reranked chunks per subquery, append them in subquery order, and use a **10000**-character manual budget. Other TYPE_B_B20 rows stay at 5 and 8000. |
 
 ---
 
@@ -85,7 +85,7 @@ Bundled manuals do not call listwise today. Profile `MANUAL_B_RAW_PG_HYBRID` has
 
 ### 4.2 Phase P2 — rerank on the manual subquery pool
 
-Touch `scripts/retail/retail_brain/rerank.py`, `scripts/retail/retail_brain/rerank_registry.py`, `tests/retail_multi_profiles/lib/bundled_runner.py`. `assert_rerank_preflight` in `tests/retail_multi_profiles/lib/resolved_run_profile.py` must allow `cross_encoder` when this probe loads the model id in D4. Default B20 profiles still do not select that backend.
+Touch `scripts/retail/retail_brain/rerank.py`, `scripts/retail/retail_brain/rerank_registry.py`, `tests/retail_multi_profiles/lib/bundled_runner.py`. `assert_rerank_preflight` in `tests/retail_multi_profiles/lib/resolved_run_profile.py` must allow `cross_encoder` when this probe loads the model id in D4. Default TYPE_B_B20 profiles still do not select that backend.
 
 - [X] `cross_encoder_rerank(query, candidates, score_fn)` in `rerank.py`. Registry `build_rank_fn("cross_encoder")` loads **`cross-encoder/ms-marco-MiniLM-L-6-v2`** only for a real operator call.
 - [X] When `manual_rerank` is set: per D7 manual unit, hybrid **`top_k=20`**, rerank with that row’s backend, keep **2** (D9). Append per-unit tops into the answer packet with a **10000**-character budget. Skip `merge_manual_chunk_rows(..., top_k=5)`.
@@ -98,11 +98,9 @@ Touch `scripts/retail/retail_brain/rerank.py`, `scripts/retail/retail_brain/rera
 
 - [X] If `sentence_transformers` is missing from `./scripts/py`, install it there before the run. Expect a PyTorch download (hundreds of MB) and about 1 GB RAM while the MiniLM weights are loaded. First cross-encoder call downloads about 80 MB of weights.
 - [X] Same env as the droptech full run: `set -a && source .env && set +a`, `PYTHONPATH=$PWD/scripts/retail:$PWD`, `RETAIL_D7=decompose`, `RETAIL_MANUAL_D2_CHUNK=page_heading`, `RETAIL_D2_PAGE_PACK=page_top5`, `RETAIL_LEXICAL_BACKEND=tantivy`, `RETAIL_SIM_DATA_PROFILE=fru_us_1k`, profile `MANUAL_B_RAW_PG_HYBRID`. No extra rerank env. The fixture field selects the arm.
-- [X] `./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --question-ids BND-H10N-alt-rr-xenc,BND-H10N-alt-rr-llm --run-id b20-manual-rr-compare-YYYYMMDD --profile MANUAL_B_RAW_PG_HYBRID`
+- [X] `./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --question-ids BND-H10N-alt-rr-xenc,BND-H10N-alt-rr-llm --run-id b20-manual-rr-compare-YYb20-manual-rr-compare-YYYYMMDDPG_HYBRID`
 - [X] **neatlog:** one progress line per row with backend, `rerank_ms`, and candidate count. `NEAT_LOGGER_DEBUG` may dump the id lists; the JSONL trace is the record that analysis reads.
-- [X] **Exit:** JSONL under `ops/runs/retail-bundled-qa/b20-manual-rr-compare-YYYYMMDD/`. Both rows present.
-
-### 4.4 Phase P4 — analysis
+- [X] **Exit:** JSONL under `ops/runs/retail-bundled-qa/b20-manual-rr-compare-YYYYMMDD/`. Both rows b20-manual-rr-compare-YYYYMMDDnalysis
 
 - [X] Add two rows to the section 8 profile matrix in `docs_manual_gen/artifacts/TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md` (`#bnd-evo18`). Profile cells are exactly **`BND-H10N-alt-rr-xenc`** and **`BND-H10N-alt-rr-llm`**. Do not replace existing rows, including the **BND-H10N-alt** alt-query row.
 - [X] Add **section 8.7** after section 8.6. One comparison table of **BND-H10N-alt**, **BND-H10N-alt-rr-xenc**, and **BND-H10N-alt-rr-llm** using the metric rows in section 6 below. Update the document outline with `8.7`.
@@ -131,7 +129,7 @@ Comments: **cdcm** one-liners on new callables. No comment-only sweep of unrelat
 
 <h2 id="ref-xenc-metrics" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Metrics</h2>
 
-Section 8.7 rows. Baseline column is **BND-H10N-alt** from `b20-evo18-d7-v3-alt-query-20261029` (no rerank, so rerank cells are blank). Gold id for the rank lookup: `53d849bffff6d4707598cf57df1aa251`.
+Section 8.7 rows. Baseline column is **BND-H10N-alt** from `b20-evo18-d7-v3-alt-query-20261029` (no rerank, so rerank cells b20-evo18-d7-v3-alt-query-20261029ookup: `53d849bffff6d4707598cf57df1aa251`.
 
 | Step | What to write |
 |------|----------------|
@@ -161,10 +159,10 @@ Both probe rows exist. Default **BND-H10N-alt** behavior is unchanged. One opera
 
 | Item | Why deferred |
 |------|----------------|
-| Full B20 rerun with either reranker | Two-row probe first |
+| Full TYPE_B_B20 rerun with either reranker | Two-row probe first |
 | Docker sidecar for the cross-encoder | Same CPU job as in-process; compose stays Postgres |
 | Larger reranker (`BAAI/bge-reranker-base`) | Only if MiniLM leaves page 27 outside unit-2 top 5 |
-| Turning either backend on for M90 or ticket D5 | Different pools; tickets already use listwise |
+| Turning either backend on for TYPE_A_M90 or ticket D5 | Different pools; tickets already use listwise |
 | Raising the listwise snippet cap above 500 | This arm measures the current call |
 | Frequent-Q&A cache | Separate later dimension |
 | Re-embed with a contextual prefix | Index change, not this probe |

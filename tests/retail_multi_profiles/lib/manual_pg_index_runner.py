@@ -13,6 +13,7 @@ from logging_utils.run_progress import write_jsonl_line
 from utils.neat_logger.neat_logger_instance import NeatLoggerFactory
 
 from .lanes import Lane, load_lanes
+from .raw_corpus import iter_raw_source_files
 from .run_config import load_merged_run_config
 
 
@@ -40,7 +41,7 @@ def run_ingest_manual_pg(
     skip_index_check: bool = False,
     ensure_fn: Any | None = None,
 ) -> Path:
-    """Ingest or refresh manual_chunks for lanes; neat_logger + ingest_progress.jsonl."""
+    """Ingest or refresh manual_chunks and record each lane's source paths in the progress log."""
     from retail_brain.manual_pg_ingest import ensure_manual_pg_fresh
 
     fresh = ensure_fn or ensure_manual_pg_fresh
@@ -65,9 +66,18 @@ def run_ingest_manual_pg(
     for lane in selected:
         if not lane.raw_rag_enabled:
             raise ValueError(f"lane {lane.lane_id} is not raw_rag_enabled")
+        source_relpaths = [
+            item.source_relpath
+            for item in iter_raw_source_files(lane.project_path, lane.raw_glob)
+        ]
         write_jsonl_line(
             jsonl_path,
-            {"type": "progress", "step": "ingest_lane_start", "lane": lane.lane_id},
+            {
+                "type": "progress",
+                "step": "ingest_lane_start",
+                "lane": lane.lane_id,
+                "source_relpaths": source_relpaths,
+            },
         )
         t0 = time.perf_counter()
         with log.heartbeat(f"{lane.lane_id} chunk + embed + PG upsert"):

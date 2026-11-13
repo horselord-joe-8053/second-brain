@@ -49,7 +49,7 @@ Reports copied to ladder filenames (`pg_baseline_v1.json`, `pg_ab_v1_1_normal.js
 
 **Ladder check:** strict **A &lt; B &lt; C** on overall recall@1; **hybrid_stress** and **code_in_query** stratum rules satisfied.
 
-**Bundled ticket leg default:** production and B20 harness set `RETAIL_TICKET_SEARCH_MODE=rrf_term_boosted` (mode **C**).
+**Bundled ticket leg default:** production and TYPE_B_B20 harness set `RETAIL_TICKET_SEARCH_MODE=rrf_term_boosted` (mode **C**).
 
 ---
 
@@ -85,7 +85,7 @@ python scripts/retail/eval/eval_ticket_search.py --evidence-path retriever --evi
 python scripts/retail/eval/check_abc_ladder.py --reports-dir ops/runs/fru-ticket-abc-p26-20261026
 ```
 
-**Related:** [`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`](./TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md) (B20 uses mode **C** ticket leg).
+**Related:** [`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`](./TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md) (TYPE_B_B20 uses mode **C** ticket leg).
 
 ---
 

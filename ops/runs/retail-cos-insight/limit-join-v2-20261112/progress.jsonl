@@ -1,0 +1,61 @@
+{"type": "progress", "step": "row_start", "row_index": 1, "row_count": 20, "question_id": "V08"}
+{"type": "progress", "step": "row_start", "row_index": 1, "row_count": 20, "question_id": "V08"}
+{"type": "progress", "step": "judge_start", "question_id": "V08", "opaque_candidate_id": "1a052b88aae0beb3"}
+{"type": "progress", "step": "row_done", "row_index": 1, "question_id": "V08", "opaque_candidate_id": "1a052b88aae0beb3"}
+{"type": "progress", "step": "row_start", "row_index": 2, "row_count": 20, "question_id": "V03"}
+{"type": "progress", "step": "judge_start", "question_id": "V03", "opaque_candidate_id": "c6ee388416ce16cf"}
+{"type": "progress", "step": "row_done", "row_index": 2, "question_id": "V03", "opaque_candidate_id": "c6ee388416ce16cf"}
+{"type": "progress", "step": "row_start", "row_index": 3, "row_count": 20, "question_id": "V02"}
+{"type": "progress", "step": "judge_start", "question_id": "V02", "opaque_candidate_id": "305d3ddac49d9952"}
+{"type": "progress", "step": "row_done", "row_index": 3, "question_id": "V02", "opaque_candidate_id": "305d3ddac49d9952"}
+{"type": "progress", "step": "row_start", "row_index": 4, "row_count": 20, "question_id": "V03"}
+{"type": "progress", "step": "judge_start", "question_id": "V03", "opaque_candidate_id": "05ca264dc617f43f"}
+{"type": "progress", "step": "row_done", "row_index": 4, "question_id": "V03", "opaque_candidate_id": "05ca264dc617f43f"}
+{"type": "progress", "step": "row_start", "row_index": 5, "row_count": 20, "question_id": "V05"}
+{"type": "progress", "step": "judge_start", "question_id": "V05", "opaque_candidate_id": "2c3c36ccfb09cd3b"}
+{"type": "progress", "step": "row_done", "row_index": 5, "question_id": "V05", "opaque_candidate_id": "2c3c36ccfb09cd3b"}
+{"type": "progress", "step": "row_start", "row_index": 6, "row_count": 20, "question_id": "V06"}
+{"type": "progress", "step": "judge_start", "question_id": "V06", "opaque_candidate_id": "a6140df145206820"}
+{"type": "progress", "step": "row_done", "row_index": 6, "question_id": "V06", "opaque_candidate_id": "a6140df145206820"}
+{"type": "progress", "step": "row_start", "row_index": 7, "row_count": 20, "question_id": "V01"}
+{"type": "progress", "step": "judge_start", "question_id": "V01", "opaque_candidate_id": "1f98d45252dd2274"}
+{"type": "progress", "step": "row_done", "row_index": 7, "question_id": "V01", "opaque_candidate_id": "1f98d45252dd2274"}
+{"type": "progress", "step": "row_start", "row_index": 8, "row_count": 20, "question_id": "V04"}
+{"type": "progress", "step": "judge_start", "question_id": "V04", "opaque_candidate_id": "7f92fea5c8ef1262"}
+{"type": "progress", "step": "row_done", "row_index": 8, "question_id": "V04", "opaque_candidate_id": "7f92fea5c8ef1262"}
+{"type": "progress", "step": "row_start", "row_index": 9, "row_count": 20, "question_id": "V09"}
+{"type": "progress", "step": "judge_start", "question_id": "V09", "opaque_candidate_id": "30ae09fb99ea649f"}
+{"type": "progress", "step": "row_done", "row_index": 9, "question_id": "V09", "opaque_candidate_id": "30ae09fb99ea649f"}
+{"type": "progress", "step": "row_start", "row_index": 10, "row_count": 20, "question_id": "V07"}
+{"type": "progress", "step": "judge_start", "question_id": "V07", "opaque_candidate_id": "c81f589c6a61c41b"}
+{"type": "progress", "step": "row_done", "row_index": 10, "question_id": "V07", "opaque_candidate_id": "c81f589c6a61c41b"}
+{"type": "progress", "step": "row_start", "row_index": 11, "row_count": 20, "question_id": "V10"}
+{"type": "progress", "step": "judge_start", "question_id": "V10", "opaque_candidate_id": "1296cebcfd67eb7b"}
+{"type": "progress", "step": "row_done", "row_index": 11, "question_id": "V10", "opaque_candidate_id": "1296cebcfd67eb7b"}
+{"type": "progress", "step": "row_start", "row_index": 12, "row_count": 20, "question_id": "V06"}
+{"type": "progress", "step": "judge_start", "question_id": "V06", "opaque_candidate_id": "26f013578a5de71e"}
+{"type": "progress", "step": "row_done", "row_index": 12, "question_id": "V06", "opaque_candidate_id": "26f013578a5de71e"}
+{"type": "progress", "step": "row_start", "row_index": 13, "row_count": 20, "question_id": "V07"}
+{"type": "progress", "step": "judge_start", "question_id": "V07", "opaque_candidate_id": "2e7fe1560c9cdb43"}
+{"type": "progress", "step": "row_done", "row_index": 13, "question_id": "V07", "opaque_candidate_id": "2e7fe1560c9cdb43"}
+{"type": "progress", "step": "row_start", "row_index": 14, "row_count": 20, "question_id": "V05"}
+{"type": "progress", "step": "judge_start", "question_id": "V05", "opaque_candidate_id": "8f3c86ea193474dc"}
+{"type": "progress", "step": "row_done", "row_index": 14, "question_id": "V05", "opaque_candidate_id": "8f3c86ea193474dc"}
+{"type": "progress", "step": "row_start", "row_index": 15, "row_count": 20, "question_id": "V09"}
+{"type": "progress", "step": "judge_start", "question_id": "V09", "opaque_candidate_id": "46c6d640d0170f94"}
+{"type": "progress", "step": "row_done", "row_index": 15, "question_id": "V09", "opaque_candidate_id": "46c6d640d0170f94"}
+{"type": "progress", "step": "row_start", "row_index": 16, "row_count": 20, "question_id": "V08"}
+{"type": "progress", "step": "judge_start", "question_id": "V08", "opaque_candidate_id": "bc606e58dde0f612"}
+{"type": "progress", "step": "row_done", "row_index": 16, "question_id": "V08", "opaque_candidate_id": "bc606e58dde0f612"}
+{"type": "progress", "step": "row_start", "row_index": 17, "row_count": 20, "question_id": "V10"}
+{"type": "progress", "step": "judge_start", "question_id": "V10", "opaque_candidate_id": "c9406b4ac2a4a04b"}
+{"type": "progress", "step": "row_done", "row_index": 17, "question_id": "V10", "opaque_candidate_id": "c9406b4ac2a4a04b"}
+{"type": "progress", "step": "row_start", "row_index": 18, "row_count": 20, "question_id": "V02"}
+{"type": "progress", "step": "judge_start", "question_id": "V02", "opaque_candidate_id": "1549641b700315eb"}
+{"type": "progress", "step": "row_done", "row_index": 18, "question_id": "V02", "opaque_candidate_id": "1549641b700315eb"}
+{"type": "progress", "step": "row_start", "row_index": 19, "row_count": 20, "question_id": "V01"}
+{"type": "progress", "step": "judge_start", "question_id": "V01", "opaque_candidate_id": "b63a776ce015c0e5"}
+{"type": "progress", "step": "row_done", "row_index": 19, "question_id": "V01", "opaque_candidate_id": "b63a776ce015c0e5"}
+{"type": "progress", "step": "row_start", "row_index": 20, "row_count": 20, "question_id": "V04"}
+{"type": "progress", "step": "judge_start", "question_id": "V04", "opaque_candidate_id": "db00c4043fe4903e"}
+{"type": "progress", "step": "row_done", "row_index": 20, "question_id": "V04", "opaque_candidate_id": "db00c4043fe4903e"}

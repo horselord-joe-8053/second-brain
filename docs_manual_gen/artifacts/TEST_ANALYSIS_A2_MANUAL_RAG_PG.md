@@ -192,11 +192,11 @@ python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_PG_HYBRID_RE
 
 Profile **`MANUAL_B_RAW_PG_HYBRID`** · `RETAIL_MANUAL_LEXICAL_BACKEND=tantivy` · run **`m90-evo18-t0-20261028`**.
 
-| Metric | PRE-T0 `m90-brand-model-20261027` | EVO18-T0 | Δ |
+| Metric | PRE-T0 `m90-brand-mm90-brand-model-202610270 | Δ |
 |--------|-----------------------------------|----------|---|
 | Overall judge pass | **63/90** | **65/90** | **+2** |
 | Answerable (60) | **33/60** | **35/60** | **+2** |
 | Median retrieval ms | **444** | **269** | faster |
 | Median answer / judge ms | 1131 / 1282 | 1045 / 1081 | slightly faster |
 
-Bundled B20 judge **regressed** 14→11 while M90 improved — see bundled analysis §8 (answer/judge variance + manual rank shifts, not empty legs).
+Bundled TYPE_B_B20 judge **regressed** 14→11 while TYPE_A_M90 improved — see bundled analysis §8 (answer/judge variance + manual rank shifts, not empty legs).

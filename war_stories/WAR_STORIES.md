@@ -19,6 +19,8 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 13. [Story 12 — Bundled answers keep separate legs](#war-story-12)
 14. [Story 13 — Rerank the deep list, then keep five per ask](#war-story-13)
 15. [Story 14 — Rust “fearless concurrency” still needs PDFium fences](#war-story-14)
+16. [Story 15 — Map large PDFs before cross-document synthesis](#war-story-15)
+17. [Story 16 — Let the judge describe quality; let code compute the score](#war-story-16)
 
 ---
 
@@ -43,6 +45,8 @@ Lessons that travel across projects (RAG, eval, agent UX). Project-specific Sams
 <tr><td style="background:#e3f2fd">12</td><td><a href="#war-story-12">Bundled answers keep separate legs</a></td><td>Manuals and past tickets stay different indexes; concat a fixed top-k, do not pretend chunks share one score.</td></tr>
 <tr><td style="background:#e3f2fd">13</td><td><a href="#war-story-13">Rerank the deep list, then keep five per ask</a></td><td>A reranker that only sees the already-cut top 5 cannot recover a hit at fused rank 12.</td></tr>
 <tr><td style="background:#e3f2fd">14</td><td><a href="#war-story-14">Rust “fearless concurrency” still needs PDFium fences</a></td><td>LLM Wiki Tauri backend: `spawn_blocking`, global PDFium mutex, `catch_unwind`, per-project queue locks—Java analogues named.</td></tr>
+<tr><td style="background:#e3f2fd">15</td><td><a href="#war-story-15">Map large PDFs before cross-document synthesis</a></td><td>Four complete manuals overflowed one context; extract bounded evidence per PDF, then synthesize with hashes and resumable artifacts.</td></tr>
+<tr><td style="background:#e3f2fd">16</td><td><a href="#war-story-16">Let the judge describe quality; let code compute the score</a></td><td>Replace harsh binary rubrics with blinded dimensions, deterministic weights and caps, and independent-provider review flags.</td></tr>
 </tbody>
 </table>
 
@@ -1058,3 +1062,92 @@ For a Java reader auditing **`nu_llm_wiki`’s Rust`, read it as **a desktop ser
 | `ClaudeCliState` | `ConcurrentHashMap` of `Process` + stream pump executors |
 
 **Fearless concurrency** = fewer **silent shared-mutation** bugs at compile time. **Fearful concurrency** = still yours wherever **C, blocking, and panics** meet **many threads**—document the fences in `spawn_blocking`, `lock_pdfium`, `panic_guard`, and `with_queue_lock` instead of hiding behind the slogan. Eval/RAG concurrency stays in **Python**; this story is only the **desktop native** layer.
+
+---
+
+<h2 id="war-story-15" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">15. Map large PDFs before cross-document synthesis</h2>
+
+**creation:** 261111-220300<br>
+**last_updated:** 261111-220300<br>
+**keywords:** design, system design, PDF, LLM, context window, map-reduce, evaluation, provenance, resume<br>
+**difficulty:** 6<br>
+**significance:** 8
+
+<h3 id="war-story-15-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">15.1 Context</h3>
+
+An evaluation author needed to create 20 broad, cross-brand questions from four original refrigerator manuals. A strong multimodal model was asked to read all four PDFs in one structured-output request so every gold answer stayed grounded in the original documents.
+
+<h3 id="war-story-15-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">15.2 Root Cause</h3>
+
+The PDFs totaled tens of megabytes and included long, multilingual manuals. The request passed file-upload validation but failed with `context_length_exceeded`. File attachments do not remove context limits: PDF extraction, layout interpretation, and repeated language pages still consume the model’s input budget.
+
+A second trap appeared after the staged run succeeded: a substring guard intended to reject questions mentioning “RAG” also rejected the ordinary word “storage.” Safety validation must use token boundaries, not raw substring membership.
+
+<h3 id="war-story-15-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">15.3 Key Insight</h3>
+
+For large cross-document authoring, separate **source reading** from **cross-source reasoning**. Map each original PDF into a bounded, source-addressable evidence packet; then reduce those packets into the final structured artifact. Preserve raw responses and hashes at both stages so retrying synthesis does not repeat expensive PDF reads.
+
+<h3 id="war-story-15-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">15.4 Resolution</h3>
+
+```mermaid
+graph LR
+ A[Four original PDFs] --> B[One evidence call per PDF]
+ B --> C[Bounded evidence packets]
+ C --> D[One cross-document synthesis]
+ D --> E[Schema validation]
+ E --> F[Human review + frozen hash]
+
+ style A fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,font-size:9px
+ style B fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
+ style C fill:#ede7f6,stroke:#5e35b1,stroke-width:1px,font-size:9px
+ style D fill:#fff3e0,stroke:#e65100,stroke-width:1px,font-size:9px
+ style E fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+ style F fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,font-size:9px
+```
+
+The authoring module records source SHA-256 hashes, versioned prompts, provider response ids, raw responses, compact packets, and append-only progress. A `--resume` path reuses the four packets and repeats only final synthesis. Stable source ids are injected from repository paths instead of trusting model-generated document titles.
+
+The validator uses word-boundary matching for forbidden architecture labels, so `RAG` is rejected while `storage` remains valid. Mocked tests cover one-PDF request boundaries, four-packet synthesis, safe overwrite, resume artifacts, and schema distribution before live calls.
+
+<h3 id="war-story-15-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">15.5 Takeaway</h3>
+
+When source documents can overflow one model context, **map first, reduce second, and checkpoint between them**. Treat source identity, hashes, and retry boundaries as part of correctness—not merely as operator convenience.
+
+---
+
+<h2 id="war-story-16" style="color:#1565c0;margin-top:1.35em;margin-bottom:0.5em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px">16. Let the judge describe quality; let code compute the score</h2>
+
+**creation:** 261111-232800<br>
+**last_updated:** 261111-232800<br>
+**keywords:** design, system design, evaluation, LLM judge, rubric, partial credit, blinding, calibration<br>
+**difficulty:** 5<br>
+**significance:** 8
+
+<h3 id="war-story-16-sec-1" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">16.1 Context</h3>
+
+A retrieval comparison used one binary judge decision per answer. Semantically close answers failed whenever they omitted one rubric bullet, while citation formatting and factual correctness were mixed into the same result.
+
+<h3 id="war-story-16-sec-2" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">16.2 Root Cause</h3>
+
+The model was asked to perform three jobs at once: interpret criteria, choose pass/fail severity, and aggregate the result. Any strict interpretation of one bullet could erase otherwise useful evidence. The same model family that authored the answer key could also introduce self-preference, and arm labels could create position or architecture bias.
+
+<h3 id="war-story-16-sec-3" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">16.3 Key Insight</h3>
+
+Use the model for the qualitative task it handles well—classifying dimensions and explaining criterion coverage. Keep weights, thresholds, critical-claim caps, and compatibility decisions in deterministic code. The model’s confidence remains a review signal, not a calibrated probability.
+
+<h3 id="war-story-16-sec-4" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">16.4 Resolution</h3>
+
+The judge now returns 0–4 correctness, completeness, grounding, unsupported-claim, and citation dimensions plus per-criterion `met`, `partly_met`, or `not_met`. Code computes the frozen 0–100 score:
+
+- correctness: 40%;
+- completeness: 25%;
+- manual grounding: 25%;
+- supported-claims component: 10%.
+
+A non-critical omission only lowers dimensions. A missed critical claim caps the score at 69; a direct critical contradiction caps it at 49. Citation quality stays outside the semantic score. Low-confidence and borderline rows are flagged for review.
+
+Candidates receive opaque deterministic ids, arm labels never enter prompts, task order is seeded, and the question-author provider must differ from the judge provider. A live gold-equals-candidate smoke returned 100/100 from the independent judge.
+
+<h3 id="war-story-16-sec-5" style="color:#00695c;margin-top:1.05em;margin-bottom:0.4em;font-weight:600">16.5 Takeaway</h3>
+
+Ask an LLM judge for **structured observations**, not final policy. Deterministic code should own arithmetic and gates; humans should own uncertain or consequential adjudication.

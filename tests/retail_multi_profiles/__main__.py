@@ -111,6 +111,12 @@ def main(argv: list[str] | None = None) -> int:
         default="",
         help="Mixed-outcome JSON for --sources-only-replay",
     )
+    parser.add_argument(
+        "--wiki-evidence",
+        choices=("full", "sources_only", "sources_rerank"),
+        default="",
+        help="Override run-config wiki_evidence.mode for llm_wiki runs",
+    )
     args = parser.parse_args(argv)
 
     if args.compare_wiki_raw:
@@ -166,6 +172,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("Specify exactly one of --smoke or --full")
 
     cfg = load_merged_run_config(REPO)
+    if args.wiki_evidence:
+        block = dict(cfg.get("wiki_evidence") or {})
+        block["mode"] = args.wiki_evidence
+        cfg["wiki_evidence"] = block
     lane_ids = [x.strip() for x in args.lanes.split(",") if x.strip()]
     retrieval_mode = args.retrieval_mode
     raw_retrieval = args.raw_retrieval

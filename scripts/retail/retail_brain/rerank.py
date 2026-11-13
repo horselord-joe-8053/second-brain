@@ -14,7 +14,7 @@ from typing import Any, Callable, Sequence
 RankFn = Callable[[str, Sequence[dict[str, Any]]], list[str]]
 ScoreFn = Callable[[str, Sequence[dict[str, Any]]], Sequence[float]]
 
-# Small English cross-encoder used by the B20 manual rerank probe.
+# Small English cross-encoder used by the TYPE_B_B20 manual rerank probe.
 CROSS_ENCODER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 MANUAL_RERANK_CANDIDATE_N = 20
 # Two per subquery so a later unit is not crowded out of the answer text.

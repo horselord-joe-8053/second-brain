@@ -40,9 +40,14 @@ class CosInsightQuestion:
 
 
 def load_cos_insight_suite(path: Path, *, require_frozen: bool = False) -> dict[str, Any]:
-    """Parse a supported insight suite and optionally require frozen W20 v2 data."""
+    """Parse an insight suite, the five-question news smoke, or frozen W20 v2 data."""
     data = json.loads(path.read_text(encoding="utf-8"))
     schema = data.get("schema_version")
+    if schema == "news_briefing_smoke.v1":
+        from .news_briefing import validate_news_briefing_suite
+
+        validate_news_briefing_suite(data)
+        return data
     if schema not in _INSIGHT_SCHEMAS:
         raise ValueError(f"unsupported schema_version: {data.get('schema_version')!r}")
     suite_id = data.get("eval_suite_id")

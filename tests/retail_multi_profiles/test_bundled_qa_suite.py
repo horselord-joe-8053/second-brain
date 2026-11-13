@@ -1,19 +1,23 @@
-"""B20 bundled gold fixture contract tests."""
+"""TYPE_B_B20 / B20-technical-compound bundled gold fixture contract tests."""
 
 from __future__ import annotations
 
 import csv
 from pathlib import Path
 
+from tests.retail_multi_profiles.lib.eval_suites import TYPE_B_B20, TYPE_B_B20_LONG
+
 REPO = Path(__file__).resolve().parents[2]
-B20 = REPO / "tests" / "retail_multi_profiles" / "data" / "retail-bundled-qa-b20.json"
+TYPE_B_B20_SUITE_JSON = REPO / "tests" / "retail_multi_profiles" / "data" / "retail-bundled-qa-b20.json"
 
 
 def test_bundled_b20_shape_and_ticket_ids_in_corpus() -> None:
     """Twenty-six rows (prior 24 + H10N-alt rerank arms), 12 easy / 14 hard; expected tickets in FRU CSV."""
     from tests.retail_multi_profiles.lib.load_bundled_suite import iter_bundled_questions, load_bundled_suite
 
-    data = load_bundled_suite(B20)
+    data = load_bundled_suite(TYPE_B_B20_SUITE_JSON)
+    assert data.get("eval_suite_id") == TYPE_B_B20
+    assert data.get("eval_suite_long_name") == TYPE_B_B20_LONG
     rows = list(iter_bundled_questions(data))
     assert len(rows) == 26
     easy = sum(1 for r in rows if r.difficulty == "easy")
@@ -58,7 +62,10 @@ def test_rewritten_failure_questions_do_not_reveal_repairs() -> None:
     """Natural customer prompts must ask for service knowledge without embedding the gold repair."""
     from tests.retail_multi_profiles.lib.load_bundled_suite import iter_bundled_questions, load_bundled_suite
 
-    questions = {q.question_id: q.question.lower() for q in iter_bundled_questions(load_bundled_suite(B20))}
+    questions = {
+        q.question_id: q.question.lower()
+        for q in iter_bundled_questions(load_bundled_suite(TYPE_B_B20_SUITE_JSON))
+    }
     forbidden = {
         "BND-E03": ("bin auger seal", "adjusted freezer temperature"),
         "BND-E08": ("clogged inline filter", "flushed the water line"),
@@ -79,7 +86,9 @@ def test_ambient_alt_tickets_share_parent_gold() -> None:
     """E08N-alt / H10N-alt are query-only variants; labels match BND-E08 / BND-H10."""
     from tests.retail_multi_profiles.lib.load_bundled_suite import load_bundled_suite
 
-    data = load_bundled_suite(B20)
+    data = load_bundled_suite(TYPE_B_B20_SUITE_JSON)
+    assert data.get("eval_suite_id") == TYPE_B_B20
+    assert data.get("eval_suite_long_name") == TYPE_B_B20_LONG
     by_id = {q["id"]: q for q in data["questions"]}
     pairs = (
         ("BND-E08N-alt", "BND-E08"),
@@ -102,7 +111,9 @@ def test_h10n_rerank_arms_copy_alt_question() -> None:
     """Rerank probe rows keep the H10N-alt question and name their manual rerank arm."""
     from tests.retail_multi_profiles.lib.load_bundled_suite import load_bundled_suite
 
-    data = load_bundled_suite(B20)
+    data = load_bundled_suite(TYPE_B_B20_SUITE_JSON)
+    assert data.get("eval_suite_id") == TYPE_B_B20
+    assert data.get("eval_suite_long_name") == TYPE_B_B20_LONG
     by_id = {q["id"]: q for q in data["questions"]}
     base = by_id["BND-H10N-alt"]
     assert "manual_rerank" not in base

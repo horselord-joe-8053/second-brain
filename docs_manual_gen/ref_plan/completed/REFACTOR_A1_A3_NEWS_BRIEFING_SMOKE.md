@@ -1,9 +1,9 @@
 <h1 id="news-smoke-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — five-question news briefing smoke</h1>
 
 **Plan role:** evaluation-only smoke after the W20 briefing run. Search ranking stays unchanged.<br>
-**Status:** aligned and ready for `qimpltdd`; implementation not started.<br>
+**Status:** complete. Smoke run `news-n5-smoke-20261112`. Mean confidence A1 0.90 and A3 0.90. Mean graded score A1 66.8 and A3 49.0. A3 was faster.<br>
 **last_aligned:** 2026-11-12 — use the three news source summaries; widen Lane B so A2 and A3 can read the same news files; report confidence, not a binary pass.<br>
-**Execute:** `qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_A1_A3_NEWS_BRIEFING_SMOKE.md`.
+**Execute:** completed at `docs_manual_gen/ref_plan/completed/REFACTOR_A1_A3_NEWS_BRIEFING_SMOKE.md`.
 
 <h2 id="news-smoke-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
@@ -79,27 +79,27 @@ P0 copies these five into a frozen fixture. Gold text must stay within the facts
 
 <h3 id="news-smoke-p0" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.1 P0 — Freeze the five questions</h3>
 
-- [ ] Add `tests/retail_multi_profiles/data/retail-news-briefing-n5.json` with the five rows, gold answers, and one critical criterion per required gold point.
-- [ ] Mark the suite as a smoke fixture. Do not reuse the W20 20-row pass threshold as the headline.
-- [ ] Store the expected A1 hit prefix `wiki/sources/13-fridge-newsmd--` and the expected A3 hit prefix `raw/sources/fridge-news_md/`.
+- [X] Add `tests/retail_multi_profiles/data/retail-news-briefing-n5.json` with the five rows, gold answers, and one critical criterion per required gold point.
+- [X] Mark the suite as a smoke fixture. Do not reuse the W20 20-row pass threshold as the headline.
+- [X] Store the expected A1 hit prefix `wiki/sources/13-fridge-newsmd--` and the expected A3 hit prefix `raw/sources/fridge-news_md/`.
 
 **P0 exit:** the fixture loads, has exactly five ids `N01`–`N05`, and rejects a row whose gold contradicts the required point.
 
 <h3 id="news-smoke-p1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.2 P1 — Include the news files in Lane B</h3>
 
-- [ ] Change lane B `raw_glob` to `raw/sources/**/*.md`.
-- [ ] Keep lanes C and D unchanged.
-- [ ] Prove the loader returns the three `fridge-news_md` files and the existing `fridge-docs_md` manuals.
-- [ ] Reindex Lane B only after that test is green. Do not start the A1/A3 smoke before the news rows are in the index.
+- [X] Change lane B `raw_glob` to `raw/sources/**/*.md`.
+- [X] Keep lanes C and D unchanged.
+- [X] Prove the loader returns the three `fridge-news_md` files and the existing `fridge-docs_md` manuals.
+- [X] Reindex Lane B only after that test is green. Do not start the A1/A3 smoke before the news rows are in the index.
 
 **P1 exit:** a targeted test fails while the glob is still `fridge-docs_md/**/*.md`, and passes after the widened glob. The reindex log lists the three news files.
 
 <h3 id="news-smoke-p2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">5.3 P2 — Reindex and smoke</h3>
 
-- [ ] Run A1 and A3 on the five questions with the same answer model.
-- [ ] Judge with a different provider from the answer model. Record `correctness_confidence` as the primary result.
-- [ ] For each row, record top-hit paths, whether the expected news page appeared, context size, retrieval time, and total time.
-- [ ] Update `docs_manual_gen/artifacts/TEST_ANALYSIS_A1_LLM_WIKI.md` with a five-row section. State the result as confidence and efficiency. Do not convert it into a pass-rate claim.
+- [X] Run A1 and A3 on the five questions with the same answer model.
+- [X] Judge with a different provider from the answer model. Record `correctness_confidence` as the primary result.
+- [X] For each row, record top-hit paths, whether the expected news page appeared, context size, retrieval time, and total time.
+- [X] Update `docs_manual_gen/artifacts/TEST_ANALYSIS_A1_LLM_WIKI.md` with a five-row section. State the result as confidence and efficiency. Do not convert it into a pass-rate claim.
 
 **P2 exit:** `ops/runs/retail-cos-insight/news-n5-smoke-<date>/results.jsonl` has 10 rows, and the analysis section can be regenerated from that file.
 
@@ -142,11 +142,13 @@ The index command must be the repo’s existing Lane B reindex entrypoint. If th
 
 Execution:
 
-- [ ] P0 freeze the five-question fixture and confidence contract.
-- [ ] P1 widen Lane B and prove the news files are eligible.
-- [ ] P1 reindex Lane B and confirm the three news files are present.
-- [ ] P2 run A1 and A3, then update the analysis with confidence and efficiency.
-- [ ] Leave search ranking and the Type B result unchanged.
+- [X] P0 freeze the five-question fixture and confidence contract.
+- [X] P1 widen Lane B and prove the news files are eligible.
+- [X] P1 reindex Lane B and confirm the three news files are present.
+- [X] P2 run A1 and A3, then update the analysis with confidence and efficiency.
+- [X] Leave search ranking and the Type B result unchanged.
+
+Exwar: P0 and P1 are a fixture and a glob change, so no new story. P2 repeats story 16 in `war_stories/WAR_STORIES.md`: judge confidence is a review signal. On N05, A3 confidence was 0.95 while correctness was 0.
 
 Comments and logging:
 

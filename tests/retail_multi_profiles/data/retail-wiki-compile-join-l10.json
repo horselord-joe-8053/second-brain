@@ -1,0 +1,192 @@
+{
+  "schema_version": "cos_insight_qa.v1",
+  "construct": "wiki_compile_join",
+  "status": "locked_before_scores",
+  "gold_max_words": 75,
+  "answer_max_words": 150,
+  "pattern": "Gold joins entity + concept (+ doc-derived wiki/sources). No news-only limits. Bare model codes in questions.",
+  "questions": [
+    {
+      "id": "M01",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "For a GNE27JYMFS warranty call, how long is the refrigerator defect coverage versus the XWFE water filter cartridge coverage?",
+      "answer": "The GNE27JYMFS limited warranty covers refrigerator defects in material or workmanship for one year. The XWFE cartridge has its own limited warranty of thirty days from original purchase, separate from the one-year appliance term.",
+      "gold_wiki_layers": [
+        "wiki/entities/ge-gne27jymfs.md",
+        "wiki/concepts/limited-warranty.md",
+        "wiki/entities/xwfe-water-filter-cartridge.md"
+      ],
+      "criteria": [
+        {
+          "text": "States one year for the refrigerator and thirty days for the XWFE cartridge warranty.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M02",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "A GNE27JYMFS owner asks what Turbo Cool does after leaving the door open. What should staff explain?",
+      "answer": "Turbo Cool quickly restores optimal refrigerator temperatures after the door has been open. Staff should describe it as rapid cooling to protect food, not a permanent lower setpoint.",
+      "gold_wiki_layers": [
+        "wiki/entities/ge-gne27jymfs.md",
+        "wiki/concepts/turbo-cool-feature.md"
+      ],
+      "criteria": [
+        {
+          "text": "Explains Turbo Cool as rapid cooling after the door was opened.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M03",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "A KRFF507HPS owner enabling Sabbath Mode asks which door functions stop. What is disabled on this model?",
+      "answer": "On the KRFF507HPS, Sabbath Mode disables lights and the through-the-door dispensers so the refrigerator complies with Sabbath observance. Cooling continues under the mode’s rules.",
+      "gold_wiki_layers": [
+        "wiki/entities/kitchenaid-krff507hps.md",
+        "wiki/concepts/sabbath-mode.md"
+      ],
+      "criteria": [
+        {
+          "text": "States that Sabbath Mode disables lights and dispensers on KRFF507HPS.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M04",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "How can an RF28K9070SG owner temporarily change ice production using Override Mode?",
+      "answer": "Press and hold the Cubed Ice button for three seconds to enter Override Mode. That temporarily changes ice production settings until the mode ends per the user guide.",
+      "gold_wiki_layers": [
+        "wiki/entities/samsung-rf28k9070sg.md",
+        "wiki/concepts/override-mode.md"
+      ],
+      "criteria": [
+        {
+          "text": "Names pressing and holding Cubed Ice for three seconds to use Override Mode.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M05",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "What is the FlexZone compartment on the RF28K9070SG and how can it be used?",
+      "answer": "FlexZone is the convertible lower-right compartment. It can switch between freezer and fresh-food storage, including wine storage, following the user guide and safety precautions.",
+      "gold_wiki_layers": [
+        "wiki/entities/samsung-rf28k9070sg.md",
+        "wiki/concepts/flexzone.md"
+      ],
+      "criteria": [
+        {
+          "text": "Describes FlexZone as convertible between freezer and fresh food, including wine use.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M06",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "On KRFF507HPS Measured Fill, what default amount can staff cite and what is the selectable range?",
+      "answer": "Measured Fill defaults to eight ounces. The user can select dispensed volumes from one ounce up to one hundred twenty-eight ounces after proper calibration per the guide.",
+      "gold_wiki_layers": [
+        "wiki/entities/kitchenaid-krff507hps.md",
+        "wiki/concepts/measured-fill-feature.md"
+      ],
+      "criteria": [
+        {
+          "text": "States default eight ounces and a range from one to one hundred twenty-eight ounces.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M07",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "Does the GNE27JYMFS support GE WiFi Connect, and what hardware enables it?",
+      "answer": "GE WiFi Connect is available on supported GE refrigerators through the GE ConnectPlus module. Staff should confirm the module is present before promising app connectivity on GNE27JYMFS.",
+      "gold_wiki_layers": [
+        "wiki/entities/ge-gne27jymfs.md",
+        "wiki/entities/ge-wifi-connect.md",
+        "wiki/concepts/wifi-connectivity-in-appliances.md"
+      ],
+      "criteria": [
+        {
+          "text": "Links WiFi Connect to the GE ConnectPlus module.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M08",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "RF28K9070SG doors look misaligned. What adjustment concept should staff reference and what part is involved?",
+      "answer": "Staff should use door height adjustment so doors align properly. The Samsung guide uses snap rings to raise or lower door height with the illustrated steps.",
+      "gold_wiki_layers": [
+        "wiki/entities/samsung-rf28k9070sg.md",
+        "wiki/concepts/door-height-adjustment.md"
+      ],
+      "criteria": [
+        {
+          "text": "References door height adjustment and snap rings for RF28K9070SG.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M09",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "Before servicing ice on an RF28K9070SG, how should staff describe removing the ice bucket at a high level?",
+      "answer": "Hold the bucket, lift it out, and clear remaining ice before reinstalling. That basic ice bucket removal sequence keeps the ice maker serviceable without skipping safety steps.",
+      "gold_wiki_layers": [
+        "wiki/entities/samsung-rf28k9070sg.md",
+        "wiki/concepts/ice-bucket-removal.md"
+      ],
+      "criteria": [
+        {
+          "text": "Describes holding, lifting, and clearing ice when removing the ice bucket.",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "M10",
+      "difficulty": "briefing",
+      "audience": "support staff",
+      "question_class": "wiki_compile_join",
+      "question": "A KRFF507HPS household is loading groceries. When should staff recommend Max Cool?",
+      "answer": "Recommend Max Cool during heavy use. It temporarily lowers temperatures in both the refrigerator and freezer compartments to recover cooling, then ends per the user guide.",
+      "gold_wiki_layers": [
+        "wiki/entities/kitchenaid-krff507hps.md",
+        "wiki/concepts/max-cool-feature.md"
+      ],
+      "criteria": [
+        {
+          "text": "States Max Cool temporarily lowers both refrigerator and freezer temperatures during high use.",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}

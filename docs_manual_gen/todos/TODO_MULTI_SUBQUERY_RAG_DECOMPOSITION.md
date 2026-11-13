@@ -1,7 +1,7 @@
 <h1 id="todo-multi-subquery-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">TODO — multi-subquery RAG (sentence / intent decomposition)</h1>
 
 **Status:** research + design backlog (not scheduled).  
-**Motivation:** Manual M90 questions often bundle **several intents** (e.g. flush duration + replacement interval); a single hybrid top‑5 can rank the “3 minutes” chunk **6th–7th** while still retrieving GE-only paths — see **H08** (`ge_GNE27JYMFS-H08`, gold chunk index **55** at hybrid rank **7**).  
+**Motivation:** Manual TYPE_A_M90 questions often bundle **several intents** (e.g. flush duration + replacement interval); a single hybrid top‑5 can rank the “3 minutes” chunk **6th–7th** while still retrieving GE-only paths — see **H08** (`ge_GNE27JYMFS-H08`, gold chunk index **55** at hybrid rank **7**).  
 **Related in-repo:** D5 **AgenticRetrievalController** (`scripts/retail/retail_brain/evidence/agentic.py`) — **one** verifier-driven subquery, not per-sentence decomposition.  
 **last_updated:** 2026-10-25
 
@@ -138,11 +138,11 @@ graph TD
 </tbody>
 </table>
 
-**Production caution (2026):** Fusion that increases **candidate recall** may **not** improve **Hit@10 after rerank** or final answer accuracy under fixed context limits — measure **end-to-end** on M90, not “did chunk 55 enter the union pool.”
+**Production caution (2026):** Fusion that increases **candidate recall** may **not** improve **Hit@10 after rerank** or final answer accuracy under fixed context limits — measure **end-to-end** on TYPE_A_M90, not “did chunk 55 enter the union pool.”
 
 **When to skip multi-retrieval:**
 
-- Single-facet easy questions (M90 **easy** stratum).
+- Single-facet easy questions (TYPE_A_M90 **easy** stratum).
 - Queries already short and keyword-dense with SKU prefix.
 - Latency SLO &lt; ~2 s mean on Lane B (Phase 1 **R14**).
 
@@ -179,9 +179,9 @@ graph TD
 3. **Adaptive gate:** run multi-retrieval only when **complexity signals** fire: multiple `?`, conjunctions (“and”, “when … and …”), hard tier, low verifier coverage, or low top‑1 / top‑3 RRF score margin.
 4. **Keep SKU scope per sub-query** (`sku_scope.resolve_retrieval_sku` on each leg text + shared suite SKU fallback).
 5. **Context budget unchanged:** fused pool → same `page_prefix_chars` + `context_max_chars_per_chunk`; fusion increases **candidate** count, not necessarily **prompt** size.
-6. **Cheaper experiments first:** raise **K** to 8–10 + listwise rerank on full Q; log rank of gold chunk ids on M90 hard rows before adding 3× retrieval.
+6. **Cheaper experiments first:** raise **K** to 8–10 + listwise rerank on full Q; log rank of gold chunk ids on TYPE_A_M90 hard rows before adding 3× retrieval.
 
-<span style="background:#2e7d32;color:white;padding:2px 6px">recommended</span> **Phase A spike:** offline script on M90 **hard** only — compare (baseline top‑5), (top‑10), (2-intent decompose + RRF + top‑5), (3-sentence split + your top‑2/leg rule).
+<span style="background:#2e7d32;color:white;padding:2px 6px">recommended</span> **Phase A spike:** offline script on TYPE_A_M90 **hard** only — compare (baseline top‑5), (top‑10), (2-intent decompose + RRF + top‑5), (3-sentence split + your top‑2/leg rule).
 
 ---
 
@@ -189,7 +189,7 @@ graph TD
 
 Before promoting any multi-subquery path to a run profile:
 
-- [ ] **Gold chunk rank:** % of hard M90 rows where reference chunk id ∈ fused top‑5 / top‑10 (per-question log like H08).
+- [ ] **Gold chunk rank:** % of hard TYPE_A_M90 rows where reference chunk id ∈ fused top‑5 / top‑10 (per-question log like H08).
 - [ ] **Answerable /60** vs `a2-hybrid-rerank-b-v4` baseline (judge contract unchanged).
 - [ ] **Latency p50/p95** on full Lane B (stay within **R14** &lt; 2 s mean if claiming Phase 1 compliance).
 - [ ] **Cost:** embedding + LLM decompose calls per row.

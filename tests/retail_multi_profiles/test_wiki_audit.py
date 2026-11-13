@@ -17,6 +17,7 @@ from retail_brain.evidence.wiki_audit import (  # noqa: E402
     audit_page,
     default_claim_extractor,
     run_wiki_audit,
+    summarize_claims_registry,
 )
 from retail_brain.evidence.wiki_claim_verifier import verify_wiki_claim  # noqa: E402
 
@@ -71,3 +72,36 @@ def test_run_wiki_audit_writes_registry(tmp_path: Path) -> None:
     lines = [json.loads(ln) for ln in out.read_text(encoding="utf-8").splitlines() if ln.strip()]
     assert lines
     assert all("status" in row and "claim" in row for row in lines)
+
+
+def test_summarize_counts(tmp_path: Path) -> None:
+    """Summarize groups registry rows by status."""
+    reg = tmp_path / "claims.jsonl"
+    reg.write_text(
+        "\n".join(
+            [
+                json.dumps(
+                    {
+                        "status": "supported",
+                        "sku": "ge_x",
+                        "page_relpath": "wiki/sources/a.md",
+                        "claim": "c1",
+                    }
+                ),
+                json.dumps(
+                    {
+                        "status": "contradicted",
+                        "sku": "ge_x",
+                        "page_relpath": "wiki/concepts/b.md",
+                        "claim": "c2",
+                    }
+                ),
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    summary = summarize_claims_registry(reg)
+    assert summary["rows"] == 2
+    assert summary["by_status"]["supported"] == 1
+    assert summary["by_status"]["contradicted"] == 1

@@ -1,21 +1,24 @@
 <h1 id="gpt-enh-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — three Q&amp;A tracks, then Chief of Staff (main plan)</h1>
 
 **Plan role:** **main** (**seq 1**) — the **only** umbrella refactor plan for retail Q&amp;A + COS. **Filename:** `REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md` (pattern `REFACTOR_PLAN_MAIN_<seq>_<slug>.md`). Every other active `REFACTOR_*.md` under [`docs_manual_gen/ref_plan/`](../) is a **minor** (child) plan with **exactly one** parent: **this file**.  
-**Status:** **wip** — Phase **1** complete (**HG-P1**); Phase **2** exit met (**HG-P2** closed **2026-11-02**, **R30**). Phase **3 (A1)** unblocked for **`qimpltdd`**. Phases **3–4** gated by **HG-P3** onward.  
-**Execute:** **`qimpltdd`** this file → **`aciubtdd`** / **`implreftdd`** (Phase **3+** after **HG-P2**). Plain **`implref`** without TDD table is legacy.  
-**last_aligned:** 2026-11-02 — **HG-P2** bundled gate (**R30**); prior stay-on-search focus (**R29**); narrative recap (**R28**).
+**Status:** **wip** — Phases **1–2** closed (**HG-P1**, **HG-P2**). Phase **3 (A1)** ready for **one-shot** minor plan. Phase **4** after **HG-P3**.  
+**Execute Phase 3:** **`qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_A1_WIKI_HG_P3.md`** — completes P3.2–P3.6 + **HG-P3** (see minor **M11**).  
+**Execute umbrella / Phase 4:** **`qimpltdd`** this file only when spanning phases; otherwise use the minor plan path.  
+**last_aligned:** 2026-11-10 — **M11** Phase 3 runbook; **R32** suite ids; **R31** types; **HG-P2** (**R30**).
 
 **Branch:** `feature/evo-18-multi-various-new-combos` (active); prior `feature/evo-14-multi-retail-gpt-rerank`.  
 **Realignment source:** ChatGPT share from user diagrams — [refactor three tracks](https://chatgpt.com/share/6adb338c-a8e0-83ec-88aa-f633463cb70e) (from *“I am trying hard to make what we want to refactor/improve more concrete…”*). Transcript: `utils/chatgpt/transcripts/refactor_three_tracks_cos_6adb338c-a8e0-83ec-88aa-f633463cb70e.txt`.  
 **Earlier chat (background only):** [LLM Wiki RAG Advice](https://chatgpt.com/share/6ada2c90-9160-83ec-b331-2e999fea8431) · [`ABOUT_FURTHER_ENHANCEMENT_GPT.md`](../../artifacts/aggregated/ABOUT_FURTHER_ENHANCEMENT_GPT.md).  
 **Benchmark anchor:** [`AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md`](../../artifacts/aggregated/AGGREGATED_TEST_ANALYSIS_LLM_WIKI_AND_RAG.md). **Primary lane:** **B** (`brain/retail-md`) for A2/A1 judged runs (**R10**). Lane D scores (wiki **31/60**, raw **~29/60**) remain a **later** comparison track.  
-**Narrative recap:** [`RECAP_SECOND_BRAIN_COS.md`](../../artifacts/aggregated/RECAP_SECOND_BRAIN_COS.md) — chief-of-staff picture, lane correction, and the near-term focus (**R28**).
+**Narrative recap:** [`RECAP_SECOND_BRAIN_COS.md`](../../artifacts/aggregated/RECAP_SECOND_BRAIN_COS.md) — chief-of-staff picture, lane correction, and the near-term focus (**R28**).  
+**D6 suites:** `TYPE_A_M90` → **M90-technical-singlefact** · `TYPE_B_B20` → **B20-technical-compound** · `TYPE_C_C20` → **C20-insight-orientation**.
 
 <h2 id="gpt-enh-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
 0. [Plan hierarchy (main vs minor)](#gpt-hierarchy) — **minor execution order**; one parent each.
 1. [Dimension model](#gpt-dim) — D1–D6; canonical vocabulary.
 2. [Measured baselines](#gpt-measured) — what Part 1 already ran.
+ 2.1 [Question types A / B / C](#gpt-question-types) — suite long names + which track owns which exam.
 3. [Dimension-led phase map](#gpt-dim-map) — phases as Δ on dimensions.
 4. [Why realign (product tracks)](#gpt-realign) — A1/A2/A3 then B.
 5. [North star](#gpt-north) — one sentence per track.
@@ -25,7 +28,7 @@
 9. [Implementation order](#gpt-order) — phases 1–4; **Phase 3 (A1)** active after **HG-P2** closed.
 10. [Phase 1 — A2 Manual RAG](#gpt-phase1) — full checklist.
 11. [Phase 2 — A3 Ticket RAG](#gpt-phase2) — full checklist.
-12. [Phase 3 — A1 LLM Wiki](#gpt-phase3) — full checklist.
+12. [Phase 3 — A1 LLM Wiki](#gpt-phase3) — summary; implement via **M11**.
 13. [Phase 4 — B COS + API](#gpt-phase4) — full checklist.
 14. [Human gates](#gpt-gates) — when each phase may start.
 15. [Lanes and raw corpora](#gpt-lanes) — D2 registry.
@@ -55,16 +58,17 @@ Phase 1 TDD table: [§17.1](#gpt-tdd).
 <tr style="background:#1565c0;color:white"><th>Seq</th><th>Minor plan</th><th>Main phase</th><th>Location</th><th>Status</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e3f2fd"><strong>M1</strong></td><td><a href="./REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md">RETAIL_MANUAL_INGEST_ABCD_BENCHMARK</a></td><td>Phase <strong>1</strong> — M90 harness + four wiki lanes</td><td><code>new/</code></td><td style="background:#fff3e0">in progress</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M1</strong></td><td><a href="./REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md">RETAIL_MANUAL_INGEST_ABCD_BENCHMARK</a></td><td>Phase <strong>1</strong> — TYPE_A_M90 harness + four wiki lanes</td><td><code>new/</code></td><td style="background:#fff3e0">in progress</td></tr>
 <tr><td style="background:#e3f2fd"><strong>M2</strong></td><td><a href="../completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md">RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE</a></td><td>Phase <strong>1</strong> — raw vector baseline (D3.R-V)</td><td><code>completed/</code></td><td style="background:#e8f5e9">done</td></tr>
 <tr><td style="background:#e3f2fd"><strong>M3</strong></td><td><a href="../completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md">UNIFIED_PG_MANUAL_EMBEDDINGS</a></td><td>Phase <strong>1</strong> — Postgres manual chunks (D3 PG cutover)</td><td><code>completed/</code></td><td style="background:#e8f5e9">done (HG-PG-CUTOVER)</td></tr>
-<tr><td style="background:#fff9c4"><strong>—</strong></td><td colspan="4"><strong>Main Phase 1 checklist</strong> [§10](#gpt-phase1) — hybrid + rerank + M90 (Lane B primary)</td></tr>
+<tr><td style="background:#fff9c4"><strong>—</strong></td><td colspan="4"><strong>Main Phase 1 checklist</strong> [§10](#gpt-phase1) — hybrid + rerank + TYPE_A_M90 (Lane B primary)</td></tr>
 <tr><td style="background:#fff9c4"><strong>—</strong></td><td colspan="4"><strong>Main Phase 2 checklist</strong> [§11](#gpt-phase2) — exit **HG-P2** closed (**R30**)</td></tr>
-<tr><td style="background:#e3f2fd"><strong>M4</strong></td><td><a href="./REFACTOR_BUNDLED_MANUAL_TICKET_QA.md">BUNDLED_MANUAL_TICKET_QA</a></td><td>Phase <strong>4</strong> prelude <strong>B0</strong> — fixed-k manual+ticket concat + B20 judge</td><td><code>new/</code></td><td style="background:#e8f5e9">B20 baseline run</td></tr>
-<tr><td style="background:#e3f2fd"><strong>M9</strong></td><td><a href="./REFACTOR_RETAIL_PRODUCT_SCOPE_BRAND_MODEL.md">RETAIL_PRODUCT_SCOPE_BRAND_MODEL</a></td><td><strong>Cross-cutting D1</strong> — brand+OEM model filters; T100 / M90 / B20 regression</td><td><code>new/</code></td><td style="background:#e8f5e9">P5 baselines recorded</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M4</strong></td><td><a href="./REFACTOR_BUNDLED_MANUAL_TICKET_QA.md">BUNDLED_MANUAL_TICKET_QA</a></td><td>Phase <strong>4</strong> prelude <strong>B0</strong> — fixed-k manual+ticket concat + TYPE_B_B20 judge</td><td><code>new/</code></td><td style="background:#e8f5e9">TYPE_B_B20 baseline run</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M9</strong></td><td><a href="./REFACTOR_RETAIL_PRODUCT_SCOPE_BRAND_MODEL.md">RETAIL_PRODUCT_SCOPE_BRAND_MODEL</a></td><td><strong>Cross-cutting D1</strong> — brand+OEM model filters; T100 / TYPE_A_M90 / TYPE_B_B20 regression</td><td><code>new/</code></td><td style="background:#e8f5e9">P5 baselines recorded</td></tr>
 <tr><td style="background:#e3f2fd"><strong>M10</strong></td><td><a href="./REFACTOR_EVO18_MULTI_VARIOUS_NEW_COMBOS.md">EVO18_MULTI_VARIOUS_NEW_COMBOS</a></td><td><strong>Phase 1</strong> — T0 manual SQL+Tantivy; D2/D7 run-profile matrix vs PRE-T0</td><td><code>new/</code></td><td style="background:#e8f5e9">P1–P5 operator matrix done</td></tr>
-<tr><td style="background:#e8f5e9"><strong>—</strong></td><td colspan="4"><strong>Main Phase 3 checklist</strong> [§12](#gpt-phase3) — A1 wiki audit + harness (**active** after **HG-P2**)</td></tr>
-<tr><td style="background:#e3f2fd"><strong>M5</strong></td><td><a href="./REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md">LEARNED_SECTION_COPY_PLUS_CARDS</a></td><td>Phase <strong>3</strong> — Lane D compile (`nu_llm_wiki`)</td><td><code>new/</code></td><td style="background:#fff3e0">partial (P1–P4, P7)</td></tr>
+<tr><td style="background:#e8f5e9"><strong>—</strong></td><td colspan="4"><strong>Main Phase 3</strong> — run **`qimpltdd`** on minor **M11** (not §12 alone)</td></tr>
+<tr><td style="background:#e8f5e9"><strong>M11</strong></td><td><a href="./REFACTOR_A1_WIKI_HG_P3.md">A1_WIKI_HG_P3</a></td><td>Phase <strong>3</strong> — P3.2–P3.6, **TYPE_C_C20**, **HG-P3** (one-shot)</td><td><code>new/</code></td><td style="background:#fff3e0">ready</td></tr>
+<tr><td style="background:#e3f2fd"><strong>M5</strong></td><td><a href="./REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md">LEARNED_SECTION_COPY_PLUS_CARDS</a></td><td>Phase <strong>3</strong> — Lane D compile (`nu_llm_wiki`) — **parallel / optional**</td><td><code>new/</code></td><td style="background:#fff3e0">partial (P1–P4, P7)</td></tr>
 <tr><td style="background:#fff9c4"><strong>—</strong></td><td colspan="4"><strong>Main Phase 4 checklist</strong> [§13](#gpt-phase4) — COS router + API</td></tr>
 <tr><td style="background:#e3f2fd"><strong>M6</strong></td><td><a href="../wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md">BRAIN_PROFILES_AND_RETAIL_ANSWER</a></td><td>Phase <strong>4</strong> — <code>retail_answer.v1</code> production bundle</td><td><code>wip/</code></td><td style="background:#fff3e0">wip (HG-TXT-3)</td></tr>
 <tr><td style="background:#e3f2fd"><strong>M7</strong></td><td><a href="../wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md">FRU_RETAIL_SERVICE_BRAIN</a></td><td>Phase <strong>4</strong> — product ops V2–V5 after M6</td><td><code>wip/</code></td><td style="background:#fff3e0">wip</td></tr>
@@ -90,7 +94,7 @@ Phase 1 TDD table: [§17.1](#gpt-tdd).
 | **D3** | Retrieval engine | Ticket **T-A/B/C** · Wiki **W-H** · Raw **R-V** (done) → **R-H** + rerank (Phase 1) |
 | **D4** | Evidence surface | PG · Tantivy · Wiki · Lance (implied by path) |
 | **D5** | Post-retrieval | **0** today → **R/V/A** (phases 1–3) · **C** COS (phase 4) |
-| **D6** | Eval contract | **T100** tickets · **M90** manual 90-Q · **AUDIT** wiki claims |
+| **D6** | Eval contract | **T100** tickets · **M90-technical-singlefact** (`TYPE_A_M90`, Type **A**) · **B20-technical-compound** (`TYPE_B_B20`, Type **B**) · **C20-insight-orientation** (`TYPE_C_C20`, Type **C**) · **AUDIT** wiki claims |
 
 **Fair compare:** fix **D6 + D2 (+ D1)**, sweep **D3** and **D5**. Target harness: **`run_profiles`** in `run-config.yaml` → **`ResolvedRunProfile`** (see [`RUN_PROFILES.md`](../../../tests/retail_multi_profiles/docs/RUN_PROFILES.md) and dimensions doc §5).
 
@@ -101,10 +105,29 @@ Already shipped (detail + corrections in dimensions doc **§1**):
 | Profile (informal) | D1 | D3 | D6 |
 |--------------------|----|----|-----|
 | Ticket ABC | D1.T | T-A / T-B / T-C | D6.T100 |
-| Manual wiki hybrid | D1.M | D3.W-H | D6.M90 × lanes A–D |
-| Manual raw vector | D1.M | D3.R-V | D6.M90 × lanes B,C,D |
+| Manual wiki hybrid | D1.M | D3.W-H | D6.TYPE_A_M90 × lanes A–D |
+| Manual raw vector | D1.M | D3.R-V | D6.TYPE_A_M90 × lanes B,C,D |
 
 **Headline manual compare (B2 vs B1):** raw vector **beats** wiki hybrid on **B &amp; C**; wiki **slightly ahead** on **D** (overall pass); raw **not RRF yet**.
+
+<h3 id="gpt-question-types" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.1 Question types A / B / C</h3>
+
+Promotion and phase exits use **different exams** per track — not one scoreboard for everything.
+
+<table>
+<thead>
+<tr style="background:#1565c0;color:white"><th>Type</th><th>Shape</th><th>D6 suite</th><th>Primary tracks</th><th>Role</th></tr>
+</thead>
+<tbody>
+<tr><td style="background:#e3f2fd"><strong>A</strong></td><td>Single technical fact from manuals (one leg, no compound wording)</td><td><strong>M90-technical-singlefact</strong> (<code>TYPE_A_M90</code>, 90-Q, 60 answerable)</td><td>A2 manual RAG; wiki <em>regression only</em></td><td>Prove manual index completeness (**HG-P1**). Wiki not expected to win here.</td></tr>
+<tr><td style="background:#e3f2fd"><strong>B</strong></td><td>Compound customer question — manual + historical ticket in one answer</td><td><strong>B20-technical-compound</strong> (<code>TYPE_B_B20</code>, 20-Q, minor **M4**)</td><td>A2 + A3 bundled; **HG-P2**</td><td>Evidence-backed repair path. Expect **both** legs; manual often carries judge even when ticket id misses.</td></tr>
+<tr><td style="background:#e8f5e9"><strong>C</strong></td><td>Insight / orientation — patterns, tradeoffs, “what should we watch,” provisional synthesis</td><td><strong>C20-insight-orientation</strong> (<code>TYPE_C_C20</code>, 20-Q, new)</td><td>A1 wiki vs bundled (**R31**)</td><td>Prove wiki home for chief-of-staff “quick insight.” Not PDF gold like Type **A**.</td></tr>
+</tbody>
+</table>
+
+**Suite naming:** **Long** names in prose; **short** ids `TYPE_A_M90` · `TYPE_B_B20` · `TYPE_C_C20` in dimension tuples, fixture `eval_suite_id`, and new analysis. Legacy **file** names (`retail-bundled-qa-b20.json`) and historical **run-id** prefixes (`m90-`, `b20-`) are unchanged.
+
+**A1 wiki history (concise):** Four-lane wiki comparison on the **same M90-technical-singlefact** (`TYPE_A_M90`) questions — Lane **D** best wiki **31/60**, Lane **B** **9/60**; raw vector **~28/60** on B beat wiki on B/C; sources-only replay showed **`wiki/sources/`** full-copy pages drove most wiki hits, not concept cards. Conclusion: wiki is a poor primary for Type **A/B**; keep Lane **B** corpus for Phase 3 implementation (**R10**).
 
 <h2 id="gpt-dim-map" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Dimension-led phase map</h2>
 
@@ -115,9 +138,9 @@ Phases are **product tracks** (A1/A2/A3/B) — each track changes specific dimen
 <tr style="background:#1565c0;color:white"><th>Phase</th><th>Track</th><th>D1</th><th>Main Δ D3</th><th>Main Δ D5</th><th>D6</th><th>Lane (D2)</th></tr>
 </thead>
 <tbody>
-<tr><td style="background:#e8f5e9"><strong>1</strong></td><td>A2 Manual RAG</td><td>D1.M</td><td>R-V → <strong>R-H</strong>, +RR</td><td>+R, +V, +A</td><td>M90</td><td><strong>B</strong> (R10)</td></tr>
+<tr><td style="background:#e8f5e9"><strong>1</strong></td><td>A2 Manual RAG</td><td>D1.M</td><td>R-V → <strong>R-H</strong>, +RR</td><td>+R, +V, +A</td><td>TYPE_A_M90</td><td><strong>B</strong> (R10)</td></tr>
 <tr><td style="background:#fff3e0"><strong>2</strong></td><td>A3 Tickets</td><td>D1.T</td><td>T-C + optional RR</td><td>+V, +A</td><td>T100</td><td>—</td></tr>
-<tr><td style="background:#e3f2fd"><strong>3</strong></td><td>A1 Wiki</td><td>D1.M</td><td>W-H + sources filter / RR</td><td>audit V; harness R</td><td>M90 + AUDIT</td><td><strong>B</strong></td></tr>
+<tr><td style="background:#e3f2fd"><strong>3</strong></td><td>A1 Wiki</td><td>D1.M</td><td>W-H + sources filter / RR</td><td>audit V; harness R</td><td><strong>TYPE_C_C20</strong> + AUDIT; TYPE_A_M90 smoke</td><td><strong>B</strong></td></tr>
 <tr><td style="background:#ffebee"><strong>4</strong></td><td>B COS</td><td>T+M</td><td>multi</td><td><strong>C</strong> router</td><td>demos</td><td>B</td></tr>
 </tbody>
 </table>
@@ -163,7 +186,7 @@ This plan **drops** “combined `wiki_leads_raw`” and COS orchestration from P
 | Wiki **Q&amp;A harness** | Optional `sources_only` / rerank on **wiki/sources** pages (harness-only; no `nu_llm_wiki` ranking edits per grill G2) |
 | **Not in A1 v1** | Blocking writes inside nashsu; ticket promotion into wiki |
 
-**Measure:** Audit counts + Lane **B** wiki Q&amp;A modes vs `abcd-full-openai-v2` on **B** — aligned with A2 base lane (**R10**).
+**Measure:** **TYPE_C_C20** primary — wiki **provisional** mode vs bundled **M4** on the same 20 insight prompts (**R31**). **TYPE_A_M90** on Lane **B** stays **regression smoke** only (no wiki promotion on Type **A**). Claim **AUDIT** registry + optional **HG-WIKI-AUDIT** sample. Optional negative check: same **TYPE_B_B20** rows on wiki `llm_wiki` to confirm Type **B** still favors bundled.
 
 <h3 id="gpt-a2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">6.2 A2 — Manual RAG (product PDFs → search index)</h3>
 
@@ -370,7 +393,7 @@ Reuses Phase 1 **`rerank.py`**, **`verifier.py`**, **`agentic.py`** with a **tic
 **Phase 2 exit (HG-P2) — closed 2026-11-02 (**R30**):**
 
 1. **`python scripts/retail/eval/check_abc_ladder.py`** green on default ticket modes (no regression on mode **C** **~0.54** recall@1).
-2. **Bundled both-leg judge (minor M4 / B20):** promoted EVO18 stack **>** **15/20** (**≥ 16/20**) on full **20** rows.
+2. **Bundled both-leg judge (minor M4 / TYPE_B_B20):** promoted EVO18 stack **>** **15/20** (**≥ 16/20**) on full **20** rows.
 
 **Canonical gate run-id:** **`b20-evo18-d7-v3-20261028`** — D7 v3 PFDA, **`RETAIL_D7=decompose`**, manual **`page_heading`** + **`page_top5`**, ticket mode **C**; **16/20** judge (**2026-10-28**). Matches dimensional report step 5 in [`MULTI_RUNPROFILE_DIMENSIONAL_PERFORMANCES.html`](../../artifacts/aggregated/MULTI_RUNPROFILE_DIMENSIONAL_PERFORMANCES.html). **Label-fair retrieval gold:** same stack + resolved **`expected_ticket_ids`** — **`b20-evo18-d7-v3-goldfix-20261028`** (**16/20** judge, **7/20** strict top-2) per [`REFACTOR_B20_RESOLVED_GOLD_LABELS.md`](../completed/REFACTOR_B20_RESOLVED_GOLD_LABELS.md).
 
@@ -380,44 +403,18 @@ Reuses Phase 1 **`rerank.py`**, **`verifier.py`**, **`agentic.py`** with a **tic
 
 <h2 id="gpt-phase3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">12. Phase 3 — A1 LLM Wiki</h2>
 
-**Prerequisite:** [HG-P1](#gpt-gates) (verifier module from Phase 1) **and** [HG-P2](#gpt-gates) closed (**R30** — bundled B20 judge + ABC ladder). **No** `nu_llm_wiki` ranking or compile fork (**R6**). Harness + offline jobs only.
+**Implementation SSOT:** [`REFACTOR_A1_WIKI_HG_P3.md`](./REFACTOR_A1_WIKI_HG_P3.md) (**M11**) — **`qimpltdd`** that file through P3.6; this section stays the **umbrella summary** only.
 
-**Baseline:** Lane **B** wiki + raw from same aggregate runs as A2; sources-only replay on **B** (see aggregate §7 B vs D + **`sources_only_replay.py`**).
+| Item | Detail |
+|------|--------|
+| **Prereq** | **HG-P1** + **HG-P2** closed; **R6** harness-only wiki |
+| **Corpus** | Lane **B** `brain/retail-md` (**R10**) |
+| **Primary D6** | **TYPE_C_C20** — wiki vs bundled on insight prompts (**R31**) |
+| **Smoke D6** | **TYPE_A_M90** wiki regression only |
+| **P3.1** | **Done** — claim audit CLI |
+| **P3.2–P3.6** | **Open** — checklist mirrors **M11** §12 |
 
-**Wiki corpus for this phase:** Lane **B** project **`brain/retail-md`** (**R10**). Lane **D** audit/90-Q deferred until B track promoted.
-
-<h3 id="gpt-p3-1" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.1 P3.1 — Claim audit job (compile-time path)</h3>
-
-- [X] CLI **`scripts/retail/retail_brain/evidence/wiki_audit.py`**: scan compiled **`wiki/**`** pages; resolve **`sources:`** frontmatter to lane **raw** `.txt` / `.md` (same SKU scope as page).
-- [X] Extract **atomic claims** (stub extractor in CI; LLM batch deferred to run-config); **`WikiClaimVerifier`** uses Phase 1 verifier shape (claim vs **quoted** source passage).
-- [X] Write registry **`brain/retail-md/.wiki-claim-audit/claims.jsonl`** (status: supported / uncertain / contradicted / unverified; source hash for invalidation).
-- [X] **§17.6:** audit CLI uses **`WIKI_CLAIM_AUDIT`** logger + `audit_progress.jsonl`.
-
-<h3 id="gpt-p3-2" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.2 P3.2 — Audit metrics + operator doc</h3>
-
-- [ ] Summary counts per SKU + page type (concept vs **`wiki/sources/`**).
-- [ ] **`tests/retail_multi_profiles/docs/WIKI_EVIDENCE.md`**: how to run audit + interpret registry (no Nashsu MCP steps in agent PRs).
-
-<h3 id="gpt-p3-3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.3 P3.3 — Harness: wiki evidence modes</h3>
-
-- [ ] Extend **`tests/retail_multi_profiles/data/run-config.yaml`**: **`wiki_evidence`** block — page filter **`sources_only`** (keep only `wiki/sources/` hits), optional **`listwise_rerank`** on wiki hit list.
-- [ ] Runner flags: `--wiki-evidence sources_only` | `sources_rerank` | default **`full`** unchanged.
-- [ ] Reuse or fold **`sources_only_replay.py`** logic into shared **`wiki_evidence.py`** helper (DRY with replay tests).
-
-<h3 id="gpt-p3-4" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.4 P3.4 — Judged wiki Q&amp;A runs (Lane B)</h3>
-
-- [ ] Full **90** on lane **B** × modes: **`full`** (baseline), **`sources_only`**, **`sources_rerank`** — **`retrieval_mode llm_wiki`** only.
-- [ ] Persist search hits + rerank order on **`results.jsonl`** (extends D14 from manual ingest plan).
-
-<h3 id="gpt-p3-5" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.5 P3.5 — Answer-time uncertainty (harness)</h3>
-
-- [ ] When audit registry marks contradicted claims on cited pages, harness answer prompt adds **uncertainty label** (configurable) — measure judge **unsupported** rate on hard tier.
-
-<h3 id="gpt-p3-6" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">12.6 P3.6 — Analysis artifact</h3>
-
-- [ ] **§17.2:** smoke wiki B → full **M90** P3.4 → **`TEST_ANALYSIS_A1_LLM_WIKI.md`** vs wiki **`full`** baseline profile on **D2.B**.
-
-**Phase 3 exit (HG-P3):** Best **`wiki_evidence`** mode on lane **B** **≥** Lane B wiki **`full`** answerable score **and** audit registry shows **lower** contradicted+unsupported rate on **HG-WIKI-AUDIT** sample vs un-audited baseline. Wiki default remains **`full`** until human promotion. Lane D wiki modes **not** part of this exit.
+**HG-P3 (summary):** Wiki wins **TYPE_C_C20** judge pass rate vs bundled; **TYPE_A_M90** smoke **≥ 7/60** answerable; audit sample improved on **HG-WIKI-AUDIT**. Full bars + commands: **M11** §4 and §11.
 
 ---
 
@@ -476,8 +473,8 @@ graph TD
 | Gate | Starts | Condition |
 |------|--------|-----------|
 | **HG-P1** | Phase **2** `implref` | **Closed 2026-10-25** — Phase **1** exit + **`default_run_profile`** (**R23**) |
-| **HG-P2** | Phase **3** `implref` | **Closed 2026-11-02** — ABC ladder green + B20 judge **16/20** on canonical run **`b20-evo18-d7-v3-20261028`** (**R30**) |
-| **HG-P3** | Phase **4** `implref` | Phase **1** exit + Phase **3** wiki audit job runnable (Phase 2 may lag if tickets deprioritized — record in Decisions) |
+| **HG-P2** | Phase **3** `implref` | **Closed 2026-11-02** — ABC ladder green + TYPE_B_B20 judge **16/20** on canonical run **`b20-evo18-d7-v3-20261028`** (**R30**) |
+| **HG-P3** | Phase **4** `implref` / COS | **Open** — **M11** product exit: **TYPE_C_C20** wiki &gt; bundled judge passes; TYPE_A_M90 smoke ≥ 7/60; audit sample (**M11** §4). Code exit: `./scripts/verify.sh` + P3 TDD tests. |
 | **HG-P4** | COS deploy / default path change | Phase **4** exit + operator sign-off |
 | **HG-WIKI-AUDIT** | Promote wiki_evidence mode | Human picks sample pages + promotion row in TEST_ANALYSIS_A1 |
 
@@ -514,7 +511,7 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 | **R6** | **Wiki ranking: harness-only** (grill G2). |
 | **R7** | **FastAPI in Phase 4**, not Phase 1. |
 | **R8** | **Canonical Markdown** as long-term A1/A2 source — deferred until A2 plateaus without new PDF project in Phase 1. |
-| **R9** | **A3 ticket metric (monitoring)** — FRU **`ticket_retrieval.jsonl`** + ABC ladder; mode **C** recall@1 **~0.54**. Stratum-aware recall@1 remains the ticket-leg scoreboard; **HG-P2** exit is bundled B20 judge (**R30**), not T100 lift. |
+| **R9** | **A3 ticket metric (monitoring)** — FRU **`ticket_retrieval.jsonl`** + ABC ladder; mode **C** recall@1 **~0.54**. Stratum-aware recall@1 remains the ticket-leg scoreboard; **HG-P2** exit is bundled TYPE_B_B20 judge (**R30**), not T100 lift. |
 | **R10** | **Wiki + manual benchmark base** — Lane **B** (`brain/retail-md`) primary for A2 judged runs and A1 audit/90-Q; Lane **D** deferred until B promotion reviewed (**grill 2026-10-23**). |
 | **R11** | **COS MVP** — CLI demo before FastAPI (**P4.2** before **P4.3**). |
 | **R12** | **Plan depth** — Phases 2–4 fully specified in this file; **code** still gated by **HG-P*** rows. |
@@ -532,7 +529,10 @@ Wiki track A1 uses **`wiki/**`** on the same lane projects, not these globs.
 | **R27** | **Main filename (2026-10-26):** Main plans use **`REFACTOR_PLAN_MAIN_<seq>_<slug>.md`**. Retail umbrella is **seq 1**; slug keeps **`FURTHER_ENHANCEMENT_GPT`** for grep/history. Minors keep **`REFACTOR_<topic>.md`** (no `PLAN_MAIN` prefix). |
 | **R28** | **Narrative recap (2026-10-31):** [`RECAP_SECOND_BRAIN_COS.md`](../../artifacts/aggregated/RECAP_SECOND_BRAIN_COS.md) is the chief-of-staff picture; this file stays the execution plan. Grill: file sits with the aggregated notes; tickets-into-wiki, text-to-SQL, industry news, and Hermes ingest stay **parked** (A1 v1 remains manuals-only); the next one to two weeks **finish the RAG legs** (manual + historical tickets, including bundled both-leg questions) before Phase 3 wiki work. |
 | **R29** | **Stay on search (2026-11-02):** After the roadmap reading in the recap (§2.1), grill choice **A** — finish RAG-leg quality before wiki **until HG-P2 closes**. Metadata enrichment, tariff/industry news, agentic RAG, and GraphRAG stay parked. |
-| **R30** | **HG-P2 exit (2026-11-02):** Replace ticket-only T100 promotion bar with **both-leg** gate: **`check_abc_ladder.py`** green **and** full B20 judge **> 15/20**. **Closed** on canonical **`b20-evo18-d7-v3-20261028`** (**16/20**). Goldfix run documents fair **`expected_ticket_ids`**. Phase **3** **`qimpltdd`** may proceed. |
+| **R30** | **HG-P2 exit (2026-11-02):** Replace ticket-only T100 promotion bar with **both-leg** gate: **`check_abc_ladder.py`** green **and** full **TYPE_B_B20** judge **> 15/20**. **Closed** on canonical **`b20-evo18-d7-v3-20261028`** (**16/20**). Goldfix run documents fair **`expected_ticket_ids`**. Phase **3** **`qimpltdd`** may proceed. |
+| **R31** | **Question types + suites (2026-11-10):** **Type A** = **M90-technical-singlefact** (`TYPE_A_M90`); **Type B** = **B20-technical-compound** (`TYPE_B_B20`, **HG-P2**); **Type C** = **C20-insight-orientation** (`TYPE_C_C20`, new). **HG-P3** promotes on **TYPE_C_C20** (wiki vs bundled **M4**), not **TYPE_A_M90** lift. Grill: compare arms **A1 wiki vs bundled**; **TYPE_A_M90** wiki = regression smoke only. **Gold/judge:** author LLM writes fixture gold + rubric; **different** judge LLM grades; frozen prompt ids; human spot-check ≥ 5 Type **C** rows before benchmark. |
+| **R32** | **Suite short ids (2026-11-10):** Rename D6 short ids to **`TYPE_A_M90`**, **`TYPE_B_B20`**, **`TYPE_C_C20`** (long names unchanged). SSOT: `tests/retail_multi_profiles/lib/eval_suites.py`; fixtures carry `eval_suite_id` + `eval_suite_long_name`. Historical **`m90-` / `b20-`** run-id prefixes in `ops/runs/` stay as-is. |
+| **R33** | **Phase 3 qimpltdd (2026-11-10):** One-shot minor [`REFACTOR_A1_WIKI_HG_P3.md`](./REFACTOR_A1_WIKI_HG_P3.md) (**M11**). Grill **G1–G4** pre-answered in minor §2. CI may use stub gold; operator benchmark optional for product HG-P3. |
 | **R15** | **Phase exit trio:** smoke → full benchmark (**D6**) → analysis vs prior **profile_id** — [§17.2](#gpt-phase-exit); required at end of **each** phase before **HG-P*** unlock. |
 | **R16** | **`onlyreftdd` Phases 2–4 (2026-10-24):** TDD tables in [§17.3–17.5](#gpt-tdd-p2); plan is **paper-ready** for multi-phase **`qimpltdd`**; **execution** order unchanged (**HG-P***). |
 | **R17** | **Operator logging:** all new runners/CLIs follow [§17.6](#gpt-neatlog) + **neatlog** rule; logging ships **in the same phase** as the feature (qimpl/aciub bar). |
@@ -591,15 +591,15 @@ Every phase **ends** with smoke → full → analysis (**implref §3.1h**). CI p
 | Step | Purpose | Phase 1 (A2 raw) | Phase 2 (A3 tickets) | Phase 3 (A1 wiki) | Phase 4 (COS) |
 |------|---------|------------------|----------------------|-------------------|---------------|
 | **1 Smoke** | Harness alive, no full cost | `python -m tests.retail_multi_profiles --smoke --profile MANUAL_B_RAW_HYBRID --lanes B` | `eval_ticket_search.py` on **5** fixture rows or smoke profile | `--smoke --retrieval-mode llm_wiki --lanes B` | `cos_cli` two demo prompts |
-| **2 Benchmark** | Full eval contract **D6** | **Full (fair):** `--full --profile MANUAL_B_RAW_HYBRID --run-id a2-hybrid-rrf-b-v2`; `--full --profile MANUAL_B_RAW_HYBRID_RERANK --run-id a2-hybrid-rerank-b-v2` (**no** `--raw-agentic` — D5 from profile). Interim **v1** runs: **R21** — not for promotion. | **T100** full ticket eval + ABC regression script | **M90** Lane **B** wiki modes (P3.4) | Demo scripts only (no M90 scoreboard) |
-| **3 Analysis** | Compare to **prior run with same profile_id** | `TEST_ANALYSIS_A2_MANUAL_RAG.md` | `TEST_ANALYSIS_A3_TICKET_RAG.md` | `TEST_ANALYSIS_A1_LLM_WIKI.md` | `COS_DEMO_SCRIPTS.md` + short note |
+| **2 Benchmark** | Full eval contract **D6** | **Full (fair):** `--full --profile MANUAL_B_RAW_HYBRID --run-id a2-hybrid-rrf-b-v2`; `--full --profile MANUAL_B_RAW_HYBRID_RERANK --run-id a2-hybrid-rerank-b-v2` (**no** `--raw-agentic` — D5 from profile). Interim **v1** runs: **R21** — not for promotion. | **T100** full ticket eval + ABC regression script | **TYPE_C_C20** wiki vs bundled (**P3.4**); **TYPE_A_M90** wiki smoke only | Demo scripts only (no TYPE_A_M90 scoreboard) |
+| **3 Analysis** | Compare to **prior run with same profile_id** | `TEST_ANALYSIS_A2_MANUAL_RAG.md` | `TEST_ANALYSIS_A3_TICKET_RAG.md` | `TEST_ANALYSIS_A1_LLM_WIKI.md` (**TYPE_C_C20** headline) | `COS_DEMO_SCRIPTS.md` + short note |
 
 **Analysis doc must include (concise):**
 
 1. **`profile_id`** tuple from [`REALIGNMENT_DIMENSIONS.md`](../../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) (D1–D6, lane).
 2. **`run_id`** + path under `ops/runs/`.
 3. **Headline metric** vs **prior comparable profile** (delta table — e.g. answerable/60, recall@1, or audit counts).
-4. **Retrieval latency** mean/p95 when **D6.M90** or raw arm.
+4. **Retrieval latency** mean/p95 when **D6.TYPE_A_M90** or raw arm.
 5. **Promotion yes/no** vs phase exit rule (**R14**, P2 exit, P3 exit, etc.).
 
 Comparable run = same **D1 + D2 + D6**; prior candidate is usually the **immediate predecessor** on the **D3/D5** ladder (e.g. `MANUAL|M|D2.B|D3.R-V|…` → `D3.R-H` → `D3.R-H+RR`).
@@ -618,13 +618,13 @@ Comparable run = same **D1 + D2 + D6**; prior candidate is usually the **immedia
 <tr><td style="background:#e3f2fd"><strong>P2.3</strong> ticket rerank</td><td style="background:#e8f5e9">strict-TDD</td><td>extend retriever tests — top-K order changes with mock listwise rerank</td><td>rerank flag no-op</td><td>pytest ticket evidence + <code>tests/retail/test_retail_abc_ladder.py</code></td></tr>
 <tr><td style="background:#e3f2fd"><strong>P2.4</strong> agentic ticket</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail/test_evidence_ticket_agentic.py</code> — at most **one** sub-search; budget exhausted blocks second</td><td>two loops on single query</td><td>agentic tests green</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P2.5</strong> eval wiring</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail/test_eval_ticket_evidence_path.py</code> — <code>--evidence-path</code> emits JSONL row shape (fixture DB or mock)</td><td>CLI flag ignored</td><td>new test module green</td></tr>
-<tr><td style="background:#e3f2fd"><strong>P2.6</strong> operator</td><td style="background:#fff8e1">smoke-after-delete</td><td>§17.2 T100 + <code>05_run_abc_postgres.sh</code>; B20 gate run per <strong>R30</strong></td><td>N/A</td><td><code>check_abc_ladder.py</code> green + B20 judge <strong>&gt; 15/20</strong> on <code>b20-evo18-d7-v3-20261028</code></td></tr>
+<tr><td style="background:#e3f2fd"><strong>P2.6</strong> operator</td><td style="background:#fff8e1">smoke-after-delete</td><td>§17.2 T100 + <code>05_run_abc_postgres.sh</code>; TYPE_B_B20 gate run per <strong>R30</strong></td><td>N/A</td><td><code>check_abc_ladder.py</code> green + TYPE_B_B20 judge <strong>&gt; 15/20</strong> on <code>b20-evo18-d7-v3-20261028</code></td></tr>
 </tbody>
 </table>
 
 <h3 id="gpt-tdd-p3" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">17.4 TDD bar — Phase 3 (A1 wiki harness + audit)</h3>
 
-**Gate:** **HG-P1** (verifier from Phase 1). No live LLM in CI for claim extract — use **fixture pages** + stub LLM.
+**Gate:** **HG-P2** closed. **Execute:** [`REFACTOR_A1_WIKI_HG_P3.md`](./REFACTOR_A1_WIKI_HG_P3.md) §10 (canonical TDD for P3.2–P3.6). P3.1 done. No live LLM in CI for claim extract — fixture pages + stub LLM.
 
 <table>
 <thead>
@@ -634,7 +634,7 @@ Comparable run = same **D1 + D2 + D6**; prior candidate is usually the **immedia
 <tr><td style="background:#e3f2fd"><strong>P3.1</strong> wiki audit CLI</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail_multi_profiles/test_wiki_audit.py</code> — fixture <code>wiki/</code> + stub claim verifier → <code>claims.jsonl</code> row statuses</td><td>audit CLI writes no registry</td><td>pytest wiki_audit tests</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P3.2</strong> metrics/doc</td><td style="background:#fff8e1">smoke-after-delete</td><td><code>WIKI_EVIDENCE.md</code> documents CLI; optional snapshot of summary counts on fixture registry</td><td>N/A</td><td>doc + fixture audit run in test</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P3.3</strong> wiki_evidence</td><td style="background:#e8f5e9">strict-TDD</td><td><code>tests/retail_multi_profiles/test_wiki_evidence.py</code> — <code>sources_only</code> drops concept hits; rerank reorders mocked list</td><td>filter keeps <code>wiki/concepts/*</code></td><td>pytest wiki_evidence tests</td></tr>
-<tr><td style="background:#e3f2fd"><strong>P3.4</strong> M90 runs</td><td style="background:#fff8e1">smoke-after-delete</td><td>§17.2 full 90 Lane B; persist hits on <code>results.jsonl</code></td><td>N/A</td><td>analysis vs wiki B <code>full</code> baseline</td></tr>
+<tr><td style="background:#e3f2fd"><strong>P3.4</strong> TYPE_C_C20 + smoke</td><td style="background:#e8f5e9">strict-TDD</td><td><code>test_cos_insight_suite.py</code> — loads 20 Type C rows; mock judge; wiki vs bundled runner hooks</td><td>harness runs TYPE_C_C20 without fixture</td><td>TYPE_C_C20 pytest + operator dual run</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P3.5</strong> uncertainty label</td><td style="background:#e8f5e9">strict-TDD</td><td>extend <code>test_wiki_evidence.py</code> — contradicted claim id → answer prompt contains label token</td><td>label missing when registry flagged</td><td>pytest green</td></tr>
 <tr><td style="background:#e3f2fd"><strong>P3.6</strong> analysis</td><td style="background:#fff8e1">smoke-after-delete</td><td><code>TEST_ANALYSIS_A1_LLM_WIKI.md</code> + **profile_id** vs prior <code>D3.W-H full</code></td><td>N/A</td><td>Phase 3 exit + <code>./scripts/verify.sh</code></td></tr>
 </tbody>
@@ -657,7 +657,7 @@ Comparable run = same **D1 + D2 + D6**; prior candidate is usually the **immedia
 </tbody>
 </table>
 
-**Full-plan `qimpltdd`:** TDD contracts for Phases **1–4** are now in §17.1–17.5. **Code** for Phases **2–4** still waits on **HG-P*** — do not run **`aciubtdd`** past Phase 1 until gates pass.
+**Full-plan `qimpltdd`:** Phase **3** code → **`REFACTOR_A1_WIKI_HG_P3.md`** (not this checklist alone). Phases **1–2** closed; Phase **4** waits on **HG-P3**.
 
 <h3 id="gpt-neatlog" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">17.6 Operator logging — neat_logger (**neatlog**)</h3>
 
@@ -685,7 +685,7 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 <tr><td style="background:#e3f2fd"><strong>P1</strong> index build</td><td><code>RETAIL_RAW_INDEX</code></td><td><code>logs/ops/retail-raw-index-*.log</code></td><td><code>index_progress.jsonl</code> (existing pattern)</td><td>embed batch heartbeats; file/chunk counts</td></tr>
 <tr><td style="background:#fff3e0"><strong>P2</strong> ticket eval</td><td><code>FRU_TICKET_EVIDENCE</code></td><td><code>logs/ops/fru-ticket-evidence-&lt;run_id&gt;.log</code></td><td><code>ops/runs/fru-ticket-evidence/&lt;run_id&gt;/progress.jsonl</code></td><td><code>search_start/done</code>, <code>rerank_done</code>, <code>verifier_done</code>, <code>eval_row_done</code></td></tr>
 <tr><td style="background:#e3f2fd"><strong>P3</strong> wiki audit</td><td><code>WIKI_CLAIM_AUDIT</code></td><td><code>logs/ops/wiki-claim-audit-*.log</code></td><td><code>brain/retail-md/.wiki-claim-audit/audit_progress.jsonl</code></td><td>per-page / per-SKU; claim batch heartbeats</td></tr>
-<tr><td style="background:#e3f2fd"><strong>P3</strong> wiki M90</td><td><code>RETAIL_ABCD</code> (existing)</td><td><code>logs/ops/retail-lane-abcd-&lt;run_id&gt;.log</code></td><td>runner <code>results.jsonl</code> + wiki_evidence DEBUG fields</td><td><code>wiki_evidence_filter</code>, <code>rerank_done</code> when enabled</td></tr>
+<tr><td style="background:#e3f2fd"><strong>P3</strong> wiki TYPE_A_M90</td><td><code>RETAIL_ABCD</code> (existing)</td><td><code>logs/ops/retail-lane-abcd-&lt;run_id&gt;.log</code></td><td>runner <code>results.jsonl</code> + wiki_evidence DEBUG fields</td><td><code>wiki_evidence_filter</code>, <code>rerank_done</code> when enabled</td></tr>
 <tr><td style="background:#ffebee"><strong>P4</strong> COS</td><td><code>COS_ASK</code></td><td><code>logs/ops/cos-ask-*.log</code></td><td>optional <code>cos_answer.jsonl</code> for demos</td><td><code>route_decision</code>, leg timings, <code>provisional</code> flag</td></tr>
 </tbody>
 </table>
@@ -718,14 +718,10 @@ Rule: **`.cursor/rules/neatlog-operator-logging-bar.mdc`**. How-to: [`utils/neat
 - [X] P2.5 Eval integration
 - [X] P2.6 ABC regression + TEST_ANALYSIS_A3 metrics (operator T100 — `ops/runs/fru-ticket-abc-p26-20261026`, ladder OK)
 
-**Phase 3 — A1** (after **HG-P1**; exit **HG-P3**)
+**Phase 3 — A1** (mirror **M11**; tick when **M11** §12 complete)
 
 - [X] P3.1 Wiki claim audit CLI
-- [ ] P3.2 Audit metrics + WIKI_EVIDENCE.md
-- [ ] P3.3 Harness wiki_evidence modes
-- [ ] P3.4 Lane B full 90 wiki modes
-- [ ] P3.5 Harness uncertainty labels
-- [ ] P3.6 TEST_ANALYSIS_A1_LLM_WIKI.md
+- [X] P3.2–P3.6 code/docs per [`REFACTOR_A1_WIKI_HG_P3.md`](./REFACTOR_A1_WIKI_HG_P3.md) (product HG-P3 benchmark pending LLM Wiki up)
 
 **Phase 4 — B** (after **HG-P3** recommended)
 

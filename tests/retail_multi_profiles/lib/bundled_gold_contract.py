@@ -1,4 +1,4 @@
-"""B20 retrieval gold must match ticket leg (resolved-only search pool)."""
+"""TYPE_B_B20 retrieval gold must match ticket leg (resolved-only search pool)."""
 
 from __future__ import annotations
 

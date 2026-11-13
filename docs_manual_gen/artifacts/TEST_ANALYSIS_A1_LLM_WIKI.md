@@ -1,18 +1,48 @@
 <h1 id="a1-analysis-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">TEST ANALYSIS — A1 LLM Wiki (Phase 3)</h1>
 
-**Status:** Briefing run **2026-11-12** (`w20-v3-briefing-20261112`). **A1 mean 35.1, A3 mean 42.4.** A1 is not ahead. Prior focused-synthesis result remains **A1 2/20, A3 3/20** (`w20-focused-20261111`).
+**Status:** News smoke **2026-11-12** (`news-n5-smoke-20261112`). Mean correctness confidence is **A1 0.90** and **A3 0.90**. Mean graded score is **A1 66.8** and **A3 49.0**. A3 was faster and used less context. The earlier briefing run remains **A1 35.1, A3 42.4** (`w20-v3-briefing-20261112`).
 
 <h2 id="a1-outline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Document outline</h2>
 
-1. [Briefing suite W20 v3](#a1-briefing-v3) — latest 20 cross-manual questions, gold, A1, and A3.
-    1.1 [Per-question answers](#a1-briefing-v3-matrix) — score and shortened answer for each row.
-2. [TYPE_W_W20 headline + per-question answers](#a1-w20-headline) — earlier focused-synthesis gold.
-3. [TYPE_A_M90 wiki smoke](#a1-m90-smoke) — regression smoke only.
-4. [Audit sample](#a1-audit) — HG-WIKI-AUDIT summarize.
-5. [Comparable profile](#a1-profile) — D-tags.
-6. [Session fixes](#a1-fixes) — import / lane patches from operator run.
+1. [News briefing smoke](#a1-news-n5) — five questions, confidence, and cost.
+2. [Briefing suite W20 v3](#a1-briefing-v3) — 20 cross-manual questions, gold, A1, and A3.
+ 2.1 [Per-question answers](#a1-briefing-v3-matrix) — score and shortened answer for each row.
+3. [TYPE_W_W20 headline + per-question answers](#a1-w20-headline) — earlier focused-synthesis gold.
+4. [TYPE_A_M90 wiki smoke](#a1-m90-smoke) — regression smoke only.
+5. [Audit sample](#a1-audit) — HG-WIKI-AUDIT summarize.
+6. [Comparable profile](#a1-profile) — D-tags.
+7. [Session fixes](#a1-fixes) — import / lane patches from operator run.
 
-<h2 id="a1-briefing-v3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. Briefing suite — W20 v3 (`w20-v3-briefing-20261112`)</h2>
+<h2 id="a1-news-n5" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">1. News briefing smoke (`news-n5-smoke-20261112`)</h2>
+
+<p>Five staff-briefing questions whose facts live in the three news summaries. Lane B now includes <code>raw/sources/**/*.md</code>, so A3 (chunk search over the manuals and the news files) can read the same news as A1 (compiled wiki search). Search ranking was not changed. The headline is correctness confidence from 0 to 1. The graded 0–100 score is context, because confidence can stay high when the answer is wrong.</p>
+
+<table>
+<thead><tr style="background:#1565c0;color:white"><th>Result</th><th>A1 wiki</th><th>A3 bundled</th></tr></thead>
+<tbody>
+<tr><td style="background:#e3f2fd">Mean confidence</td><td style="background:#e8f5e9"><strong>0.90</strong></td><td style="background:#e8f5e9"><strong>0.90</strong></td></tr>
+<tr><td style="background:#e3f2fd">Mean graded score</td><td style="background:#e8f5e9"><strong>66.8</strong></td><td style="background:#fff3e0"><strong>49.0</strong></td></tr>
+<tr><td style="background:#e3f2fd">Mean retrieval time</td><td style="background:#fff3e0">5.6 s</td><td style="background:#e8f5e9">1.1 s</td></tr>
+<tr><td style="background:#e3f2fd">Mean context size</td><td style="background:#fff3e0">24,763 characters</td><td style="background:#e8f5e9">6,141 characters</td></tr>
+<tr><td style="background:#e3f2fd">Mean total time</td><td style="background:#fff3e0">56 s</td><td style="background:#e8f5e9">28 s</td></tr>
+<tr><td style="background:#e3f2fd">Matching news page in top 5</td><td style="background:#e8f5e9">5 / 5</td><td style="background:#fff3e0">3 / 5</td></tr>
+</tbody>
+</table>
+
+<table>
+<thead><tr style="background:#1565c0;color:white"><th>Id</th><th>A1 confidence</th><th>A3 confidence</th><th>A1 score</th><th>A3 score</th><th>Matching news page</th></tr></thead>
+<tbody>
+<tr><td style="background:#e3f2fd">N01</td><td>0.85</td><td>0.90</td><td style="background:#e8f5e9">66</td><td>38</td><td>both</td></tr>
+<tr><td style="background:#e3f2fd">N02</td><td>0.90</td><td>0.90</td><td>50</td><td>50</td><td>both</td></tr>
+<tr><td style="background:#e3f2fd">N03</td><td>0.85</td><td>0.85</td><td>49</td><td>49</td><td>both</td></tr>
+<tr><td style="background:#e3f2fd">N04</td><td>0.98</td><td>0.92</td><td>100</td><td>100</td><td>A1 only; A3 used the KitchenAid manual</td></tr>
+<tr><td style="background:#e3f2fd">N05</td><td>0.92</td><td style="background:#ffebee">0.95</td><td style="background:#e8f5e9">69</td><td style="background:#ffebee">8</td><td>A1 opened the Samsung news page. A3 opened the GE news page first.</td></tr>
+</tbody>
+</table>
+
+<p>N05 is the reason confidence is not the only number. A3’s judge confidence was 0.95 while correctness was 0 and the graded score was 8. A1 is not more efficient on this smoke. A1 did open the matching compiled news page on every question, and its graded score was higher on N01 and N05. Suite: <code>tests/retail_multi_profiles/data/retail-news-briefing-n5.json</code>. Raw rows: <code>ops/runs/retail-cos-insight/news-n5-smoke-20261112/results.jsonl</code>.</p>
+
+<h2 id="a1-briefing-v3" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Briefing suite — W20 v3 (`w20-v3-briefing-20261112`)</h2>
 
 <p>Latest comparison. Twenty cross-manual briefing questions. Gold scores the pattern, tradeoff, or taxonomy. Exact page facts are optional. A1 is compiled wiki search. A3 is chunk search over the manuals. Author <code>gpt-6.1-sol</code>. Judge <code>gemini-4-carbon</code>.</p>
 
@@ -26,7 +56,7 @@
 
 <p>The promotion rule required A1 to lead by at least 5 points with the interval above zero. This run does not meet that rule. Suite: <code>tests/retail_multi_profiles/data/retail-w20-briefing-v3.json</code>. Raw rows: <code>ops/runs/retail-cos-insight/w20-v3-briefing-20261112/results.jsonl</code>.</p>
 
-<h3 id="a1-briefing-v3-matrix" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">1.1 Per-question answers</h3>
+<h3 id="a1-briefing-v3-matrix" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">2.1 Per-question answers</h3>
 
 <p><strong>Legend:</strong> <span style="background:#e3f2fd;padding:1px 3px">A1</span> compiled wiki. <span style="background:#ede7f6;padding:1px 3px">A3</span> manual hybrid search. <span style="background:#f3e5f5;padding:1px 3px">Gold</span> briefing reference. The number is the graded score. Long answers are shortened here; the raw file has the full text.</p>
 <table><thead><tr style="background:#1565c0;color:white"><th>① Id</th><th>Question</th><th>Gold answer<br><small>reference</small></th><th>A1 · llm_wiki<br><small>score and answer</small></th><th>A3 · manual RAG<br><small>score and answer</small></th></tr></thead><tbody>
@@ -172,7 +202,7 @@
 </tr>
 </tbody></table>
 
-<h2 id="a1-w20-headline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">2. Headline — TYPE_W_W20 (`W20-focused-multi-section-synthesis`)</h2>
+<h2 id="a1-w20-headline" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. Headline — TYPE_W_W20 (`W20-focused-multi-section-synthesis`)</h2>
 
 <table>
 <thead>
@@ -186,7 +216,7 @@
 
 <p>Suite file: <code>tests/retail_multi_profiles/data/retail-w20-focused-synthesis.json</code>. Raw rows: <code>ops/runs/retail-cos-insight/w20-focused-20261111/results.jsonl</code>.</p>
 
-<h3 id="a1-w20-matrix" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">1.1 Per-question answers (A1 vs A3)</h3>
+<h3 id="a1-w20-matrix" style="color:#00695c;font-size:1.05em;font-weight:600;margin-top:0.85em">3.1 Per-question answers (A1 vs A3)</h3>
 
 <p><strong>Legend:</strong> <span style="background:#e3f2fd;padding:1px 3px">A1</span> = LLM Wiki. <span style="background:#ede7f6;padding:1px 3px">A3</span> = manual hybrid RAG (<code>MANUAL_B_RAW_PG_HYBRID</code>). <span style="background:#f3e5f5;padding:1px 3px">Gold</span> = W20 suite answer. Run <code>w20-focused-20261111</code>.</p>
 <table><thead><tr style="background:#1565c0;color:white"><th>① Id</th><th>Question</th><th>Gold answer<br><small>reference</small></th><th>A1 · llm_wiki<br><small>answer (judge)</small></th><th>A3 · manual RAG<br><small>answer (judge)</small></th></tr></thead><tbody>
@@ -332,7 +362,7 @@
 </tr>
 </tbody></table>
 
-<h2 id="a1-m90-smoke" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">3. TYPE_A_M90 wiki smoke (regression only)</h2>
+<h2 id="a1-m90-smoke" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. TYPE_A_M90 wiki smoke (regression only)</h2>
 
 | Metric | Value | Baseline |
 |--------|-------|----------|
@@ -341,7 +371,7 @@
 
 **Smoke bar (plan):** full Lane B `llm_wiki` answerable **≥ 7/60** — **not executed this session** (smoke only). Schedule: `python -m tests.retail_multi_profiles --full --retrieval-mode llm_wiki --lanes B --run-id a1-m90-wiki-full-<date>`.
 
-<h2 id="a1-audit" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">4. Audit sample (HG-WIKI-AUDIT)</h2>
+<h2 id="a1-audit" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Audit sample (HG-WIKI-AUDIT)</h2>
 
 `python -m retail_brain.evidence.wiki_audit --summarize` on Lane B brain (`brain/retail-md`):
 
@@ -352,11 +382,11 @@
 
 Run full audit CLI on `brain/retail-md` before next sample.
 
-<h2 id="a1-profile" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">5. Comparable profile</h2>
+<h2 id="a1-profile" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Comparable profile</h2>
 
 `D1.M` · `D2.B` · `D3.W-H` · `D6.TYPE_C_C20` primary · `D6.TYPE_A_M90` smoke.
 
-<h2 id="a1-fixes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">6. Session fixes (same operator run)</h2>
+<h2 id="a1-fixes" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">7. Session fixes (same operator run)</h2>
 
 - `answer_pipeline.py`: import `concat_hit_pages` (blocked C20 wiki arm).
 - `lanes.py`: `brain_relpath` on `Lane` (blocked M90 wiki uncertainty path).

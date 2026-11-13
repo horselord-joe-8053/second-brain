@@ -19,7 +19,7 @@
 5. [Phase 1 — Schema](#pg-manual-p1) — `manual_chunks` + migrations.
 6. [Phase 2 — Ingest](#pg-manual-p2) — file → chunk → embed → PG.
 7. [Phase 3 — Retrieval D3.PG-H](#pg-manual-p3) — vector + lexical + RRF.
-8. [Phase 4 — A/B benchmark](#pg-manual-p4) — M90 + latency vs Lance.
+8. [Phase 4 — A/B benchmark](#pg-manual-p4) — TYPE_A_M90 + latency vs Lance.
 9. [Phase 5 — Cutover and Lance removal](#pg-manual-p5) — default profile + delete path.
 10. [TDD bar](#pg-manual-tdd) — strict-TDD / smoke-after-delete per phase.
 11. [Decisions](#pg-manual-decisions) — pre-fill + align before code.
@@ -55,7 +55,7 @@
 
 **Shared:** embed batch helper, **RRF** math, **D5** stack (`rerank_registry`), **EvidencePackage** shape. **Not shared:** D3 candidate generation implementation until cutover.
 
-**Run profile (Phase 4+):** add e.g. **`MANUAL_B_RAW_PG_HYBRID`** vs existing **`MANUAL_B_RAW_HYBRID`** (Lance) for fair **D6.M90** compare (fix D5 + D2.B; sweep D3 only).
+**Run profile (Phase 4+):** add e.g. **`MANUAL_B_RAW_PG_HYBRID`** vs existing **`MANUAL_B_RAW_HYBRID`** (Lance) for fair **D6.TYPE_A_M90** compare (fix D5 + D2.B; sweep D3 only).
 
 ---
 
@@ -64,7 +64,7 @@
 | Gate | Starts | Condition |
 |------|--------|-----------|
 | **HG-PG-ALIGN** | Phase **1** schema | **Decisions** embed dimension + lexical arm chosen (section 11) |
-| **HG-PG-AB** | Phase **4** full M90 | Phase **3** retrieval tests green; PG ingest fresh on Lane **B** — **closed 2026-10-26** (see **U9**) |
+| **HG-PG-AB** | Phase **4** full TYPE_A_M90 | Phase **3** retrieval tests green; PG ingest fresh on Lane **B** — **closed 2026-10-26** (see **U9**) |
 | **HG-PG-CUTOVER** | Phase **5** Lance removal | **Approved 2026-10-26** — unify manual raw RAG to PG (Lane **B** first); execute P5 on **evo-17** |
 
 Phase **2** ticket work on **evo-15** may continue in parallel; do **not** block on **HG-PG-CUTOVER**.
@@ -115,13 +115,13 @@ Phase **2** ticket work on **evo-15** may continue in parallel; do **not** block
 - [X] Parity tests: top-5 overlap vs Lance fixture (**`test_manual_pg_parity.py`**).
 - [X] **`run_profiles`**: `MANUAL_B_RAW_PG_HYBRID`, `MANUAL_B_RAW_PG_HYBRID_RERANK`.
 
-**Exit:** PG retrieval + parity pytest green; operator M90 profiles runnable.
+**Exit:** PG retrieval + parity pytest green; operator TYPE_A_M90 profiles runnable.
 
 ---
 
 <h2 id="pg-manual-p4" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">8. Phase 4 — A/B benchmark</h2>
 
-- [X] Full **D6.M90** Lane **B**: `a2-pg-hybrid-b-v1` vs `a2-hybrid-rrf-b-v2`; `a2-pg-hybrid-rerank-b-v1` vs `a2-hybrid-rerank-b-v2`.
+- [X] Full **D6.TYPE_A_M90** Lane **B**: `a2-pg-hybrid-b-v1` vs `a2-hybrid-rrf-b-v2`; `a2-pg-hybrid-rerank-b-v1` vs `a2-hybrid-rerank-b-v2`.
 - [X] **latency_ms.retrieval** mean/p50/p95 logged; per-question tables in analysis doc.
 - [X] **`TEST_ANALYSIS_A2_MANUAL_RAG_PG.md`**: overlap, latency, flip cases, §2.1–2.2 answer-pipeline read for **U8**.
 - [X] Ticket ladder unchanged (out of scope).
@@ -169,7 +169,7 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 | **P1** schema | strict-TDD | `tests/retail/test_manual_chunks_schema.py` | migration missing table | pytest schema test |
 | **P2** ingest | strict-TDD | `tests/retail/test_manual_pg_ingest.py` | fingerprint change → row count updates | ingest tests + manifest fixture |
 | **P3** retrieval | strict-TDD | `tests/retail/test_manual_pg_search.py` + extend `test_raw_hybrid_search.py` parity | PG top-K empty while Lance hits | pytest retrieval + parity |
-| **P4** operator | smoke-after-delete | analysis doc + existing M90 harness | N/A | smoke PG profile + optional full M90 |
+| **P4** operator | smoke-after-delete | analysis doc + existing TYPE_A_M90 harness | N/A | smoke PG profile + optional full TYPE_A_M90 |
 | **P5** Lance removal | smoke-after-delete | `./scripts/verify.sh` | import lancedb in default path | full verify green |
 
 ---
@@ -184,7 +184,7 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 | **U4** | **`manual_chunks.embedding vector(1536)`** — independent of ticket **`vector(768)`**; no ticket re-embed in this plan. Manual embed model stays **`text-embedding-3-small`** at native/default dims unless run-config sets **`dimensions`**. |
 | **U5** | **Lexical default (P3):** in-process **BM25-ish pool** over PG-loaded chunk rows (**`raw_lexical`** parity with Lance hybrid). PG **`tsvector`** / Tantivy remain optional **Phase 4** compare arms, not P3 blocker. |
 | **U6** | **Parallel track:** May **`qimpltdd`** this plan on **evo-16** while **evo-15** finishes Phase **2** P2.6. |
-| **U7** | **Phase 4 M90 profiles:** two PG runs — **`MANUAL_B_RAW_PG_HYBRID`** + **`MANUAL_B_RAW_PG_HYBRID_RERANK`** vs Lance **`MANUAL_B_RAW_HYBRID_RERANK`** baseline (same D5 stack on rerank profile). |
+| **U7** | **Phase 4 TYPE_A_M90 profiles:** two PG runs — **`MANUAL_B_RAW_PG_HYBRID`** + **`MANUAL_B_RAW_PG_HYBRID_RERANK`** vs Lance **`MANUAL_B_RAW_HYBRID_RERANK`** baseline (same D5 stack on rerank profile). |
 | **U8** | **Promotion bar:** **operator sign-off** at **HG-PG-AB** / **HG-PG-CUTOVER** after **`TEST_ANALYSIS_A2_MANUAL_RAG_PG.md`** logs pass rates, latency, and retrieval overlap — **no fixed numeric hard gate** in automation (Phase 4 exit table = **reference targets** for the doc, not CI fail). |
 | **U9** | **2026-10-26 cutover approval:** Operator accepts **PG-only** manual D3 for Lane **B** — top‑5 retrieval parity **1.00**, latency within informal **1.25×** guide, hybrid **+1** / rerank **−1** acceptable vs Lance. **HG-PG-AB** closed; **HG-PG-CUTOVER** authorized — implement **P5** on **`feature/evo-17-multi-embed-pg-only`**. |
 
@@ -234,7 +234,7 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 
 **Phase 4 — A/B**
 
-- [X] P4.1 Full M90 PG vs Lance runs (2026-10-25: `a2-pg-hybrid-b-v1`, `a2-pg-hybrid-rerank-b-v1`)
+- [X] P4.1 Full TYPE_A_M90 PG vs Lance runs (2026-10-25: `a2-pg-hybrid-b-v1`, `a2-pg-hybrid-rerank-b-v1`)
 - [X] P4.2 `TEST_ANALYSIS_A2_MANUAL_RAG_PG.md` (overlap, latency tickets, flip tables, §2.1–2.2)
 - [X] P4.3 **HG-PG-AB** sign-off (**U9**, 2026-10-26)
 
@@ -251,7 +251,7 @@ Pass deltas are **answer/judge** on shared top‑5 sets (see analysis §2.2), no
 | Link | Role |
 |------|------|
 | [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) | **Main plan** — minor **M3**; Phase **1** PG cutover |
-| [`TEST_ANALYSIS_A2_MANUAL_RAG.md`](../../artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md) | Lance M90 promotion numbers |
+| [`TEST_ANALYSIS_A2_MANUAL_RAG.md`](../../artifacts/TEST_ANALYSIS_A2_MANUAL_RAG.md) | Lance TYPE_A_M90 promotion numbers |
 | [`TEST_ANALYSIS_A2_MANUAL_RAG_PG.md`](../../artifacts/TEST_ANALYSIS_A2_MANUAL_RAG_PG.md) | PG vs Lance A/B + **U8** / **U9** sign-off read |
 | [`_build_pg_vs_lance_flip_tables.py`](../../artifacts/_build_pg_vs_lance_flip_tables.py) | Regenerate PG analysis artifact |
 | [`REALIGNMENT_DIMENSIONS.md`](../../artifacts/aggregated/REALIGNMENT_DIMENSIONS.md) | D3 / D4 vocabulary |

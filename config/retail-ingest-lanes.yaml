@@ -9,7 +9,7 @@ lanes:
     path: brain/retail-md
     ingest_kind: external_markdown
     raw_rag_enabled: true
-    raw_glob: raw/sources/fridge-docs_md/**/*.md
+    raw_glob: raw/sources/**/*.md
   C:
     path: brain/retail-txt
     ingest_kind: external_text

@@ -1,5 +1,7 @@
 <h1 id="run-profiles-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Run profiles — dimensions, config, and terminology</h1>
 
+**D6 eval suites (short id → long name):** `TYPE_A_M90` → **M90-technical-singlefact** · `TYPE_B_B20` → **B20-technical-compound** · `TYPE_C_C20` → **C20-insight-orientation** (`tests/retail_multi_profiles/lib/eval_suites.py`).
+
 **Canonical dimension definitions:** [`REALIGNMENT_DIMENSIONS.md`](../../../../docs_manual_gen/artifacts/aggregated/REALIGNMENT_DIMENSIONS.md).  
 **Implementation plan:** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](../../../../docs_manual_gen/ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) Phase 1 (P1.0b–P1.5b).
 
@@ -28,7 +30,7 @@ Use these terms **consistently** in code comments, logs, YAML, and analysis docs
 | **`listwise_rerank`** | D5.R implementation | Function in `retail_brain/rerank.py` that reorders rows given a **`rank_fn`**. Not a backend name. |
 | **`rank_fn`** | D5.R hook | Callable: `(query, candidates) → LLM text` parsed into ordered chunk ids. Required for **`llm_listwise`** backend. |
 | **`llm_listwise`** | D5.R **backend** | Listwise LLM rerank (**R5** default for manual raw). |
-| **`cross_encoder`** | D5.R **backend** | Local MiniLM cross-encoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`). B20 hybrid profile stays off; a bundled row opts in with `manual_rerank`. |
+| **`cross_encoder`** | D5.R **backend** | Local MiniLM cross-encoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`). TYPE_B_B20 hybrid profile stays off; a bundled row opts in with `manual_rerank`. |
 | **`ResolvedRunProfile`** | harness | Immutable struct after merge: profile YAML + env + CLI; sole input to retrieval pipeline factory. |
 
 **Do not** use env names like `LIST_WISE_RANK_FN` vs `LLM_RANK_FN` — both describe the same **llm_listwise** backend. Use **`d5.rerank.enabled`** (boolean) and **`d5.rerank.backend`** (enum).
@@ -83,7 +85,7 @@ graph LR
 **Rules:**
 
 - If **`enabled: true`**, default **`backend`** to **`llm_listwise`** when unset; harness must wire **`rank_fn`**. **Pre-flight:** abort if `rank_fn` would be no-op.
-- If **`backend: cross_encoder`**, the harness builds a local MiniLM rank_fn. Preflight still aborts when that rank_fn is missing. B20 profile `MANUAL_B_RAW_PG_HYBRID` leaves rerank off; the bundled probe selects the backend per row via `manual_rerank`.
+- If **`backend: cross_encoder`**, the harness builds a local MiniLM rank_fn. Preflight still aborts when that rank_fn is missing. TYPE_B_B20 profile `MANUAL_B_RAW_PG_HYBRID` leaves rerank off; the bundled probe selects the backend per row via `manual_rerank`.
 - **`d3_engine: hybrid_rrf_rerank`** alone is **not** sufficient for D5.R; prefer explicit **`d5.rerank`** on the profile (legacy alias may map `hybrid_rrf_rerank` → `enabled: true`, `backend: llm_listwise` once resolver lands).
 
 **Factory:** `retail_brain/rerank_registry.py` (planned) — **`build_rank_fn(backend, cfg) -> RankFn | None`**.
@@ -122,11 +124,11 @@ Document any override in **`results.json`** → **`config_snapshot.resolved_prof
 
 | YAML `run_profiles` id | Dimension tuple (informal) | D3 | D5 |
 |------------------------|----------------------------|----|----|
-| **`MANUAL_B_RAW_VECTOR`** | `MANUAL\|M\|D2.B\|D3.R-V\|LC\|0\|M90\|B` | `vector` | **0** |
-| **`MANUAL_B_RAW_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|M90\|B` | `hybrid_rrf` + **`manual_d3_backend: pg`** | **0** |
-| **`MANUAL_B_RAW_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|M90\|B` | `hybrid_rrf` + **`manual_d3_backend: pg`** | **R+V+A** (`llm_listwise`) |
-| **`MANUAL_B_RAW_PG_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **0** |
-| **`MANUAL_B_RAW_PG_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **R+V+A** |
+| **`MANUAL_B_RAW_VECTOR`** | `MANUAL\|M\|D2.B\|D3.R-V\|LC\|0\|TYPE_A_M90\|B` | `vector` | **0** |
+| **`MANUAL_B_RAW_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|TYPE_A_M90\|B` | `hybrid_rrf` + **`manual_d3_backend: pg`** | **0** |
+| **`MANUAL_B_RAW_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|TYPE_A_M90\|B` | `hybrid_rrf` + **`manual_d3_backend: pg`** | **R+V+A** (`llm_listwise`) |
+| **`MANUAL_B_RAW_PG_HYBRID`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|0\|TYPE_A_M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **0** |
+| **`MANUAL_B_RAW_PG_HYBRID_RERANK`** | `MANUAL\|M\|D2.B\|D3.R-H\|LC\|R+V+A\|TYPE_A_M90\|B` (PG store) | `hybrid_rrf` + **`manual_d3_backend: pg`** | **R+V+A** |
 
 **Manual raw path:** requires **`RETAIL_DATABASE_URL`**; preflight **`ensure_manual_pg_fresh`** (or **`--ingest-manual-pg --lanes B`**).
 

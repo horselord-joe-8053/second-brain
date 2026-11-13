@@ -1,4 +1,6 @@
 {
+  "eval_suite_id": "TYPE_B_B20",
+  "eval_suite_long_name": "B20-technical-compound",
   "schema_version": "bundled_qa.v1",
   "created_at": "20261026-201800",
   "corpus_profile": "fru_us_1k",
@@ -6,7 +8,7 @@
   "retrieval_contract": {
     "k_tickets": 2,
     "k_manuals": 5,
-    "manual_top_k_source": "M90 search_top_k (5)",
+    "manual_top_k_source": "TYPE_A_M90 search_top_k (5)",
     "ticket_top_k_source": "build_answer_bundle default k_tickets (2)",
     "per_leg_llm_rerank": false,
     "bundle_assembly": "fixed_k_concat"

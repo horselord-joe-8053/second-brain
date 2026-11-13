@@ -21,18 +21,20 @@ Retail and Samsung service-brain plans live here instead of scattered under `doc
 
 Every **minor** declares **`Parent (only):`** → the main plan. **No dual parents.** Completed minors remain children of the main plan for history.
 
-**Execute main phases:** `qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`  
-**Execute a minor:** `qimpltdd` on that minor’s path (see §0 table for sequence).
+**Execute Phase 3 (A1 wiki → HG-P3):** `qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_A1_WIKI_HG_P3.md`  
+**Execute umbrella / other phases:** `qimpltdd docs_manual_gen/ref_plan/new/REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`  
+**Execute any minor:** `qimpltdd` on that minor’s path (see main §0 table).
 
 <h2 id="active-index" style="color:#1565c0;font-size:1.22em;font-weight:650;border-left:4px solid #42a5f5;padding-left:10px;margin-top:1.1em">Active minors (by main-plan sequence)</h2>
 
 | Seq | Plan | Folder | Notes |
 |-----|------|--------|--------|
-| **M1** | [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](./new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) | **new** | M90 four-lane wiki benchmark |
+| **M1** | [`REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md`](./new/REFACTOR_RETAIL_MANUAL_INGEST_ABCD_BENCHMARK.md) | **new** | TYPE_A_M90 four-lane wiki benchmark |
 | **M2** | [`REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md`](./completed/REFACTOR_RETAIL_RAW_SOURCES_RAG_ABCD_COMPARE.md) | **completed** | Raw vector baseline |
 | **M3** | [`REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md`](./completed/REFACTOR_UNIFIED_PG_MANUAL_EMBEDDINGS.md) | **completed** | PG manual cutover |
-| **M4** | [`REFACTOR_BUNDLED_MANUAL_TICKET_QA.md`](./new/REFACTOR_BUNDLED_MANUAL_TICKET_QA.md) | **new** | B0 bundled 5+2 concat + B20 |
-| **M5** | [`REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md`](./new/REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md) | **new** | Lane D `nu_llm_wiki` |
+| **M4** | [`REFACTOR_BUNDLED_MANUAL_TICKET_QA.md`](./new/REFACTOR_BUNDLED_MANUAL_TICKET_QA.md) | **new** | B0 bundled 5+2 concat + TYPE_B_B20 |
+| **M11** | [`REFACTOR_A1_WIKI_HG_P3.md`](./new/REFACTOR_A1_WIKI_HG_P3.md) | **new** | **Active:** P3.2–P3.6 one-shot qimpltdd |
+| **M5** | [`REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md`](./new/REFACTOR_LEARNED_SECTION_COPY_PLUS_CARDS.md) | **new** | Lane D `nu_llm_wiki` (parallel) |
 | **M6** | [`REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md`](./wip/REFACTOR_BRAIN_PROFILES_AND_RETAIL_ANSWER.md) | **wip** | `retail_answer.v1` |
 | **M7** | [`REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md`](./wip/REFACTOR_FRU_RETAIL_SERVICE_BRAIN.md) | **wip** | Product V2–V5 after M6 |
 | **M8** | [`REFACTOR_BRAIN_AGENT_ENTRYPOINT.md`](./wip/REFACTOR_BRAIN_AGENT_ENTRYPOINT.md) | **wip** | `scripts/brain/agent.sh` |

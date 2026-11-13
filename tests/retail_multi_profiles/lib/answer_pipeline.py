@@ -56,6 +56,7 @@ def answer_from_context(
     temperature: float = 0.0,
     preamble: str = "",
     insight_mode: bool = False,
+    answer_max_words: int | None = None,
     generate: Callable[..., str] | None = None,
 ) -> tuple[str, int]:
     """One LLM call with a fixed prompt. ``generate`` overrides the live LLM in tests."""
@@ -67,6 +68,8 @@ def answer_from_context(
             "Label uncertainty when excerpts are thin.\n\n"
             f"Question: {question}\n\nExcerpts:\n{context or '(no excerpts)'}"
         )
+        if answer_max_words and answer_max_words > 0:
+            prompt += f"\n\nStay within {answer_max_words} words."
     else:
         prompt = (
             "Answer using ONLY the manual excerpts below. If the excerpts do not contain "

@@ -1,11 +1,11 @@
 <h1 id="ps-title" style="color:#0d47a1;font-size:1.5em;font-weight:700;border-bottom:2px solid #90caf9;padding-bottom:0.25em;margin-top:0">Refactor plan — retail product scope: brand + OEM model (no POS SKU filter)</h1>
 
-**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — minor **M9** (cross-cutting **D1** metadata; unblocks **M4** B20 regression).  
+**Parent (only):** [`REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md`](./REFACTOR_PLAN_MAIN_1_FURTHER_ENHANCEMENT_GPT.md) — minor **M9** (cross-cutting **D1** metadata; unblocks **M4** TYPE_B_B20 regression).  
 **Status:** **new** — all implementable items **`[ ]`**.  
 **Execute:** **`qimpltdd`** this file → **`aciubtdd`** / **`implreftdd`**.  
-**last_aligned:** 2026-10-27 — user: drop synthetic SKU as retrieval filter; **brand + model** on ticket and manual legs; regression **T100** (tickets), **M90** (manual PG hybrid), **B20** (bundled).
+**last_aligned:** 2026-10-27 — user: drop synthetic SKU as retrieval filter; **brand + model** on ticket and manual legs; regression **T100** (tickets), **TYPE_A_M90** (manual PG hybrid), **TYPE_B_B20** (bundled).
 
-**Problem:** Postgres has no **products** table. Tickets expose **`service_queries.model`** (OEM code); manuals expose **`manual_chunks.model_id`** (ingest folder slug, e.g. `ge_GNE27JYMFS`). Callers that treat those as one “SKU” caused **B20 manual leg empty** (see [`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`](../../artifacts/TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md) §4).
+**Problem:** Postgres has no **products** table. Tickets expose **`service_queries.model`** (OEM code); manuals expose **`manual_chunks.model_id`** (ingest folder slug, e.g. `ge_GNE27JYMFS`). Callers that treat those as one “SKU” caused **TYPE_B_B20 manual leg empty** (see [`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`](../../artifacts/TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md) §4).
 
 **Goal:** One **ProductScope** at the query boundary: **`brand`** + **`oem_model`** for **both** retrieval legs. Keep **`model_id`** on manual rows as **ingest path key only** (not the filter contract). **No** new POS SKU / products table in this minor (defer variant catalog to **M7**).
 
@@ -15,9 +15,9 @@
 2. [Target schema](#ps-schema) — columns and indexes.
 3. [Phase 1 — Contract + schema](#ps-p1) — TDD + SQL migration.
 4. [Phase 2 — Load and backfill](#ps-p2) — CSV load + PG backfill.
-5. [Phase 3 — Retrieval wiring](#ps-p3) — tickets, manual PG, bundled, M90 path.
+5. [Phase 3 — Retrieval wiring](#ps-p3) — tickets, manual PG, bundled, TYPE_A_M90 path.
 6. [Phase 4 — Unit and harness tests](#ps-p4) — pytest gates.
-7. [Phase 5 — Operator regression trio](#ps-p5) — T100, M90, B20 + analysis docs.
+7. [Phase 5 — Operator regression trio](#ps-p5) — T100, TYPE_A_M90, TYPE_B_B20 + analysis docs.
 8. [TDD bar](#ps-tdd) — per-phase modes.
 9. [Execution checklist](#ps-checklist).
 10. [Deferred](#ps-deferred).
@@ -32,8 +32,8 @@
 | **PS-D2** | **No `products` / retail SKU table** in M9. Source of truth for the sim remains **`fru_us_service.yaml`** (`brand` + `sku` field = OEM model + `docs_folder`). |
 | **PS-D3** | **`manual_chunks.model_id`** retained for ingest lineage; **SQL filters** use **`brand` + `oem_model`** after backfill. |
 | **PS-D4** | Deprecate retrieval use of **`catalog_sku`** / **`manual_filter` → slug**; keep **`ingest_key`** (optional) in JSON metadata for one release. |
-| **PS-D5** | **Regression acceptance (non-worse):** T100 mode **C** recall@1 **≥ 0.54** + `check_abc_ladder.py` **OK**; M90 **`MANUAL_B_RAW_PG_HYBRID`** answerable judge **≥ 35/60**; B20 **ticket-in-packet ≥ 18/20** and **manual hits non-empty on all 20 rows** after scope fix. |
-| **PS-D6** | Operator runs **after** schema backfill + reload on **`fru_us_1k`** profile (same env as P2.6 / B20 baselines). |
+| **PS-D5** | **Regression acceptance (non-worse):** T100 mode **C** recall@1 **≥ 0.54** + `check_abc_ladder.py` **OK**; TYPE_A_M90 **`MANUAL_B_RAW_PG_HYBRID`** answerable judge **≥ 35/60**; TYPE_B_B20 **ticket-in-packet ≥ 18/20** and **manual hits non-empty on all 20 rows** after scope fix. |
+| **PS-D6** | Operator runs **after** schema backfill + reload on **`fru_us_1k`** profile (same env as P2.6 / TYPE_B_B20 baselines). |
 
 ---
 
@@ -73,7 +73,7 @@
 - [X] **`pg_search.py`**: **`brand_filter`** + **`model_filter`** on vector leg; model-only fallback if brand empty.
 - [X] **Tantivy / lexical**: **model-only** (OEM codes unique in sim; vector leg uses brand+model).
 - [X] **`manual_pg_search` / `filter_chunks_by_product`**: brand + OEM on PG pool.
-- [X] **`bundled_runner.py`**, **`answer_tickets.py`**, M90 **`runner.py`**: **`resolve_product_scope`** → **`ProductFilter`**.
+- [X] **`bundled_runner.py`**, **`answer_tickets.py`**, TYPE_A_M90 **`runner.py`**: **`resolve_product_scope`** → **`ProductFilter`**.
 - [ ] Update **`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`** §4.1 prose to **brand+model** (after P5 operator run).
 
 ---
@@ -93,16 +93,16 @@
 | Run | Command (summary) | Artifact |
 |-----|-------------------|----------|
 | **T100 tickets** | `RETAIL_TICKET_SEARCH_MODE=rrf_term_boosted` `./scripts/py scripts/retail/eval/eval_ticket_search.py --postgres --report ops/runs/fru-ticket-brand-model-YYYYMMDD/c.json`; copy reports for **`check_abc_ladder.py`** if full ABC rerun | Update **`TEST_ANALYSIS_A3_TICKET_RAG.md`** |
-| **M90 manual only** | `python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_PG_HYBRID --run-id m90-brand-model-YYYYMMDD --retrieval-mode raw_rag` | Update **`TEST_ANALYSIS_A2_MANUAL_RAG_PG.md`** headline |
-| **B20 bundled** | `./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --full --run-id b20-brand-model-YYYYMMDD` | Update **`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`** |
+| **TYPE_A_M90 manual only** | `python -m tests.retail_multi_profiles --full --profile MANUAL_B_RAW_PG_HYBRID --run-id m90-brand-model-YYYYMMDD --retrieval-mode raw_rag` | Update **`TEST_ANALYSIS_A2_MANUAL_RAG_PG.md`** headline |
+| **TYPE_B_B20 bundled** | `./scripts/py tests/retail_multi_profiles/run_bundled_qa.py --full --run-id b20-brand-model-YYYYMMDD` | Update **`TEST_ANALYSIS_BUNDLED_MANUAL_TICKET_QA.md`** |
 
 - [X] Run **T100** mode **C** — `ops/runs/fru-ticket-brand-model-20261027/c.json` recall@1 **0.54** (meets **PS-D5**).
-- [X] Run **M90** — `ops/runs/retail-lane-abcd-raw/m90-brand-model-20261027/` (**63/90** overall; **33/60** answerable judge pass).
-- [X] B20 **smoke** — `b20-brand-model-smoke-20261027` (BND-E01: **5** manual chunks, judge pass).
-- [X] Run **B20 full 20** — `b20-brand-model-20261027`: **14/20** judge, **10/20** ticket-in-packet, **0** empty manual legs.
+- [X] Run **TYPE_A_M90** — `ops/runs/retail-lane-abcd-raw/m90-brand-modem90-brand-model-20261027overall; **33/60** answerable judge pass).
+- [X] TYPE_B_B20 **smoke** — `b20-brand-modeb20-brand-model-smoke-202610275** manual chunks, judge pass).
+- [X] Run **TYPE_B_B20 full 20** — `b20-brand-model-20261027`: **14/20b20-brand-model-20261027et-in-packet, **0** empty manual legs.
 - [ ] Record **`last_aligned`** on this plan; tick checklist.
 
-**Neatlog:** `logs/ops/retail-*` per **neatlog** rule on B20 and M90 long runs.
+**Neatlog:** `logs/ops/retail-*` per **neatlog** rule on TYPE_B_B20 and TYPE_A_M90 long runs.
 
 ---
 
@@ -127,9 +127,9 @@
 
 - [X] P1 — ProductScope + schema **006**
 - [X] P2 — Load + backfill
-- [X] P3 — pg_search + manual PG + bundled/M90 wiring
+- [X] P3 — pg_search + manual PG + bundled/TYPE_A_M90 wiring
 - [X] P4 — verify.sh
-- [ ] P5 — T100 + M90 + B20 operator + TEST_ANALYSIS updates
+- [ ] P5 — T100 + TYPE_A_M90 + TYPE_B_B20 operator + TEST_ANALYSIS updates
 
 ---
 
@@ -138,5 +138,5 @@
 | Item | Owner |
 |------|--------|
 | **`products` / POS SKU / color / bundle / region** tables | **M7** FRU product ops |
-| B20 JSON migration to explicit **`brand`** field | Optional; resolver + YAML sufficient for sim |
+| TYPE_B_B20 JSON migration to explicit **`brand`** field | Optional; resolver + YAML sufficient for sim |
 | Rename YAML key **`sku`** → **`oem_model`** | Docs-only follow-up |
